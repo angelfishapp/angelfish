@@ -1928,6 +1928,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.15"
     "@types/node": "npm:^22.13.5"
     "@vercel/webpack-asset-relocator-loader": "npm:1.7.3"
+    copy-webpack-plugin: "npm:13.0.0"
     css-loader: "npm:^7.1.2"
     electron: "npm:34.2.0"
     electron-log: "npm:*"
@@ -1935,6 +1936,7 @@ __metadata:
     electron-store: "npm:8.2.0"
     fork-ts-checker-webpack-plugin: "npm:^9.0.2"
     node-loader: "npm:^2.1.0"
+    raw-loader: "npm:^4.0.2"
     react-refresh: "npm:^0.16.0"
     style-loader: "npm:^4.0.0"
     ts-loader: "npm:^9.5.2"
@@ -2749,6 +2751,21 @@ __metadata:
   version: 0.7.1
   resolution: "cookie@npm:0.7.1"
   checksum: 10/aec6a6aa0781761bf55d60447d6be08861d381136a0fe94aa084fddd4f0300faa2b064df490c6798adfa1ebaef9e0af9b08a189c823e0811b8b313b3d9a03380
+  languageName: node
+  linkType: hard
+
+"copy-webpack-plugin@npm:13.0.0":
+  version: 13.0.0
+  resolution: "copy-webpack-plugin@npm:13.0.0"
+  dependencies:
+    glob-parent: "npm:^6.0.1"
+    normalize-path: "npm:^3.0.0"
+    schema-utils: "npm:^4.2.0"
+    serialize-javascript: "npm:^6.0.2"
+    tinyglobby: "npm:^0.2.12"
+  peerDependencies:
+    webpack: ^5.1.0
+  checksum: 10/209051dd3c0bc7ab97170309cdb1826e642044d2d53e0adc35bb227123c89ae1296a504409325e9b955d7b2d1a505b063f0023e924151d382dbcc92cb9325e6a
   languageName: node
   linkType: hard
 
@@ -3807,6 +3824,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fdir@npm:^6.4.3":
+  version: 6.4.3
+  resolution: "fdir@npm:6.4.3"
+  peerDependencies:
+    picomatch: ^3 || ^4
+  peerDependenciesMeta:
+    picomatch:
+      optional: true
+  checksum: 10/8e6d20f4590dc168de1374a9cadaa37e20ca6e0b822aa247c230e7ea1d9e9674a68cd816146435e4ecc98f9285091462ab7e5e56eebc9510931a1794e4db68b2
+  languageName: node
+  linkType: hard
+
 "filename-reserved-regex@npm:^2.0.0":
   version: 2.0.0
   resolution: "filename-reserved-regex@npm:2.0.0"
@@ -4241,6 +4270,15 @@ __metadata:
   dependencies:
     is-glob: "npm:^4.0.1"
   checksum: 10/32cd106ce8c0d83731966d31517adb766d02c3812de49c30cfe0675c7c0ae6630c11214c54a5ae67aca882cf738d27fd7768f21aa19118b9245950554be07247
+  languageName: node
+  linkType: hard
+
+"glob-parent@npm:^6.0.1":
+  version: 6.0.2
+  resolution: "glob-parent@npm:6.0.2"
+  dependencies:
+    is-glob: "npm:^4.0.3"
+  checksum: 10/c13ee97978bef4f55106b71e66428eb1512e71a7466ba49025fc2aec59a5bfb0954d5abd58fc5ee6c9b076eef4e1f6d3375c2e964b88466ca390da4419a786a8
   languageName: node
   linkType: hard
 
@@ -4833,7 +4871,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-glob@npm:^4.0.1, is-glob@npm:~4.0.1":
+"is-glob@npm:^4.0.1, is-glob@npm:^4.0.3, is-glob@npm:~4.0.1":
   version: 4.0.3
   resolution: "is-glob@npm:4.0.3"
   dependencies:
@@ -5190,7 +5228,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.3, loader-utils@npm:^2.0.4":
+"loader-utils@npm:^2.0.0, loader-utils@npm:^2.0.3, loader-utils@npm:^2.0.4":
   version: 2.0.4
   resolution: "loader-utils@npm:2.0.4"
   dependencies:
@@ -6381,6 +6419,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picomatch@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "picomatch@npm:4.0.2"
+  checksum: 10/ce617b8da36797d09c0baacb96ca8a44460452c89362d7cb8f70ca46b4158ba8bc3606912de7c818eb4a939f7f9015cef3c766ec8a0c6bfc725fdc078e39c717
+  languageName: node
+  linkType: hard
+
 "pify@npm:^2.0.0":
   version: 2.3.0
   resolution: "pify@npm:2.3.0"
@@ -6661,6 +6706,18 @@ __metadata:
     iconv-lite: "npm:0.4.24"
     unpipe: "npm:1.0.0"
   checksum: 10/863b5171e140546a4d99f349b720abac4410338e23df5e409cfcc3752538c9caf947ce382c89129ba976f71894bd38b5806c774edac35ebf168d02aa1ac11a95
+  languageName: node
+  linkType: hard
+
+"raw-loader@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "raw-loader@npm:4.0.2"
+  dependencies:
+    loader-utils: "npm:^2.0.0"
+    schema-utils: "npm:^3.0.0"
+  peerDependencies:
+    webpack: ^4.0.0 || ^5.0.0
+  checksum: 10/51cc1b0d0e8c37c4336b5318f3b2c9c51d6998ad6f56ea09612afcfefc9c1f596341309e934a744ae907177f28efc9f1654eacd62151e82853fcc6d37450e795
   languageName: node
   linkType: hard
 
@@ -7089,7 +7146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"schema-utils@npm:^3.1.1":
+"schema-utils@npm:^3.0.0, schema-utils@npm:^3.1.1":
   version: 3.3.0
   resolution: "schema-utils@npm:3.3.0"
   dependencies:
@@ -7823,6 +7880,16 @@ __metadata:
   version: 0.3.2
   resolution: "tinyexec@npm:0.3.2"
   checksum: 10/b9d5fed3166fb1acd1e7f9a89afcd97ccbe18b9c1af0278e429455f6976d69271ba2d21797e7c36d57d6b05025e525d2882d88c2ab435b60d1ddf2fea361de57
+  languageName: node
+  linkType: hard
+
+"tinyglobby@npm:^0.2.12":
+  version: 0.2.12
+  resolution: "tinyglobby@npm:0.2.12"
+  dependencies:
+    fdir: "npm:^6.4.3"
+    picomatch: "npm:^4.0.2"
+  checksum: 10/4ad28701fa9118b32ef0e27f409e0a6c5741e8b02286d50425c1f6f71e6d6c6ded9dd5bbbbb714784b08623c4ec4d150151f1d3d996cfabe0495f908ab4f7002
   languageName: node
   linkType: hard
 

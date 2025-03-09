@@ -213,13 +213,9 @@ class CWindowManager {
       windowSize.width,
       windowSize.height,
     )
+    appWindow.setTitle('Angelfish')
     appWindow.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
-
-    const iconPath =
-      Environment.nodeEnvironment === Environment.DEVELOPMENT
-        ? path.join(__dirname, '../../assets/icons/png/1024.png')
-        : path.join(__dirname, 'assets', '1024.png')
-    //appWindow.setIcon(iconPath)
+    appWindow.setIcon(path.join(__dirname, 'assets', '1024.png'))
 
     // Listen for resize events to remember user's last screen size
     appWindow.on('resize', function () {
