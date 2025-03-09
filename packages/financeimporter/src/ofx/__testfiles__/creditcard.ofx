@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?OFX OFXHEADER="200" VERSION="203" SECURITY="NONE" OLDFILEUID="NONE" NEWFILEUID="NONE"?>
+<OFX>
+   <SIGNONMSGSRSV1>
+      <SONRS>
+         <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+         </STATUS>
+         <DTSERVER>20201112045855.351[+0]</DTSERVER>
+         <LANGUAGE>ENG</LANGUAGE>
+      </SONRS>
+   </SIGNONMSGSRSV1>
+   <CREDITCARDMSGSRSV1>
+      <CCSTMTTRNRS>
+         <TRNUID>A</TRNUID>
+         <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+         </STATUS>
+         <CCSTMTRS>
+            <CURDEF>GBP</CURDEF>
+            <CCACCTFROM>
+               <ACCTID>****4444</ACCTID>
+            </CCACCTFROM>
+            <BANKTRANLIST>
+               <DTSTART>20190812120000.000[+1]</DTSTART>
+               <DTEND>20190812120000.000[+1]</DTEND>
+               <STMTTRN>
+                  <TRNTYPE>CREDIT</TRNTYPE>
+                  <DTPOSTED>20190805120000.000[+1]</DTPOSTED>
+                  <TRNAMT>424.41</TRNAMT>
+                  <FITID>00CREDIT20190805120000000142441DIRECTDEBITPAYMENT</FITID>
+                  <NAME>DIRECT DEBIT PAYMENT</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190803120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-27.6</TRNAMT>
+                  <FITID>00DEBIT201908031200000001-276AMYSUSHICASTELLETTO</FITID>
+                  <NAME>AMY SUSHI CASTELLETTO</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190803120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-80.61</TRNAMT>
+                  <FITID>00DEBIT201908031200000001-8061RISTORANTEPININ</FITID>
+                  <NAME>RISTORANTE PININ</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190804120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-18.46</TRNAMT>
+                  <FITID>00DEBIT201908041200000001-1846ILGUSTOSNCDIMONTIGLI</FITID>
+                  <NAME>IL GUSTO SNC DI MONTIGLI</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190804120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-23.07</TRNAMT>
+                  <FITID>00DEBIT201908041200000001-2307ZAPPACAFFEDIZAPPAROL</FITID>
+                  <NAME>ZAPPA CAFFE' DI ZAPPAROL</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190807120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-14.52</TRNAMT>
+                  <FITID>00DEBIT201908071200000001-1452ASPIGENOVANERVI-</FITID>
+                  <NAME>ASPI  GENOVA NERVI   -</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190807120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-19.98</TRNAMT>
+                  <FITID>00DEBIT201908071200000001-1998ADSAGOGNAOVESTGRILL</FITID>
+                  <NAME>ADS AGOGNA OVEST GRILL</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190807120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-67.64</TRNAMT>
+                  <FITID>00DEBIT201908071200000001-6764LAGRITTAPORTOFINO</FITID>
+                  <NAME>LA GRITTA PORTOFINO</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190807120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-19.46</TRNAMT>
+                  <FITID>00DEBIT201908071200000001-1946ILFARODIPORTOFINO</FITID>
+                  <NAME>IL FARO DI PORTOFINO</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190807120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-13.9</TRNAMT>
+                  <FITID>00DEBIT201908071200000001-139PISTAAZZURRASRL</FITID>
+                  <NAME>PISTA AZZURRA SRL</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190807120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-19.46</TRNAMT>
+                  <FITID>00DEBIT201908071200000001-1946ILGUSTOSNCDIMONTIGLI</FITID>
+                  <NAME>IL GUSTO SNC DI MONTIGLI</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190808120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-68.43</TRNAMT>
+                  <FITID>00DEBIT201908081200000001-6843RISTORANTEPININ</FITID>
+                  <NAME>RISTORANTE PININ</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190808120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-7.41</TRNAMT>
+                  <FITID>00DEBIT201908081200000001-741LABARCHETTA</FITID>
+                  <NAME>LA BARCHETTA</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190809120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-5.75</TRNAMT>
+                  <FITID>00DEBIT201908091200000001-575MEZE</FITID>
+                  <NAME>MEZE</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190809120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-14.38</TRNAMT>
+                  <FITID>00DEBIT201908091200000001-1438KARAVANBAR</FITID>
+                  <NAME>KARAVA'N BA'R</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190809120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-4.89</TRNAMT>
+                  <FITID>00DEBIT201908091200000001-489KARAVANBAR</FITID>
+                  <NAME>KARAVA'N BA'R</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190809120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-10.93</TRNAMT>
+                  <FITID>00DEBIT201908091200000001-1093KARAVANBAR</FITID>
+                  <NAME>KARAVA'N BA'R</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190809120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-5.18</TRNAMT>
+                  <FITID>00DEBIT201908091200000001-518LISZTFREPULOTER1</FITID>
+                  <NAME>LISZT F.REPU:LOTER 1</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-8.63</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-863KaravanTorokEtterem</FITID>
+                  <NAME>Karavan Torok Etterem</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-3.45</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-345LangosBurger</FITID>
+                  <NAME>Langos Burger</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190811120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-20.59</TRNAMT>
+                  <FITID>00DEBIT201908111200000001-2059KolevesVendeglo</FITID>
+                  <NAME>Koleves Vendeglo</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-5.41</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-541HummusJuiceBar</FITID>
+                  <NAME>Hummus Juice Bar</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-5.46</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-546KERESKEDO</FITID>
+                  <NAME>KERESKEDO</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-5.75</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-575KERESKEDO</FITID>
+                  <NAME>KERESKEDO</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190809120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-2.01</TRNAMT>
+                  <FITID>00DEBIT201908091200000001-201MAMOKARAVAN</FITID>
+                  <NAME>MAMO KARAVA'N</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190809120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-1.15</TRNAMT>
+                  <FITID>00DEBIT201908091200000001-115MAMOKARAVAN</FITID>
+                  <NAME>MAMO KARAVA'N</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-3.02</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-302BGYHZRTFESTIPAYNS</FITID>
+                  <NAME>BGYH ZRT / FESTIPAY NS</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-2.59</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-259BGYHZRTFESTIPAYNS</FITID>
+                  <NAME>BGYH ZRT / FESTIPAY NS</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-19.24</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-1924TELE5TAXI</FITID>
+                  <NAME>TELE 5 TAXI</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190810120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-2.88</TRNAMT>
+                  <FITID>00DEBIT201908101200000001-288BGYHZRTFESTIPAYNS</FITID>
+                  <NAME>BGYH ZRT / FESTIPAY NS</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190811120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-4.31</TRNAMT>
+                  <FITID>00DEBIT201908111200000001-431KaravanTorokEtterem</FITID>
+                  <NAME>Karavan Torok Etterem</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190811120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-31.75</TRNAMT>
+                  <FITID>00DEBIT201908111200000001-3175Paprika-TheHungarianMa</FITID>
+                  <NAME>Paprika -The HungarianMa</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190809120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-26.45</TRNAMT>
+                  <FITID>00DEBIT201908091200000001-2645BORBIROSAGETTEREM</FITID>
+                  <NAME>BORBIROSAG ETTEREM</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190811120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-10.15</TRNAMT>
+                  <FITID>00DEBIT201908111200000001-1015Leroy</FITID>
+                  <NAME>Leroy</NAME>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>DEBIT</TRNTYPE>
+                  <DTPOSTED>20190811120000.000[+1]</DTPOSTED>
+                  <TRNAMT>-14.94</TRNAMT>
+                  <FITID>00DEBIT201908111200000001-1494LaterKft</FITID>
+                  <NAME>Later Kft.</NAME>
+               </STMTTRN>
+            </BANKTRANLIST>
+            <LEDGERBAL>
+               <BALAMT>0</BALAMT>
+               <DTASOF>20190812120000.000[+1]</DTASOF>
+            </LEDGERBAL>
+            <AVAILBAL>
+               <BALAMT>13000.00</BALAMT>
+               <DTASOF>20190812120000.000[+1]</DTASOF>
+            </AVAILBAL>
+         </CCSTMTRS>
+      </CCSTMTTRNRS>
+   </CREDITCARDMSGSRSV1>
+</OFX>

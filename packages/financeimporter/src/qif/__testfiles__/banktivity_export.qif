@@ -1,0 +1,512 @@
+!Option:AutoSwitch
+!Account
+NChecking Account
+TBank
+B1500
+^
+NSavings Account
+TBank
+B0
+^
+!Clear:AutoSwitch
+!Type:Cat
+NBank Charges:Service Charges
+E
+^
+NCar
+E
+DCar Expenses
+^
+NCar:Accessories
+DCar Accessories
+E
+^
+NCar:Gas/Petrol
+E
+DFueling up the car
+^
+NCar:Insurance
+E
+DCar Insurance
+^
+NCar:Lease
+E
+DCar Lease Payments
+^
+NCar:Purchase
+E
+DCash Paid Towards Car Purchase
+^
+NCar:Registration Fees
+E
+DCar Registration Fees
+^
+NCar:Servicing/Maintenance
+E
+^
+NFood
+E
+^
+NFood:Dining Out
+E
+^
+NFood:Groceries
+E
+^
+NFood:Take-out
+E
+^
+NHome
+E
+^
+NHome:Rent
+E
+^
+NInvestment Income
+I
+^
+NInvestment Income:Interest
+I
+DSchedule B: Interest income
+^
+NLeisure & Entertainment
+E
+^
+NLeisure & Entertainment:Books & Magazines
+E
+^
+NLeisure & Entertainment:Movie Rentals
+E
+DRenting movies to watch at home
+^
+NTaxes
+E
+^
+NTaxes:Income Tax
+E
+^
+NTaxes:Penalties & Fines
+E
+^
+NTaxes:Social Security/National Insurance
+E
+^
+NWages & Salary
+I
+DW-2: Salary or wages
+^
+NWages & Salary:Gross Pay
+I
+DGross Pay Before Taxes & Other Items Taken Out
+^
+!Account
+NChecking Account
+TBank
+^
+!Type:Bank
+D10/18/19
+T1,355.72
+Cc
+PCounter Credit
+MPaycheck from Acme INC. & co.
+LWages & Salary:Gross Pay
+^
+D10/24/19
+T6,339.92
+Cc
+N153
+PCHECK
+L[Acme Bank Checking]
+^
+D11/20/19
+T-6,578.71
+Cc
+PWIRE TYPE:INTL OUT DATE:191120 TIME:0800 ET TRN:343434343137025 SERVI
+LCar:Purchase
+^
+D11/20/19
+T-45.00
+Cc
+PWire Transfer Fee
+LBank Charges:Service Charges
+^
+D1/7/20
+T-12.00
+Cc
+PMonthly Maintenance Fee
+LBank Charges:Service Charges
+^
+D1/9/20
+T500.00
+Cc
+N137
+PCHECK
+L[Acme Bank Checking]
+^
+D2/4/20
+T-12.00
+Cc
+PMonthly Maintenance Fee
+LBank Charges:Service Charges
+^
+D7/6/20
+T4,903.00
+Cc
+N208
+PCHECK
+L[Acme Bank Checking]
+^
+D7/28/20
+T-4,900.00
+Cc
+PTRANSFER RENT
+LHome:Rent
+^
+D7/29/20
+T-3.00
+Cc
+PExternal transfer fee - 3 Day -
+LBank Charges:Service Charges
+^
+D8/3/20
+T4,903.00
+Cc
+PACME BANK, NA CHK
+MRECURRING TRANSFER XXXXXX4444 J.SMITH #FP08L77777 RENT
+L[Acme Bank Checking]
+^
+D8/28/20
+T-4,900.00
+Cc
+PTRANSFER RENT
+LHome:Rent
+^
+D8/31/20
+T-3.00
+Cc
+PExternal transfer fee - 3 Day -
+LBank Charges:Service Charges
+^
+D9/1/20
+T4,903.00
+Cc
+PACME BANK, N.A. CH
+MRECURRING TRANSFER XXXXXX4444 J.SMITH #FP08L77777 RENT
+L[Acme Bank Checking]
+^
+D9/28/20
+T-4,900.00
+Cc
+PTRANSFER RENT
+LHome:Rent
+^
+D9/29/20
+T-3.00
+Cc
+PExternal transfer fee - 3 Day -
+LBank Charges:Service Charges
+^
+D10/5/20
+T4,903.00
+Cc
+PACME BANK. CH
+L[Acme Bank Checking]
+^
+D10/5/20
+T-14.14
+Cc
+PAmazon Prime*MK6NS3C80 10/02 PUR
+LLeisure & Entertainment:Movie Rentals
+^
+D10/28/20
+T-4,900.00
+Cc
+PTRANSFER RENT
+LHome:Rent
+^
+D10/29/20
+T-3.00
+Cc
+PExternal transfer fee - 3 Day -
+LBank Charges:Service Charges
+^
+D11/2/20
+T4,903.00
+Cc
+PACME BANK. CH
+MRECURRING TRANSFER XXXXXX4444 J.SMITH #FP08L77777 RENT
+L[Acme Bank Checking]
+^
+D11/3/20
+T-14.14
+Cc
+PAmazon Prime*2824Q53S2 11/02 PUR
+LLeisure & Entertainment:Movie Rentals
+^
+D11/27/20
+T-4,900.00
+Cc
+PTRANSFER RENT
+LHome:Rent
+^
+D11/30/20
+T-3.00
+Cc
+PExternal transfer fee - 3 Day -
+LBank Charges:Service Charges
+^
+D12/1/20
+T4,903.00
+Cc
+PACME BANK, N.A. CHt
+MRECURRING TRANSFER XXXXXX4444 J.SMITH #FP08L77777 RENT
+L[Acme Bank Checking]
+^
+D12/2/20
+T14.14
+Cc
+PTemporary Credit Adjustment on 1
+LLeisure & Entertainment:Movie Rentals
+^
+D12/2/20
+T14.14
+Cc
+PTemporary Credit Adjustment on 1
+LLeisure & Entertainment:Movie Rentals
+^
+D12/3/20
+T-14.14
+Cc
+PAmazon Prime*A56TL6ZY3 12/02 PUR
+LLeisure & Entertainment:Movie Rentals
+^
+D12/7/20
+T14.14
+Cc
+PTemporary Credit Adjustment on 1
+LLeisure & Entertainment:Movie Rentals
+^
+D12/15/20
+T15,000.00
+Cc
+PACME BANK, N.A. CH
+MONLINE TRANSFER K XXXXXX4444 J.SMITH #F209FXXXXX ON 12/14/20
+L[Acme Joint Savings]
+^
+D12/23/20
+T200,000.00
+Cc
+N107
+PCHECK
+L[Acme Bank Checking]
+^
+D12/24/20
+T42,000.00
+Cc
+PMercury DES:CREDIT ID: INDN:Davi
+MMemo with exclamation marks! ??!
+LCar:Purchase
+^
+D12/28/20
+T-45.00
+Cc
+PWire Transfer Fee
+MWire fee
+LBank Charges:Service Charges
+^
+D12/28/20
+T-1,000.00
+Cc
+PWIRE TYPE:INTL OUT DATE:201228 T
+MInternational Transfer
+LFood:Dining Out
+^
+D12/28/20
+T-4,900.00
+Cc
+PTRANSFER RENT
+LHome:Rent
+^
+D12/29/20
+T-3.00
+Cc
+PSplit Transaction
+MSplit Test Transaction
+SBank Charges:Service Charges
+$-1.50
+SBank Charges:Interest Paid
+$-1.50
+^
+D12/31/20
+T-45.00
+Cc
+PWire Transfer Fee
+LBank Charges:Service Charges
+^
+D12/31/20
+T-134,000.00
+Cc
+PWIRE TYPE:INTL OUT DATE:210104 T
+MBuying groceries abroad
+LFood:Dining Out
+^
+D12/31/20
+T-120,000.00
+Cc
+POnline Banking transfer to SAV 4
+L[Savings Account]
+^
+D1/4/21
+T-3,457.93
+Cc
+POnline Banking transfer to SAV 4
+L[Savings Account]
+^
+D1/4/21
+T4,903.00
+Cc
+PACME BANK, N.A. CHt
+MRECURRING TRANSFER K XXXXXX4444 J. SMITH REF #FP09XH34333 RENT
+L[Acme Bank Checking]
+^
+D1/28/21
+T-4,900.00
+Cc
+PTRANSFER RENT
+LHome:Rent
+^
+D1/29/21
+T-3.00
+Cc
+PExternal transfer fee - 3 Day -
+LBank Charges:Service Charges
+^
+D2/1/21
+T4,903.00
+Cc
+PACME BANK, N.A. CHt
+MRECURRING TRANSFER K XXXXXX4444 J. SMITH REF #FP09XH34333 RENT
+L[Acme Bank Checking]
+^
+D2/26/21
+T-4,900.00
+Cc
+PTRANSFER RENT
+LHome:Rent
+^
+D3/1/21
+T-3.00
+Cc
+PExternal transfer fee - 3 Day -
+LBank Charges:Service Charges
+^
+D3/1/21
+T4,903.00
+Cc
+PACME BANK, N.A. CH
+MRECURRING TRANSFER K XXXXXX4444 J. SMITH REF #FP09XH34333 RENT
+L[Acme Bank Checking]
+^
+D3/17/21
+T108,221.80
+Cc
+PCA TLR transfer to CHK 4216 Bank
+L[Savings Account]
+^
+D3/17/21
+T-111,624.80
+Cc
+PDEPOSIT  ID NUMBER 252396
+L[Acme Joint Savings]
+^
+D4/1/21
+T0.95
+Cc
+POnline Banking transfer from SAV 444 Confirmation# 32234343434
+LInvestment Income:Interest
+^
+D10/22/21
+T2,587.00
+Cc
+PFRANCHISE TAX BD DES:CASTTAXRFD ID:XXXXX8888 INDN:SMITH, JOHN
+LTaxes:Income Tax
+^
+D10/26/21
+T4,520.00
+Cc
+PIRS TREAS 310 DES: TAX REF ID:XX
+LTaxes:Income Tax
+^
+D1/4/22
+T-3.00
+Cc
+PExternal transfer fee - 3 Day -
+LBank Charges:Service Charges
+^
+D1/6/22
+T-7,104.95
+Cc
+PACME BANK  P2P        JOHN
+MJOHN SMITH WEB ID: T941653434
+L[Acme Personal Checking]
+^
+!Account
+NSavings Account
+TBank
+^
+!Type:Bank
+D12/31/20
+T120,000.00
+Cc
+POnline Banking transfer to SAV 4
+L[Checking Account]
+^
+D1/4/21
+T3,457.93
+Cc
+POnline Banking transfer to SAV 4
+L[Checking Account]
+^
+D1/15/21
+T0.54
+Cc
+PInterest Earned
+LInvestment Income:Interest
+^
+D2/10/21
+T-30.00
+Cc
+PWire Transfer Fee
+LBank Charges:Service Charges
+^
+D2/10/21
+T-15,207.60
+Cc
+PWIRE TYPE:WIRE OUT DATE:210210 T
+MWire
+LCar Expenses
+^
+D2/12/21
+T0.93
+Cc
+PInterest Earned
+LInvestment Income:Interest
+^
+D3/17/21
+T-108,221.80
+Cc
+PCA TLR transfer to CHK 4444 Bank
+L[Checking Account]
+^
+D4/13/21
+T-237.73
+Cc
+PSplit Transaction Out of Order
+MPURCHASE Supermarket
+EGroceries
+SFood:Groceries
+$-115.00
+EKids Birthday BBQ
+SChild-Dependents:Parties
+$-122.73
+^

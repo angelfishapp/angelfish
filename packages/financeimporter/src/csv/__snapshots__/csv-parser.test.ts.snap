@@ -1,0 +1,341 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`deserializeCSV() > parse-csv-file 1`] = `
+{
+  "accounts": [],
+  "transactions": [
+    {
+      "amount": -1400,
+      "check_number": "",
+      "date": 2023-08-21T00:00:00.000Z,
+      "name": "PayPal",
+    },
+    {
+      "amount": -22.7,
+      "check_number": "",
+      "date": 2023-08-21T00:00:00.000Z,
+      "name": "Uber",
+    },
+    {
+      "amount": -2332.34,
+      "check_number": "",
+      "date": 2023-08-21T00:00:00.000Z,
+      "name": "CHASE CREDIT CRD AUTOPAY",
+    },
+    {
+      "amount": -330,
+      "check_number": "",
+      "date": 2023-08-21T00:00:00.000Z,
+      "name": "ATM WITHDRAWAL",
+    },
+    {
+      "amount": -88.12,
+      "check_number": "",
+      "date": 2023-08-21T00:00:00.000Z,
+      "name": "Macdonalds",
+    },
+    {
+      "amount": 65,
+      "check_number": "",
+      "date": 2023-08-21T00:00:00.000Z,
+      "name": "Zelle Payment to John Doe",
+    },
+    {
+      "amount": 150,
+      "check_number": "",
+      "date": 2023-08-21T00:00:00.000Z,
+      "name": "Zelle Payment to John Doe",
+    },
+    {
+      "amount": 5000,
+      "check_number": "",
+      "date": 2023-08-18T00:00:00.000Z,
+      "name": "ACME, INC.",
+    },
+    {
+      "amount": 25.22,
+      "check_number": "1",
+      "date": 2023-08-16T00:00:00.000Z,
+      "name": "REMOTE ONLINE DEPOSIT #          1",
+    },
+    {
+      "amount": -500,
+      "check_number": "",
+      "date": 2023-08-14T00:00:00.000Z,
+      "name": "Online Transfer to SAV",
+    },
+    {
+      "amount": -86,
+      "check_number": "",
+      "date": 2023-08-11T00:00:00.000Z,
+      "name": "Comcast",
+    },
+    {
+      "amount": -300,
+      "check_number": "123",
+      "date": 2023-08-10T00:00:00.000Z,
+      "name": "CHECK 181",
+    },
+    {
+      "amount": -261.46,
+      "check_number": "",
+      "date": 2023-08-09T00:00:00.000Z,
+      "name": "PGANDE",
+    },
+    {
+      "amount": 5000,
+      "check_number": "",
+      "date": 2023-08-04T00:00:00.000Z,
+      "name": "ACME, INC.",
+    },
+    {
+      "amount": -118.28,
+      "check_number": "",
+      "date": 2023-08-03T00:00:00.000Z,
+      "name": "WF Credit Card   AUTO PAY",
+    },
+    {
+      "amount": -220,
+      "check_number": "",
+      "date": 2023-08-02T00:00:00.000Z,
+      "name": "HOA",
+    },
+    {
+      "amount": -500,
+      "check_number": "",
+      "date": 2023-08-02T00:00:00.000Z,
+      "name": "Online Transfer to SAV",
+    },
+    {
+      "amount": -35,
+      "check_number": "",
+      "date": 2023-08-02T00:00:00.000Z,
+      "name": "Online Transfer to CHK",
+    },
+    {
+      "amount": 35,
+      "check_number": "",
+      "date": 2023-08-02T00:00:00.000Z,
+      "name": "Online Transfer from CHK",
+    },
+    {
+      "amount": -2000,
+      "check_number": "",
+      "date": 2023-08-01T00:00:00.000Z,
+      "name": "Rent",
+    },
+    {
+      "amount": 0.01,
+      "check_number": "",
+      "date": 2023-07-31T00:00:00.000Z,
+      "name": "INTEREST PAYMENT",
+    },
+    {
+      "amount": -34.34,
+      "check_number": "",
+      "date": 2023-07-31T00:00:00.000Z,
+      "name": "Uber",
+    },
+    {
+      "amount": -88.11,
+      "check_number": "",
+      "date": 2023-07-21T00:00:00.000Z,
+      "name": "Macdonalds",
+    },
+    {
+      "amount": -82.32,
+      "check_number": "",
+      "date": 2023-07-21T00:00:00.000Z,
+      "name": "ATM WITHDRAW",
+    },
+    {
+      "amount": 5000,
+      "check_number": "",
+      "date": 2023-07-21T00:00:00.000Z,
+      "name": "ACME, INC.",
+    },
+    {
+      "amount": 7.48,
+      "check_number": "",
+      "date": 2023-07-21T00:00:00.000Z,
+      "name": "Uber Refund",
+    },
+    {
+      "amount": -2500,
+      "check_number": "",
+      "date": 2023-07-20T00:00:00.000Z,
+      "name": "Home Fidelity Insurance",
+    },
+    {
+      "amount": -10,
+      "check_number": "",
+      "date": 2023-07-20T00:00:00.000Z,
+      "name": "Online Transfer to CHK .",
+    },
+    {
+      "amount": -3439.22,
+      "check_number": "",
+      "date": 2023-07-19T00:00:00.000Z,
+      "name": "CHASE CREDIT CRD AUTOPAY",
+    },
+    {
+      "amount": 5002.37,
+      "check_number": "",
+      "date": 2023-07-19T00:00:00.000Z,
+      "name": "Online Transfer from SAV",
+    },
+    {
+      "amount": -40,
+      "check_number": "",
+      "date": 2023-07-17T00:00:00.000Z,
+      "name": "VENMO",
+    },
+    {
+      "amount": -300,
+      "check_number": "",
+      "date": 2023-07-13T00:00:00.000Z,
+      "name": "Online Transfer to SAV",
+    },
+    {
+      "amount": -86,
+      "check_number": "",
+      "date": 2023-07-11T00:00:00.000Z,
+      "name": "Comcast",
+    },
+    {
+      "amount": -193.61,
+      "check_number": "",
+      "date": 2023-07-07T00:00:00.000Z,
+      "name": "PGANDE",
+    },
+    {
+      "amount": 5000,
+      "check_number": "",
+      "date": 2023-07-07T00:00:00.000Z,
+      "name": "ACME, INC.",
+    },
+    {
+      "amount": -220,
+      "check_number": "",
+      "date": 2023-07-05T00:00:00.000Z,
+      "name": "HOA",
+    },
+    {
+      "amount": -118.28,
+      "check_number": "",
+      "date": 2023-07-03T00:00:00.000Z,
+      "name": "WF Credit Card   AUTO PAY",
+    },
+    {
+      "amount": -120,
+      "check_number": "",
+      "date": 2023-07-03T00:00:00.000Z,
+      "name": "VENMO",
+    },
+    {
+      "amount": -2000,
+      "check_number": "",
+      "date": 2023-07-03T00:00:00.000Z,
+      "name": "Rent",
+    },
+  ],
+}
+`;
+
+exports[`deserializeCSV() > parse-csv-file-headers 1`] = `
+[
+  {
+    "header": "Details",
+    "samples": [
+      "DEBIT",
+      "DEBIT",
+      "DEBIT",
+      "DEBIT",
+      "DEBIT",
+    ],
+  },
+  {
+    "header": "Posting Date",
+    "samples": [
+      "8/21/23",
+      "8/21/23",
+      "8/21/23",
+      "8/21/23",
+      "8/21/23",
+    ],
+  },
+  {
+    "header": "Description",
+    "samples": [
+      "PayPal",
+      "Uber",
+      "CHASE CREDIT CRD AUTOPAY",
+      "ATM WITHDRAWAL",
+      "Macdonalds",
+    ],
+  },
+  {
+    "header": "Amount",
+    "samples": [
+      "-1400",
+      "-22.7",
+      "-2332.34",
+      "-330",
+      "-88.12",
+    ],
+  },
+  {
+    "header": "Type",
+    "samples": [
+      "ACH_DEBIT",
+      "DEBIT_CARD",
+      "ACH_DEBIT",
+      "ATM",
+      "ACH_DEBIT",
+    ],
+  },
+  {
+    "header": "Balance",
+    "samples": [
+      "12859.3",
+      "14259.3",
+      "14282",
+      "16614.34",
+      "16944.34",
+    ],
+  },
+  {
+    "header": "Check or Slip #",
+    "samples": [
+      "",
+      "",
+      "",
+      "",
+      "",
+    ],
+  },
+]
+`;
+
+exports[`deserializeCSV() > parse-headers-with-quotes 1`] = `
+[
+  {
+    "header": "Name",
+    "samples": [
+      "John",
+    ],
+  },
+  {
+    "header": "Occupation, Not Separated",
+    "samples": [
+      "Software Developer",
+    ],
+  },
+  {
+    "header": "Age",
+    "samples": [
+      "30",
+    ],
+  },
+]
+`;
