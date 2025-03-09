@@ -28,7 +28,7 @@ export function setupMainCommands() {
   })
 
   // Handle Logout Event
-  CommandsRegistryMain.addEventListener('on-logout', (payload: any) => {
+  CommandsRegistryMain.addEventListener('on-logout', (_payload: any) => {
     const appMenu = Menu.getApplicationMenu()
     if (appMenu) {
       const fileSync = appMenu.getMenuItemById('file-syncronize')

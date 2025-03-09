@@ -241,15 +241,17 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
         break
 
       case 'list':
-        // List all registered commands for this process
-        const commands = [...this._commands.keys()].filter(
-          (key) => this._commands.get(key)?.isLocal,
-        )
-        this._log('debug', `Sending list of commands to client *${id}*`, commands)
-        channel.postMessage({
-          type: 'list-response',
-          commands,
-        } as ICommandListResponse)
+        {
+          // List all registered commands for this process
+          const commands = [...this._commands.keys()].filter(
+            (key) => this._commands.get(key)?.isLocal,
+          )
+          this._log('debug', `Sending list of commands to client *${id}*`, commands)
+          channel.postMessage({
+            type: 'list-response',
+            commands,
+          } as ICommandListResponse)
+        }
         break
 
       case 'list-response':
@@ -304,27 +306,29 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
 
       case 'response':
       case 'error':
-        const replyHandler = this._replyHandlers.get(msg.id)
-        if (replyHandler) {
-          if (msg.type === 'response') {
-            replyHandler.resolve(msg.payload)
+        {
+          const replyHandler = this._replyHandlers.get(msg.id)
+          if (replyHandler) {
+            if (msg.type === 'response') {
+              replyHandler.resolve(msg.payload)
+            } else {
+              replyHandler.reject(msg.reason)
+            }
+            this._replyHandlers.delete(msg.id)
+          } else if (this._routeHandlers.has(msg.id)) {
+            // If no reply handler found, check if we need to route the response back to the original process
+            const originId = this._routeHandlers.get(msg.id)
+            this._log('debug', `Forwarding response back to origin channel *${originId}*`)
+            const channel = this._channels.get(originId as string)
+            if (channel) {
+              channel.postMessage(msg)
+            } else {
+              this._log('error', `Origin channel ${originId} not found`)
+            }
+            this._routeHandlers.delete(msg.id)
           } else {
-            replyHandler.reject(msg.reason)
+            this._log('error', `No handler found for response: ${msg.id}`)
           }
-          this._replyHandlers.delete(msg.id)
-        } else if (this._routeHandlers.has(msg.id)) {
-          // If no reply handler found, check if we need to route the response back to the original process
-          const originId = this._routeHandlers.get(msg.id)
-          this._log('debug', `Forwarding response back to origin channel *${originId}*`)
-          const channel = this._channels.get(originId as string)
-          if (channel) {
-            channel.postMessage(msg)
-          } else {
-            this._log('error', `Origin channel ${originId} not found`)
-          }
-          this._routeHandlers.delete(msg.id)
-        } else {
-          this._log('error', `No handler found for response: ${msg.id}`)
         }
         break
 
@@ -353,6 +357,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
    * @param handler     The Command handler to execute when Command is invoked
    */
   public async registerCommand(command: CommandID, handler: CommandHandler): Promise<void> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       if (this._commands.has(command)) {
         return reject(new Error(`Command handler for "${command}" already registered`))
@@ -426,9 +431,8 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
           command,
           payload,
         } as ICommandRequest)
-      } else {
-        throw new Error(`Channel ${commandInfo.channelId} not found`)
       }
+      throw new Error(`Channel ${commandInfo.channelId} not found`)
     }
 
     // If command not found, forward to router channel if provided

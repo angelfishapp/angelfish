@@ -67,7 +67,7 @@ class CWindowManager {
       title: `Process: ${id}`,
       webPreferences: {
         session: session.fromPartition(`persist:${id}`),
-        nodeIntegration: nodeIntegration,
+        nodeIntegration,
         webSecurity: !nodeIntegration,
         // TODO - For some reason preload doesn't work with contextIsolation and nodeIntegration enabled
         // Could be related to this bug: https://github.com/electron/forge/issues/2618
@@ -137,8 +137,8 @@ class CWindowManager {
   ): BrowserWindow {
     // Create the browser window.
     const rendererWindow = new BrowserWindow({
-      height: height,
-      width: width,
+      height,
+      width,
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,

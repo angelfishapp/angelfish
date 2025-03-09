@@ -16,7 +16,7 @@ export default function App() {
   useEffect(() => {
     // Execute Command
     if (count) {
-      CommandsClient.emitEvent('counter.changed', { count: count })
+      CommandsClient.emitEvent('counter.changed', { count })
     }
 
     // Register Command on load
@@ -26,11 +26,12 @@ export default function App() {
       })
         .then(() => {})
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.error(`Error registering command: ${error}`)
         })
       setIsRegistered(true)
     }
-  }, [count])
+  }, [count, isRegistered])
 
   return (
     <>
@@ -42,6 +43,7 @@ export default function App() {
             <button onClick={() => incrementCounter()}>Increment</button>
             <button
               onClick={async () => {
+                // eslint-disable-next-line no-console
                 console.log('Channels:', CommandsClient.listChannels())
               }}
             >
@@ -49,6 +51,7 @@ export default function App() {
             </button>
             <button
               onClick={async () => {
+                // eslint-disable-next-line no-console
                 console.log('Commands:', CommandsClient.listCommands())
               }}
             >
@@ -68,11 +71,13 @@ export default function App() {
                     name: 'App',
                   },
                 )
+                // eslint-disable-next-line no-console
                 console.log('hello.world Response:', response)
+                // eslint-disable-next-line no-alert
                 alert(response.response)
               }}
             >
-              Execute 'hello.world'
+              Execute &apos;hello.world&apos;
             </button>
           </div>
         </div>

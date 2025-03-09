@@ -29,7 +29,7 @@ const commandBridge = {
 if (process.contextIsolated) {
   contextBridge.exposeInMainWorld('commands', commandBridge)
 } else {
-  // @ts-ignore
+  // @ts-ignore - Expose commands to the global window object when not context isolated
   window.commands = commandBridge
 }
 

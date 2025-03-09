@@ -1,4 +1,10 @@
-import type { ChannelID, CommandID, ICommand } from './commands-registry-interface'
+import type {
+  ChannelID,
+  CommandHandler,
+  CommandID,
+  EventHandler,
+  ICommand,
+} from './commands-registry-interface'
 
 /**
  * Command client - used by worker/renderer processes to call their local CommandsRegistry under
@@ -12,7 +18,7 @@ export const CommandsClient = {
    * @param commandID - The ID of the command to register.
    * @param handler - The handler for the command.
    */
-  registerCommand: async (commandID: string, handler: Function): Promise<void> => {
+  registerCommand: async (commandID: string, handler: CommandHandler): Promise<void> => {
     return await window.commands.registerCommand(commandID, handler)
   },
 
@@ -44,7 +50,7 @@ export const CommandsClient = {
    * @param eventID - The ID of the event to listen for.
    * @param handler - The handler for the event.
    */
-  addEventListener: (eventID: string, handler: Function) => {
+  addEventListener: (eventID: string, handler: EventHandler) => {
     window.commands.addEventListener(eventID, handler)
   },
 
@@ -54,7 +60,7 @@ export const CommandsClient = {
    * @param eventID - The ID of the event to remove the listener from.
    * @param handler - The handler to remove.
    */
-  removeEventListener: (eventID: string, handler: Function) => {
+  removeEventListener: (eventID: string, handler: EventHandler) => {
     window.commands.removeEventListener(eventID, handler)
   },
 

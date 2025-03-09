@@ -51,7 +51,7 @@ export function Command<P, R>(name: string) {
  *
  * @param classes: Function[]    Array of classes to register commands for
  */
-export function registerCommands(classes: Function[]) {
+export function registerCommands(classes: { new (): any }[]) {
   for (const cls of classes) {
     // Instantiate the class
     new (cls as any)()

@@ -22,6 +22,7 @@ declare const WORKER_WINDOW_WEBPACK_ENTRY: string
  */
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 if (require('electron-squirrel-startup')) {
   app.quit()
 }

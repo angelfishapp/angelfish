@@ -21,4 +21,4 @@ const logger = getMainLogger('CommandsRegistryMain')
  *  console.log('test command response:', response)
  * })
  */
-export const CommandsRegistryMain = new CommandsRegistry<MessagePortMain>({ logger: logger })
+export const CommandsRegistryMain = new CommandsRegistry<MessagePortMain>({ logger })
