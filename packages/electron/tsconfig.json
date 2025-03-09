@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "types": ["vitest/globals"]
+  },
+  "include": ["src/**/*", "webpack/**/*"],
+  "exclude": ["node_modules", ".webpack"]
+}

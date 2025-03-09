@@ -1,0 +1,39 @@
+{
+  "name": "angelfish-monorepo",
+  "version": "0.0.1",
+  "description": "A local-first personal finance app for people to track, manage and plan their finances to acheive financial freedom!",
+  "keywords": [],
+  "author": {
+    "name": "Angelfish Software LLC",
+    "email": "support@angelfish.app"
+  },
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "start": "yarn workspace angelfish start",
+    "build:packages": "yarn workspaces foreach -Rpt --from  @angelfish/core run build",
+    "prettify": "yarn prettier . -w",
+    "ts-check": "yarn workspaces foreach -A run ts-check",
+    "test": "yarn workspaces foreach -A run test"
+  },
+  "engines": {
+    "node": ">=20.18.2"
+  },
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "resolutions": {
+    "electron-log": "^5.3.0",
+    "typescript": "^5.7.3",
+    "webpack": "^5.98.0",
+    "vitest": "^3.0.7"
+  },
+  "devDependencies": {
+    "prettier": "3.5.1",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "typescript": "*"
+  },
+  "packageManager": "yarn@4.6.0"
+}

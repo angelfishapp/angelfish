@@ -1,0 +1,22 @@
+{
+  "name": "worker",
+  "version": "1.0.0",
+  "description": "Worker process for the Electron Angelfish app.",
+  "author": {
+    "name": "Angelfish Software LLC",
+    "email": "support@angelfish.app"
+  },
+  "license": "AGPL-3.0-or-later",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "ts-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@angelfish/core": "workspace:*",
+    "electron-log": "*"
+  },
+  "devDependencies": {
+    "typescript": "*"
+  }
+}
