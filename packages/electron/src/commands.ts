@@ -1,6 +1,7 @@
 import type { NotificationConstructorOptions, OpenDialogOptions, SaveDialogOptions } from 'electron'
 import { dialog, Menu, Notification, shell } from 'electron'
 
+import { MAINCommands } from '@angelfish/core'
 import { CommandsRegistryMain } from './commands/commands-registry-main'
 import { Environment } from './utils/environment'
 
@@ -48,31 +49,37 @@ export function setupMainCommands() {
    * Show File Open Dialog. Returns array of open files, empty if user cancelled dialog without
    * selecting anything.
    */
-  CommandsRegistryMain.registerCommand('show.open.dialog', async (payload: OpenDialogOptions) => {
-    const filePath = await dialog.showOpenDialog(payload)
-    if (!filePath.canceled) {
-      return filePath.filePaths
-    }
-    return []
-  })
+  CommandsRegistryMain.registerCommand(
+    MAINCommands.SHOW_OPEN_DIALOG,
+    async (payload: OpenDialogOptions) => {
+      const filePath = await dialog.showOpenDialog(payload)
+      if (!filePath.canceled) {
+        return filePath.filePaths
+      }
+      return []
+    },
+  )
 
   /**
    * Show Save As Dialog. Returns filepath to location to save file too, or null if user
    * cancelled dialog.
    */
-  CommandsRegistryMain.registerCommand('show.save.dialog', async (payload: SaveDialogOptions) => {
-    const filePath = await dialog.showSaveDialog(payload)
-    if (!filePath.canceled) {
-      return filePath.filePath
-    }
-    return null
-  })
+  CommandsRegistryMain.registerCommand(
+    MAINCommands.SHOW_SAVE_DIALOG,
+    async (payload: SaveDialogOptions) => {
+      const filePath = await dialog.showSaveDialog(payload)
+      if (!filePath.canceled) {
+        return filePath.filePath
+      }
+      return null
+    },
+  )
 
   /**
    * Show Desktop Notification
    */
   CommandsRegistryMain.registerCommand(
-    'show.notification',
+    MAINCommands.SHOW_NOTIFICATION,
     async (payload: NotificationConstructorOptions) => {
       // Show Desktop Notificiation
       if (!Environment.isTest) {
@@ -84,7 +91,7 @@ export function setupMainCommands() {
   /**
    * Open up local browser with Angelfish website
    */
-  CommandsRegistryMain.registerCommand('open.website', async () => {
+  CommandsRegistryMain.registerCommand(MAINCommands.OPEN_WEBSITE, async () => {
     await shell.openExternal('https://www.angelfish.app')
   })
 }

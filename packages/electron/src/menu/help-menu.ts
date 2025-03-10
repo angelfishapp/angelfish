@@ -2,6 +2,7 @@ import type { MenuItem, MenuItemConstructorOptions } from 'electron'
 import { Menu } from 'electron'
 import type { LogLevel } from 'electron-log'
 
+import { MAINCommands } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
 import { settings } from '../settings'
 
@@ -12,7 +13,7 @@ export const HelpMenu: MenuItemConstructorOptions = {
     {
       label: 'Learn More',
       click: async () => {
-        await CommandsRegistryMain.executeCommand('open.website')
+        await CommandsRegistryMain.executeCommand(MAINCommands.OPEN_WEBSITE)
       },
     },
     {

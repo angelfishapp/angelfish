@@ -1,7 +1,7 @@
 import { BrowserWindow, MessageChannelMain, session } from 'electron'
 import path from 'path'
 
-import { CommandRegistryEvents } from '@angelfish/core'
+import { CommandRegistryEvents, MAINCommands } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
 import { getMainLogger } from '../logger'
 import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH, settings } from '../settings'
@@ -85,11 +85,6 @@ class CWindowManager {
 
     logger.info(`🚀 ${id} process window created`)
 
-    if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
-      // Open DevTools in the same window in "right" mode
-      processWindow.webContents.openDevTools({ mode: 'right' })
-    }
-
     // Connect IPC channels on did-finish-load
     processWindow.webContents.on('did-finish-load', () => {
       // Connect process to Main process via new IPC Channel
@@ -103,7 +98,7 @@ class CWindowManager {
 
       // Set logging level for process
       processWindow.webContents.postMessage(
-        'logging.set.level',
+        MAINCommands.ON_LOGGING_SET_LEVEL,
         settings.get('userSettings.logLevel'),
       )
 
@@ -123,6 +118,11 @@ class CWindowManager {
               directPort2,
             ])
           })
+      }
+
+      if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
+        // Open DevTools in the same window in "right" mode
+        processWindow.webContents.openDevTools({ mode: 'right' })
       }
     })
 
@@ -165,12 +165,6 @@ class CWindowManager {
 
     logger.info(`🚀 ${id} renderer window created`)
 
-    // Open DevTools if developer environment
-    if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
-      // Open the DevTools.
-      rendererWindow.webContents.openDevTools()
-    }
-
     // Keep track of reload count
     let reloadCount = 0
 
@@ -187,7 +181,7 @@ class CWindowManager {
 
       // Set logging level for process
       rendererWindow.webContents.postMessage(
-        'logging.set.level',
+        MAINCommands.ON_LOGGING_SET_LEVEL,
         settings.get('userSettings.logLevel'),
       )
 
@@ -213,6 +207,12 @@ class CWindowManager {
 
       // Increment reload count
       reloadCount++
+
+      // Open DevTools if developer environment
+      if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
+        // Open the DevTools.
+        rendererWindow.webContents.openDevTools()
+      }
     })
 
     this.windows.push({ id, window: rendererWindow, type: 'renderer', directIPCChannel: false })
