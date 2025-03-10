@@ -93,3 +93,6 @@ dist/
 
 # yarn
 .yarn
+
+# storybook
+*storybook.log

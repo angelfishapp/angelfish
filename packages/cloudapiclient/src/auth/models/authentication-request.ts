@@ -17,7 +17,6 @@
 import type { AuthenticationRequestOneOf } from './authentication-request-one-of'
 // May contain unused imports in some cases
 // @ts-ignore
-import type { AuthenticationRequestOneOfResponse } from './authentication-request-one-of-response'
 
 /**
  * @type AuthenticationRequest
