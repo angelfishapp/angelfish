@@ -12,12 +12,18 @@
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "yarn run clean & tsc --build --force",
-    "ts-check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit",
+    "test": "vitest --run",
+    "generate-avatars": "ts-node --compilerOptions '{\"target\":\"ES6\",\"module\":\"commonjs\",\"esModuleInterop\":true}' scripts/generateAvatars.ts"
   },
   "dependencies": {
     "reflect-metadata": "0.2.2"
   },
   "devDependencies": {
-    "typescript": "*"
+    "@types/node": "*",
+    "sharp": "^0.33.4",
+    "ts-node": "*",
+    "typescript": "*",
+    "vitest": "*"
   }
 }

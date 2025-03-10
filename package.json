@@ -16,7 +16,8 @@
     "format": "yarn prettify && yarn lint",
     "ts-check": "yarn workspaces foreach -A run ts-check",
     "test": "yarn workspaces foreach -A run test",
-    "storybook": "yarn workspace @angelfish/frontend storybook"
+    "storybook": "yarn workspace @angelfish/frontend storybook",
+    "generate-avatars": "yarn workspace @angelfish/core generate-avatars"
   },
   "engines": {
     "node": ">=20.18.2"
