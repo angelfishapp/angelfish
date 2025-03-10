@@ -27,6 +27,7 @@ __metadata:
   resolution: "@angelfish/cloudapiclient@workspace:packages/cloudapiclient"
   dependencies:
     "@angelfish/core": "workspace:*"
+    "@angelfish/tests": "workspace:*"
     "@types/node": "npm:*"
     axios: "npm:*"
     moment: "npm:*"
@@ -88,6 +89,15 @@ __metadata:
 "@angelfish/sync@workspace:packages/sync":
   version: 0.0.0-use.local
   resolution: "@angelfish/sync@workspace:packages/sync"
+  dependencies:
+    "@angelfish/core": "workspace:*"
+    typescript: "npm:*"
+  languageName: unknown
+  linkType: soft
+
+"@angelfish/tests@workspace:*, @angelfish/tests@workspace:packages/tests":
+  version: 0.0.0-use.local
+  resolution: "@angelfish/tests@workspace:packages/tests"
   dependencies:
     "@angelfish/core": "workspace:*"
     typescript: "npm:*"

@@ -10,7 +10,7 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "start": "yarn workspace angelfish start",
-    "build:packages": "yarn workspaces foreach -Rpt --from  '{@angelfish/core,@angelfish/cloudapiclient,@angelfish/financeimporter}' run build",
+    "build:packages": "yarn workspaces foreach -Rpt --from  '{@angelfish/core,@angelfish/tests,@angelfish/cloudapiclient,@angelfish/financeimporter}' run build",
     "lint": "yarn eslint . --fix",
     "prettify": "yarn prettier . -w",
     "format": "yarn prettify && yarn lint",

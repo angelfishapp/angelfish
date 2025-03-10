@@ -18,6 +18,7 @@
     "moment": "*"
   },
   "devDependencies": {
+    "@angelfish/tests": "workspace:*",
     "@types/node": "*",
     "typescript": "*",
     "vitest": "*"

@@ -1,3 +1,4 @@
+import { TestLogger } from '@angelfish/tests'
 import { CloudAuthAPIs, CloudV1APIs, JWTAuthHelper } from '.'
 
 const AUTH_BASE_URL = 'https://auth.angelfish.app'
@@ -23,7 +24,7 @@ describe('Test CloudAuthAPIs', () => {
     const new_session_id = await client.getOOBCode('test@angelfish.app')
     expect(new_session_id).toBeDefined()
     session_id = new_session_id
-    console.log('Session ID:', session_id)
+    TestLogger.log('Session ID:', session_id)
   })
 
   it('authenticate oob code', async () => {
@@ -33,8 +34,8 @@ describe('Test CloudAuthAPIs', () => {
     token = tokenResponse.token
     refresh_token = tokenResponse.refresh_token
 
-    console.log('Token:', token)
-    console.log('Refresh Token:', refresh_token)
+    TestLogger.log('Token:', token)
+    TestLogger.log('Refresh Token:', refresh_token)
   })
 
   it('logout user', async () => {
@@ -51,7 +52,7 @@ describe('Test CloudV1APIs', () => {
 
   beforeAll(() => {
     const jwtAuthHelper = new JWTAuthHelper(token, refresh_token, async () => {
-      console.log('Refreshing V1 Client JWT Token')
+      TestLogger.log('Refreshing V1 Client JWT Token')
       return {
         token,
         refresh_token,

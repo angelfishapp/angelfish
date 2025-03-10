@@ -1,3 +1,4 @@
+import { TestLogger } from '@angelfish/tests'
 import { JWTAuthHelper } from '.'
 
 /**
@@ -9,7 +10,7 @@ describe('Test JWT Utils', () => {
 
   it('decode JWT payload', () => {
     const decodedPayload = JWTAuthHelper.decodeJwtPayload(token)
-    console.log('Decoded Payload:', decodedPayload)
+    TestLogger.log('Decoded Payload:', decodedPayload)
     expect(decodedPayload).toBeDefined()
     expect(decodedPayload.aud).toBe('angelfish.app')
     expect(decodedPayload.iss).toBe('https://auth.angelfish.app')
