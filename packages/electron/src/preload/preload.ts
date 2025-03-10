@@ -5,15 +5,17 @@
  * https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
  */
 import { contextBridge, ipcRenderer } from 'electron'
+import type { LevelOption } from 'electron-log'
 
 import { CommandRegistryEvents } from '@angelfish/core'
 import { CommandsRegistry } from '../commands/commands-registry'
 import { ProcessIDs } from '../windows/process-ids'
-import { PreloadLogger } from './preload-logger'
+import log, { logBridge } from './preload-logger'
+import { getArgumentValue } from './preload-utils'
 
 // Initialise Command APIs
 const commandRegistry = new CommandsRegistry({
-  logger: PreloadLogger,
+  logger: log.scope('Preload'),
   routerChannel: ProcessIDs.MAIN,
 })
 const commandBridge = {
@@ -26,15 +28,54 @@ const commandBridge = {
   removeEventListener: commandRegistry.removeEventListener.bind(commandRegistry),
 }
 
+// Initialise Environment Variables
+const environmentBridge = {
+  // The environment the app is running in
+  environment: getArgumentValue('environment'),
+  // Boolean flag to determine if the app is running in development mode
+  isDev: getArgumentValue('environment') === 'development',
+  // The process ID of the current process
+  processId: getArgumentValue('process'),
+  // Location of the logs directory for app if process is writing logs directly
+  logsDir: getArgumentValue('logsDir'),
+  // Location of the user data directory for app
+  userDataDir: getArgumentValue('user-data-dir'),
+}
+
+// Expose Bridges to window object
 if (process.contextIsolated) {
   contextBridge.exposeInMainWorld('commands', commandBridge)
+  contextBridge.exposeInMainWorld('environment', environmentBridge)
+  contextBridge.exposeInMainWorld('log', logBridge)
 } else {
   // @ts-ignore - Expose commands to the global window object when not context isolated
   window.commands = commandBridge
+  // @ts-ignore - Expose environment to the global window object when not context isolated
+  window.environment = environmentBridge
+  // @ts-ignore - Expose log to the global window object when not context isolated
+  window.log = logBridge
 }
 
 // Handle new channel connections
 ipcRenderer.on(CommandRegistryEvents.REGISTER_NEW_CHANNEL, (event, id: string) => {
   const [port] = event.ports
   commandRegistry.registerNewChannel(id, port)
+})
+
+// Handle log level changes between refreshes
+ipcRenderer.on('logging.set.level', (_event, level: LevelOption) => {
+  // As we're only logging to console in development, check if we're in development
+  if (environmentBridge.isDev) {
+    log.transports.console.level = level
+    log.scope('Preload').info(`Log level set to ${level}`)
+  }
+})
+
+// Handle dynamic app log level changes
+commandRegistry.addEventListener('logging.level.changed', (change: { level: LevelOption }) => {
+  // As we're only logging to console in development, check if we're in development
+  if (environmentBridge.isDev) {
+    log.transports.console.level = change.level
+    log.scope('Preload').info(`Log level changed to ${change.level}`)
+  }
 })

@@ -73,7 +73,11 @@ class CWindowManager {
         // Could be related to this bug: https://github.com/electron/forge/issues/2618
         contextIsolation: !nodeIntegration,
         sandbox: !nodeIntegration,
-        additionalArguments: [`--process=${id}`],
+        additionalArguments: [
+          `--process=${id}`,
+          `--environment=${Environment.nodeEnvironment}`,
+          `--logsDir=${Environment.logsDir}`,
+        ],
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,
       },
     })
@@ -96,6 +100,12 @@ class CWindowManager {
         [port1],
       )
       CommandsRegistryMain.registerNewChannel(id, port2)
+
+      // Set logging level for process
+      processWindow.webContents.postMessage(
+        'logging.set.level',
+        settings.get('userSettings.logLevel'),
+      )
 
       // Connect process to all other processes via direct IPC Channel if directIPCChannel is enabled
       if (directIPCChannel) {
@@ -143,7 +153,11 @@ class CWindowManager {
         nodeIntegration: false,
         contextIsolation: true,
         sandbox: true,
-        additionalArguments: [],
+        additionalArguments: [
+          `--process=${id}`,
+          `--environment=${Environment.nodeEnvironment}`,
+          `--logsDir=${Environment.logsDir}`,
+        ],
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,
       },
     })
@@ -170,6 +184,12 @@ class CWindowManager {
         [port1],
       )
       CommandsRegistryMain.registerNewChannel(id, port2)
+
+      // Set logging level for process
+      rendererWindow.webContents.postMessage(
+        'logging.set.level',
+        settings.get('userSettings.logLevel'),
+      )
 
       // Re-Connect window to any processes that have direct IPC Channel enabled
       if (reloadCount > 0) {

@@ -2,7 +2,6 @@ import ElectronStore from 'electron-store'
 
 import type { IUserSettings } from '@angelfish/core'
 import { CommandsRegistryMain } from './commands/commands-registry-main'
-import { Environment } from './utils/environment'
 
 /**
  * Uses electron-store to save local user settings for app to persist settings between
@@ -79,14 +78,15 @@ const schema: ElectronStore.Schema<IUserSettings> = {
     type: 'object',
     default: {
       enableBackgroundAnimations: true,
-      enableDebugLogging: false,
+      logLevel: 'info',
     },
     properties: {
       enableBackgroundAnimations: {
         type: 'boolean',
       },
-      enableDebugLogging: {
-        type: 'boolean',
+      logLevel: {
+        type: 'string',
+        enum: ['error', 'warn', 'info', 'verbose', 'debug', 'silly'],
       },
     },
   },
@@ -98,7 +98,6 @@ const schema: ElectronStore.Schema<IUserSettings> = {
 class CustomStore extends ElectronStore<IUserSettings> {
   constructor() {
     super({
-      cwd: Environment.isTest ? '' : Environment.userDataDir,
       schema,
     })
   }

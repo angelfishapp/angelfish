@@ -3365,6 +3365,7 @@ __metadata:
   resolution: "angelfish@workspace:packages/electron"
   dependencies:
     "@angelfish/core": "workspace:*"
+    "@angelfish/tests": "workspace:*"
     "@electron-forge/cli": "npm:^7.7.0"
     "@electron-forge/maker-deb": "npm:^7.7.0"
     "@electron-forge/maker-dmg": "npm:7.7.0"

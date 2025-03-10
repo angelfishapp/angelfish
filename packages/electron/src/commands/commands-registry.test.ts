@@ -1,4 +1,4 @@
-import { PreloadLogger } from '../preload/preload-logger'
+import { TestLogger } from '@angelfish/tests'
 import { CommandsRegistry } from './commands-registry'
 
 /**
@@ -16,23 +16,23 @@ describe('CommandsRegistry', () => {
   // Setup 4 processes with MessageChannels
   const mainProcess = new CommandsRegistry<MessagePort>({
     id: ProcessIDs.MAIN,
-    logger: PreloadLogger,
+    logger: TestLogger,
   })
   const workerProcess = new CommandsRegistry<MessagePort>({
     id: ProcessIDs.WORKER,
-    logger: PreloadLogger,
+    logger: TestLogger,
     routerChannel: ProcessIDs.MAIN,
   })
   const appProcess = new CommandsRegistry<MessagePort>({
     id: ProcessIDs.APP,
-    logger: PreloadLogger,
+    logger: TestLogger,
     routerChannel: ProcessIDs.MAIN,
   })
   // Child process is only connect to main 'router' process so all
   // other processes calling it will need to route through main
   const childProcess = new CommandsRegistry<MessagePort>({
     id: ProcessIDs.CHILD,
-    logger: PreloadLogger,
+    logger: TestLogger,
     routerChannel: ProcessIDs.MAIN,
   })
   // New process is not connected to any other processes
@@ -40,7 +40,7 @@ describe('CommandsRegistry', () => {
   // after initial setup or one of the other processes being restarted
   const newProcess = new CommandsRegistry<MessagePort>({
     id: ProcessIDs.NEW,
-    logger: PreloadLogger,
+    logger: TestLogger,
     routerChannel: ProcessIDs.MAIN,
   })
 

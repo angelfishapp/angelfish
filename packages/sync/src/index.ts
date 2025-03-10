@@ -1,2 +1,5 @@
-// eslint-disable-next-line no-console
-console.log('sync')
+import { Environment, Logger } from '@angelfish/core'
+
+const logger = Logger.scope('sync')
+
+logger.info('sync hello from new IPC bridge', Environment.toObject())

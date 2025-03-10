@@ -14,4 +14,8 @@ export enum ProcessIDs {
    * Worker Process
    */
   WORKER = 'worker',
+  /**
+   * Sync Process
+   */
+  SYNC = 'sync',
 }

@@ -16,6 +16,11 @@ const logger = getMainLogger('main')
 // whether you're running in development or production).
 declare const APP_WINDOW_WEBPACK_ENTRY: string
 declare const WORKER_WINDOW_WEBPACK_ENTRY: string
+declare const SYNC_WORKER_WEBPACK_ENTRY: string
+
+// Set user data path
+logger.info(`Setting user data path to ${Environment.userDataDir}`)
+app.setPath('userData', Environment.userDataDir)
 
 /**
  * Setup Autoupdater
@@ -61,6 +66,8 @@ app.on('ready', () => {
 
   // Create Worker Window
   WindowManager.createProcessWindow(ProcessIDs.WORKER, WORKER_WINDOW_WEBPACK_ENTRY, true, true)
+  // Create Sync Worker Window
+  WindowManager.createProcessWindow(ProcessIDs.SYNC, SYNC_WORKER_WEBPACK_ENTRY)
   // Create App Window
   WindowManager.createMainAppWindow(APP_WINDOW_WEBPACK_ENTRY)
 
@@ -84,6 +91,7 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     WindowManager.createProcessWindow(ProcessIDs.WORKER, WORKER_WINDOW_WEBPACK_ENTRY, true, true)
+    WindowManager.createProcessWindow(ProcessIDs.SYNC, SYNC_WORKER_WEBPACK_ENTRY)
     WindowManager.createMainAppWindow(APP_WINDOW_WEBPACK_ENTRY)
   }
 })

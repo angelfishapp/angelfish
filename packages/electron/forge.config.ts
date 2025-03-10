@@ -146,6 +146,11 @@ const config: ForgeConfig = {
             html: './src/windows/process/index.html',
             js: '../worker/src/index.ts',
           },
+          {
+            name: 'sync_worker',
+            html: './src/windows/process/index.html',
+            js: '../sync/src/index.ts',
+          },
         ],
       },
     }),

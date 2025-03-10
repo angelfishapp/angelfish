@@ -1,67 +1,38 @@
-import type { LogFunctions } from 'electron-log'
+import { ipcRenderer } from 'electron'
+import type { LogMessage, Transport } from 'electron-log'
+import log from 'electron-log/renderer'
+
+import { getArgumentValue } from './preload-utils'
+
+// Initialise logId and initial log level
+const logId = getArgumentValue('process')
+
+// Override default IPC transport
+const customIPC: Transport = (message: LogMessage) => {
+  ipcRenderer.send('__ELECTRON_LOG__', {
+    data: message.data,
+    level: message.level,
+    variables: message.variables,
+    scope: message.scope,
+    logId,
+  })
+}
+customIPC.level = 'info'
+customIPC.transforms = []
+log.transports.ipc = customIPC
+// Only log to console in development
+log.transports.console.level = getArgumentValue('environment') === 'development' ? 'debug' : false
+
+export default log
 
 /**
- * Preload logger
- * This logger is used in the preload script to log to console in window for its local
- * CommandRegistry
+ * Bridge to expose the `log` API to all client/renderer processes.
  */
-export const PreloadLogger: LogFunctions = new (class implements LogFunctions {
-  // Define scope to display in log messages
-  private readonly scope: string = '(Preload)'
-
-  /**
-   * Log an error message
-   */
-  public error(...params: any[]): void {
-    // eslint-disable-next-line no-console
-    console.error(this.scope, ...params)
-  }
-
-  /**
-   * Log a warning message
-   */
-  warn(...params: any[]): void {
-    // eslint-disable-next-line no-console
-    console.warn(this.scope, ...params)
-  }
-
-  /**
-   * Log an informational message
-   */
-  info(...params: any[]): void {
-    // eslint-disable-next-line no-console
-    console.info(this.scope, ...params)
-  }
-
-  /**
-   * Log a verbose message
-   */
-  verbose(...params: any[]): void {
-    // eslint-disable-next-line no-console
-    console.debug(this.scope, ...params)
-  }
-
-  /**
-   * Log a debug message
-   */
-  debug(...params: any[]): void {
-    // eslint-disable-next-line no-console
-    console.debug(this.scope, ...params)
-  }
-
-  /**
-   * Log a silly message
-   */
-  silly(...params: any[]): void {
-    // eslint-disable-next-line no-console
-    console.debug(this.scope, ...params)
-  }
-
-  /**
-   * Shortcut to info
-   */
-  log(...params: any[]): void {
-    // eslint-disable-next-line no-console
-    console.log(this.scope, ...params)
-  }
-})()
+export const logBridge = {
+  error: (scope: string, ...args: any[]) => log.scope(scope).error(...args),
+  warn: (scope: string, ...args: any[]) => log.scope(scope).warn(...args),
+  info: (scope: string, ...args: any[]) => log.scope(scope).info(...args),
+  verbose: (scope: string, ...args: any[]) => log.scope(scope).verbose(...args),
+  debug: (scope: string, ...args: any[]) => log.scope(scope).debug(...args),
+  silly: (scope: string, ...args: any[]) => log.scope(scope).silly(...args),
+}

@@ -1,4 +1,6 @@
 import type { MenuItem, MenuItemConstructorOptions } from 'electron'
+import { Menu } from 'electron'
+import type { LogLevel } from 'electron-log'
 
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
 import { settings } from '../settings'
@@ -18,12 +20,21 @@ export const HelpMenu: MenuItemConstructorOptions = {
       id: 'help-enable-debug',
       enabled: true,
       type: 'checkbox',
-      checked: settings.get('userSettings.enableDebugLogging'),
+      checked: settings.get('userSettings.logLevel') === 'debug',
       click: async (menuItem: MenuItem) => {
+        let level: LogLevel = 'info'
         if (menuItem.checked) {
-          settings.set('userSettings.enableDebugLogging', true)
+          level = 'debug'
+          settings.set('userSettings.logLevel', level)
         } else {
-          settings.set('userSettings.enableDebugLogging', false)
+          settings.set('userSettings.logLevel', level)
+        }
+        const menu = Menu.getApplicationMenu()
+        if (menu) {
+          const menuItem = menu.getMenuItemById(`developer-log-level-${level}`)
+          if (menuItem) {
+            menuItem.checked = true
+          }
         }
       },
     },

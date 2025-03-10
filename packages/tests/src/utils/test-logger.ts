@@ -19,5 +19,11 @@ export const TestLogger = {
   debug: (message?: any, ...optionalParams: any[]) => {
     console.debug(message, ...optionalParams)
   },
+  verbose: (message?: any, ...optionalParams: any[]) => {
+    console.debug(message, ...optionalParams)
+  },
+  silly: (message?: any, ...optionalParams: any[]) => {
+    console.debug(message, ...optionalParams)
+  },
 }
 /* eslint-enable no-console */

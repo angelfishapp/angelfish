@@ -38,10 +38,10 @@ export interface IUserSettings {
      */
     enableBackgroundAnimations: boolean
     /**
-     * Set the logging level for the app in production to debug. Allows users to
+     * Set the logging level for the app and any workers. Allows users to
      * turn on debug logging if trying to troubleshoot an issue locally
-     * @default false
+     * @default 'info'
      */
-    enableDebugLogging: boolean
+    logLevel: 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly'
   }
 }

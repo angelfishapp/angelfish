@@ -1,0 +1,55 @@
+/**
+ * Object provides easy access to environment data provided from window object and
+ * initialised in preload script for each window/process
+ */
+export const Environment = new (class {
+  /**
+   * The environment the app is running in
+   */
+  public get environment(): string {
+    return window.environment.environment
+  }
+
+  /**
+   * Boolean flag to determine if the app is running in development mode
+   */
+  public get isDev(): boolean {
+    return window.environment.isDev
+  }
+
+  /**
+   * The process ID of the current process
+   */
+  public get processId(): string {
+    return window.environment.processId
+  }
+
+  /**
+   * Location of the logs directory for app if process is writing logs directly
+   */
+  public get logsDir(): string {
+    return window.environment.logsDir
+  }
+
+  /**
+   * Location of the user data directory for app
+   */
+  public get userDataDir(): string {
+    return window.environment.userDataDir
+  }
+
+  /**
+   * Helper method to return environment data as an object for logging if needed
+   *
+   * @returns Object with environment data
+   */
+  public toObject() {
+    return {
+      environment: this.environment,
+      isDev: this.isDev,
+      processId: this.processId,
+      logsDir: this.logsDir,
+      userDataDir: this.userDataDir,
+    }
+  }
+})()
