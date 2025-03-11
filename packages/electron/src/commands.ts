@@ -50,7 +50,7 @@ export function setupMainCommands() {
    * selecting anything.
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.SHOW_OPEN_DIALOG,
+    MAINCommands.SHOW_OPEN_FILE_DIALOG,
     async (payload: OpenDialogOptions) => {
       const filePath = await dialog.showOpenDialog(payload)
       if (!filePath.canceled) {
@@ -65,7 +65,7 @@ export function setupMainCommands() {
    * cancelled dialog.
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.SHOW_SAVE_DIALOG,
+    MAINCommands.SHOW_SAVE_FILE_DIALOG,
     async (payload: SaveDialogOptions) => {
       const filePath = await dialog.showSaveDialog(payload)
       if (!filePath.canceled) {

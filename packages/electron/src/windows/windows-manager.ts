@@ -77,6 +77,7 @@ class CWindowManager {
         additionalArguments: [
           `--process=${id}`,
           `--environment=${Environment.nodeEnvironment}`,
+          `--platform=${Environment.platform}`,
           `--logsDir=${Environment.logsDir}`,
         ],
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,
@@ -160,6 +161,7 @@ class CWindowManager {
         additionalArguments: [
           `--process=${id}`,
           `--environment=${Environment.nodeEnvironment}`,
+          `--platform=${Environment.platform}`,
           `--logsDir=${Environment.logsDir}`,
         ],
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,

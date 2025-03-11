@@ -23,6 +23,10 @@ declare global {
        */
       isDev: boolean
       /**
+       * The OS platform the app is running on
+       */
+      platform: 'macos' | 'windows' | 'linux' | string
+      /**
        * The process ID of the current process
        */
       processId: string

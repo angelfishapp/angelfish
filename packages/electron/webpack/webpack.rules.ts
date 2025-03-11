@@ -28,5 +28,4 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
     },
   },
-  { test: /\.yaml$/, use: 'raw-loader' },
 ]

@@ -43,4 +43,13 @@ export const rendererConfig: Configuration = {
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
+  /**
+   * List all the external native modules that need to be excluded from
+   * renderer build but built as native modules and packaged when packing
+   * the app here
+   */
+  externals: {
+    typeorm: 'commonjs typeorm',
+    sqlite3: 'commonjs sqlite3',
+  },
 }

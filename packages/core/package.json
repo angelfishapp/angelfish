@@ -17,7 +17,7 @@
     "generate-avatars": "ts-node --compilerOptions '{\"target\":\"ES6\",\"module\":\"commonjs\",\"esModuleInterop\":true}' scripts/generateAvatars.ts"
   },
   "dependencies": {
-    "reflect-metadata": "0.2.2"
+    "reflect-metadata": "*"
   },
   "devDependencies": {
     "@types/node": "*",

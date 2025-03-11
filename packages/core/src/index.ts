@@ -1,4 +1,5 @@
 export * from './commands'
+export * from './data'
 export * from './main'
 export * from './renderer'
 export * from './types'

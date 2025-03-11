@@ -22,8 +22,17 @@ export class Environment {
    * Get the current platform the app is running on:
    *  win31, darwin (MacOS), linux
    */
-  public static get platform() {
-    return process.platform
+  public static get platform(): 'macos' | 'windows' | 'linux' | string {
+    switch (process.platform) {
+      case Environment.WINDOWS:
+        return 'windows'
+      case Environment.MACOS:
+        return 'macos'
+      case Environment.LINUX:
+        return 'linux'
+      default:
+        return process.platform
+    }
   }
 
   /**

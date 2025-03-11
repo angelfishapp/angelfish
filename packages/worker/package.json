@@ -1,5 +1,5 @@
 {
-  "name": "worker",
+  "name": "@angelfish/worker",
   "version": "1.0.0",
   "description": "Worker process for the Electron Angelfish app.",
   "author": {
@@ -10,13 +10,24 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "ts-check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit",
+    "test": "vitest --run"
   },
   "dependencies": {
     "@angelfish/core": "workspace:*",
-    "electron-log": "*"
+    "class-validator": "^0.14.1",
+    "electron-log": "*",
+    "moment": "^2.30.1",
+    "reflect-metadata": "*",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.21",
+    "yaml": "^2.7.0"
   },
   "devDependencies": {
-    "typescript": "*"
+    "@angelfish/tests": "workspace:*",
+    "@types/node": "*",
+    "typescript": "*",
+    "unplugin-swc": "1.5.1",
+    "vitest": "*"
   }
 }

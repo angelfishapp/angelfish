@@ -18,6 +18,13 @@ export const Environment = new (class {
   }
 
   /**
+   * The OS platform the app is running on
+   */
+  public get platform(): 'macos' | 'windows' | 'linux' | string {
+    return window.environment.platform
+  }
+
+  /**
    * The process ID of the current process
    */
   public get processId(): string {

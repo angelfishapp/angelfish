@@ -2,6 +2,9 @@ import { CommandRegistryEvents, CommandsClient, registerCommands } from '@angelf
 import { TestService } from './TestService'
 import { getWorkerLogger } from './logger'
 
+import { DatabaseManager } from './database/database-manager'
+import { AccountEntity, CategoryGroupEntity } from './database/entities'
+
 const logger = getWorkerLogger('worker')
 
 // Promise that resolves when IPC channel is ready to
@@ -35,4 +38,10 @@ window.onload = async () => {
 
   await isReadyPromise
   registerCommands([TestService])
+
+  const db = await new DatabaseManager(':memory:').getDataSource()
+  const categoriesGroupRepository = db.getRepository(CategoryGroupEntity)
+  logger.info('Category Groups Count', await categoriesGroupRepository.count())
+  const accountsRepository = db.getRepository(AccountEntity)
+  logger.info('Categories Count', await accountsRepository.count())
 }
