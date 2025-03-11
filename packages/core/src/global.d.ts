@@ -34,6 +34,10 @@ declare global {
        * Location of the user data directory for app
        */
       userDataDir: string
+      /**
+       * Log level for the current process
+       */
+      logLevel: 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly' | false
     }
     /**
      * Log API for logging messages to the console and main process to write to file

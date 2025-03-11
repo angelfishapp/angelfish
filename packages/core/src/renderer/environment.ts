@@ -39,6 +39,13 @@ export const Environment = new (class {
   }
 
   /**
+   * Get the current log level for the current process
+   */
+  public get logLevel(): 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly' | false {
+    return window.environment.logLevel
+  }
+
+  /**
    * Helper method to return environment data as an object for logging if needed
    *
    * @returns Object with environment data
@@ -50,6 +57,7 @@ export const Environment = new (class {
       processId: this.processId,
       logsDir: this.logsDir,
       userDataDir: this.userDataDir,
+      logLevel: this.logLevel,
     }
   }
 })()

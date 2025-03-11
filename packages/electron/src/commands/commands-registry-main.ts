@@ -1,9 +1,9 @@
 import type { MessagePortMain } from 'electron'
 
-import { getMainLogger } from '../logger'
+import { LogManager } from '../logging/log-manager'
 import { CommandsRegistry } from './commands-registry'
 
-const logger = getMainLogger('CommandsRegistryMain')
+const logger = LogManager.getMainLogger('CommandsRegistryMain')
 
 /**
  * CommandsRegistryMain: Main process Commands Registry to manage and route

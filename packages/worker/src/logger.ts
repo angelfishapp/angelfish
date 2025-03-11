@@ -1,13 +1,14 @@
+import type { LevelOption } from 'electron-log'
 import log from 'electron-log/node'
 import path from 'path'
 
-import { Environment } from '@angelfish/core'
+import { CommandsClient, Environment } from '@angelfish/core'
 
 // Setup worker logger
-log.transports.console.level = 'debug'
-log.transports.file.level = 'debug'
+log.transports.console.level = Environment.logLevel
+log.transports.file.level = Environment.logLevel
 log.transports.file.resolvePathFn = () => {
-  return path.join(Environment.logsDir, `worker.log`)
+  return path.join(Environment.logsDir, `${Environment.processId}.log`)
 }
 
 /**
@@ -17,3 +18,10 @@ log.transports.file.resolvePathFn = () => {
 export function getWorkerLogger(scope: string) {
   return log.scope(scope)
 }
+
+// Listen for logging level changes
+CommandsClient.addEventListener('logging.level.changed', (change: { level: LevelOption }) => {
+  log.scope('Logger').info(`Log level changed to ${change.level}`)
+  log.transports.console.level = change.level
+  log.transports.file.level = change.level
+})

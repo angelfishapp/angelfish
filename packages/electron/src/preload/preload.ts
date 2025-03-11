@@ -7,8 +7,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { LevelOption } from 'electron-log'
 
-import { CommandRegistryEvents, MAINCommands } from '@angelfish/core'
+import { CommandRegistryEvents } from '@angelfish/core'
 import { CommandsRegistry } from '../commands/commands-registry'
+import { LogEvents } from '../logging/logging-events'
 import { ProcessIDs } from '../windows/process-ids'
 import log, { logBridge } from './preload-logger'
 import { getArgumentValue } from './preload-utils'
@@ -40,6 +41,8 @@ const environmentBridge = {
   logsDir: getArgumentValue('logsDir'),
   // Location of the user data directory for app
   userDataDir: getArgumentValue('user-data-dir'),
+  // Log level for the current process
+  logLevel: 'debug' as LevelOption,
 }
 
 // Expose Bridges to window object
@@ -63,7 +66,7 @@ ipcRenderer.on(CommandRegistryEvents.REGISTER_NEW_CHANNEL, (event, id: string) =
 })
 
 // Handle log level changes between refreshes
-ipcRenderer.on(MAINCommands.ON_LOGGING_SET_LEVEL, (_event, level: LevelOption) => {
+ipcRenderer.on(LogEvents.ON_LOGGING_SET_LEVEL, (_event, level: LevelOption) => {
   // As we're only logging to console in development, check if we're in development
   if (environmentBridge.isDev) {
     log.transports.console.level = level
@@ -73,11 +76,12 @@ ipcRenderer.on(MAINCommands.ON_LOGGING_SET_LEVEL, (_event, level: LevelOption) =
 
 // Handle dynamic app log level changes
 commandRegistry.addEventListener(
-  MAINCommands.ON_LOGGING_LEVEL_CHANGED,
+  LogEvents.ON_LOGGING_LEVEL_CHANGED,
   (change: { level: LevelOption }) => {
     // As we're only logging to console in development, check if we're in development
     if (environmentBridge.isDev) {
       log.transports.console.level = change.level
+      environmentBridge.logLevel = change.level
       log.scope('Preload').info(`Log level changed to ${change.level}`)
     }
   },
