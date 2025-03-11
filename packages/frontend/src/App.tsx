@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { CommandsClient } from '@angelfish/core'
+import type { INotificationOptions } from '@angelfish/core'
+import { CommandsClient, MAINCommands } from '@angelfish/core'
 
 /**
  * Main Application Component
@@ -21,7 +22,7 @@ export default function App() {
 
     // Register Command on load
     if (!isRegistered) {
-      CommandsClient.registerCommand('increment.counter', () => {
+      CommandsClient.registerCommand('increment.counter', async () => {
         incrementCounter()
       })
         .then(() => {})
@@ -87,10 +88,10 @@ export default function App() {
           <div className="buttons">
             <button
               onClick={async () => {
-                await CommandsClient.executeCommand('show.notification', {
-                  title: 'Test Notification',
+                await CommandsClient.executeCommand<void>(MAINCommands.SHOW_NOTIFICATION, {
+                  title: 'Main Test Notification',
                   body: 'This is a test notification from the app process.',
-                })
+                } as INotificationOptions)
               }}
             >
               Execute show.notification
