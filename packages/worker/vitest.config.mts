@@ -1,4 +1,3 @@
-import fs from 'fs'
 import swc from 'unplugin-swc'
 import { defineConfig } from 'vitest/config'
 
@@ -11,16 +10,5 @@ export default defineConfig({
       reporter: ['text', 'lcov'],
     },
   },
-  plugins: [
-    swc.vite(),
-    {
-      name: 'yaml-loader',
-      transform(src, id) {
-        if (id.endsWith('.yaml') || id.endsWith('.yml')) {
-          const yamlContent = fs.readFileSync(id, 'utf8')
-          return `export default "${yamlContent}"};`
-        }
-      },
-    },
-  ],
+  plugins: [swc.vite()],
 })
