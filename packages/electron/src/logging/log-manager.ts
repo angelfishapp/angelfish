@@ -2,10 +2,10 @@ import type { LevelOption, MainLogger } from 'electron-log'
 import log from 'electron-log/main'
 import path from 'path'
 
+import { AppProcessIDs } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
 import { settings } from '../settings'
 import { Environment } from '../utils/environment'
-import { ProcessIDs } from '../windows/process-ids'
 import { LogEvents } from './logging-events'
 
 /**
@@ -33,14 +33,14 @@ export const LogManager = new (class {
     log.transports.file.level = false
 
     // Create and configure main logger
-    const mainLogger = log.create({ logId: ProcessIDs.MAIN })
+    const mainLogger = log.create({ logId: AppProcessIDs.MAIN })
     mainLogger.transports.console.level = this._getLogLevel('console')
     this.logLevel = this._getLogLevel('file')
     mainLogger.transports.file.level = this.logLevel
     mainLogger.transports.file.resolvePathFn = () => {
-      return path.join(Environment.logsDir, `${ProcessIDs.MAIN}.log`)
+      return path.join(Environment.logsDir, `${AppProcessIDs.MAIN}.log`)
     }
-    this.loggers[ProcessIDs.MAIN] = mainLogger
+    this.loggers[AppProcessIDs.MAIN] = mainLogger
   }
 
   /**
@@ -50,7 +50,7 @@ export const LogManager = new (class {
    * @returns       A scoped logger for Main process
    */
   public getMainLogger(scope: string) {
-    return this.loggers[ProcessIDs.MAIN].scope(scope)
+    return this.loggers[AppProcessIDs.MAIN].scope(scope)
   }
 
   /**
@@ -79,7 +79,7 @@ export const LogManager = new (class {
     if (this.logLevel !== level) {
       // Loop through loggers and update log level
       for (const [id, logger] of Object.entries(this.loggers)) {
-        if (id === ProcessIDs.MAIN) {
+        if (id === AppProcessIDs.MAIN) {
           logger.scope('Logger').info(`Changing Log Level to ${level}`)
           logger.transports.console.level = this._getLogLevel('console')
           logger.transports.file.level = this._getLogLevel('file')

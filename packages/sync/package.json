@@ -13,7 +13,9 @@
     "ts-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@angelfish/core": "workspace:*"
+    "@angelfish/cloudapiclient": "workspace:*",
+    "@angelfish/core": "workspace:*",
+    "axios": "*"
   },
   "devDependencies": {
     "typescript": "*"

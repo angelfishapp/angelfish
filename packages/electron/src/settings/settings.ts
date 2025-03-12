@@ -1,6 +1,6 @@
 import ElectronStore from 'electron-store'
 
-import { MAINCommands } from '@angelfish/core'
+import { AppEvents } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
 import type { IAppSettings } from './settings-interface'
 
@@ -151,6 +151,6 @@ export const settings = new CustomStore()
 // Add an event emitter whenever userSettings change
 settings.onDidChange('userSettings', (changes) => {
   if (changes) {
-    CommandsRegistryMain.emitEvent(MAINCommands.ON_USER_SETTINGS_UPDATED, changes)
+    CommandsRegistryMain.emitEvent(AppEvents.ON_USER_SETTINGS_UPDATED, changes)
   }
 })

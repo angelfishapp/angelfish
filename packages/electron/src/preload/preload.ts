@@ -7,17 +7,16 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { LevelOption } from 'electron-log'
 
-import { CommandRegistryEvents } from '@angelfish/core'
+import { AppProcessIDs, CommandRegistryEvents } from '@angelfish/core'
 import { CommandsRegistry } from '../commands/commands-registry'
 import { LogEvents } from '../logging/logging-events'
-import { ProcessIDs } from '../windows/process-ids'
 import log, { logBridge } from './preload-logger'
 import { getArgumentValue } from './preload-utils'
 
 // Initialise Command APIs
 const commandRegistry = new CommandsRegistry({
   logger: log.scope('Preload'),
-  routerChannel: ProcessIDs.MAIN,
+  routerChannel: AppProcessIDs.MAIN,
 })
 const commandBridge = {
   listChannels: commandRegistry.listChannels.bind(commandRegistry),

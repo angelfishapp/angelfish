@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import type { INotificationOptions } from '@angelfish/core'
-import { CommandsClient, MAINCommands } from '@angelfish/core'
+import { AppCommands, CommandsClient } from '@angelfish/core'
 
 /**
  * Main Application Component
@@ -88,7 +88,7 @@ export default function App() {
           <div className="buttons">
             <button
               onClick={async () => {
-                await CommandsClient.executeCommand<void>(MAINCommands.SHOW_NOTIFICATION, {
+                await CommandsClient.executeCommand<void>(AppCommands.SHOW_NOTIFICATION, {
                   title: 'Main Test Notification',
                   body: 'This is a test notification from the app process.',
                 } as INotificationOptions)

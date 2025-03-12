@@ -1,7 +1,7 @@
 /**
  * Default process IDs for the application
  */
-export enum ProcessIDs {
+export enum AppProcessIDs {
   /**
    * Main process
    */

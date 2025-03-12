@@ -1,12 +1,11 @@
 import { BrowserWindow, MessageChannelMain, session } from 'electron'
 
-import { CommandRegistryEvents } from '@angelfish/core'
+import { AppProcessIDs, CommandRegistryEvents } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
 import { LogManager } from '../logging/log-manager'
 import { LogEvents } from '../logging/logging-events'
 import { settings } from '../settings'
 import { Environment } from '../utils/environment'
-import { ProcessIDs } from './process-ids'
 
 const logger = LogManager.getMainLogger('WindowsManager')
 
@@ -167,9 +166,11 @@ class CWindowManager {
 
       // Connect process to Main process via new IPC Channel
       const { port1, port2 } = new MessageChannelMain()
-      window.webContents.postMessage(CommandRegistryEvents.REGISTER_NEW_CHANNEL, ProcessIDs.MAIN, [
-        port1,
-      ])
+      window.webContents.postMessage(
+        CommandRegistryEvents.REGISTER_NEW_CHANNEL,
+        AppProcessIDs.MAIN,
+        [port1],
+      )
       CommandsRegistryMain.registerNewChannel(id, port2)
 
       // Connect process to all other processes via direct IPC Channel if directIPCChannel is enabled

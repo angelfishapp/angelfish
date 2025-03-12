@@ -22,7 +22,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angelfish/cloudapiclient@workspace:packages/cloudapiclient":
+"@angelfish/cloudapiclient@workspace:*, @angelfish/cloudapiclient@workspace:packages/cloudapiclient":
   version: 0.0.0-use.local
   resolution: "@angelfish/cloudapiclient@workspace:packages/cloudapiclient"
   dependencies:
@@ -90,7 +90,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@angelfish/sync@workspace:packages/sync"
   dependencies:
+    "@angelfish/cloudapiclient": "workspace:*"
     "@angelfish/core": "workspace:*"
+    axios: "npm:*"
     typescript: "npm:*"
   languageName: unknown
   linkType: soft
@@ -110,6 +112,7 @@ __metadata:
   dependencies:
     "@angelfish/core": "workspace:*"
     "@angelfish/tests": "workspace:*"
+    "@swc/core": "npm:^1.11.8"
     "@types/node": "npm:*"
     class-validator: "npm:^0.14.1"
     electron-log: "npm:*"
@@ -2261,7 +2264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core@npm:^1.10.8":
+"@swc/core@npm:^1.10.8, @swc/core@npm:^1.11.8":
   version: 1.11.8
   resolution: "@swc/core@npm:1.11.8"
   dependencies:

@@ -1,48 +1,6 @@
 import type { IAuthenticatedUser } from '../types'
 
 /**
- * Commands for Main Process
- */
-export enum MAINCommands {
-  /**
-   * Event emitted when user settings are updated
-   */
-  ON_USER_SETTINGS_UPDATED = 'main.on.user.settings.updated',
-  /**
-   * Open an Electron file open dialog
-   */
-  SHOW_OPEN_FILE_DIALOG = 'main.show.open.dialog',
-  /**
-   * Open an Electron file save dialog
-   */
-  SHOW_SAVE_FILE_DIALOG = 'main.show.save.dialog',
-  /**
-   * Show a desktop notification
-   */
-  SHOW_NOTIFICATION = 'main.show.notification',
-  /**
-   * Open the Angelfish website in the user's default browser
-   */
-  OPEN_WEBSITE = 'main.open.website',
-  /**
-   * Get the authentication state of the app persisted on disk
-   */
-  GET_AUTHENTICATION = 'main.get.authentication',
-  /**
-   * Set the authentication state of the app persisting to disk
-   */
-  SET_AUTHENTICATION = 'main.set.authentication',
-  /**
-   * Get the last opened book file path
-   */
-  GET_BOOK_FILE_PATH = 'main.get.book.file.path',
-  /**
-   * Set the last opened book file path
-   */
-  SET_BOOK_FILE_PATH = 'main.set.book.file.path',
-}
-
-/**
  * File type filters for file dialogs
  */
 interface FileFilter {

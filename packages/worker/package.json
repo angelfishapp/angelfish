@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@angelfish/tests": "workspace:*",
+    "@swc/core": "^1.11.8",
     "@types/node": "*",
     "typescript": "*",
     "unplugin-swc": "1.5.1",

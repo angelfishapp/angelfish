@@ -7,7 +7,7 @@ import type {
   IOpenFileDialogOptions,
   ISaveFileDialogOptions,
 } from '@angelfish/core'
-import { MAINCommands } from '@angelfish/core'
+import { AppCommands } from '@angelfish/core'
 import { CommandsRegistryMain } from './commands/commands-registry-main'
 import { LogManager } from './logging/log-manager'
 import { settings } from './settings'
@@ -60,7 +60,7 @@ export function setupMainCommands() {
    * selecting anything.
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.SHOW_OPEN_FILE_DIALOG,
+    AppCommands.SHOW_OPEN_FILE_DIALOG,
     async (payload: IOpenFileDialogOptions) => {
       const filePath = await dialog.showOpenDialog(payload)
       if (!filePath.canceled) {
@@ -75,7 +75,7 @@ export function setupMainCommands() {
    * cancelled dialog.
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.SHOW_SAVE_FILE_DIALOG,
+    AppCommands.SHOW_SAVE_FILE_DIALOG,
     async (payload: ISaveFileDialogOptions) => {
       const filePath = await dialog.showSaveDialog(payload)
       if (!filePath.canceled) {
@@ -89,7 +89,7 @@ export function setupMainCommands() {
    * Show Desktop Notification
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.SHOW_NOTIFICATION,
+    AppCommands.SHOW_NOTIFICATION,
     async (payload: INotificationOptions) => {
       // Show Desktop Notificiation
       if (!Environment.isTest) {
@@ -101,7 +101,7 @@ export function setupMainCommands() {
   /**
    * Open up local browser with Angelfish website
    */
-  CommandsRegistryMain.registerCommand(MAINCommands.OPEN_WEBSITE, async () => {
+  CommandsRegistryMain.registerCommand(AppCommands.OPEN_ANGELFISH_WEBSITE, async () => {
     await shell.openExternal('https://www.angelfish.app')
   })
 
@@ -109,7 +109,7 @@ export function setupMainCommands() {
    * Command to get the Authentication State for the App from settings persisted on disk
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.GET_AUTHENTICATION,
+    AppCommands.GET_AUTHENTICATION_SETTINGS,
     async (): Promise<IAuthenticationState> => {
       // Unencrypt the refresh token before returning it to the caller
       // If decryption fails, reset authentication state and return nulls
@@ -142,7 +142,7 @@ export function setupMainCommands() {
    * Command to set the Authentication State for the App. Will persist to disk using settings
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.SET_AUTHENTICATION,
+    AppCommands.SET_AUTHENTICATION_SETTINGS,
     async (payload: IAuthenticationState) => {
       // Set Authentication State
       settings.setAuthenticatedUser(payload.authenticatedUser ?? null)
@@ -161,7 +161,7 @@ export function setupMainCommands() {
    * Get the last opened book file path
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.GET_BOOK_FILE_PATH,
+    AppCommands.GET_BOOK_FILE_PATH_SETTING,
     async (): Promise<IBookFilePath> => {
       return {
         filePath: settings.get('currentFilePath') ?? null,
@@ -173,7 +173,7 @@ export function setupMainCommands() {
    * Set the last opened book file path
    */
   CommandsRegistryMain.registerCommand(
-    MAINCommands.SET_BOOK_FILE_PATH,
+    AppCommands.SET_BOOK_FILE_PATH_SETTING,
     async (payload: IBookFilePath) => {
       settings.set('currentFilePath', payload.filePath ?? null)
     },

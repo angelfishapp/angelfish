@@ -1,6 +1,6 @@
+export * from './app'
 export * from './commands'
 export * from './data'
-export * from './main'
 export * from './renderer'
 export * from './types'
 export * from './utils'
