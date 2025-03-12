@@ -18,6 +18,9 @@ import path from 'path'
 import { mainConfig } from './webpack/webpack.main.config'
 import { rendererConfig } from './webpack/webpack.renderer.config'
 
+/**
+ * Main configuration for Electron Forge
+ */
 const config: ForgeConfig = {
   buildIdentifier: 'angelfish',
   packagerConfig: {
@@ -125,6 +128,8 @@ const config: ForgeConfig = {
           },
         },
       },
+      // Set CSP for webpack dev server to allow requests to angelish.app domain
+      devContentSecurityPolicy: `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' *.angelfish.app;`,
       mainConfig,
       renderer: {
         config: rendererConfig,

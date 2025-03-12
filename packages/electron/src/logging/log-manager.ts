@@ -107,17 +107,17 @@ export const LogManager = new (class {
     }
 
     // For development and production, use local settings
-    return settings.get('userSettings.logLevel', 'debug')
+    return settings.get('logLevel', 'debug')
   }
 })()
 
 // Listen for userSettings updates to app logging level and update loggers accordingly
-settings.onDidChange('userSettings', (newValue) => {
+settings.onDidChange('logLevel', (newValue) => {
   if (newValue) {
-    LogManager.setLogLevel(newValue.logLevel)
+    LogManager.setLogLevel(newValue)
     // Notify processes of log level change
     CommandsRegistryMain.emitEvent(LogEvents.ON_LOGGING_LEVEL_CHANGED, {
-      level: newValue.logLevel,
+      level: newValue,
     })
   }
 })

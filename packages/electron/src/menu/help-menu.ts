@@ -21,14 +21,14 @@ export const HelpMenu: MenuItemConstructorOptions = {
       id: 'help-enable-debug',
       enabled: true,
       type: 'checkbox',
-      checked: settings.get('userSettings.logLevel') === 'debug',
+      checked: settings.get('logLevel') === 'debug',
       click: async (menuItem: MenuItem) => {
         let level: LogLevel = 'info'
         if (menuItem.checked) {
           level = 'debug'
-          settings.set('userSettings.logLevel', level)
+          settings.set('logLevel', level)
         } else {
-          settings.set('userSettings.logLevel', level)
+          settings.set('logLevel', level)
         }
         const menu = Menu.getApplicationMenu()
         if (menu) {

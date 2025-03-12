@@ -22,4 +22,4 @@ export type {
 export type { ITag, ITagUpdate } from './tag-interface'
 export type { ITransaction, ITransactionUpdate } from './transaction-interface'
 export type { IUser, IUserUpdate } from './user-interface'
-export type { IUserSettings } from './user-settings-interface'
+export type { IUserSettings } from './user-settings-inerface'

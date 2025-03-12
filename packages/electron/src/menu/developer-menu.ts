@@ -3,24 +3,13 @@ import { Menu } from 'electron'
 import type { LogLevel } from 'electron-log'
 
 import { settings } from '../settings'
-import { ProcessIDs } from '../windows/process-ids'
-import { WindowManager } from '../windows/windows-manager'
 
 export const DeveloperMenu: MenuItemConstructorOptions = {
   label: 'Development',
   submenu: [
     { role: 'reload' },
     { role: 'forceReload' },
-    {
-      label: 'Toggle Developer Tools',
-      accelerator: 'CmdOrCtrl+Shift+I',
-      click: () => {
-        const appWindow = WindowManager.getWindow(ProcessIDs.APP)
-        if (appWindow) {
-          appWindow.webContents.toggleDevTools()
-        }
-      },
-    },
+    { role: 'toggleDevTools' },
     {
       label: 'Log Level',
       submenu: generateLogLevelMenu(),
@@ -39,9 +28,9 @@ function generateLogLevelMenu(): MenuItemConstructorOptions[] {
     label: level,
     id: `developer-log-level-${level}`,
     type: 'radio',
-    checked: settings.get('userSettings.logLevel') === level,
+    checked: settings.get('logLevel') === level,
     click: () => {
-      settings.set('userSettings.logLevel', level)
+      settings.set('logLevel', level)
       const menu = Menu.getApplicationMenu()
       if (menu) {
         menu.getMenuItemById(`help-enable-debug`)!.checked = level === 'debug'

@@ -1,7 +1,8 @@
 import ElectronStore from 'electron-store'
 
-import type { IUserSettings } from '@angelfish/core'
-import { CommandsRegistryMain } from './commands/commands-registry-main'
+import { MAINCommands } from '@angelfish/core'
+import { CommandsRegistryMain } from '../commands/commands-registry-main'
+import type { IAppSettings } from './settings-interface'
 
 /**
  * Uses electron-store to save local user settings for app to persist settings between
@@ -19,7 +20,7 @@ export const MIN_WINDOW_HEIGHT = 768
  * Specify JSON Schema to validate config data using https://github.com/ajv-validator/ajv
  */
 
-const schema: ElectronStore.Schema<IUserSettings> = {
+const schema: ElectronStore.Schema<IAppSettings> = {
   windowSize: {
     type: 'object',
     default: {
@@ -70,9 +71,17 @@ const schema: ElectronStore.Schema<IUserSettings> = {
       },
     },
   },
+  refreshToken: {
+    type: ['string', 'null'],
+    default: null,
+  },
   currentFilePath: {
     type: ['string', 'null'],
     default: null,
+  },
+  logLevel: {
+    type: 'string',
+    enum: ['error', 'warn', 'info', 'verbose', 'debug', 'silly'],
   },
   userSettings: {
     type: 'object',
@@ -84,10 +93,6 @@ const schema: ElectronStore.Schema<IUserSettings> = {
       enableBackgroundAnimations: {
         type: 'boolean',
       },
-      logLevel: {
-        type: 'string',
-        enum: ['error', 'warn', 'info', 'verbose', 'debug', 'silly'],
-      },
     },
   },
 }
@@ -95,9 +100,10 @@ const schema: ElectronStore.Schema<IUserSettings> = {
 /**
  * Custom Electron-Store wrapper to handle Date serialization/deserialization
  */
-class CustomStore extends ElectronStore<IUserSettings> {
+class CustomStore extends ElectronStore<IAppSettings> {
   constructor() {
     super({
+      name: 'app-settings',
       schema,
     })
   }
@@ -105,12 +111,12 @@ class CustomStore extends ElectronStore<IUserSettings> {
   /**
    * Saves the AuthenticatedUser to the store
    */
-  setAuthenticatedUser(value: IUserSettings['authenticatedUser']): void {
+  setAuthenticatedUser(value: IAppSettings['authenticatedUser']): void {
     if (value) {
       // Convert any date properties to ISO strings
       for (const prop in value) {
-        const key: keyof IUserSettings['authenticatedUser'] =
-          prop as keyof IUserSettings['authenticatedUser']
+        const key: keyof IAppSettings['authenticatedUser'] =
+          prop as keyof IAppSettings['authenticatedUser']
         if ((value[key] as any) instanceof Date) {
           ;(value[key] as string) = (value[key] as Date).toISOString()
         }
@@ -122,13 +128,13 @@ class CustomStore extends ElectronStore<IUserSettings> {
   /**
    * Gets the AuthenticatedUser from store
    */
-  getAuthenticatedUser(): IUserSettings['authenticatedUser'] {
+  getAuthenticatedUser(): IAppSettings['authenticatedUser'] {
     const value = this.get('authenticatedUser')
     if (value) {
       // Convert any date strings to Date objects
       for (const prop in value) {
-        const key: keyof IUserSettings['authenticatedUser'] =
-          prop as keyof IUserSettings['authenticatedUser']
+        const key: keyof IAppSettings['authenticatedUser'] =
+          prop as keyof IAppSettings['authenticatedUser']
         if (typeof value[key] === 'string' && (value[key] as string).match(/^\d{4}-\d{2}-\d{2}T/)) {
           ;(value[key] as Date) = new Date(value[key] as string)
         }
@@ -145,6 +151,6 @@ export const settings = new CustomStore()
 // Add an event emitter whenever userSettings change
 settings.onDidChange('userSettings', (changes) => {
   if (changes) {
-    CommandsRegistryMain.emitEvent('user.settings.updated', changes)
+    CommandsRegistryMain.emitEvent(MAINCommands.ON_USER_SETTINGS_UPDATED, changes)
   }
 })

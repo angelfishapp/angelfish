@@ -131,6 +131,12 @@ class CWindowManager {
       }
     })
 
+    // Handle window close event
+    processWindow.on('closed', () => {
+      logger.info(`💥 ${id} process window closed`)
+      this.windows = this.windows.filter((w) => w.id !== id)
+    })
+
     this.windows.push({ id, window: processWindow, type: 'process', directIPCChannel })
     return processWindow
   }
@@ -224,6 +230,12 @@ class CWindowManager {
       }
     })
 
+    // Handle window close event
+    rendererWindow.on('closed', () => {
+      logger.info(`💥 ${id} renderer window closed`)
+      this.windows = this.windows.filter((w) => w.id !== id)
+    })
+
     this.windows.push({ id, window: rendererWindow, type: 'renderer', directIPCChannel: false })
     return rendererWindow
   }
@@ -259,13 +271,13 @@ class CWindowManager {
   }
 
   /**
-   * Get a specific Window by ID.
+   * Check if a Window with the given ID exists.
    *
-   * @param id The unique identifier of the window
-   * @returns  The browser window or undefined if not found
+   * @param id  The unique identifier of the window
+   * @returns   True if the window exists, false otherwise
    */
-  public getWindow(id: string): BrowserWindow | undefined {
-    return this.windows.find((window) => window.id === id)?.window
+  public has(id: string): boolean {
+    return this.windows.some((w) => w.id === id)
   }
 }
 

@@ -1,7 +1,13 @@
+import type { IAuthenticatedUser } from '../types'
+
 /**
  * Commands for Main Process
  */
 export enum MAINCommands {
+  /**
+   * Event emitted when user settings are updated
+   */
+  ON_USER_SETTINGS_UPDATED = 'main.on.user.settings.updated',
   /**
    * Open an Electron file open dialog
    */
@@ -18,6 +24,22 @@ export enum MAINCommands {
    * Open the Angelfish website in the user's default browser
    */
   OPEN_WEBSITE = 'main.open.website',
+  /**
+   * Get the authentication state of the app persisted on disk
+   */
+  GET_AUTHENTICATION = 'main.get.authentication',
+  /**
+   * Set the authentication state of the app persisting to disk
+   */
+  SET_AUTHENTICATION = 'main.set.authentication',
+  /**
+   * Get the last opened book file path
+   */
+  GET_BOOK_FILE_PATH = 'main.get.book.file.path',
+  /**
+   * Set the last opened book file path
+   */
+  SET_BOOK_FILE_PATH = 'main.set.book.file.path',
 }
 
 /**
@@ -113,4 +135,29 @@ export interface INotificationOptions {
    * An icon to use in the notification. It must be a valid path to a local icon file.
    */
   icon?: string
+}
+
+/**
+ * Interface to Get/Set Authentication State of the App. This is used to persist the
+ * authentication state of the app to disk between sessions.
+ */
+export interface IAuthenticationState {
+  /**
+   * The AuthenticatedUser Profile so it can be reloaded if app is started offline
+   */
+  authenticatedUser?: IAuthenticatedUser | null
+  /**
+   * The refresh token for the user to get a new JWT token to
+   * access Angelfish APIs. Is encrypted at rest using Electron's
+   * SafeStorage API.
+   */
+  refreshToken?: string | null
+}
+
+/**
+ * Interface for the Book File Path to save the last opened book file path
+ * to settings between sessions.
+ */
+export interface IBookFilePath {
+  filePath?: string | null
 }
