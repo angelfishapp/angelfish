@@ -41,8 +41,16 @@ interface WindowProcess {
 /**
  * Manages the creation and lifecycle of windows in the Electron app.
  */
-class CWindowManager {
-  private windows: WindowProcess[] = []
+export const WindowManager = new (class {
+  /**
+   * List of all windows managed by the WindowManager.
+   */
+  private _windows: WindowProcess[] = []
+  /**
+   * Flag to track if any windows have been closed previously
+   * to ensure IPC channels are reconnected correctly on reload.
+   */
+  private _hasClosedWindow = false
 
   /**
    * Creates a new background process hidden window. In development, the window will be visible with DevTools open.
@@ -83,7 +91,7 @@ class CWindowManager {
 
     logger.info(`🚀 ${id} process window created`)
 
-    this.windows.push({ id, window: processWindow, type: 'process', directIPCChannel })
+    this._windows.push({ id, window: processWindow, type: 'process', directIPCChannel })
     return processWindow
   }
 
@@ -92,6 +100,7 @@ class CWindowManager {
    *
    * @param id        The unique identifier of the window
    * @param url       The URL to load in the window
+   * @param title     The title of the window
    * @param width     The width of the window
    * @param height    The height of the window
    * @returns         The new {BrowserWindow}
@@ -99,11 +108,13 @@ class CWindowManager {
   public createRendererWindow(
     id: string,
     url: string,
+    title: string,
     width: number,
     height: number,
   ): BrowserWindow {
     // Create the browser window.
     const rendererWindow = new BrowserWindow({
+      title,
       height,
       width,
       webPreferences: {
@@ -121,7 +132,7 @@ class CWindowManager {
 
     logger.info(`🚀 ${id} renderer window created`)
 
-    this.windows.push({ id, window: rendererWindow, type: 'renderer', directIPCChannel: false })
+    this._windows.push({ id, window: rendererWindow, type: 'renderer', directIPCChannel: false })
     return rendererWindow
   }
 
@@ -175,7 +186,7 @@ class CWindowManager {
 
       // Connect process to all other processes via direct IPC Channel if directIPCChannel is enabled
       if (directIPCChannel) {
-        this.windows
+        this._windows
           .filter((win) => win.id !== id)
           .forEach((win) => {
             logger.info(`🚀 ${id} connecting to ${win.id} via direct IPC channel`)
@@ -190,10 +201,10 @@ class CWindowManager {
       }
 
       // Re-Connect window to any processes that have direct IPC Channel enabled
-      if (reloadCount > 0) {
+      if (reloadCount > 0 || (this._hasClosedWindow && reloadCount === 0)) {
         // On initial load we don't want to re-connect direct IPC channels as the process
         // itself will connect to all other processes when it starts
-        this.windows
+        this._windows
           .filter((process) => process.directIPCChannel)
           .forEach((process) => {
             if (process.id !== id) {
@@ -226,7 +237,8 @@ class CWindowManager {
     // Handle window close event
     window.on('closed', () => {
       logger.info(`💥 ${id} renderer window closed`)
-      this.windows = this.windows.filter((w) => w.id !== id)
+      this._windows = this._windows.filter((w) => w.id !== id)
+      this._hasClosedWindow = true
     })
   }
 
@@ -237,11 +249,6 @@ class CWindowManager {
    * @returns   True if the window exists, false otherwise
    */
   public has(id: string): boolean {
-    return this.windows.some((w) => w.id === id)
+    return this._windows.some((w) => w.id === id)
   }
-}
-
-/**
- * Main WindowManager for App.
- */
-export const WindowManager = new CWindowManager()
+})()

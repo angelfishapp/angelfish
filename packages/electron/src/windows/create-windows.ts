@@ -42,10 +42,10 @@ function createMainAppWindow(): BrowserWindow {
   const appWindow = WindowManager.createRendererWindow(
     AppProcessIDs.APP,
     APP_WINDOW_WEBPACK_ENTRY,
+    'Angelfish',
     windowSize.width,
     windowSize.height,
   )
-  appWindow.setTitle('Angelfish')
   appWindow.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
   appWindow.setIcon(path.join(__dirname, 'assets', '1024.png'))
 
