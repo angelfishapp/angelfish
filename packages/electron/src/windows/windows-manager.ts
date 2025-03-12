@@ -74,12 +74,7 @@ class CWindowManager {
         // Could be related to this bug: https://github.com/electron/forge/issues/2618
         contextIsolation: !nodeIntegration,
         sandbox: !nodeIntegration,
-        additionalArguments: [
-          `--process=${id}`,
-          `--environment=${Environment.nodeEnvironment}`,
-          `--platform=${Environment.platform}`,
-          `--logsDir=${Environment.logsDir}`,
-        ],
+        additionalArguments: this._getAdditionalArgs(id),
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,
       },
     })
@@ -117,12 +112,7 @@ class CWindowManager {
         nodeIntegration: false,
         contextIsolation: true,
         sandbox: true,
-        additionalArguments: [
-          `--process=${id}`,
-          `--environment=${Environment.nodeEnvironment}`,
-          `--platform=${Environment.platform}`,
-          `--logsDir=${Environment.logsDir}`,
-        ],
+        additionalArguments: this._getAdditionalArgs(id),
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,
       },
     })
@@ -135,6 +125,23 @@ class CWindowManager {
 
     this.windows.push({ id, window: rendererWindow, type: 'renderer', directIPCChannel: false })
     return rendererWindow
+  }
+
+  /**
+   * Ensure all window processes are started with the same additional arguments. These
+   * arguments pass environment/app information to the process via the preload script
+   * and window.environment object.
+   *
+   * @param id  The unique identifier of the window
+   * @returns   The additional arguments to pass to the window
+   */
+  private _getAdditionalArgs(id: string): string[] {
+    return [
+      `--process=${id}`,
+      `--environment=${Environment.nodeEnvironment}`,
+      `--platform=${Environment.platform}`,
+      `--logsDir=${Environment.logsDir}`,
+    ]
   }
 
   /**

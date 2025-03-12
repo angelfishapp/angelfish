@@ -61,6 +61,7 @@ export const Environment = new (class {
     return {
       environment: this.environment,
       isDev: this.isDev,
+      platform: this.platform,
       processId: this.processId,
       logsDir: this.logsDir,
       userDataDir: this.userDataDir,

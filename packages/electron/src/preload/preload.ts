@@ -35,6 +35,8 @@ const environmentBridge = {
   environment: getArgumentValue('environment'),
   // Boolean flag to determine if the app is running in development mode
   isDev: getArgumentValue('environment') === 'development',
+  // The OS platform the app is running on
+  platform: getArgumentValue('platform'),
   // The process ID of the current process
   processId: getArgumentValue('process'),
   // Location of the logs directory for app if process is writing logs directly
