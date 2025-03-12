@@ -1,11 +1,10 @@
 import { BrowserWindow, MessageChannelMain, session } from 'electron'
-import path from 'path'
 
 import { CommandRegistryEvents } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
 import { LogManager } from '../logging/log-manager'
 import { LogEvents } from '../logging/logging-events'
-import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH, settings } from '../settings'
+import { settings } from '../settings'
 import { Environment } from '../utils/environment'
 import { ProcessIDs } from './process-ids'
 
@@ -228,36 +227,6 @@ class CWindowManager {
       logger.info(`💥 ${id} renderer window closed`)
       this.windows = this.windows.filter((w) => w.id !== id)
     })
-  }
-
-  /**
-   * Create the main application window.
-   *
-   * @param url The URL to load in the window
-   * @returns   The new {BrowserWindow}
-   */
-  public createMainAppWindow(url: string): BrowserWindow {
-    const windowSize = settings.get('windowSize')
-    const appWindow = this.createRendererWindow(
-      ProcessIDs.APP,
-      url,
-      windowSize.width,
-      windowSize.height,
-    )
-    appWindow.setTitle('Angelfish')
-    appWindow.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
-    appWindow.setIcon(path.join(__dirname, 'assets', '1024.png'))
-
-    // Listen for resize events to remember user's last screen size
-    appWindow.on('resize', function () {
-      const size = appWindow.getSize()
-      settings.set('windowSize', {
-        width: size[0],
-        height: size[1],
-      })
-    })
-
-    return appWindow
   }
 
   /**

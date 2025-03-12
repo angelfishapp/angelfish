@@ -82,12 +82,12 @@ const schema: ElectronStore.Schema<IAppSettings> = {
   logLevel: {
     type: 'string',
     enum: ['error', 'warn', 'info', 'verbose', 'debug', 'silly'],
+    default: 'info',
   },
   userSettings: {
     type: 'object',
     default: {
       enableBackgroundAnimations: true,
-      logLevel: 'info',
     },
     properties: {
       enableBackgroundAnimations: {

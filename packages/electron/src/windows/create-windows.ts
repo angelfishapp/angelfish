@@ -1,3 +1,7 @@
+import type { BrowserWindow } from 'electron'
+import path from 'path'
+
+import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH, settings } from '../settings'
 import { ProcessIDs } from './process-ids'
 import { WindowManager } from './windows-manager'
 
@@ -24,6 +28,35 @@ export function createWindows() {
 
   if (!WindowManager.has(ProcessIDs.APP)) {
     // Create App Window
-    WindowManager.createMainAppWindow(APP_WINDOW_WEBPACK_ENTRY)
+    createMainAppWindow()
   }
+}
+
+/**
+ * Create the main application window.
+ *
+ * @returns   The new {BrowserWindow}
+ */
+function createMainAppWindow(): BrowserWindow {
+  const windowSize = settings.get('windowSize')
+  const appWindow = WindowManager.createRendererWindow(
+    ProcessIDs.APP,
+    APP_WINDOW_WEBPACK_ENTRY,
+    windowSize.width,
+    windowSize.height,
+  )
+  appWindow.setTitle('Angelfish')
+  appWindow.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
+  appWindow.setIcon(path.join(__dirname, 'assets', '1024.png'))
+
+  // Listen for resize events to remember user's last screen size
+  appWindow.on('resize', function () {
+    const size = appWindow.getSize()
+    settings.set('windowSize', {
+      width: size[0],
+      height: size[1],
+    })
+  })
+
+  return appWindow
 }
