@@ -85,57 +85,10 @@ class CWindowManager {
     })
     processWindow.loadURL(url)
 
-    // Create logger for process
-    LogManager.createProcessLogger(id)
+    // Initialise new process window
+    this._initialiseWindow(id, processWindow, directIPCChannel)
 
     logger.info(`🚀 ${id} process window created`)
-
-    // Connect IPC channels on did-finish-load
-    processWindow.webContents.on('did-finish-load', () => {
-      // Connect process to Main process via new IPC Channel
-      const { port1, port2 } = new MessageChannelMain()
-      processWindow.webContents.postMessage(
-        CommandRegistryEvents.REGISTER_NEW_CHANNEL,
-        ProcessIDs.MAIN,
-        [port1],
-      )
-      CommandsRegistryMain.registerNewChannel(id, port2)
-
-      // Set logging level for process
-      processWindow.webContents.postMessage(
-        LogEvents.ON_LOGGING_SET_LEVEL,
-        settings.get('userSettings.logLevel'),
-      )
-
-      // Connect process to all other processes via direct IPC Channel if directIPCChannel is enabled
-      if (directIPCChannel) {
-        this.windows
-          .filter((window) => window.id !== id)
-          .forEach((window) => {
-            logger.info(`🚀 ${id} connecting to ${window.id} via direct IPC channel`)
-            const { port1: directPort1, port2: directPort2 } = new MessageChannelMain()
-            processWindow.webContents.postMessage(
-              CommandRegistryEvents.REGISTER_NEW_CHANNEL,
-              window.id,
-              [directPort1],
-            )
-            window.window.webContents.postMessage(CommandRegistryEvents.REGISTER_NEW_CHANNEL, id, [
-              directPort2,
-            ])
-          })
-      }
-
-      if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
-        // Open DevTools in the same window in "right" mode
-        processWindow.webContents.openDevTools({ mode: 'right' })
-      }
-    })
-
-    // Handle window close event
-    processWindow.on('closed', () => {
-      logger.info(`💥 ${id} process window closed`)
-      this.windows = this.windows.filter((w) => w.id !== id)
-    })
 
     this.windows.push({ id, window: processWindow, type: 'process', directIPCChannel })
     return processWindow
@@ -175,48 +128,81 @@ class CWindowManager {
     })
     rendererWindow.loadURL(url)
 
-    // Create logger for process
-    LogManager.createProcessLogger(id)
+    // Initialise new process window
+    this._initialiseWindow(id, rendererWindow)
 
     logger.info(`🚀 ${id} renderer window created`)
+
+    this.windows.push({ id, window: rendererWindow, type: 'renderer', directIPCChannel: false })
+    return rendererWindow
+  }
+
+  /**
+   * Initialise a new process/renderer to ensure all channels are connected correctly,
+   * logging is set up and initialised, handle 'closed' events and any other initialisation
+   * tasks are completed consistently across windows.
+   *
+   * @param id                  The unique identifier of the window
+   * @param window              The window instance
+   * @param directIPCChannel    Whether to enable direct IPC channel for all other windows
+   *                            to connect directly to this process
+   */
+  private _initialiseWindow(id: string, window: BrowserWindow, directIPCChannel: boolean = false) {
+    // Create logger for process
+    LogManager.createProcessLogger(id)
 
     // Keep track of reload count
     let reloadCount = 0
 
     // Connect IPC channels on did-finish-load
-    rendererWindow.webContents.on('did-finish-load', () => {
+    window.webContents.on('did-finish-load', () => {
+      // Set logging level for process
+      window.webContents.postMessage(LogEvents.ON_LOGGING_SET_LEVEL, settings.get('logLevel'))
+
       // Connect process to Main process via new IPC Channel
       const { port1, port2 } = new MessageChannelMain()
-      rendererWindow.webContents.postMessage(
-        CommandRegistryEvents.REGISTER_NEW_CHANNEL,
-        ProcessIDs.MAIN,
-        [port1],
-      )
+      window.webContents.postMessage(CommandRegistryEvents.REGISTER_NEW_CHANNEL, ProcessIDs.MAIN, [
+        port1,
+      ])
       CommandsRegistryMain.registerNewChannel(id, port2)
 
-      // Set logging level for process
-      rendererWindow.webContents.postMessage(
-        LogEvents.ON_LOGGING_SET_LEVEL,
-        settings.get('userSettings.logLevel'),
-      )
+      // Connect process to all other processes via direct IPC Channel if directIPCChannel is enabled
+      if (directIPCChannel) {
+        this.windows
+          .filter((win) => win.id !== id)
+          .forEach((win) => {
+            logger.info(`🚀 ${id} connecting to ${win.id} via direct IPC channel`)
+            const { port1: directPort1, port2: directPort2 } = new MessageChannelMain()
+            window.webContents.postMessage(CommandRegistryEvents.REGISTER_NEW_CHANNEL, win.id, [
+              directPort1,
+            ])
+            win.window.webContents.postMessage(CommandRegistryEvents.REGISTER_NEW_CHANNEL, id, [
+              directPort2,
+            ])
+          })
+      }
 
       // Re-Connect window to any processes that have direct IPC Channel enabled
       if (reloadCount > 0) {
         // On initial load we don't want to re-connect direct IPC channels as the process
         // itself will connect to all other processes when it starts
         this.windows
-          .filter((window) => window.directIPCChannel)
-          .forEach((window) => {
-            logger.info(`🚀 ${id} re-connecting to ${window.id} via direct IPC channel`)
-            const { port1: directPort1, port2: directPort2 } = new MessageChannelMain()
-            rendererWindow.webContents.postMessage(
-              CommandRegistryEvents.REGISTER_NEW_CHANNEL,
-              window.id,
-              [directPort1],
-            )
-            window.window.webContents.postMessage(CommandRegistryEvents.REGISTER_NEW_CHANNEL, id, [
-              directPort2,
-            ])
+          .filter((process) => process.directIPCChannel)
+          .forEach((process) => {
+            if (process.id !== id) {
+              logger.info(`🚀 ${id} re-connecting to ${process.id} via direct IPC channel`)
+              const { port1: directPort1, port2: directPort2 } = new MessageChannelMain()
+              window.webContents.postMessage(
+                CommandRegistryEvents.REGISTER_NEW_CHANNEL,
+                process.id,
+                [directPort1],
+              )
+              process.window.webContents.postMessage(
+                CommandRegistryEvents.REGISTER_NEW_CHANNEL,
+                id,
+                [directPort2],
+              )
+            }
           })
       }
 
@@ -226,18 +212,15 @@ class CWindowManager {
       // Open DevTools if developer environment
       if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
         // Open the DevTools.
-        rendererWindow.webContents.openDevTools()
+        window.webContents.openDevTools()
       }
     })
 
     // Handle window close event
-    rendererWindow.on('closed', () => {
+    window.on('closed', () => {
       logger.info(`💥 ${id} renderer window closed`)
       this.windows = this.windows.filter((w) => w.id !== id)
     })
-
-    this.windows.push({ id, window: rendererWindow, type: 'renderer', directIPCChannel: false })
-    return rendererWindow
   }
 
   /**

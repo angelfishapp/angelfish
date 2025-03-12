@@ -6,6 +6,8 @@ import type {
   ICommand,
 } from './commands-registry-interface'
 
+import { CommandRegistryEvents } from './commands-registry-events'
+
 /**
  * Command client - used by worker/renderer processes to call their local CommandsRegistry under
  * `window.commands` making it easier to interact with.
@@ -80,5 +82,43 @@ export const CommandsClient = {
    */
   listChannels: (): ChannelID[] => {
     return window.commands.listChannels()
+  },
+
+  /**
+   * Listen for new channels being registered with the CommandsRegistry.
+   *
+   * @param handler   The handler for the event.
+   * @returns         A function to remove the event listener.
+   */
+  onChannelRegistered: (handler: EventHandler) => {
+    return window.commands.addEventListener(CommandRegistryEvents.NEW_CHANNEL_REGISTERED, handler)
+  },
+
+  /**
+   * Returns a promise which resolves when all listed channels are registered.
+   *
+   * @param channels  A list of channels to wait for.
+   */
+  isReady: async (channels: ChannelID[]): Promise<void> => {
+    // Check if all channels are already registered and resolve immediately
+    const _currentChannels = window.commands.listChannels()
+    if (channels.every((channel) => _currentChannels.includes(channel))) {
+      return
+    }
+
+    // Otherwise return a promise that resolves when all channels are registered
+    return new Promise((resolve) => {
+      const _handler = () => {
+        const _currentChannels = window.commands.listChannels()
+        if (channels.every((channel) => _currentChannels.includes(channel))) {
+          window.commands.removeEventListener(
+            CommandRegistryEvents.NEW_CHANNEL_REGISTERED,
+            _handler,
+          )
+          resolve()
+        }
+      }
+      window.commands.addEventListener(CommandRegistryEvents.NEW_CHANNEL_REGISTERED, _handler)
+    })
   },
 }
