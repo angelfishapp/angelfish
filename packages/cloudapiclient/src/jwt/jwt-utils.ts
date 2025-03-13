@@ -115,7 +115,16 @@ export class JWTAuthHelper {
     }
 
     // Decode the base64 payload
-    const decodedPayload = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'))
-    return decodedPayload
+    let jsonString: string
+    if (typeof window !== 'undefined' && typeof window.atob === 'function') {
+      // Browser Environment: Use atob() with TextDecoder for Unicode safety
+      const binaryString = window.atob(payload)
+      jsonString = new TextDecoder().decode(Uint8Array.from(binaryString, (c) => c.charCodeAt(0)))
+    } else {
+      // Node.js Environment: Use Buffer
+      jsonString = Buffer.from(payload, 'base64').toString('utf8')
+    }
+
+    return JSON.parse(jsonString)
   }
 }

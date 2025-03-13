@@ -53,6 +53,8 @@ export function setupMainCommands() {
     }
   })
 
+  // Setup Event Emitters
+
   // Add an event emitter whenever userSettings change
   settings.onDidChange('userSettings', (changes) => {
     if (changes) {
