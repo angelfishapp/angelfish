@@ -7,7 +7,7 @@ import type {
   IOpenFileDialogOptions,
   ISaveFileDialogOptions,
 } from '@angelfish/core'
-import { AppCommands } from '@angelfish/core'
+import { AppCommands, AppEvents } from '@angelfish/core'
 import { CommandsRegistryMain } from './commands/commands-registry-main'
 import { LogManager } from './logging/log-manager'
 import { settings } from './settings'
@@ -22,7 +22,7 @@ export function setupMainCommands() {
   // Register Event Handlers
 
   // Handle Login Event
-  CommandsRegistryMain.addEventListener('on-login', (payload: any) => {
+  CommandsRegistryMain.addEventListener(AppEvents.ON_LOGIN, (payload: any) => {
     const appMenu = Menu.getApplicationMenu()
     if (appMenu) {
       const fileSync = appMenu.getMenuItemById('file-syncronize')
@@ -39,7 +39,7 @@ export function setupMainCommands() {
   })
 
   // Handle Logout Event
-  CommandsRegistryMain.addEventListener('on-logout', (_payload: any) => {
+  CommandsRegistryMain.addEventListener(AppEvents.ON_LOGOUT, () => {
     const appMenu = Menu.getApplicationMenu()
     if (appMenu) {
       const fileSync = appMenu.getMenuItemById('file-syncronize')
@@ -50,6 +50,13 @@ export function setupMainCommands() {
       if (fileLogout) {
         fileLogout.enabled = false
       }
+    }
+  })
+
+  // Add an event emitter whenever userSettings change
+  settings.onDidChange('userSettings', (changes) => {
+    if (changes) {
+      CommandsRegistryMain.emitEvent(AppEvents.ON_USER_SETTINGS_UPDATED, changes)
     }
   })
 
@@ -145,7 +152,7 @@ export function setupMainCommands() {
     AppCommands.SET_AUTHENTICATION_SETTINGS,
     async (payload: IAuthenticationState) => {
       // Set Authentication State
-      settings.setAuthenticatedUser(payload.authenticatedUser ?? null)
+      settings.setAuthenticatedUser(payload.authenticatedUser ?? settings.getAuthenticatedUser())
       if (payload.refreshToken) {
         // Encrypt the refresh token before saving to disk, will throw error
         // back to caller if encryption fails

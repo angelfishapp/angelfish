@@ -49,17 +49,16 @@ export function Command<P, R>(name: string) {
  * Register all handlers decorated using @Command for every class that has been registered
  * with the decorator.
  *
- * @param classes: Function[]    Array of classes to register commands for
+ * @param instances: object[]    Array of class instances to register commands for
  */
-export function registerCommands(classes: { new (): any }[]) {
-  for (const cls of classes) {
-    // Instantiate the class
-    new (cls as any)()
-    const prototype = cls.prototype
+export function registerCommands(instances: object[]) {
+  for (const instance of instances) {
+    const prototype = Object.getPrototypeOf(instance)
     const commands = Reflect.getMetadata(REFLECT_COMMAND_METADATA_KEY, prototype) || []
     for (const command of commands) {
-      const handler = prototype[command.method]
-      CommandsClient.registerCommand(command.name, handler.bind(prototype))
+      const handler = (instance as any)[command.method]
+      // Bind method to its instance to keep class state
+      CommandsClient.registerCommand(command.name, handler.bind(instance))
     }
   }
 }

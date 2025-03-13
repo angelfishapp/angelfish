@@ -22,6 +22,7 @@ import type {
   ICommandResponse,
   ICommandResponseError,
 } from './commands-messages-types'
+import { redactPayload } from './commands-registry-utils'
 
 /**
  * A ResposeHandler is a Promise that can be resolved or rejected by the client
@@ -183,11 +184,13 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
     event:
       | MessageEventMain
       | MessageEvent<
+          | ICommandRegister
           | ICommandRequest
-          | ICommandListRequest
-          | ICommandListResponse
+          | ICommandEvent
           | ICommandResponse
           | ICommandResponseError
+          | ICommandListRequest
+          | ICommandListResponse
         >,
   ): Promise<void> => {
     const msg = event.data as
@@ -199,7 +202,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
       | ICommandListRequest
       | ICommandListResponse
 
-    this._log('debug', `Received message from ${id}:`, msg)
+    this._log('debug', `Received message from ${id}:`, redactPayload(msg))
 
     // Get channel port
     const channel = this._channels.get(id)

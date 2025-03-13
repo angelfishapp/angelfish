@@ -7,7 +7,7 @@ const logger = getWorkerLogger('TestService')
  * Test Service: Demonstrates how to build services that use the CommandRegistry to
  * handler commands and events.
  */
-export class TestService {
+class TestServiceClass {
   /**
    * Public constructor - add any event listeners here
    */
@@ -33,3 +33,6 @@ export class TestService {
     return { response: `Hello ${payload.name}` }
   }
 }
+
+// Export instance of Class
+export const TestService = new TestServiceClass()
