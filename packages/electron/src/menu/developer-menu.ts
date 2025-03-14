@@ -2,7 +2,11 @@ import type { MenuItemConstructorOptions } from 'electron'
 import { Menu } from 'electron'
 import type { LogLevel } from 'electron-log'
 
+import { CommandsRegistryMain } from '../commands/commands-registry-main'
+import { LogManager } from '../logging/log-manager'
 import { settings } from '../settings'
+
+const logger = LogManager.getMainLogger('DeveloperMenu')
 
 export const DeveloperMenu: MenuItemConstructorOptions = {
   label: 'Development',
@@ -13,6 +17,19 @@ export const DeveloperMenu: MenuItemConstructorOptions = {
     {
       label: 'Log Level',
       submenu: generateLogLevelMenu(),
+    },
+    { type: 'separator' },
+    {
+      label: 'List Main Channels',
+      click: () => {
+        logger.info('Listing Main Connected Channels', CommandsRegistryMain.listChannels())
+      },
+    },
+    {
+      label: 'List Main Commands',
+      click: () => {
+        logger.info('Listing Main Registered Commands', CommandsRegistryMain.listCommands())
+      },
     },
   ],
 }

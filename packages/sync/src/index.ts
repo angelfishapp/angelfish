@@ -1,4 +1,4 @@
-import { CommandsClient, Logger, registerCommands } from '@angelfish/core'
+import { AppCommands, CommandsClient, Logger, registerCommands } from '@angelfish/core'
 
 import { AuthService } from './services/auth'
 import { CloudService } from './services/cloud'
@@ -17,7 +17,11 @@ window.onload = async () => {
   await AuthService.init()
 
   // Test sending an OOB Code
-  await CommandsClient.executeCommand('auth.send.oob.code', { email: 'test@angelfish.app' })
-  const user = await CommandsClient.executeCommand('auth.authenticate', { oob_code: '123456' })
+  await CommandsClient.executeCommand(AppCommands.AUTH_SEND_OOB_CODE, {
+    email: 'test@angelfish.app',
+  })
+  const user = await CommandsClient.executeCommand(AppCommands.AUTH_AUTHENTICATE, {
+    oob_code: '123456',
+  })
   logger.info('Authenticated User:', user)
 }

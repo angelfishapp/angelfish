@@ -34,4 +34,44 @@ export enum AppCommands {
    * Set the last opened book file path
    */
   SET_BOOK_FILE_PATH_SETTING = 'set.book.file.path.setting',
+  /**
+   * Send an Out-Of-Band (OOB) code to the user's email for authentication
+   */
+  AUTH_SEND_OOB_CODE = 'auth.get.oob.code',
+  /**
+   * Authenticate a user with an OOB code sent to their email
+   */
+  AUTH_AUTHENTICATE = 'auth.authenticate',
+  /**
+   * Logout the currently authenticated user and delete any
+   * active refresh tokens the Cloud API has for them
+   */
+  AUTH_LOGOUT = 'auth.logout',
+  /**
+   * Get the authenticated user's profile from Cloud API
+   */
+  GET_AUTNETICATED_USER = 'get.authenticated.user',
+  /**
+   * Update the authenticated user's profile on Cloud API
+   */
+  UPDATE_AUTHENTICATED_USER = 'update.authenticated.user',
+  /**
+   * Search Cloud API for Financial Institutions by name
+   * and return a list of matching institutions
+   */
+  SEARCH_INSTITUTIONS = 'search.institutions',
+  /**
+   * Get the list of all available currencies from Cloud API
+   */
+  GET_CURRENCIES = 'get.currencies',
+  /**
+   * Get the current spot currency rates from Cloud API
+   * for a given base currency and list of currencies
+   */
+  GET_SPOT_CURRENCY_RATES = 'get.spot.currency.rates',
+  /**
+   * Get the daily historical currency rates from Cloud API
+   * for a given base currency and currency between two dates
+   */
+  GET_HISTORICAL_CURRENCY_RATES = 'get.historical.currency.rates',
 }
