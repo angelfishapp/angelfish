@@ -3,7 +3,6 @@ import type { LogFunctions, LogLevel } from 'electron-log'
 
 import type {
   ChannelID,
-  CommandHandler,
   CommandID,
   EventHandler,
   EventID,
@@ -11,6 +10,7 @@ import type {
   ICommandsRegistry,
   MessageID,
   OriginProcessID,
+  TypedCommandHandler,
 } from '@angelfish/core'
 import { CommandRegistryEvents } from '@angelfish/core'
 import type {
@@ -359,7 +359,10 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
    * @param command     The unique Command to register
    * @param handler     The Command handler to execute when Command is invoked
    */
-  public async registerCommand(command: CommandID, handler: CommandHandler): Promise<void> {
+  public async registerCommand<P, R>(
+    command: CommandID,
+    handler: TypedCommandHandler<P, R>,
+  ): Promise<void> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       if (this._commands.has(command)) {
@@ -412,26 +415,30 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
   }
 
   /**
-   * Execute a command with optional payload T
+   * Execute a command with optional payload P and return a Promise of type R
    *
-   * @param command   Command to invoke
-   * @param payload   Optional payload to send with command
-   * @throws          Error if command not found or fails
+   * @param commandId     Command ID to invoke
+   * @param request       Optional payload to send with command
+   * @throws              Error if command not found or fails
    */
-  public async executeCommand<P>(command: string, payload: object = {}): Promise<P> {
-    const commandInfo = this._commands.get(command)
+  public async executeCommand<R, P = any>(
+    commandId: string,
+    ...args: P extends void ? [] : [P]
+  ): Promise<R> {
+    const commandInfo = this._commands.get(commandId)
+    const payload = args.length > 0 ? args[0] : {}
     if (commandInfo) {
       if (commandInfo.isLocal) {
         // Handle local command
-        return await commandInfo.handler(payload)
+        return (await commandInfo.handler(payload as object)) as R
       }
       // Handle remote command
       const channel = this._channels.get(commandInfo.channelId)
       if (channel) {
-        return await this._invoke<P>(channel, {
+        return await this._invoke<R>(channel, {
           type: 'request',
           id: crypto.randomUUID(),
-          command,
+          command: commandId,
           payload,
         } as ICommandRequest)
       }
@@ -442,17 +449,17 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
     if (this._config.routerChannel) {
       const routerChannel = this._channels.get(this._config.routerChannel)
       if (routerChannel) {
-        return await this._invoke<P>(routerChannel, {
+        return await this._invoke<R>(routerChannel, {
           type: 'request',
           id: crypto.randomUUID(),
-          command,
+          command: commandId,
           payload,
         } as ICommandRequest)
       }
       throw new Error(`Router channel ${this._config.routerChannel} not found`)
     }
 
-    throw new Error(`Command "${command}" and router channel not found`)
+    throw new Error(`Command "${commandId}" and router channel not found`)
   }
 
   /**
@@ -464,9 +471,9 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
    * @returns         A Promise that resolves with the response
    *                  or rejects with an error when command fails
    */
-  private async _invoke<P>(channel: T, request: ICommandRequest | ICommandRegister): Promise<P> {
+  private async _invoke<R>(channel: T, request: ICommandRequest | ICommandRegister): Promise<R> {
     channel.postMessage(request)
-    return new Promise<P>((resolve, reject) => {
+    return new Promise<R>((resolve, reject) => {
       this._replyHandlers.set(request.id, { resolve, reject })
     })
   }

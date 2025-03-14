@@ -1,6 +1,8 @@
 import type { MenuItem, MenuItemConstructorOptions } from 'electron'
 import { dialog } from 'electron'
 
+import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
 
 export const FileMenu: MenuItemConstructorOptions = {
@@ -45,7 +47,10 @@ export const FileMenu: MenuItemConstructorOptions = {
       enabled: false,
       click: async (menuItem: MenuItem) => {
         menuItem.enabled = false
-        await CommandsRegistryMain.executeCommand('sync.book')
+        await CommandsRegistryMain.executeCommand<
+          AppCommandResponse<AppCommandIds.START_SYNC>,
+          AppCommandRequest<AppCommandIds.START_SYNC>
+        >(AppCommandIds.START_SYNC)
         menuItem.enabled = true
       },
     },
@@ -55,7 +60,10 @@ export const FileMenu: MenuItemConstructorOptions = {
       id: 'file-logout',
       enabled: false,
       click: async () => {
-        await CommandsRegistryMain.executeCommand('logout')
+        await CommandsRegistryMain.executeCommand<
+          AppCommandResponse<AppCommandIds.AUTH_LOGOUT>,
+          AppCommandRequest<AppCommandIds.AUTH_LOGOUT>
+        >(AppCommandIds.AUTH_LOGOUT)
       },
     },
     { type: 'separator' },

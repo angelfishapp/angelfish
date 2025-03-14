@@ -1,3 +1,8 @@
+/**
+ * Put complex App Command Types here, these are not exported outside of the core package, and only
+ * used in the `app-commands.ts` file to define the command payloads for the commands that are registered
+ */
+
 import type { IAuthenticatedUser } from '../types'
 
 /**
@@ -113,9 +118,16 @@ export interface IAuthenticationState {
 }
 
 /**
- * Interface for the Book File Path to save the last opened book file path
- * to settings between sessions.
+ * Interface to summarize the sync status and stats for a sync
  */
-export interface IBookFilePath {
-  filePath?: string | null
+export interface ISyncSummary {
+  /**
+   * Whether the sync completed successfully or exited early with error
+   * If false, the `errorMessage` property will contain the reason for failure
+   */
+  completed: boolean
+  /**
+   * Error message if the sync did not finish successfully
+   */
+  errorMessage?: string
 }

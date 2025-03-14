@@ -1,3 +1,4 @@
+import type { AppCommandIds, AppCommandRequest, AppCommandResponse } from '../app/app-commands'
 import type {
   ChannelID,
   CommandHandler,
@@ -25,14 +26,35 @@ export const CommandsClient = {
   },
 
   /**
-   * Execute a command with the CommandsRegistry. Can type command return value with generics.
+   * Execute a command with the CommandsRegistry.
+   * Can type command payload and return value with generics.
    *
-   * @param commandID - The ID of the command to execute.
-   * @param payload - The payload to pass to the command handler.
-   * @returns A promise that resolves with the return value of the command handler.
+   * @param commandId   The ID of the command to execute.
+   * @param request     The Request payload to pass to the command handler.
+   * @returns           A promise that resolves with the return value of the command handler.
    */
-  executeCommand: async <P>(commandID: string, payload?: any): Promise<P> => {
-    return await window.commands.executeCommand(commandID, payload)
+  executeCommand: async <R, P = any>(commandId: string, request?: P): Promise<R> => {
+    return await window.commands.executeCommand(commandId, request)
+  },
+
+  /**
+   * Execute an App command with the CommandsRegistry. This is a type-safe wrapper for all
+   * App commands defined in `app-commands.ts`. It ensures that the command ID, request and
+   * response types are all in sync with the definitions in `app-commands.ts`.
+   *
+   * @param commandId   The ID of the App command to execute
+   * @param args        The Request payload to pass to the command handler. This is optional and will be inferred
+   * @returns           A promise that resolves with the return value of the command handler. The type of the return value
+   *                    is inferred from the command ID and request/response types defined in `app-commands.ts`.
+   */
+  executeAppCommand: async <T extends AppCommandIds>(
+    command: T,
+    ...args: AppCommandRequest<T> extends void ? [] : [AppCommandRequest<T>]
+  ): AppCommandResponse<T> => {
+    return window.commands.executeCommand(
+      command,
+      ...(args as [AppCommandRequest<T>]),
+    ) as AppCommandResponse<T>
   },
 
   /**
@@ -42,7 +64,7 @@ export const CommandsClient = {
    * @param eventID - The ID of the event to emit.
    * @param payload - The payload to pass to the event handler.
    */
-  emitEvent: (eventID: string, payload?: any) => {
+  emitEvent: <P = any>(eventID: string, payload?: P) => {
     window.commands.emitEvent(eventID, payload)
   },
 

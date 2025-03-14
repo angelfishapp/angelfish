@@ -1,9 +1,4 @@
-import type {
-  CurrencyCodes,
-  HistoricalCurrencyExchangeRates,
-  LatestCurrencyExchangeRates,
-  TokenResponse,
-} from '@angelfish/cloudapiclient'
+import type { TokenResponse } from '@angelfish/cloudapiclient'
 import {
   CloudAuthAPIs,
   CloudV1APIs,
@@ -11,15 +6,10 @@ import {
   UnauthorizedError,
   convertCloudUserProfile,
 } from '@angelfish/cloudapiclient'
-import type {
-  Currency,
-  IAuthenticatedUser,
-  IAuthenticatedUserUpdate,
-  IAuthenticationState,
-  IInstitutionUpdate,
-} from '@angelfish/core'
-import { AppCommands, Command, CommandsClient, Logger } from '@angelfish/core'
-import { LocalCommands } from '../../local-commands'
+import type { AppCommandRequest, AppCommandResponse, IInstitutionUpdate } from '@angelfish/core'
+import { AppCommandIds, Command, CommandsClient, Logger } from '@angelfish/core'
+import type { LocalCommandRequest, LocalCommandResponse } from '../../local-commands'
+import { LocalCommandIds } from '../../local-commands'
 import { HandleCloudError } from './cloud-service-utils'
 
 const logger = Logger.scope('CloudService')
@@ -43,9 +33,11 @@ class CloudServiceClass {
    * Initialise the API Client with authentication tokens. This is called from the AuthService
    * when initialised or new user is authenticated into App.
    */
-  @Command(LocalCommands.INIT_API_CLIENT)
+  @Command(LocalCommandIds.INIT_API_CLIENT)
   @HandleCloudError
-  public async initialiseAPIClient(request: { refreshToken: string }): Promise<void> {
+  public async initialiseAPIClient(
+    request: LocalCommandRequest<LocalCommandIds.INIT_API_CLIENT>,
+  ): LocalCommandResponse<LocalCommandIds.INIT_API_CLIENT> {
     if (!request.refreshToken) {
       throw new Error('No refresh token provided to initialise API Client')
     }
@@ -90,9 +82,11 @@ class CloudServiceClass {
    * @param email   The email address to send the OOB Code to
    * @returns       The session ID for the OOB Code
    */
-  @Command(LocalCommands.CLOUD_API_SEND_OOB_CODE)
+  @Command(LocalCommandIds.CLOUD_API_SEND_OOB_CODE)
   @HandleCloudError
-  public async sendOOBCode(request: { email: string }): Promise<string> {
+  public async sendOOBCode(
+    request: LocalCommandRequest<LocalCommandIds.CLOUD_API_SEND_OOB_CODE>,
+  ): LocalCommandResponse<LocalCommandIds.CLOUD_API_SEND_OOB_CODE> {
     const session_id = await this._authAPI.getOOBCode(request.email)
     return session_id
   }
@@ -105,12 +99,11 @@ class CloudServiceClass {
    * @param oob_code    The OOB Code the user received in their email
    * @returns           A TokenResponse containing the JWT access token and refresh token
    */
-  @Command(LocalCommands.CLOUD_API_AUTHENTICATE)
+  @Command(LocalCommandIds.CLOUD_API_AUTHENTICATE)
   @HandleCloudError
-  public async authenticate(request: {
-    session_id: string
-    oob_code: string
-  }): Promise<TokenResponse> {
+  public async authenticate(
+    request: LocalCommandRequest<LocalCommandIds.CLOUD_API_AUTHENTICATE>,
+  ): LocalCommandResponse<LocalCommandIds.CLOUD_API_AUTHENTICATE> {
     const tokenResponse = await this._authAPI.authenticate('oob_code', request.session_id, {
       oob_code: request.oob_code,
     })
@@ -128,9 +121,9 @@ class CloudServiceClass {
     logger.info('Refreshing JWT Token with refresh token', refreshToken)
     const tokenResponse = await this._authAPI.refreshToken(refreshToken)
     // Save new refresh token to local storage
-    await CommandsClient.executeCommand<void>(AppCommands.SET_AUTHENTICATION_SETTINGS, {
+    await CommandsClient.executeAppCommand(AppCommandIds.SET_AUTHENTICATION_SETTINGS, {
       refreshToken: tokenResponse.refresh_token,
-    } as IAuthenticationState)
+    })
     // Set the current JWT token to the new token
     this._current_jwt_token = tokenResponse.token
     return tokenResponse
@@ -145,9 +138,11 @@ class CloudServiceClass {
    *
    * @param token  The JWT access token to logout with
    */
-  @Command(LocalCommands.CLOUD_API_LOGOUT)
+  @Command(LocalCommandIds.CLOUD_API_LOGOUT)
   @HandleCloudError
-  public async logout(_r: void): Promise<void> {
+  public async logout(
+    _r: LocalCommandRequest<LocalCommandIds.CLOUD_API_LOGOUT>,
+  ): LocalCommandResponse<LocalCommandIds.CLOUD_API_LOGOUT> {
     if (this._current_jwt_token) {
       await this._authAPI.logout(this._current_jwt_token)
     }
@@ -159,9 +154,11 @@ class CloudServiceClass {
    * @returns   The current authenticated user profile
    * @throws    UnauthorizedError if not authenticated
    */
-  @Command(LocalCommands.CLOUD_API_GET_USER_PROFILE)
+  @Command(LocalCommandIds.CLOUD_API_GET_USER_PROFILE)
   @HandleCloudError
-  public async getUserProfile(_r: void): Promise<IAuthenticatedUser> {
+  public async getUserProfile(
+    _r: LocalCommandRequest<LocalCommandIds.CLOUD_API_GET_USER_PROFILE>,
+  ): LocalCommandResponse<LocalCommandIds.CLOUD_API_GET_USER_PROFILE> {
     const userProfile = await this._getAuthenticatedClient().userAPI.getUser()
     return convertCloudUserProfile(userProfile.data)
   }
@@ -172,9 +169,11 @@ class CloudServiceClass {
    * @param user    The local updated user profile
    * @returns       The remote updated user profile
    */
-  @Command(LocalCommands.CLOUD_API_UPDATE_USER_PROFILE)
+  @Command(LocalCommandIds.CLOUD_API_UPDATE_USER_PROFILE)
   @HandleCloudError
-  public async updateUserProfile(user: IAuthenticatedUserUpdate): Promise<IAuthenticatedUser> {
+  public async updateUserProfile(
+    user: LocalCommandRequest<LocalCommandIds.CLOUD_API_UPDATE_USER_PROFILE>,
+  ): LocalCommandResponse<LocalCommandIds.CLOUD_API_UPDATE_USER_PROFILE> {
     // Update Cloud with local data
     const requestBody = Object.fromEntries(
       Object.entries({
@@ -195,9 +194,11 @@ class CloudServiceClass {
    * @param query     Query string to search Institution name
    * @returns         Promise<IInstitutionUpdate[]>
    */
-  @Command(AppCommands.SEARCH_INSTITUTIONS)
+  @Command(AppCommandIds.SEARCH_INSTITUTIONS)
   @HandleCloudError
-  public async searchInstitutions(request: { query: string }): Promise<IInstitutionUpdate[]> {
+  public async searchInstitutions(
+    request: AppCommandRequest<AppCommandIds.SEARCH_INSTITUTIONS>,
+  ): AppCommandResponse<AppCommandIds.SEARCH_INSTITUTIONS> {
     const institutions: IInstitutionUpdate[] = []
     const response = await this._getAuthenticatedClient().institutionAPI.searchInstitutions(
       request.query,
@@ -221,9 +222,11 @@ class CloudServiceClass {
    *
    * @returns   Promise<Currency[]>
    */
-  @Command(AppCommands.GET_CURRENCIES)
+  @Command(LocalCommandIds.CLOUD_GET_CURRENCIES)
   @HandleCloudError
-  public async getCurrencies(_r: void): Promise<Currency[]> {
+  public async getCurrencies(
+    _r: LocalCommandRequest<LocalCommandIds.CLOUD_GET_CURRENCIES>,
+  ): Promise<LocalCommandResponse<LocalCommandIds.CLOUD_GET_CURRENCIES>> {
     const response = await this._getAuthenticatedClient().currencyAPI.getCurrencies()
     return response.data
   }
@@ -235,12 +238,11 @@ class CloudServiceClass {
    * @param currencies  The list of currencies to get exchange rates for (i.e. ['EUR', 'GBP'])
    * @returns           Promise<LatestCurrencyExchangeRates
    */
-  @Command(AppCommands.GET_SPOT_CURRENCY_RATES)
+  @Command(LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES)
   @HandleCloudError
-  public async getSpotCurrencyRates(request: {
-    base: CurrencyCodes
-    currencies: CurrencyCodes[]
-  }): Promise<LatestCurrencyExchangeRates> {
+  public async getSpotCurrencyRates(
+    request: LocalCommandRequest<LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES>,
+  ): LocalCommandResponse<LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES> {
     const response = await this._getAuthenticatedClient().currencyAPI.getCurrencyLatestRates(
       request.currencies,
       request.base,
@@ -257,14 +259,11 @@ class CloudServiceClass {
    * @param endDate     The end date for the historical data in YYYY-MM-DD format
    * @returns           Promise<HistoricalCurrencyExchangeRates>
    */
-  @Command(AppCommands.GET_HISTORICAL_CURRENCY_RATES)
+  @Command(LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES)
   @HandleCloudError
-  public async getHistoricCurrencyRates(request: {
-    base: CurrencyCodes
-    currency: CurrencyCodes
-    startDate: string
-    endDate: string
-  }): Promise<HistoricalCurrencyExchangeRates> {
+  public async getHistoricCurrencyRates(
+    request: LocalCommandRequest<LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES>,
+  ): LocalCommandResponse<LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES> {
     const response = await this._getAuthenticatedClient().currencyAPI.getCurrencyRates(
       request.currency,
       request.startDate,
