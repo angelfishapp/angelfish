@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES6",
-    "allowJs": false,
+    "target": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "noImplicitAny": true,
     "strict": true,
     "sourceMap": true,
     "moduleResolution": "node",
