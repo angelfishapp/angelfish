@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { formatAxiosError, NetworkOfflineError, UnauthorizedError } from '@angelfish/cloudapiclient'
-import { AppEvents, CommandsClient, Logger } from '@angelfish/core'
+import { AppEventIds, CommandsClient, Logger } from '@angelfish/core'
 
 const logger = Logger.scope('CloudService-Utils')
 
@@ -33,7 +33,7 @@ export function HandleCloudError(
 
       // Reset App online status if successful
       if (isOnline === false) {
-        CommandsClient.emitEvent(AppEvents.ON_ONLINE_STATUS_CHANGED, { online: true })
+        CommandsClient.emitAppEvent(AppEventIds.ON_ONLINE_STATUS_CHANGED, { isOnline: true })
       }
 
       return result
@@ -44,7 +44,7 @@ export function HandleCloudError(
           if (!navigator.onLine) {
             logger.warn(`NetworkOfflineError caught in ${String(propertyName)}`)
             isOnline = false
-            CommandsClient.emitEvent(AppEvents.ON_ONLINE_STATUS_CHANGED, { online: false })
+            CommandsClient.emitAppEvent(AppEventIds.ON_ONLINE_STATUS_CHANGED, { isOnline: false })
             throw new NetworkOfflineError()
           }
         }

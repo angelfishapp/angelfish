@@ -10,7 +10,7 @@ import type { AppCommandRequest, AppCommandResponse, IInstitutionUpdate } from '
 import { AppCommandIds, Command, CommandsClient, Logger } from '@angelfish/core'
 import type { LocalCommandRequest, LocalCommandResponse } from '../../local-commands'
 import { LocalCommandIds } from '../../local-commands'
-import { HandleCloudError } from './cloud-service-utils'
+import { HandleCloudError } from './cloud-error-decorator'
 
 const logger = Logger.scope('CloudService')
 
@@ -141,7 +141,7 @@ class CloudServiceClass {
   @Command(LocalCommandIds.CLOUD_API_LOGOUT)
   @HandleCloudError
   public async logout(
-    _r: LocalCommandRequest<LocalCommandIds.CLOUD_API_LOGOUT>,
+    _request: LocalCommandRequest<LocalCommandIds.CLOUD_API_LOGOUT>,
   ): LocalCommandResponse<LocalCommandIds.CLOUD_API_LOGOUT> {
     if (this._current_jwt_token) {
       await this._authAPI.logout(this._current_jwt_token)
@@ -157,7 +157,7 @@ class CloudServiceClass {
   @Command(LocalCommandIds.CLOUD_API_GET_USER_PROFILE)
   @HandleCloudError
   public async getUserProfile(
-    _r: LocalCommandRequest<LocalCommandIds.CLOUD_API_GET_USER_PROFILE>,
+    _request: LocalCommandRequest<LocalCommandIds.CLOUD_API_GET_USER_PROFILE>,
   ): LocalCommandResponse<LocalCommandIds.CLOUD_API_GET_USER_PROFILE> {
     const userProfile = await this._getAuthenticatedClient().userAPI.getUser()
     return convertCloudUserProfile(userProfile.data)
@@ -225,7 +225,7 @@ class CloudServiceClass {
   @Command(LocalCommandIds.CLOUD_GET_CURRENCIES)
   @HandleCloudError
   public async getCurrencies(
-    _r: LocalCommandRequest<LocalCommandIds.CLOUD_GET_CURRENCIES>,
+    _request: LocalCommandRequest<LocalCommandIds.CLOUD_GET_CURRENCIES>,
   ): Promise<LocalCommandResponse<LocalCommandIds.CLOUD_GET_CURRENCIES>> {
     const response = await this._getAuthenticatedClient().currencyAPI.getCurrencies()
     return response.data

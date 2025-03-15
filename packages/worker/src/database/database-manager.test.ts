@@ -14,7 +14,7 @@ let accountsRepository: Repository<AccountEntity>
  * Initialise in-memory SQLIte Database for use during tests
  */
 beforeAll(async () => {
-  appDb = await new DatabaseManager(':memory:').getDataSource()
+  appDb = await DatabaseManager.initConnection(':memory:')
   categoriesGroupRepository = appDb.getRepository(CategoryGroupEntity)
   accountsRepository = appDb.getRepository(AccountEntity)
 })

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { AppCommandIds, CommandsClient, Logger } from '@angelfish/core'
+
+const logger = Logger.scope('App')
 
 /**
  * Main Application Component
@@ -26,8 +28,7 @@ export default function App() {
       })
         .then(() => {})
         .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(`Error registering command: ${error}`)
+          logger.error(`Error registering command: ${error}`)
         })
       setIsRegistered(true)
     }
@@ -43,16 +44,14 @@ export default function App() {
             <button onClick={() => incrementCounter()}>Increment</button>
             <button
               onClick={async () => {
-                // eslint-disable-next-line no-console
-                console.log('Channels:', CommandsClient.listChannels())
+                logger.info('Channels:', CommandsClient.listChannels())
               }}
             >
               List Channels
             </button>
             <button
               onClick={async () => {
-                // eslint-disable-next-line no-console
-                console.log('Commands:', CommandsClient.listCommands())
+                logger.info('Commands:', CommandsClient.listCommands())
               }}
             >
               List Commands
@@ -65,19 +64,21 @@ export default function App() {
           <div className="buttons">
             <button
               onClick={async () => {
-                const response: { response: string } = await CommandsClient.executeCommand(
-                  'hello.world',
-                  {
-                    name: 'App',
+                const book = await CommandsClient.executeAppCommand(AppCommandIds.CREATE_BOOK, {
+                  filePath: ':memory:',
+                  book: {
+                    name: 'Test Book',
+                    entity: 'HOUSEHOLD',
+                    country: 'US',
+                    default_currency: 'USD',
                   },
-                )
-                // eslint-disable-next-line no-console
-                console.log('hello.world Response:', response)
+                })
+                logger.info(`${AppCommandIds.CREATE_BOOK} Response:`, book)
                 // eslint-disable-next-line no-alert
-                alert(response.response)
+                alert(`Created ${book.name}`)
               }}
             >
-              Execute &apos;hello.world&apos;
+              Execute &apos;{AppCommandIds.CREATE_BOOK}&apos;
             </button>
           </div>
         </div>

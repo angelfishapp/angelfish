@@ -1,13 +1,16 @@
 import { dialog, Menu, Notification, safeStorage, shell } from 'electron'
 
 import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
-import { AppCommandIds, AppEvents } from '@angelfish/core'
-import { CommandsRegistryMain } from './commands/commands-registry-main'
+import { AppCommandIds, AppEventIds } from '@angelfish/core'
+import { AppCommandsRegistryMain, CommandsRegistryMain } from './commands/commands-registry-main'
 import { LogManager } from './logging/log-manager'
 import { settings } from './settings'
 import { Environment } from './utils/environment'
 
 const logger = LogManager.getMainLogger('MainCommands')
+
+// Keep track of current App state
+let book_isOpen: boolean = false
 
 /**
  * Setup Main Event Listerners and Commands
@@ -16,13 +19,13 @@ export function setupMainCommands() {
   // Register Event Handlers
 
   // Handle Login Event
-  CommandsRegistryMain.addEventListener(AppEvents.ON_LOGIN, (payload: any) => {
+  AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOGIN, () => {
     const appMenu = Menu.getApplicationMenu()
     if (appMenu) {
       const fileSync = appMenu.getMenuItemById('file-syncronize')
       const fileLogout = appMenu.getMenuItemById('file-logout')
       if (fileSync) {
-        if (payload.book) {
+        if (book_isOpen) {
           fileSync.enabled = true
         }
       }
@@ -33,7 +36,7 @@ export function setupMainCommands() {
   })
 
   // Handle Logout Event
-  CommandsRegistryMain.addEventListener(AppEvents.ON_LOGOUT, () => {
+  AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOGOUT, () => {
     const appMenu = Menu.getApplicationMenu()
     if (appMenu) {
       const fileSync = appMenu.getMenuItemById('file-syncronize')
@@ -47,12 +50,71 @@ export function setupMainCommands() {
     }
   })
 
+  // Handle Book Opened Event
+  AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_BOOK_OPEN, () => {
+    book_isOpen = true
+    const appMenu = Menu.getApplicationMenu()
+    if (appMenu) {
+      const fileSync = appMenu.getMenuItemById('file-syncronize')
+      if (fileSync) {
+        fileSync.enabled = true
+      }
+    }
+  })
+
+  // Handle Book Closed Event
+  AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_BOOK_CLOSE, () => {
+    book_isOpen = false
+    const appMenu = Menu.getApplicationMenu()
+    if (appMenu) {
+      const fileSync = appMenu.getMenuItemById('file-syncronize')
+      if (fileSync) {
+        fileSync.enabled = true
+      }
+    }
+  })
+
+  // Handle Sync Started Event
+  AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_SYNC_STARTED, () => {
+    const appMenu = Menu.getApplicationMenu()
+    if (appMenu) {
+      const fileSync = appMenu.getMenuItemById('file-syncronize')
+      if (fileSync) {
+        fileSync.enabled = false
+      }
+    }
+  })
+
+  // Handle Sync Finished Event
+  AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_SYNC_FINISHED, () => {
+    const appMenu = Menu.getApplicationMenu()
+    if (appMenu) {
+      const fileSync = appMenu.getMenuItemById('file-syncronize')
+      if (fileSync) {
+        fileSync.enabled = true
+      }
+    }
+  })
+
+  // Handle Online Status Changed Event
+  AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_ONLINE_STATUS_CHANGED, (event) => {
+    if (event) {
+      const appMenu = Menu.getApplicationMenu()
+      if (appMenu) {
+        const fileSync = appMenu.getMenuItemById('file-syncronize')
+        if (fileSync) {
+          fileSync.enabled = event.isOnline
+        }
+      }
+    }
+  })
+
   // Setup Event Emitters
 
   // Add an event emitter whenever userSettings change
   settings.onDidChange('userSettings', (changes) => {
     if (changes) {
-      CommandsRegistryMain.emitEvent(AppEvents.ON_USER_SETTINGS_UPDATED, changes)
+      AppCommandsRegistryMain.emitAppEvent(AppEventIds.ON_USER_SETTINGS_UPDATED, changes)
     }
   })
 

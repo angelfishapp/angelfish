@@ -110,7 +110,8 @@ export async function executeLocalCommand<T extends LocalCommandIds>(
   command: T,
   ...args: LocalCommandRequest<T> extends void ? [] : [LocalCommandRequest<T>]
 ): LocalCommandResponse<T> {
-  return CommandsClient.executeCommand(command, ...(args as [LocalCommandRequest<T>])) as Promise<
-    LocalCommandResponse<T>
-  >
+  return CommandsClient.executeCommand(
+    command,
+    ...(args as [LocalCommandRequest<T>]),
+  ) as LocalCommandResponse<T>
 }

@@ -1,5 +1,5 @@
 import type { AppCommandRequest, AppCommandResponse, IAuthenticatedUser } from '@angelfish/core'
-import { AppCommandIds, AppEvents, Command, CommandsClient, Logger } from '@angelfish/core'
+import { AppCommandIds, AppEventIds, Command, CommandsClient, Logger } from '@angelfish/core'
 import { LocalCommandIds, executeLocalCommand } from '../../local-commands'
 
 const logger = Logger.scope('AuthService')
@@ -85,7 +85,7 @@ class AuthServiceClass {
     this._current_session_id = undefined
 
     // Notify App that user is logged in
-    CommandsClient.emitEvent(AppEvents.ON_LOGIN, { book: null })
+    CommandsClient.emitAppEvent(AppEventIds.ON_LOGIN, { authenticatedUser: userProfile })
 
     return userProfile
   }
@@ -96,7 +96,7 @@ class AuthServiceClass {
    */
   @Command(AppCommandIds.AUTH_LOGOUT)
   public async logout(
-    _r: AppCommandRequest<AppCommandIds.AUTH_LOGOUT>,
+    _request: AppCommandRequest<AppCommandIds.AUTH_LOGOUT>,
   ): AppCommandResponse<AppCommandIds.AUTH_LOGOUT> {
     // Log user out of Cloud APIs and remove local settings
     await executeLocalCommand(LocalCommandIds.CLOUD_API_LOGOUT)
@@ -107,16 +107,16 @@ class AuthServiceClass {
     this._isAuthenticated = false
 
     // Notify App that user is logged out
-    CommandsClient.emitEvent(AppEvents.ON_LOGOUT)
+    CommandsClient.emitAppEvent(AppEventIds.ON_LOGOUT)
   }
 
   /**
    * Get the current authenticated user profile logged into the app
    */
-  @Command(AppCommandIds.GET_AUTNETICATED_USER)
+  @Command(AppCommandIds.GET_AUTHETICATED_USER)
   public async getAuthenticatedUser(
-    _r: AppCommandRequest<AppCommandIds.GET_AUTNETICATED_USER>,
-  ): AppCommandResponse<AppCommandIds.GET_AUTNETICATED_USER> {
+    _request: AppCommandRequest<AppCommandIds.GET_AUTHETICATED_USER>,
+  ): AppCommandResponse<AppCommandIds.GET_AUTHETICATED_USER> {
     const authState = await CommandsClient.executeAppCommand(
       AppCommandIds.GET_AUTHENTICATION_SETTINGS,
     )

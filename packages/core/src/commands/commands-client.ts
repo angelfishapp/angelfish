@@ -1,4 +1,11 @@
-import type { AppCommandIds, AppCommandRequest, AppCommandResponse } from '../app/app-commands'
+import type {
+  AppCommandIds,
+  AppCommandRequest,
+  AppCommandResponse,
+  AppEvent,
+  AppEventIds,
+} from '../app'
+import { CommandRegistryEvents } from './commands-registry-events'
 import type {
   ChannelID,
   CommandHandler,
@@ -6,8 +13,6 @@ import type {
   EventHandler,
   ICommand,
 } from './commands-registry-interface'
-
-import { CommandRegistryEvents } from './commands-registry-events'
 
 /**
  * Command client - used by worker/renderer processes to call their local CommandsRegistry under
@@ -18,8 +23,8 @@ export const CommandsClient = {
    * Register a command with the CommandsRegistry. Commands starting with underscores will
    * only be available locally to the process that registered them.
    *
-   * @param commandID - The ID of the command to register.
-   * @param handler - The handler for the command.
+   * @param commandID   The ID of the command to register.
+   * @param handler     The handler for the command.
    */
   registerCommand: async (commandID: string, handler: CommandHandler): Promise<void> => {
     return await window.commands.registerCommand(commandID, handler)
@@ -61,31 +66,64 @@ export const CommandsClient = {
    * Emit an event with the CommandsRegistry. Events with underscores will only emit
    * to the process that emitted them.
    *
-   * @param eventID - The ID of the event to emit.
-   * @param payload - The payload to pass to the event handler.
+   * @param eventId   The ID of the event to emit.
+   * @param payload   The payload to pass to the event handler.
    */
-  emitEvent: <P = any>(eventID: string, payload?: P) => {
-    window.commands.emitEvent(eventID, payload)
+  emitEvent: <P = any>(eventId: string, payload?: P) => {
+    window.commands.emitEvent(eventId, payload)
+  },
+
+  /**
+   * Emit an App event with the CommandsRegistry. This is a type-safe wrapper for all
+   * App events defined in `app-events.ts`. It ensures that the event ID and payload types
+   * are all in sync with the definitions in `app-events.ts`.
+   *
+   * @param eventId   The ID of the App event to emit
+   * @param event     The payload to pass to the event handler. This is optional and will be inferred
+   */
+  emitAppEvent: <T extends AppEventIds>(
+    eventId: T,
+    ...args: AppEvent<T> extends void ? [] : [AppEvent<T>]
+  ) => {
+    window.commands.emitEvent(eventId, ...(args as [AppEvent<T>]))
   },
 
   /**
    * Add an event listener to the CommandsRegistry.
    *
-   * @param eventID - The ID of the event to listen for.
-   * @param handler - The handler for the event.
+   * @param eventId   The ID of the event to listen for.
+   * @param handler   The handler for the event.
+   * @returns         A function to remove the event listener.
    */
-  addEventListener: (eventID: string, handler: EventHandler) => {
-    window.commands.addEventListener(eventID, handler)
+  addEventListener: (eventId: string, handler: EventHandler) => {
+    return window.commands.addEventListener(eventId, handler)
+  },
+
+  /**
+   * Add an App event listener to the CommandsRegistry. This is a type-safe wrapper for all
+   * App events defined in `app-events.ts`. It ensures that the event ID and payload types
+   * are all in sync with the definitions in `app-events.ts`.
+   *
+   * @param eventId   The ID of the App event to listen for.
+   * @param handler   The Handler for the App event.
+   *                  This is a type-safe wrapper for all App events defined in `app-events.ts`.
+   * @returns         A function to remove the event listener.
+   */
+  addAppEventListener: <T extends AppEventIds>(
+    eventId: T,
+    handler: (event?: AppEvent<T>) => void,
+  ) => {
+    return window.commands.addEventListener(eventId, handler)
   },
 
   /**
    * Remove an event listener from the CommandsRegistry.
    *
-   * @param eventID - The ID of the event to remove the listener from.
-   * @param handler - The handler to remove.
+   * @param eventId   The ID of the event to remove the listener from.
+   * @param handler   The handler to remove.
    */
-  removeEventListener: (eventID: string, handler: EventHandler) => {
-    window.commands.removeEventListener(eventID, handler)
+  removeEventListener: (eventId: string, handler: EventHandler) => {
+    window.commands.removeEventListener(eventId, handler)
   },
 
   /**

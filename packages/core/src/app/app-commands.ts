@@ -24,7 +24,15 @@
  *
  */
 
-import type { IAuthenticatedUser, IAuthenticatedUserUpdate, IInstitutionUpdate } from '../types'
+import type {
+  IAuthenticatedUser,
+  IAuthenticatedUserUpdate,
+  IBook,
+  IBookUpdate,
+  IInstitutionUpdate,
+  IUser,
+  IUserUpdate,
+} from '../types'
 import type {
   IAuthenticationState,
   INotificationOptions,
@@ -85,7 +93,7 @@ export enum AppCommandIds {
   /**
    * Get the authenticated user's profile from Cloud API
    */
-  GET_AUTNETICATED_USER = 'get.authenticated.user',
+  GET_AUTHETICATED_USER = 'get.authenticated.user',
   /**
    * Update the authenticated user's profile on Cloud API
    */
@@ -100,6 +108,30 @@ export enum AppCommandIds {
    * and return the sync status
    */
   START_SYNC = 'start.sync',
+  /**
+   * Create a new Book file and open it in the current App session
+   */
+  CREATE_BOOK = 'create.book',
+  /**
+   * Open an existing Book file and open it in the current App session
+   */
+  OPEN_BOOK = 'open.book',
+  /**
+   * Close the currently opened Book file and remove it from the current App session
+   */
+  CLOSE_BOOK = 'close.book',
+  /**
+   * Get the currently opened Book details from the database
+   */
+  GET_BOOK = 'get.book',
+  /**
+   * Create a new Book or Update the currently opened Book details
+   */
+  SAVE_BOOK = 'save.book',
+  /**
+   * Save a new user or update an existing user in the database
+   */
+  SAVE_USER = 'save.user',
 }
 
 // Define request/response types for each command
@@ -148,7 +180,7 @@ export interface AppCommandDefinitions {
     request: void
     response: void
   }
-  [AppCommandIds.GET_AUTNETICATED_USER]: {
+  [AppCommandIds.GET_AUTHETICATED_USER]: {
     request: void
     response: IAuthenticatedUser | null
   }
@@ -161,8 +193,32 @@ export interface AppCommandDefinitions {
     response: IInstitutionUpdate[]
   }
   [AppCommandIds.START_SYNC]: {
-    request: void
+    request: { user?: boolean; currencies?: boolean } | void
     response: ISyncSummary
+  }
+  [AppCommandIds.CREATE_BOOK]: {
+    request: { filePath: string; book: IBookUpdate }
+    response: IBook
+  }
+  [AppCommandIds.OPEN_BOOK]: {
+    request: { filePath: string }
+    response: IBook
+  }
+  [AppCommandIds.CLOSE_BOOK]: {
+    request: void
+    response: void
+  }
+  [AppCommandIds.GET_BOOK]: {
+    request: void
+    response: IBook
+  }
+  [AppCommandIds.SAVE_BOOK]: {
+    request: IBookUpdate
+    response: IBook
+  }
+  [AppCommandIds.SAVE_USER]: {
+    request: IUserUpdate
+    response: IUser
   }
 }
 

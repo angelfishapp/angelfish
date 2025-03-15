@@ -43,10 +43,4 @@ export interface IBook {
 /**
  * Interface for Book Update Model
  */
-export interface IBookUpdate extends Omit<IBook, 'id' | 'created_on' | 'modified_on'> {
-  /* Primary Key */
-  id?: number
-
-  /* Date/time Book (account for household/business) was created */
-  created_on?: Date
-}
+export type IBookUpdate = Omit<IBook, 'id' | 'created_on' | 'modified_on'>
