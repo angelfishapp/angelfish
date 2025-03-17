@@ -16,15 +16,46 @@ class AuthServiceClass {
   private _current_session_id?: string = undefined
 
   /**
-   * Initialize the AuthService. Checks to see if user is authenticated and sets the
-   * state accordingly
+   * Initialise AuthService. If refreshToken provided, will use existing Refresh token to start service,
+   * (useful for testing).
+   *
+   * Otherwise will try and load any locally stored refresh tokens in settings file on disk,
+   * and checking if it is still valid. If not will clear local settings, but if valid will initialised service to
+   * authenticated state with currentUser/isAuthenticated set
    */
-  public async init(): Promise<void> {
+  public async init(refreshToken?: string): Promise<void> {
+    if (refreshToken) {
+      try {
+        logger.debug('Using existing JWT Bearer Token to authenticate user', refreshToken)
+        // Initialise the API Client with the new refresh token
+        await executeLocalCommand(LocalCommandIds.INIT_API_CLIENT, {
+          refreshToken,
+        })
+        this._isAuthenticated = true
+      } catch (error) {
+        logger.error('Error Initialising AuthService:', error)
+      }
+      return
+    }
+
+    // Get the current authentication state from settings file on disk
     const authState = await CommandsClient.executeAppCommand(
       AppCommandIds.GET_AUTHENTICATION_SETTINGS,
     )
+    if (authState && authState.refreshToken) {
+      try {
+        // Initialise the API Client with the new refresh token
+        await executeLocalCommand(LocalCommandIds.INIT_API_CLIENT, {
+          refreshToken: authState.refreshToken,
+        })
+      } catch (error) {
+        logger.error('Error Initialising API Client with refresh token:', error)
+      }
+    }
 
-    logger.info('AuthService initialized with authentication state', authState)
+    logger.info(
+      `Successfully Initialised AuthService: isAuthenticated=${this._isAuthenticated}, authenticatedUser=${authState?.authenticatedUser?.id}`,
+    )
   }
 
   /**
@@ -125,14 +156,21 @@ class AuthServiceClass {
   /**
    * Update the authenticated user profile with the given payload
    *
-   * @param payload   The user profile to update
+   * @param request   The user profile to update
    */
   @Command(AppCommandIds.UPDATE_AUTHENTICATED_USER)
-  public async updateAuthenticatedUser(payload: IAuthenticatedUser): Promise<void> {
-    await executeLocalCommand(LocalCommandIds.CLOUD_API_UPDATE_USER_PROFILE, payload)
+  public async updateAuthenticatedUser(
+    request: AppCommandRequest<AppCommandIds.UPDATE_AUTHENTICATED_USER>,
+  ): AppCommandResponse<AppCommandIds.UPDATE_AUTHENTICATED_USER> {
+    const updatedUser = await executeLocalCommand(
+      LocalCommandIds.CLOUD_API_UPDATE_USER_PROFILE,
+      request,
+    )
     await CommandsClient.executeAppCommand(AppCommandIds.SET_AUTHENTICATION_SETTINGS, {
-      authenticatedUser: payload,
+      authenticatedUser: updatedUser,
     })
+
+    return updatedUser
   }
 }
 

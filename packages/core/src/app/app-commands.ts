@@ -25,11 +25,16 @@
  */
 
 import type {
+  IAccount,
   IAuthenticatedUser,
   IAuthenticatedUserUpdate,
   IBook,
   IBookUpdate,
+  ICategoryGroup,
+  IInstitution,
   IInstitutionUpdate,
+  ITag,
+  ITagUpdate,
   IUser,
   IUserUpdate,
 } from '../types'
@@ -129,9 +134,87 @@ export enum AppCommandIds {
    */
   SAVE_BOOK = 'save.book',
   /**
-   * Save a new user or update an existing user in the database
+   * List all Users in the database
+   */
+  LIST_USERS = 'list.users',
+  /**
+   * Get a User from the database by Id or cloud_id
+   */
+  GET_USER = 'get.user',
+  /**
+   * Save a new User or update an existing User in the database
    */
   SAVE_USER = 'save.user',
+  /**
+   * Delete a User from the database by Id
+   */
+  DELETE_USER = 'delete.user',
+  /**
+   * List all Accounts in the database
+   */
+  LIST_ACCOUNTS = 'list.accounts',
+  /**
+   * Get an Account from the database by Id
+   */
+  GET_ACCOUNT = 'get.account',
+  /**
+   * Save a new Account or update an existing Account in the database
+   */
+  SAVE_ACCOUNT = 'save.account',
+  /**
+   * Delete an Account from the database by Id
+   */
+  DELETE_ACCOUNT = 'delete.account',
+  /**
+   * List all Category Groups in the database
+   */
+  LIST_CATEGORY_GROUPS = 'list.category.groups',
+  /**
+   * Get a Category Group from the database by Id
+   */
+  GET_CATEGORY_GROUP = 'get.category.group',
+  /**
+   * Save a new Category Group or update an existing Category Group in the database
+   */
+  SAVE_CATEGORY_GROUP = 'save.category.group',
+  /**
+   * Delete a Category Group from the database by Id
+   */
+  DELETE_CATEGORY_GROUP = 'delete.category.group',
+  /**
+   * List all Institutions in the database
+   */
+  LIST_INSTITUTIONS = 'list.institutions',
+  /**
+   * Get an Institution from the database by Id
+   */
+  GET_INSTITUTION = 'get.institution',
+  /**
+   * Save a new Institution or update an existing Institution in the database
+   */
+  SAVE_INSTITUTION = 'save.institution',
+  /**
+   * Delete an Institution from the database by Id
+   * and remove all accounts & transactions associated with it
+   */
+  DELETE_INSTITUTION = 'delete.institution',
+  /**
+   * List all Tags in the database
+   */
+  LIST_TAGS = 'list.tags',
+  /**
+   * Get a Tag from the database by Id
+   */
+  GET_TAG = 'get.tag',
+  /**
+   * Save a new Tag or update an existing Tag in the database
+   */
+  SAVE_TAG = 'save.tag',
+  /**
+   * Delete a Tag from the database by Id
+   * and remove it from all line items associated with it
+   */
+  DELETE_TAG = 'delete.tag',
 }
 
 // Define request/response types for each command
@@ -216,9 +299,89 @@ export interface AppCommandDefinitions {
     request: IBookUpdate
     response: IBook
   }
+  [AppCommandIds.LIST_USERS]: {
+    request: void
+    response: IUser[]
+  }
+  [AppCommandIds.GET_USER]: {
+    request: { id?: number; cloud_id?: string }
+    response: IUser | null
+  }
   [AppCommandIds.SAVE_USER]: {
     request: IUserUpdate
     response: IUser
+  }
+  [AppCommandIds.DELETE_USER]: {
+    request: { id: number }
+    response: void
+  }
+  [AppCommandIds.LIST_ACCOUNTS]: {
+    request: {
+      account_class?: 'CATEGORY' | 'ACCOUNT'
+      category_group_id?: number
+      institution_id?: number
+    }
+    response: IAccount[]
+  }
+  [AppCommandIds.GET_ACCOUNT]: {
+    request: { id: number }
+    response: IAccount | null
+  }
+  [AppCommandIds.SAVE_ACCOUNT]: {
+    request: Partial<IAccount>
+    response: IAccount
+  }
+  [AppCommandIds.DELETE_ACCOUNT]: {
+    request: { id: number; reassignId: number | null }
+    response: void
+  }
+  [AppCommandIds.LIST_CATEGORY_GROUPS]: {
+    request: void
+    response: ICategoryGroup[]
+  }
+  [AppCommandIds.GET_CATEGORY_GROUP]: {
+    request: { id: number }
+    response: ICategoryGroup | null
+  }
+  [AppCommandIds.SAVE_CATEGORY_GROUP]: {
+    request: Partial<ICategoryGroup>
+    response: ICategoryGroup
+  }
+  [AppCommandIds.DELETE_CATEGORY_GROUP]: {
+    request: { id: number }
+    response: void
+  }
+  [AppCommandIds.LIST_INSTITUTIONS]: {
+    request: void
+    response: IInstitution[]
+  }
+  [AppCommandIds.GET_INSTITUTION]: {
+    request: { id: number }
+    response: IInstitution | null
+  }
+  [AppCommandIds.SAVE_INSTITUTION]: {
+    request: IInstitutionUpdate
+    response: IInstitution
+  }
+  [AppCommandIds.DELETE_INSTITUTION]: {
+    request: { id: number }
+    response: void
+  }
+  [AppCommandIds.LIST_TAGS]: {
+    request: void
+    response: ITag[]
+  }
+  [AppCommandIds.GET_TAG]: {
+    request: { id: number }
+    response: ITag | null
+  }
+  [AppCommandIds.SAVE_TAG]: {
+    request: ITagUpdate
+    response: ITag
+  }
+  [AppCommandIds.DELETE_TAG]: {
+    request: { id: number }
+    response: void
   }
 }
 
