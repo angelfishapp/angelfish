@@ -19,10 +19,6 @@ declare global {
        */
       environment: string
       /**
-       * Boolean flag to determine if the app is running in development mode
-       */
-      isDev: boolean
-      /**
        * The OS platform the app is running on
        */
       platform: 'macos' | 'windows' | 'linux' | string

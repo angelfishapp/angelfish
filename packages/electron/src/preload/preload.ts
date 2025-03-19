@@ -32,8 +32,6 @@ const commandBridge = {
 const environmentBridge = {
   // The environment the app is running in
   environment: getArgumentValue('environment'),
-  // Boolean flag to determine if the app is running in development mode
-  isDev: getArgumentValue('environment') === 'development',
   // The OS platform the app is running on
   platform: getArgumentValue('platform'),
   // The process ID of the current process
@@ -69,7 +67,7 @@ ipcRenderer.on(CommandRegistryEvents.REGISTER_NEW_CHANNEL, (event, id: string) =
 // Handle log level changes between refreshes
 ipcRenderer.on(LogEvents.ON_LOGGING_SET_LEVEL, (_event, level: LevelOption) => {
   // As we're only logging to console in development, check if we're in development
-  if (environmentBridge.isDev) {
+  if (environmentBridge.platform === 'development') {
     log.transports.console.level = level
     log.scope('Preload').info(`Log level set to ${level}`)
   }
@@ -80,7 +78,7 @@ commandRegistry.addEventListener(
   LogEvents.ON_LOGGING_LEVEL_CHANGED,
   (change: { level: LevelOption }) => {
     // As we're only logging to console in development, check if we're in development
-    if (environmentBridge.isDev) {
+    if (environmentBridge.platform === 'development') {
       log.transports.console.level = change.level
       environmentBridge.logLevel = change.level
       log.scope('Preload').info(`Log level changed to ${change.level}`)

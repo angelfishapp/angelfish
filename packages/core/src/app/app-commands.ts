@@ -33,10 +33,17 @@ import type {
   ICategoryGroup,
   IInstitution,
   IInstitutionUpdate,
+  ImportTransactionsMapper,
   ITag,
   ITagUpdate,
+  ITransaction,
+  ITransactionUpdate,
   IUser,
   IUserUpdate,
+  ParsedFileMappings,
+  ReconciledTransaction,
+  ReportsData,
+  ReportsQuery,
 } from '../types'
 import type {
   IAuthenticationState,
@@ -215,6 +222,58 @@ export enum AppCommandIds {
    * and remove it from all line items associated with it
    */
   DELETE_TAG = 'delete.tag',
+  /**
+   * List all Transactions for given query
+   */
+  LIST_TRANSACTIONS = 'list.transactions',
+  /**
+   * Get a Transaction from the database by Id
+   */
+  GET_TRANSACTION = 'get.transaction',
+  /**
+   * Save a new Transaction or update an existing Transaction in the database
+   */
+  SAVE_TRANSACTIONS = 'save.transactions',
+  /**
+   * Delete a Transaction from the database by Id
+   * and remove all line items associated with it
+   */
+  DELETE_TRANSACTION = 'delete.transaction',
+  /**
+   * Run a Report query on the currently opened Book file
+   */
+  RUN_REPORT = 'run.report',
+  /**
+   * Export a Report query to a file (CSV, PDF, etc.)
+   */
+  EXPORT_REPORT = 'export.report',
+  /**
+   * Read an OFX, QFX, QIF or CSV File. Will get transactions from the file and then reconcile them with
+   * existing transactions in the database.
+   */
+  IMPORT_FILE = 'import.file',
+  /**
+   * Parse the file to get any mappings that are required to map the file data correctly
+   * to the ITransaction interface. (i,e, for CSV files)
+   */
+  IMPORT_MAPPINGS = 'import.mappings',
+  /**
+   * Once the transactions have been reconciled and reviewed by the user, complete the import
+   * by committing the transactions to the database.
+   */
+  IMPORT_TRANSACTIONS = 'import.transactions',
+  /**
+   * List all Datasets in the database
+   */
+  LIST_DATASETS = 'list.datasets',
+  /**
+   * Run a saved query on a Dataset to get the data for the dataset
+   */
+  RUN_DATASET_QUERY = 'run.dataset.query',
+  /**
+   * Insert rows into a Dataset from an array of objects
+   */
+  INSERT_DATASET_ROWS = 'insert.dataset.rows',
 }
 
 // Define request/response types for each command
@@ -381,6 +440,64 @@ export interface AppCommandDefinitions {
   }
   [AppCommandIds.DELETE_TAG]: {
     request: { id: number }
+    response: void
+  }
+  [AppCommandIds.LIST_TRANSACTIONS]: {
+    request: {
+      account_id?: number
+      cat_id?: number
+      cat_group_id?: number
+      start_date?: string
+      end_date?: string
+    }
+    response: ITransaction[]
+  }
+  [AppCommandIds.GET_TRANSACTION]: {
+    request: { id: number }
+    response: ITransaction | null
+  }
+  [AppCommandIds.SAVE_TRANSACTIONS]: {
+    request: ITransactionUpdate[]
+    response: ITransaction[]
+  }
+  [AppCommandIds.DELETE_TRANSACTION]: {
+    request: { id: number }
+    response: void
+  }
+  [AppCommandIds.RUN_REPORT]: {
+    request: ReportsQuery
+    response: ReportsData
+  }
+  [AppCommandIds.EXPORT_REPORT]: {
+    request: {
+      filePath: string
+      fileType: 'XLSX'
+      query: ReportsQuery
+    }
+    response: void
+  }
+  [AppCommandIds.IMPORT_FILE]: {
+    request: { filePath: string; mapper: ImportTransactionsMapper }
+    response: ReconciledTransaction[]
+  }
+  [AppCommandIds.IMPORT_MAPPINGS]: {
+    request: { filePath: string; delimiter: string }
+    response: ParsedFileMappings
+  }
+  [AppCommandIds.IMPORT_TRANSACTIONS]: {
+    request: { reconciledTransactions: ReconciledTransaction[] }
+    response: ITransaction[]
+  }
+  [AppCommandIds.LIST_DATASETS]: {
+    request: void
+    response: string[]
+  }
+  [AppCommandIds.RUN_DATASET_QUERY]: {
+    request: { datasetName: string; queryName: string; params?: any[] }
+    response: any[]
+  }
+  [AppCommandIds.INSERT_DATASET_ROWS]: {
+    request: { datasetName: string; rows: any[] }
     response: void
   }
 }

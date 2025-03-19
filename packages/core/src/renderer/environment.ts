@@ -3,6 +3,11 @@
  * initialised in preload script for each window/process
  */
 export const Environment = new (class {
+  // Constants
+  public readonly DEVELOPMENT = 'development'
+  public readonly TEST = 'test'
+  public readonly PRODUCTION = 'production'
+
   /**
    * The environment the app is running in
    */
@@ -14,7 +19,21 @@ export const Environment = new (class {
    * Boolean flag to determine if the app is running in development mode
    */
   public get isDev(): boolean {
-    return window.environment.isDev
+    return window.environment.environment === this.DEVELOPMENT
+  }
+
+  /**
+   * Boolean flag to determine if the app is running in test mode
+   */
+  public get isTest(): boolean {
+    return window.environment.environment === this.TEST
+  }
+
+  /**
+   * Boolean flag to determine if the app is running in production mode
+   */
+  public get isProduction(): boolean {
+    return window.environment.environment === this.PRODUCTION
   }
 
   /**
