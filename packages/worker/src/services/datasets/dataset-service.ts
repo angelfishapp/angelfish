@@ -68,7 +68,10 @@ class DatasetServiceClass {
   }
 
   /**
-   * Register a dataset and create the corresponding table in SQLite
+   * Register a dataset and create the corresponding table in SQLite.
+   *
+   * Wraps code in Promise as SQLite operations only support callbacks and we want to use
+   * async/await for cleaner code.
    *
    * @param dataset Dataset configuration
    * @throws        If dataset with the same name is already registered or issues with schema
@@ -114,6 +117,9 @@ class DatasetServiceClass {
    * Insert or update data into a dataset. If the data already exists in the dataset
    * it will be updated, otherwise it will be inserted, using primary key column(s) to
    * identify the row.
+   *
+   * Wraps code in Promise as SQLite operations only support callbacks and we want to use
+   * async/await for cleaner code.
    *
    * @param datasetName Name of the dataset
    * @param data        Data to insert
@@ -175,6 +181,9 @@ class DatasetServiceClass {
   /**
    * Run a saved query from the dataset configuration
    *
+   * Wraps code in Promise as SQLite operations only support callbacks and we want to use
+   * async/await for cleaner code.
+   *
    * @param datasetName   Name of the dataset
    * @param queryName     Name of the saved query
    * @param params        Parameters for the query if needed
@@ -222,6 +231,9 @@ class DatasetServiceClass {
    * Delete a dataset and all its data in the SQLite database and remove from the local
    * registry
    *
+   * Wraps code in Promise as SQLite operations only support callbacks and we want to use
+   * async/await for cleaner code.
+   *
    * @param datasetName   The name of the dataset to delete
    * @returns             Promise that resolves when the dataset is deleted
    */
@@ -239,6 +251,9 @@ class DatasetServiceClass {
 
   /**
    * Close the database connection and clear all dataset configurations
+   *
+   * Wraps code in Promise as SQLite operations only support callbacks and we want to use
+   * async/await for cleaner code.
    */
   public close(): Promise<void> {
     return new Promise((resolve, reject) => {

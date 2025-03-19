@@ -1,4 +1,5 @@
 export * from './accounts.js'
+export * from './authenticated-user.js'
 export * from './book.js'
 export * from './category-groups.js'
 export * from './imports.js'

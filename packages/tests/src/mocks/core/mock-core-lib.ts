@@ -18,6 +18,17 @@ export const mockAngelfishCoreLib = () => {
       Environment: MockEnvironment,
       Logger: MockLogger,
       CommandsClient: MockCommandsClient,
+      registerCommands: (instances: object[]) => {
+        for (const instance of instances) {
+          const prototype = Object.getPrototypeOf(instance)
+          const commands = Reflect.getMetadata('command:handler', prototype) || []
+          for (const command of commands) {
+            const handler = (instance as any)[command.method]
+            // Bind method to its instance to keep class state
+            MockCommandsClient.registerCommand(command.name, handler.bind(instance))
+          }
+        }
+      },
     }
   })
 }

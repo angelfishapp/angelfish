@@ -2,7 +2,25 @@
  * Tests for all the BookService Methods
  */
 
+import { AppCommandIds, registerCommands } from '@angelfish/core'
+import { authenticatedUser, mockRegisterTypedAppCommand } from '@angelfish/tests'
+import { UserService } from '../user'
+
 import { BookService } from '.'
+
+/**
+ * Mock required App Commands for tests
+ */
+beforeAll(async () => {
+  mockRegisterTypedAppCommand(AppCommandIds.GET_AUTHETICATED_USER, async () => {
+    return authenticatedUser
+  })
+  mockRegisterTypedAppCommand(AppCommandIds.SET_BOOK_FILE_PATH_SETTING, async () => {
+    return
+  })
+  // Register the UserService commands to allow BookService to use them
+  registerCommands([UserService])
+})
 
 /**
  * Tests

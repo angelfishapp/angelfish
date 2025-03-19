@@ -187,7 +187,7 @@ class ImportServiceClass {
   @Command(AppCommandIds.IMPORT_MAPPINGS)
   public async readFileMappings({
     filePath,
-    delimiter,
+    delimiter = ',',
   }: AppCommandRequest<AppCommandIds.IMPORT_MAPPINGS>): AppCommandResponse<AppCommandIds.IMPORT_MAPPINGS> {
     // Determine File Type
     const ext = this._getFileExtension(filePath)

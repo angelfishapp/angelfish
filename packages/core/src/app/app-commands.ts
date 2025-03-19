@@ -481,7 +481,7 @@ export interface AppCommandDefinitions {
     response: ReconciledTransaction[]
   }
   [AppCommandIds.IMPORT_MAPPINGS]: {
-    request: { filePath: string; delimiter: string }
+    request: { filePath: string; delimiter?: string }
     response: ParsedFileMappings
   }
   [AppCommandIds.IMPORT_TRANSACTIONS]: {
