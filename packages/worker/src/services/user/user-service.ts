@@ -33,18 +33,19 @@ class UserServiceClass {
    * @returns         The User found in the database or null if not found
    */
   @Command(AppCommandIds.GET_USER)
-  public async getUser(
-    request: AppCommandRequest<AppCommandIds.GET_USER>,
-  ): AppCommandResponse<AppCommandIds.GET_USER> {
+  public async getUser({
+    id,
+    cloud_id,
+  }: AppCommandRequest<AppCommandIds.GET_USER>): AppCommandResponse<AppCommandIds.GET_USER> {
     const userRepo = DatabaseManager.getConnection().getRepository(UserEntity)
     // Ensure exactly one of `id` or `cloud_id` is provided
-    if (!!request.id === !!request.cloud_id) {
+    if (!!id === !!cloud_id) {
       throw new Error("Either 'id' or 'cloud_id' must be provided, but not both.")
     }
 
     // Search by whichever parameter is provided
     return await userRepo.findOne({
-      where: request.id ? { id: request.id } : { cloud_id: request.cloud_id },
+      where: id ? { id } : { cloud_id },
     })
   }
 
@@ -79,13 +80,13 @@ class UserServiceClass {
    * @param id    The User Id of the user to delete in the database
    */
   @Command(AppCommandIds.DELETE_USER)
-  public async deleteUser(
-    request: AppCommandRequest<AppCommandIds.DELETE_USER>,
-  ): AppCommandResponse<AppCommandIds.DELETE_USER> {
+  public async deleteUser({
+    id,
+  }: AppCommandRequest<AppCommandIds.DELETE_USER>): AppCommandResponse<AppCommandIds.DELETE_USER> {
     // Get User from database and check it exists
-    const dBuser = await this.getUser({ id: request.id })
+    const dBuser = await this.getUser({ id })
     if (!dBuser) {
-      throw Error(`User with ID ${request.id} does not exist`)
+      throw Error(`User with ID ${id} does not exist`)
     }
 
     // Check current user isn't trying to delete themselves
@@ -98,7 +99,7 @@ class UserServiceClass {
 
     // Delete user from database
     const userRepo = DatabaseManager.getConnection().getRepository(UserEntity)
-    await userRepo.delete(request.id)
+    await userRepo.delete(id)
   }
 }
 

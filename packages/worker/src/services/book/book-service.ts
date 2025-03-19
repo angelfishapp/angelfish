@@ -50,10 +50,11 @@ class BookServiceClass {
    * @returns           The new Book
    */
   @Command(AppCommandIds.CREATE_BOOK)
-  public async createBook(
-    request: AppCommandRequest<AppCommandIds.CREATE_BOOK>,
-  ): AppCommandResponse<AppCommandIds.CREATE_BOOK> {
-    return await this._openDatabase(request.filePath, request.book)
+  public async createBook({
+    filePath,
+    book,
+  }: AppCommandRequest<AppCommandIds.CREATE_BOOK>): AppCommandResponse<AppCommandIds.CREATE_BOOK> {
+    return await this._openDatabase(filePath, book)
   }
 
   /**
@@ -64,10 +65,10 @@ class BookServiceClass {
    * @returns           The loaded Book
    */
   @Command(AppCommandIds.OPEN_BOOK)
-  public async openBook(
-    request: AppCommandRequest<AppCommandIds.OPEN_BOOK>,
-  ): AppCommandResponse<AppCommandIds.OPEN_BOOK> {
-    return await this._openDatabase(request.filePath)
+  public async openBook({
+    filePath,
+  }: AppCommandRequest<AppCommandIds.OPEN_BOOK>): AppCommandResponse<AppCommandIds.OPEN_BOOK> {
+    return await this._openDatabase(filePath)
   }
 
   /**

@@ -65,7 +65,7 @@ class TagServiceClass {
    * @param id    The primary key for the Tag to delete
    */
   @Command(AppCommandIds.DELETE_TAG)
-  public async delete({
+  public async deleteTag({
     id,
   }: AppCommandRequest<AppCommandIds.DELETE_TAG>): AppCommandResponse<AppCommandIds.DELETE_TAG> {
     const tagRepo = DatabaseManager.getConnection().getRepository(TagEntity)

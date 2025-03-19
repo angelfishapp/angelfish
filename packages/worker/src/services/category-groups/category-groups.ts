@@ -6,7 +6,7 @@ import { DatabaseManager } from '../../database/database-manager'
 import { CategoryGroupEntity } from '../../database/entities'
 import { getWorkerLogger } from '../../logger'
 
-const logger = getWorkerLogger('BookService')
+const logger = getWorkerLogger('CategoryGroupService')
 
 /**
  * Manage Category Groups in the Database
@@ -16,7 +16,7 @@ class CategoryGroupsServiceClass {
    * Get all Category Groups in Database
    */
   @Command(AppCommandIds.LIST_CATEGORY_GROUPS)
-  public async list(
+  public async listCategoryGroups(
     _request: AppCommandRequest<AppCommandIds.LIST_CATEGORY_GROUPS>,
   ): AppCommandResponse<AppCommandIds.LIST_CATEGORY_GROUPS> {
     const categoriesGroupRepo = DatabaseManager.getConnection().getRepository(CategoryGroupEntity)
@@ -33,14 +33,15 @@ class CategoryGroupsServiceClass {
    * @param id    The primary key for the CategoryGroup
    */
   @Command(AppCommandIds.GET_CATEGORY_GROUP)
-  public async getCategoryGroup(
-    id: AppCommandRequest<AppCommandIds.GET_CATEGORY_GROUP>,
-  ): AppCommandResponse<AppCommandIds.GET_CATEGORY_GROUP> {
+  public async getCategoryGroup({
+    id,
+  }: AppCommandRequest<AppCommandIds.GET_CATEGORY_GROUP>): AppCommandResponse<AppCommandIds.GET_CATEGORY_GROUP> {
     const categoriesGroupRepo = DatabaseManager.getConnection().getRepository(CategoryGroupEntity)
     return await categoriesGroupRepo
       .createQueryBuilder('categoryGroup')
-      .where({ id })
+      .leftJoinAndSelect('categoryGroup.categories', 'categories')
       .loadRelationCountAndMap('categoryGroup.total_categories', 'categoryGroup.categories')
+      .where({ id })
       .getOne()
   }
 
@@ -64,6 +65,7 @@ class CategoryGroupsServiceClass {
 
     const categoriesGroupRepo = DatabaseManager.getConnection().getRepository(CategoryGroupEntity)
     const savedCategoryGroup = await categoriesGroupRepo.save(request)
+    logger.debug(`Saved new Category Group with ID ${savedCategoryGroup.id}`)
     return (await this.getCategoryGroup({ id: savedCategoryGroup.id })) as ICategoryGroup
   }
 
@@ -72,11 +74,14 @@ class CategoryGroupsServiceClass {
    *
    * @param id    The primary key for the CategoryGroup to delete
    */
-  public async deleteCategoryGroup(id: number) {
+  @Command(AppCommandIds.DELETE_CATEGORY_GROUP)
+  public async deleteCategoryGroup({
+    id,
+  }: AppCommandRequest<AppCommandIds.DELETE_CATEGORY_GROUP>): AppCommandResponse<AppCommandIds.DELETE_CATEGORY_GROUP> {
     const categoriesGroupRepo = DatabaseManager.getConnection().getRepository(CategoryGroupEntity)
     await categoriesGroupRepo.delete(id)
   }
 }
 
 // Export instance of Class
-export const CatoryGroupService = new CategoryGroupsServiceClass()
+export const CategoryGroupService = new CategoryGroupsServiceClass()

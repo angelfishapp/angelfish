@@ -1,1 +1,1 @@
-export { CatoryGroupService } from './category-groups'
+export { CategoryGroupService } from './category-groups'
