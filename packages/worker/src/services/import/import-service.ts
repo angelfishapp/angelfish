@@ -14,7 +14,6 @@ import {
   Command,
   CommandsClient,
   createNewTransaction,
-  Logger,
   splitTransaction,
 } from '@angelfish/core'
 import type {
@@ -23,9 +22,10 @@ import type {
 } from '@angelfish/financeimporter'
 import { CSVParser, OfxParser, QifParser } from '@angelfish/financeimporter'
 import { TransactionEntity } from '../../database/entities'
+import { getWorkerLogger } from '../../logger'
 import { ReconciliationHelper } from './reconciliation-helper'
 
-const logger = Logger.scope('ImportService')
+const logger = getWorkerLogger('ImportService')
 
 /**
  * Imports transactions and other data from local files such as qfx, ofx, qif etc.

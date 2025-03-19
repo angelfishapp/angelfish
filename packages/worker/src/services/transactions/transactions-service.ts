@@ -2,11 +2,12 @@ import { validate } from 'class-validator'
 import { In } from 'typeorm'
 
 import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
-import { AppCommandIds, Command, Logger } from '@angelfish/core'
+import { AppCommandIds, Command } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { LineItemEntity, TransactionEntity } from '../../database/entities'
+import { getWorkerLogger } from '../../logger'
 
-const logger = Logger.scope('TransactionService')
+const logger = getWorkerLogger('TransactionService')
 
 /**
  * Special ID to filter for unclassified expenses

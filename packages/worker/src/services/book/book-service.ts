@@ -2,16 +2,17 @@ import { validate } from 'class-validator'
 import fs from 'fs'
 
 import type { AppCommandRequest, AppCommandResponse, IBookUpdate } from '@angelfish/core'
-import { AppCommandIds, AppEventIds, Command, CommandsClient, Logger } from '@angelfish/core'
+import { AppCommandIds, AppEventIds, Command, CommandsClient } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { BookEntity } from '../../database/entities'
+import { getWorkerLogger } from '../../logger'
 import {
   FileAlreadyExistsError,
   FileExtensionError,
   FileNotFoundError,
 } from './book-service-errors'
 
-const logger = Logger.scope('BookService')
+const logger = getWorkerLogger('BookService')
 
 /**
  * Service to open/close and manage Book.

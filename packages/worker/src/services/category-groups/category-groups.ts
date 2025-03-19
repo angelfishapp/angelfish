@@ -1,11 +1,12 @@
 import { validate } from 'class-validator'
 
 import type { AppCommandRequest, AppCommandResponse, ICategoryGroup } from '@angelfish/core'
-import { AppCommandIds, Command, Logger } from '@angelfish/core'
+import { AppCommandIds, Command } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { CategoryGroupEntity } from '../../database/entities'
+import { getWorkerLogger } from '../../logger'
 
-const logger = Logger.scope('BookService')
+const logger = getWorkerLogger('BookService')
 
 /**
  * Manage Category Groups in the Database

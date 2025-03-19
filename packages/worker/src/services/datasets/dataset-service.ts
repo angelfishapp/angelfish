@@ -2,7 +2,8 @@ import Ajv from 'ajv'
 import sqlite3 from 'sqlite3'
 
 import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
-import { AppCommandIds, Command, Environment, Logger } from '@angelfish/core'
+import { AppCommandIds, Command, Environment } from '@angelfish/core'
+import { getWorkerLogger } from '../../logger'
 import type { DatasetConfig } from './dataset-interface'
 import { InvalidDataError } from './dataset-service-errors'
 import { jsonSchemaToColNames, jsonSchemaToSqlTable } from './dataset-utils'
@@ -11,7 +12,7 @@ import { jsonSchemaToColNames, jsonSchemaToSqlTable } from './dataset-utils'
 import { Currencies } from './currencies'
 
 // Initialise Logger
-const logger = Logger.scope('DatasetService')
+const logger = getWorkerLogger('DatasetService')
 
 /**
  * Service to manage datasets in Angelfish. Each dataset is defined as an AJV JSON Schema

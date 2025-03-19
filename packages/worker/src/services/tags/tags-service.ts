@@ -1,11 +1,12 @@
 import { validate } from 'class-validator'
 
 import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
-import { AppCommandIds, Command, Logger } from '@angelfish/core'
+import { AppCommandIds, Command } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { TagEntity } from '../../database/entities'
+import { getWorkerLogger } from '../../logger'
 
-const logger = Logger.scope('TagService')
+const logger = getWorkerLogger('TagService')
 
 /**
  * Manage Transaction Tags

@@ -1,11 +1,12 @@
 import { validate } from 'class-validator'
 
 import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
-import { AppCommandIds, Command, CommandsClient, Logger } from '@angelfish/core'
+import { AppCommandIds, Command, CommandsClient } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { UserEntity } from '../../database/entities'
+import { getWorkerLogger } from '../../logger'
 
-const logger = Logger.scope('UserService')
+const logger = getWorkerLogger('UserService')
 
 /**
  * Manage Users in database. Will also make request to update user details on Cloud if they

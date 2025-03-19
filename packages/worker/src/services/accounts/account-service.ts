@@ -1,11 +1,12 @@
 import { validate } from 'class-validator'
 
 import type { AppCommandRequest, AppCommandResponse, IAccount } from '@angelfish/core'
-import { AppCommandIds, Command, Logger } from '@angelfish/core'
+import { AppCommandIds, Command } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { AccountEntity, LineItemEntity, TransactionEntity } from '../../database/entities'
+import { getWorkerLogger } from '../../logger'
 
-const logger = Logger.scope('AccountService')
+const logger = getWorkerLogger('AccountService')
 
 /**
  * Manage Accounts in database.

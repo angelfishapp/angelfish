@@ -7,12 +7,13 @@ import type {
   ReportsDataCategoryRow,
   ReportsDataRow,
 } from '@angelfish/core'
-import { AppCommandIds, Command, Logger } from '@angelfish/core'
+import { AppCommandIds, Command } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
+import { getWorkerLogger } from '../../logger'
 import { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '../transactions'
 import { ExportXLSX } from './export-xlsx'
 
-const logger = Logger.scope('ReportsService')
+const logger = getWorkerLogger('ReportsService')
 
 /**
  * Type for Row returned from database queries
