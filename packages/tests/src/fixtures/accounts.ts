@@ -1,6 +1,6 @@
 import type { IAccount } from '@angelfish/core'
-import { categoryGroups } from './category-groups'
-import { institutions } from './institutions'
+import { categoryGroups } from './category-groups.js'
+import { institutions } from './institutions.js'
 
 /**
  * Helper function to return all mock Accounts with relations populated
