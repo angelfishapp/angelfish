@@ -15,7 +15,9 @@
     "prettify": "yarn prettier . -w",
     "format": "yarn prettify && yarn lint",
     "ts-check": "yarn workspaces foreach -A run ts-check",
-    "test": "yarn workspaces foreach -A run test",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
     "storybook": "yarn workspace @angelfish/frontend storybook",
     "generate-avatars": "yarn workspace @angelfish/core generate-avatars"
   },
@@ -37,19 +39,21 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
     "webpack": "^5.98.0",
-    "vitest": "^3.0.7"
+    "vitest": "^3.0.9"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.7",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
+    "@vitest/ui": "^3.0.9",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "10.0.1",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
     "prettier": "3.5.1",
     "prettier-plugin-organize-imports": "^4.1.0",
-    "typescript": "*"
+    "typescript": "*",
+    "vitest": "*"
   },
   "packageManager": "yarn@4.6.0"
 }

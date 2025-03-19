@@ -1,14 +1,10 @@
 import Fuse from 'fuse.js'
 
 import type { ITransaction, ReconciledTransaction } from '@angelfish/core'
-import {
-  getTransactionCategory,
-  isSplitTransaction,
-  Logger,
-  updateTransaction,
-} from '@angelfish/core'
+import { getTransactionCategory, isSplitTransaction, updateTransaction } from '@angelfish/core'
+import { getWorkerLogger } from '../../logger'
 
-const logger = Logger.scope('ReconciliationHelper')
+const logger = getWorkerLogger('ReconciliationHelper')
 
 /**
  * Normalised Transaction type to store transactions in index

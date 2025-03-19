@@ -41,12 +41,8 @@ class DatasetServiceClass {
   /**
    * Constructor for the Dataset Service. If running in Test environment will only use in-memory
    * database otherwise will load file from user data directory.
-   *
-   * @param registerDefaultDatasets   Register default datasets on initialisation (default: true)
-   *                                  Set to false if you don't want to register default datasets
-   *                                  during testing
    */
-  public constructor(registerDefaultDatasets = true) {
+  public constructor() {
     // Initialise JSON Schema Validator instance
     this._ajv = new Ajv()
 
@@ -56,10 +52,8 @@ class DatasetServiceClass {
       else logger.info('Connected to Datasets SQLite database.')
     })
 
-    if (registerDefaultDatasets) {
-      // Register default datasets
-      this._registerDefaultDatasets()
-    }
+    // Register default datasets
+    this._registerDefaultDatasets()
   }
 
   /**
