@@ -30,4 +30,16 @@ export interface IAuthenticatedUser {
 /**
  * Interface for AuthenticatedUser Update Model
  */
-export type IAuthenticatedUserUpdate = Omit<IAuthenticatedUser, 'created_on' | 'modified_on'>
+export type IAuthenticatedUserUpdate = {
+  /* First name of User */
+  first_name?: IAuthenticatedUser['first_name']
+
+  /* Last name of User */
+  last_name?: IAuthenticatedUser['last_name']
+
+  /* Phone number of user in E.164 spec compliant, i.e. +141533322222 */
+  phone?: IAuthenticatedUser['phone']
+
+  /* User Avatar as Base64 encoded string */
+  avatar?: IAuthenticatedUser['avatar']
+}

@@ -92,8 +92,10 @@ __metadata:
   dependencies:
     "@angelfish/cloudapiclient": "workspace:*"
     "@angelfish/core": "workspace:*"
+    "@angelfish/tests": "workspace:*"
     axios: "npm:*"
     typescript: "npm:*"
+    vitest: "npm:*"
   languageName: unknown
   linkType: soft
 

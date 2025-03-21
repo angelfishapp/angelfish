@@ -84,10 +84,10 @@ class AccountServiceClass {
   public async saveAccount(
     account: AppCommandRequest<AppCommandIds.SAVE_ACCOUNT>,
   ): AppCommandResponse<AppCommandIds.SAVE_ACCOUNT> {
-    await this._sanitizeAndValidate(account)
+    const sanitizedAccount = await this._sanitizeAndValidate(account)
     const savedAccount = await DatabaseManager.getConnection()
       .getRepository(AccountEntity)
-      .save(account)
+      .save(sanitizedAccount)
     // Have to get account again to populate current_balance field
     return (await this.getAccount({ id: savedAccount.id })) as AccountEntity
   }
@@ -124,7 +124,7 @@ class AccountServiceClass {
    *
    * @param account   The Account to sanitize
    */
-  private async _sanitizeAndValidate(account: Partial<IAccount>): Promise<void> {
+  private async _sanitizeAndValidate(account: Partial<IAccount>): Promise<Partial<IAccount>> {
     // Sanitize Account
     if (account.name) {
       account.name = account.name.trim()
@@ -176,6 +176,8 @@ class AccountServiceClass {
       logger.error(errorMsg, errors)
       throw Error(errorMsg)
     }
+
+    return account
   }
 }
 

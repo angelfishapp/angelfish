@@ -159,14 +159,15 @@ class TransactionServiceClass {
     transactions: AppCommandRequest<AppCommandIds.SAVE_TRANSACTIONS>,
   ): AppCommandResponse<AppCommandIds.SAVE_TRANSACTIONS> {
     // Sanitize and validate all transactions
+    const sanitizedTransactions: TransactionEntity[] = []
     for (const t of transactions) {
       const transaction = TransactionEntity.getClassInstance(t)
-      await this._sanitizeAndValidate(transaction)
+      sanitizedTransactions.push(await this._sanitizeAndValidate(transaction))
     }
 
     // No errors, insert array
     const transactionRepo = DatabaseManager.getConnection().getRepository(TransactionEntity)
-    const savedTransactions = await transactionRepo.save(transactions)
+    const savedTransactions = await transactionRepo.save(sanitizedTransactions)
 
     // Reload transactions with line_item relations
     const savedIds = savedTransactions.map((t) => t.id)
@@ -181,7 +182,7 @@ class TransactionServiceClass {
    * @param id    The Transaction ID to delete
    */
   @Command(AppCommandIds.DELETE_TRANSACTION)
-  public async delete({
+  public async deleteTransaction({
     id,
   }: AppCommandRequest<AppCommandIds.DELETE_TRANSACTION>): AppCommandResponse<AppCommandIds.DELETE_TRANSACTION> {
     const transactionRepo = DatabaseManager.getConnection().getRepository(TransactionEntity)
@@ -193,7 +194,7 @@ class TransactionServiceClass {
    *
    * @param transaction   The Transaction to sanitize
    */
-  private async _sanitizeAndValidate(transaction: TransactionEntity) {
+  private async _sanitizeAndValidate(transaction: TransactionEntity): Promise<TransactionEntity> {
     if (!transaction.id && !transaction.line_items) {
       // Creating new transaction
       // Create 2 line items, 1 for account
@@ -222,6 +223,8 @@ class TransactionServiceClass {
       logger.error(errorMsg, errors)
       throw Error(errorMsg)
     }
+
+    return transaction
   }
 }
 

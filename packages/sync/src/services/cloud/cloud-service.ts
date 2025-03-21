@@ -35,15 +35,15 @@ class CloudServiceClass {
    */
   @Command(LocalCommandIds.INIT_API_CLIENT)
   @HandleCloudError
-  public async initialiseAPIClient(
-    request: LocalCommandRequest<LocalCommandIds.INIT_API_CLIENT>,
-  ): LocalCommandResponse<LocalCommandIds.INIT_API_CLIENT> {
-    if (!request.refreshToken) {
+  public async initialiseAPIClient({
+    refreshToken,
+  }: LocalCommandRequest<LocalCommandIds.INIT_API_CLIENT>): LocalCommandResponse<LocalCommandIds.INIT_API_CLIENT> {
+    if (!refreshToken) {
       throw new Error('No refresh token provided to initialise API Client')
     }
 
     // Get a new JWT Token and set the V1 API Client
-    const tokenResponse = await this._refreshToken(request.refreshToken)
+    const tokenResponse = await this._refreshToken(refreshToken)
 
     // Create a new JWTAuthHelper instance with the new token and refresh token
     const jwtAuthHelper = new JWTAuthHelper(
@@ -84,10 +84,10 @@ class CloudServiceClass {
    */
   @Command(LocalCommandIds.CLOUD_API_SEND_OOB_CODE)
   @HandleCloudError
-  public async sendOOBCode(
-    request: LocalCommandRequest<LocalCommandIds.CLOUD_API_SEND_OOB_CODE>,
-  ): LocalCommandResponse<LocalCommandIds.CLOUD_API_SEND_OOB_CODE> {
-    const session_id = await this._authAPI.getOOBCode(request.email)
+  public async sendOOBCode({
+    email,
+  }: LocalCommandRequest<LocalCommandIds.CLOUD_API_SEND_OOB_CODE>): LocalCommandResponse<LocalCommandIds.CLOUD_API_SEND_OOB_CODE> {
+    const session_id = await this._authAPI.getOOBCode(email)
     return session_id
   }
 
@@ -101,11 +101,12 @@ class CloudServiceClass {
    */
   @Command(LocalCommandIds.CLOUD_API_AUTHENTICATE)
   @HandleCloudError
-  public async authenticate(
-    request: LocalCommandRequest<LocalCommandIds.CLOUD_API_AUTHENTICATE>,
-  ): LocalCommandResponse<LocalCommandIds.CLOUD_API_AUTHENTICATE> {
-    const tokenResponse = await this._authAPI.authenticate('oob_code', request.session_id, {
-      oob_code: request.oob_code,
+  public async authenticate({
+    session_id,
+    oob_code,
+  }: LocalCommandRequest<LocalCommandIds.CLOUD_API_AUTHENTICATE>): LocalCommandResponse<LocalCommandIds.CLOUD_API_AUTHENTICATE> {
+    const tokenResponse = await this._authAPI.authenticate('oob_code', session_id, {
+      oob_code,
     })
     return tokenResponse
   }
@@ -240,12 +241,13 @@ class CloudServiceClass {
    */
   @Command(LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES)
   @HandleCloudError
-  public async getSpotCurrencyRates(
-    request: LocalCommandRequest<LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES>,
-  ): LocalCommandResponse<LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES> {
+  public async getSpotCurrencyRates({
+    currencies,
+    base,
+  }: LocalCommandRequest<LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES>): LocalCommandResponse<LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES> {
     const response = await this._getAuthenticatedClient().currencyAPI.getCurrencyLatestRates(
-      request.currencies,
-      request.base,
+      currencies,
+      base,
     )
     return response.data
   }
@@ -261,14 +263,17 @@ class CloudServiceClass {
    */
   @Command(LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES)
   @HandleCloudError
-  public async getHistoricCurrencyRates(
-    request: LocalCommandRequest<LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES>,
-  ): LocalCommandResponse<LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES> {
+  public async getHistoricCurrencyRates({
+    currency,
+    startDate,
+    endDate,
+    base,
+  }: LocalCommandRequest<LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES>): LocalCommandResponse<LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES> {
     const response = await this._getAuthenticatedClient().currencyAPI.getCurrencyRates(
-      request.currency,
-      request.startDate,
-      request.endDate,
-      request.base,
+      currency,
+      startDate,
+      endDate,
+      base,
     )
     return response.data
   }

@@ -39,8 +39,9 @@ export function HandleCloudError(
       return result
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        logger.info('message')
         // Handle NetworkOfflineError
-        if (error.message === 'Network Error') {
+        if (error.message === 'Network Error' || error.message.includes('getaddrinfo ENOTFOUND')) {
           if (!navigator.onLine) {
             logger.warn(`NetworkOfflineError caught in ${String(propertyName)}`)
             isOnline = false

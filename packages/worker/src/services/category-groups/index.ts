@@ -1,1 +1,1 @@
-export { CategoryGroupService } from './category-groups'
+export { CategoryGroupService } from './category-groups-service'

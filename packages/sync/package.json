@@ -18,6 +18,8 @@
     "axios": "*"
   },
   "devDependencies": {
-    "typescript": "*"
+    "@angelfish/tests": "workspace:*",
+    "typescript": "*",
+    "vitest": "*"
   }
 }

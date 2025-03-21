@@ -64,17 +64,17 @@ class AuthServiceClass {
    * @param email   The email address to send the OOB Code to
    */
   @Command(AppCommandIds.AUTH_SEND_OOB_CODE)
-  public async sendOOBCode(
-    request: AppCommandRequest<AppCommandIds.AUTH_SEND_OOB_CODE>,
-  ): AppCommandResponse<AppCommandIds.AUTH_SEND_OOB_CODE> {
+  public async sendOOBCode({
+    email,
+  }: AppCommandRequest<AppCommandIds.AUTH_SEND_OOB_CODE>): AppCommandResponse<AppCommandIds.AUTH_SEND_OOB_CODE> {
     if (this._isAuthenticated) {
       // Logout existing user if currently authenticated
       await this.logout()
     }
-    const session_id = await executeLocalCommand(LocalCommandIds.CLOUD_API_SEND_OOB_CODE, request)
+    const session_id = await executeLocalCommand(LocalCommandIds.CLOUD_API_SEND_OOB_CODE, { email })
     this._current_session_id = session_id
     logger.debug(
-      `Successfully sent OOB Code to email ${request.email} and started session with id ${session_id}`,
+      `Successfully sent OOB Code to email ${email} and started session with id ${session_id}`,
     )
   }
 
@@ -84,9 +84,9 @@ class AuthServiceClass {
    * @param oob_code    The OOB Code sent to the user's email
    */
   @Command(AppCommandIds.AUTH_AUTHENTICATE)
-  public async authenticate(
-    request: AppCommandRequest<AppCommandIds.AUTH_AUTHENTICATE>,
-  ): AppCommandResponse<AppCommandIds.AUTH_AUTHENTICATE> {
+  public async authenticate({
+    oob_code,
+  }: AppCommandRequest<AppCommandIds.AUTH_AUTHENTICATE>): AppCommandResponse<AppCommandIds.AUTH_AUTHENTICATE> {
     if (!this._current_session_id) {
       throw new Error(
         `No current session_id set. Must call '${AppCommandIds.AUTH_SEND_OOB_CODE}' first.`,
@@ -95,7 +95,7 @@ class AuthServiceClass {
 
     const tokenResponse = await executeLocalCommand(LocalCommandIds.CLOUD_API_AUTHENTICATE, {
       session_id: this._current_session_id,
-      oob_code: request.oob_code,
+      oob_code,
     })
     logger.debug('Successfully authenticated user with OOB Code')
 
@@ -108,7 +108,6 @@ class AuthServiceClass {
     const userProfile = await executeLocalCommand(LocalCommandIds.CLOUD_API_GET_USER_PROFILE)
     await CommandsClient.executeAppCommand(AppCommandIds.SET_AUTHENTICATION_SETTINGS, {
       authenticatedUser: userProfile,
-      refreshToken: tokenResponse.refresh_token,
     })
 
     // Set service state
