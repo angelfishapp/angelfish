@@ -2,8 +2,8 @@
  * Tests for all the CloudService Methods
  */
 
-import { AppCommandIds } from '@angelfish/core'
-import { mockRegisterTypedAppCommand } from '@angelfish/tests'
+import { AppCommandIds, AppEventIds, CommandsClient } from '@angelfish/core'
+import { mockRegisterTypedAppCommand, TestLogger } from '@angelfish/tests'
 
 import { CloudService } from '.'
 
@@ -12,6 +12,25 @@ import { CloudService } from '.'
  */
 beforeAll(async () => {
   mockRegisterTypedAppCommand(AppCommandIds.SET_AUTHENTICATION_SETTINGS, async () => {})
+  CommandsClient.addAppEventListener(AppEventIds.ON_ONLINE_STATUS_CHANGED, (status) => {
+    TestLogger.info(AppEventIds.ON_ONLINE_STATUS_CHANGED, status)
+  })
+
+  // Mock browser navigator to simulate online/offline status. This will only be called if
+  // computer is offline so will always return false for the tests
+  // See cloud-error-decorator.ts for more details
+  if (!globalThis.navigator) {
+    // Define the whole navigator object
+    Object.defineProperty(globalThis, 'navigator', {
+      value: {},
+      configurable: true,
+    })
+  }
+  // Then define the `onLine` property
+  Object.defineProperty(globalThis.navigator, 'onLine', {
+    value: false,
+    configurable: true,
+  })
 })
 
 /**

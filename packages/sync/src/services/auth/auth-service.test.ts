@@ -28,20 +28,20 @@ beforeAll(async () => {
     if (authSettings.refreshToken !== undefined) {
       authenticatedState.refreshToken = authSettings.refreshToken
     }
-    TestLogger.info('SET_AUTHENTICATION_SETTINGS', authenticatedState)
+    TestLogger.info(AppCommandIds.SET_AUTHENTICATION_SETTINGS, authenticatedState)
   })
   mockRegisterTypedAppCommand(AppCommandIds.GET_AUTHENTICATION_SETTINGS, async () => {
-    TestLogger.info('GET_AUTHENTICATION_SETTINGS', authenticatedState)
+    TestLogger.info(AppCommandIds.GET_AUTHENTICATION_SETTINGS, authenticatedState)
     return authenticatedState
   })
   // Depends on CloudService Commands to make requests to Cloud API
   registerCommands([CloudService])
   // Register AuthService Event Listeners to handle authentication events
   CommandsClient.addAppEventListener(AppEventIds.ON_LOGIN, (event) => {
-    TestLogger.info('ON_LOGIN', event)
+    TestLogger.info(AppEventIds.ON_LOGIN, event)
   })
   CommandsClient.addAppEventListener(AppEventIds.ON_LOGOUT, () => {
-    TestLogger.info('ON_LOGOUT')
+    TestLogger.info(AppEventIds.ON_LOGOUT)
   })
 })
 
