@@ -257,7 +257,7 @@ export const accounts: IAccount[] = [
     name: 'Broadband/Cable/Telephone',
     cat_type: 'Critical',
     cat_description: 'Broadband internet, cable or landline utility bills',
-    cat_icon: 'telephone',
+    cat_icon: 'phone',
     acc_owners: undefined,
     acc_sort: undefined,
     acc_number: undefined,

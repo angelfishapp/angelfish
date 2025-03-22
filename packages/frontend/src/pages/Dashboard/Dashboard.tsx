@@ -1,0 +1,56 @@
+import Box from '@mui/material/Box'
+import { endOfMonth, format, startOfMonth, subMonths } from 'date-fns'
+import React from 'react'
+import { useSelector } from 'react-redux'
+
+import { selectBook } from '@/redux/app/selectors'
+import type { ReportsData } from '@angelfish/core'
+import { getDataSetColors } from '../../utils/palette.utils'
+import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
+import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
+
+/**
+ * Dashboard Page of Application
+ */
+export default function Dashboard() {
+  // Component State
+  const [yearlyData, setYearlyData] = React.useState<ReportsData>()
+  const book = useSelector(selectBook)
+
+  // Get Reports Data when date ranges changed
+  React.useEffect(() => {
+    const today = new Date()
+    const startOfToday = new Date(today.setHours(0, 0, 0, 0))
+    window.api
+      .run_report({
+        start_date: format(startOfMonth(subMonths(startOfToday, 12)), 'yyyy-MM-dd'),
+        end_date: format(endOfMonth(subMonths(startOfToday, 1)), 'yyyy-MM-dd'),
+      })
+      .then((data: ReportsData) => {
+        // Update row colors to ensure consistent colors across charts
+        const colors = getDataSetColors(data.rows)
+        for (const row of data.rows) {
+          if (!row.color) row.color = colors[row.name]
+        }
+        setYearlyData(data)
+      })
+  }, [])
+
+  return (
+    <Box py={2} px={8}>
+      {!!yearlyData && (
+        <FinancialFreedomProgressBar
+          data={yearlyData}
+          currency={book?.default_currency as string}
+        />
+      )}
+      {!!yearlyData && (
+        <IncomeAndExpensesSankey
+          data={yearlyData}
+          currency={book?.default_currency as string}
+          periods={12}
+        />
+      )}
+    </Box>
+  )
+}

@@ -11,7 +11,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./fixtures": "./dist/fixtures/index.js",
+    "./mocks": "./dist/mocks/index.js",
+    "./utils": "./dist/utils/index.js"
   },
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",

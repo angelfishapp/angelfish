@@ -1,0 +1,88 @@
+import Chip from '@mui/material/Chip'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import React from 'react'
+
+import { Avatar } from '@/components/Avatar'
+import { AutocompleteField } from '@/components/forms/AutocompleteField'
+import type { IUser } from '@angelfish/core'
+import type { UserFieldProps } from './UserField.interface'
+import { useStyles } from './UserField.styles'
+
+/**
+ * Search field to multi-select users from the database
+ */
+
+export default React.forwardRef<HTMLDivElement, UserFieldProps>(function UserField(
+  { users, onChange, value, id = 'user-field', ...formFieldProps }: UserFieldProps,
+  ref,
+) {
+  const classes = useStyles()
+
+  // Render
+  return (
+    <AutocompleteField
+      id={id}
+      formRef={ref}
+      multiple={true}
+      {...formFieldProps}
+      options={users}
+      value={value}
+      onChange={(_, newValue) => {
+        if (newValue) {
+          onChange?.(newValue as IUser[])
+        }
+      }}
+      getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+      filterSelectedOptions
+      getOptionSelected={(option, value) => {
+        return value.id == option.id
+      }}
+      renderOption={(props, option) => (
+        <ListItem className={classes.item} {...props}>
+          <ListItemIcon>
+            <Avatar
+              avatar={option.avatar}
+              firstName={option.first_name}
+              lastName={option.last_name}
+              size={30}
+              className={classes.avatar}
+              displayBorder={true}
+            />
+          </ListItemIcon>
+          <ListItemText primary={`${option.first_name} ${option.last_name}`} />
+        </ListItem>
+      )}
+      renderTags={(tags, getTagProps) => {
+        return tags.map((option, index) => {
+          const tagProps = getTagProps({ index })
+          return (
+            <Chip
+              key={tagProps.key}
+              data-tag-index={tagProps['data-tag-index']}
+              tabIndex={tagProps.tabIndex}
+              onDelete={tagProps.onDelete}
+              label={`${option.first_name} ${option.last_name}`}
+              avatar={
+                <Avatar
+                  avatar={option.avatar}
+                  firstName={option.first_name}
+                  lastName={option.last_name}
+                  size={30}
+                  className={classes.avatar}
+                  displayBorder={true}
+                />
+              }
+              sx={{
+                backgroundColor: (theme) => theme.custom.colors.tagBackground,
+                color: (theme) => theme.custom.colors.tagColor,
+                marginLeft: 1,
+              }}
+            />
+          )
+        })
+      }}
+    />
+  )
+})

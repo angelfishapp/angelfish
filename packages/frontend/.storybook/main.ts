@@ -1,6 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-webpack5'
 
-import { dirname, join } from 'path'
+import { dirname, join, resolve } from 'path'
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -11,6 +11,7 @@ function getAbsolutePath(value: string): any {
 }
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  staticDirs: ['../resources'],
   addons: [
     getAbsolutePath('@storybook/addon-webpack5-compiler-swc'),
     {
@@ -36,5 +37,17 @@ const config: StorybookConfig = {
       },
     },
   }),
+  webpackFinal: async (config, _options) => {
+    // Add Typescript Module Resolutions
+    config.resolve = config.resolve || {}
+    config.resolve.alias = config.resolve.alias || {}
+    config.resolve.alias['@'] = resolve(__dirname, '../src')
+
+    // Stop os import in MockEnvironment from @angelfish/tests causing issues
+    config.resolve.fallback = config.resolve.fallback || {}
+    config.resolve.fallback['os'] = false
+
+    return config
+  },
 }
 export default config

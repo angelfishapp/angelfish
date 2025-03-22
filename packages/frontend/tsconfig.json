@@ -6,7 +6,13 @@
     "target": "ESNext",
     "jsx": "react-jsx",
     "baseUrl": ".",
-    "outDir": "dist"
+    "outDir": "dist",
+    // For Material-UI
+    "lib": ["es6", "dom"],
+    "paths": {
+      // Also add aliases to webpack/webpack.alias.js
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*"]
 }

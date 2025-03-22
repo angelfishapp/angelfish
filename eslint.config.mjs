@@ -62,14 +62,12 @@ export default [
       'react/jsx-uses-react': 'off',
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-
       '@typescript-eslint/ban-ts-comment': [
         'error',
         {
           'ts-ignore': 'allow-with-description',
         },
       ],
-
       'spaced-comment': ['error', 'always'],
       'no-useless-rename': 'error',
       'no-lonely-if': 'warn',
@@ -77,7 +75,6 @@ export default [
       'no-console': 'error',
       'no-else-return': 'error',
       'no-restricted-syntax': 'warn',
-
       'react/jsx-curly-brace-presence': [
         'warn',
         {
@@ -85,14 +82,12 @@ export default [
           children: 'never',
         },
       ],
-
       'react/jsx-no-useless-fragment': [
         'warn',
         {
           allowExpressions: true,
         },
       ],
-
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -101,20 +96,6 @@ export default [
           caughtErrorsIgnorePattern: '^_',
         },
       ],
-    },
-  },
-  {
-    files: ['**/*.spec.ts', '**/*.spec.js'],
-
-    rules: {
-      'no-console': 'off',
-    },
-  },
-  {
-    files: ['**/*.stories.tsx'],
-
-    rules: {
-      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
 ]

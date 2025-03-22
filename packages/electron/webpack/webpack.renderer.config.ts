@@ -1,4 +1,5 @@
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
+import path from 'path'
 import TerserPlugin from 'terser-webpack-plugin'
 import type { Configuration } from 'webpack'
 
@@ -42,6 +43,9 @@ export const rendererConfig: Configuration = {
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
+    alias: {
+      '@': path.resolve(__dirname, '../../frontend/src'),
+    },
   },
   /**
    * List all the external native modules that need to be excluded from

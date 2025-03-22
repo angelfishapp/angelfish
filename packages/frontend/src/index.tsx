@@ -1,28 +1,22 @@
-/**
- * Main entry point for the App frontend renderer process.
- */
-
 import { createRoot } from 'react-dom/client'
 
-import './index.css'
+import { Logger } from '@angelfish/core'
 
-import { CommandRegistryEvents, CommandsClient } from '@angelfish/core'
-import { default as App } from './App'
+import AppRoot from './app/AppRoot'
 
-/**
- * Render the Counter component to the root element.
- */
+const logger = Logger.scope('Frontend')
+
 const rootElement = document.getElementById('root')
 if (!rootElement) {
+  logger.error('Root element not found')
   throw new Error('Root element not found')
 }
-const root = createRoot(rootElement)
-
-CommandsClient.addEventListener(
-  CommandRegistryEvents.NEW_CHANNEL_REGISTERED,
-  (payload: { id: string }) => {
-    if (payload.id === 'main') {
-      root.render(<App />)
-    }
+const root = createRoot(rootElement, {
+  onUncaughtError: (error, errorInfo) => {
+    logger.error('Uncaught Error', error, errorInfo)
   },
-)
+  onCaughtError: (error, errorInfo) => {
+    logger.error('React Caught Error', error, errorInfo)
+  },
+})
+root.render(<AppRoot />)
