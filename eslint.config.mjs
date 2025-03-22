@@ -98,4 +98,11 @@ export default [
       ],
     },
   },
+  {
+    files: ['**/*.stories.tsx'],
+
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
 ]

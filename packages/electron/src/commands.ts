@@ -221,18 +221,26 @@ export function setupMainCommands() {
    */
   CommandsRegistryMain.registerCommand(
     AppCommandIds.SET_AUTHENTICATION_SETTINGS,
-    async (
-      request: AppCommandRequest<AppCommandIds.SET_AUTHENTICATION_SETTINGS>,
-    ): AppCommandResponse<AppCommandIds.SET_AUTHENTICATION_SETTINGS> => {
-      // Set Authentication State
-      settings.setAuthenticatedUser(request.authenticatedUser ?? settings.getAuthenticatedUser())
-      if (request.refreshToken) {
-        // Encrypt the refresh token before saving to disk, will throw error
-        // back to caller if encryption fails
-        const buffer = safeStorage.encryptString(request.refreshToken)
-        settings.set('refreshToken', buffer.toString('base64'))
-      } else {
-        settings.set('refreshToken', null)
+    async ({
+      authenticatedUser,
+      refreshToken,
+    }: AppCommandRequest<AppCommandIds.SET_AUTHENTICATION_SETTINGS>): AppCommandResponse<AppCommandIds.SET_AUTHENTICATION_SETTINGS> => {
+      if (authenticatedUser !== undefined) {
+        // Set AuthenticatedUser State
+        settings.setAuthenticatedUser(authenticatedUser)
+      }
+
+      if (refreshToken !== undefined) {
+        // Set RefreshToken State
+        if (refreshToken === null) {
+          // If refreshToken is null, remove it from settings
+          settings.set('refreshToken', null)
+        } else {
+          // Encrypt the refresh token before saving to disk, will throw error
+          // back to caller if encryption fails
+          const buffer = safeStorage.encryptString(refreshToken)
+          settings.set('refreshToken', buffer.toString('base64'))
+        }
       }
     },
   )
@@ -252,10 +260,10 @@ export function setupMainCommands() {
    */
   CommandsRegistryMain.registerCommand(
     AppCommandIds.SET_BOOK_FILE_PATH_SETTING,
-    async (
-      request: AppCommandRequest<AppCommandIds.SET_BOOK_FILE_PATH_SETTING>,
-    ): AppCommandResponse<AppCommandIds.SET_BOOK_FILE_PATH_SETTING> => {
-      settings.set('currentFilePath', request.filePath ?? null)
+    async ({
+      filePath,
+    }: AppCommandRequest<AppCommandIds.SET_BOOK_FILE_PATH_SETTING>): AppCommandResponse<AppCommandIds.SET_BOOK_FILE_PATH_SETTING> => {
+      settings.set('currentFilePath', filePath)
     },
   )
 }

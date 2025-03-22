@@ -29,10 +29,12 @@ export function redactPayload<
   // Only redact payload if it exists
   if ('payload' in msg && msg.payload && typeof msg.payload === 'object') {
     ;(result as any).payload = Object.fromEntries(
-      Object.keys(msg.payload).map((key) => [
-        key,
-        typeof msg.payload[key as keyof typeof msg.payload],
-      ]),
+      Object.entries(msg.payload).map(([key, value]) => {
+        if (value instanceof Date) {
+          return [key, 'Date']
+        }
+        return [key, typeof value] // 🔒 Redact to type string
+      }),
     ) as any
   }
 
