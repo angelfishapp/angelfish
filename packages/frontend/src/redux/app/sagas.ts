@@ -29,7 +29,8 @@ export function* fetchBook(): Generator<any, void, any> {
 export function* fetchAppState(): Generator<any, void, any> {
   try {
     // TODO - this will fail as no command for this yet
-    const appState = yield call(CommandsClient.executeCommand, 'getAppState')
+    const appState = yield call(CommandsClient.executeAppCommand, AppCommandIds.GET_APP_STATE)
+    logger.info('Fetched App State:', appState)
     yield put(
       setAppState({
         book: appState.book,

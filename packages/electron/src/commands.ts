@@ -1,6 +1,6 @@
 import { dialog, Menu, Notification, safeStorage, shell } from 'electron'
 
-import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
+import type { AppCommandRequest, AppCommandResponse, IBook } from '@angelfish/core'
 import { AppCommandIds, AppEventIds } from '@angelfish/core'
 import { AppCommandsRegistryMain, CommandsRegistryMain } from './commands/commands-registry-main'
 import { LogManager } from './logging/log-manager'
@@ -250,7 +250,9 @@ export function setupMainCommands() {
    */
   CommandsRegistryMain.registerCommand(
     AppCommandIds.GET_BOOK_FILE_PATH_SETTING,
-    async (): AppCommandResponse<AppCommandIds.GET_BOOK_FILE_PATH_SETTING> => {
+    async (
+      _r: AppCommandRequest<AppCommandIds.GET_BOOK_FILE_PATH_SETTING>,
+    ): AppCommandResponse<AppCommandIds.GET_BOOK_FILE_PATH_SETTING> => {
       return settings.get('currentFilePath') ?? null
     },
   )
@@ -264,6 +266,39 @@ export function setupMainCommands() {
       filePath,
     }: AppCommandRequest<AppCommandIds.SET_BOOK_FILE_PATH_SETTING>): AppCommandResponse<AppCommandIds.SET_BOOK_FILE_PATH_SETTING> => {
       settings.set('currentFilePath', filePath)
+    },
+  )
+
+  /**
+   * Get the current App state - used to initialize the App on startup
+   */
+  CommandsRegistryMain.registerCommand(
+    AppCommandIds.GET_APP_STATE,
+    async (
+      _r: AppCommandRequest<AppCommandIds.GET_APP_STATE>,
+    ): AppCommandResponse<AppCommandIds.GET_APP_STATE> => {
+      // Get local app settings then pull data from other processes if needed
+      // to get the full current app state
+      const authenticatedUser = settings.getAuthenticatedUser()
+      const refreshToken = settings.get('refreshToken')
+      const bookFilePath = settings.get('currentFilePath')
+      const userSettings = settings.get('userSettings')
+
+      let book: IBook | undefined = undefined
+      if (bookFilePath !== null) {
+        book = await CommandsRegistryMain.executeCommand<
+          AppCommandResponse<AppCommandIds.GET_BOOK>,
+          AppCommandRequest<AppCommandIds.GET_BOOK>
+        >(AppCommandIds.GET_BOOK)
+      }
+
+      return {
+        authenticated: authenticatedUser !== null && refreshToken !== null,
+        authenticatedUser: authenticatedUser !== null ? authenticatedUser : undefined,
+        book,
+        bookFilePath: bookFilePath !== null ? bookFilePath : undefined,
+        userSettings,
+      }
     },
   )
 }

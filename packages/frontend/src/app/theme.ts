@@ -179,6 +179,31 @@ const angelfishTheme: ThemeOptions = {
       },
     },
 
+    MuiAutocomplete: {
+      styleOverrides: {
+        paper: {
+          padding: 0,
+          borderRadius: 8,
+        },
+      },
+    },
+
+    MuiTextField: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 8,
+            '&.Mui-focused': {
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: theme.custom.colors.inputFocused,
+                borderWidth: 1,
+              },
+            },
+          },
+        }),
+      },
+    },
+
     MuiTableHead: {
       styleOverrides: {
         root: {

@@ -38,6 +38,7 @@ export const SingleSelect: Story = {
     fullWidth: true,
     disabled: false,
     helperText: 'Here is some helper text',
+    placeholder: 'Select a tag',
   },
 }
 
@@ -50,5 +51,31 @@ export const MultiSelect: Story = {
     fullWidth: true,
     disabled: false,
     helperText: 'Here is some helper text',
+    filterSelectedOptions: true,
+  },
+}
+
+export const CustomValueDisplay: Story = {
+  args: {
+    label: 'Custom Value Display Autocomplete Field',
+    multiple: false,
+    required: true,
+    error: false,
+    fullWidth: true,
+    disabled: false,
+    helperText: 'Here is some helper text',
+    filterSelectedOptions: true,
+    getStartAdornment: (value) => {
+      const tag = value as ITag
+      return (
+        <img
+          src="/assets/svg/flags/4x3/GB.svg"
+          alt={tag?.name}
+          width={20}
+          style={{ marginRight: 10 }}
+          loading="lazy"
+        />
+      )
+    },
   },
 }

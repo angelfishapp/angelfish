@@ -3,7 +3,7 @@
  * used in the `app-commands.ts` file to define the command payloads for the commands that are registered
  */
 
-import type { IAuthenticatedUser } from '../types'
+import type { IAuthenticatedUser, IBook, IUserSettings } from '../types'
 
 /**
  * File type filters for file dialogs
@@ -115,6 +115,32 @@ export interface IAuthenticationState {
    * SafeStorage API.
    */
   refreshToken?: string | null
+}
+
+/**
+ * The Current State of the App
+ */
+export interface IAppState {
+  /**
+   * Is the user authenticated
+   */
+  authenticated: boolean
+  /**
+   * The current Authenticated User
+   */
+  authenticatedUser?: IAuthenticatedUser
+  /**
+   * The current Book opened in the App
+   */
+  book?: IBook
+  /**
+   * The file path of the current Book
+   */
+  bookFilePath?: string
+  /**
+   * The current User's local Settings
+   */
+  userSettings: IUserSettings
 }
 
 /**

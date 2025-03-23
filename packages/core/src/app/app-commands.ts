@@ -46,6 +46,7 @@ import type {
   ReportsQuery,
 } from '../types'
 import type {
+  IAppState,
   IAuthenticationState,
   INotificationOptions,
   IOpenFileDialogOptions,
@@ -89,6 +90,11 @@ export enum AppCommandIds {
    * Set the last opened book file path
    */
   SET_BOOK_FILE_PATH_SETTING = 'set.book.file.path.setting',
+  /**
+   * Get the current app state (i.e. book loaded, user authenticated, etc.)
+   * Used to initilise frontend on load
+   */
+  GET_APP_STATE = 'get.app.state',
   /**
    * Send an Out-Of-Band (OOB) code to the user's email for authentication
    */
@@ -309,6 +315,10 @@ export interface AppCommandDefinitions {
   [AppCommandIds.SET_BOOK_FILE_PATH_SETTING]: {
     request: { filePath: string | null }
     response: void
+  }
+  [AppCommandIds.GET_APP_STATE]: {
+    request: void
+    response: IAppState
   }
   [AppCommandIds.AUTH_SEND_OOB_CODE]: {
     request: { email: string }
