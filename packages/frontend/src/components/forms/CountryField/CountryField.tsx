@@ -1,22 +1,18 @@
-import ListItem from '@mui/material/ListItem'
+import Box from '@mui/material/Box'
 import React from 'react'
 
-import { AutocompleteField } from '@/components/forms/AutocompleteField'
 import type { Country } from '@angelfish/core'
 import { allCountries, getCountryFromCode } from '@angelfish/core'
+import { AutocompleteField } from '../AutocompleteField'
 import type { CountryFieldProps } from './CountryField.interface'
-import { useStyles } from './CountryField.styles'
 
 /**
  * Form Field to select a Country using an Autocomplete input
  */
-
 export default React.forwardRef<HTMLDivElement, CountryFieldProps>(function CountryField(
   { onChange, value, id = 'country-field', ...formFieldProps }: CountryFieldProps,
   ref,
 ) {
-  const classes = useStyles()
-
   // Convert string value to Country
   const formValue: Country | null = value
     ? typeof value === 'string'
@@ -35,51 +31,61 @@ export default React.forwardRef<HTMLDivElement, CountryFieldProps>(function Coun
     })
   }, [])
 
-  /**
-   * Callback to render list option
-   */
-  const renderOption = React.useCallback(
-    (props: React.HTMLAttributes<HTMLLIElement>, option: Country) => {
-      if (option) {
-        return (
-          <ListItem {...props}>
-            <img
-              className={classes.flag}
-              src={'/assets/svg/flags/4x3/' + option.code + '.svg'}
-              loading="lazy"
-            />
-            {option.name}
-          </ListItem>
-        )
-      }
-      return <em>Select a Country...</em>
-    },
-    [classes],
-  )
-
   // Render
   return (
     <AutocompleteField
       id={id}
-      formRef={ref}
-      multiple={false}
       freeSolo={false}
-      {...formFieldProps}
-      options={sortedCountries}
+      multiple={false}
+      disableClearable={false}
+      formRef={ref}
       value={formValue}
-      onChange={(_, newValue) => {
+      onChange={(_event, newValue) => {
         onChange?.(newValue)
       }}
+      options={sortedCountries}
+      autoHighlight
       getOptionLabel={(option) => option.name}
+      renderOption={(props, option) => (
+        <Box
+          component="li"
+          sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+          {...props}
+          key={option.code}
+        >
+          <img
+            src={'/assets/svg/flags/4x3/' + option.code + '.svg'}
+            alt={option.name}
+            width={20}
+            style={{ marginRight: 10 }}
+            loading="lazy"
+          />
+          {option.name}
+        </Box>
+      )}
       groupBy={(option) => {
         if (option.suggested) {
           return 'Suggested'
         }
         return 'Other Countries'
       }}
-      getOptionSelected={(option, value) => option.code === value.code}
-      renderOption={renderOption}
-      renderValue={(option) => renderOption({}, option)}
+      getStartAdornment={(value) => {
+        if (value && value !== null) {
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+              <img
+                src={'/assets/svg/flags/4x3/' + value.code + '.svg'}
+                alt={value.name}
+                width={20}
+                style={{ marginRight: 10 }}
+                loading="lazy"
+              />
+            </Box>
+          )
+        }
+        return null
+      }}
+      {...formFieldProps}
     />
   )
 })

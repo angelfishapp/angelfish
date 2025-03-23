@@ -28,5 +28,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     label: 'Country Field',
+    helperText: 'Select a country from the list',
+    error: false,
+    disabled: false,
   },
 }

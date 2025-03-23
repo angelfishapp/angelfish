@@ -1,11 +1,10 @@
-import ListItem from '@mui/material/ListItem'
+import Box from '@mui/material/Box'
 import React from 'react'
 
 import { AutocompleteField } from '@/components/forms/AutocompleteField'
 import type { Currency } from '@angelfish/core'
 import { allCurrencies, getCurrencyFromCode } from '@angelfish/core'
 import type { CurrencyFieldProps } from './CurrencyField.interface'
-import { useStyles } from './CurrencyField.styles'
 
 /**
  * Automcomplete Field to select a Currency from list of currencies
@@ -15,8 +14,6 @@ export default React.forwardRef<HTMLDivElement, CurrencyFieldProps>(function Cur
   { onChange, value, id = 'currency-field', ...formFieldProps }: CurrencyFieldProps,
   ref,
 ) {
-  const classes = useStyles()
-
   // Convert string value to Currency
   const formValue: Currency | null = value
     ? typeof value === 'string'
@@ -35,51 +32,61 @@ export default React.forwardRef<HTMLDivElement, CurrencyFieldProps>(function Cur
     })
   }, [])
 
-  /**
-   * Callback to render list option
-   */
-  const renderOption = React.useCallback(
-    (props: React.HTMLAttributes<HTMLLIElement>, option: Currency) => {
-      if (option) {
-        return (
-          <ListItem {...props}>
-            <img
-              className={classes.flag}
-              src={'/assets/svg/flags/4x3/' + option.flag + '.svg'}
-              loading="lazy"
-            />
-            {option.name} ({option.code})
-          </ListItem>
-        )
-      }
-      return <em>Select a Currency...</em>
-    },
-    [classes],
-  )
-
   // Render
   return (
     <AutocompleteField
       id={id}
-      formRef={ref}
-      multiple={false}
       freeSolo={false}
-      {...formFieldProps}
-      options={sortedCurrencies}
+      multiple={false}
+      disableClearable={false}
+      formRef={ref}
       value={formValue}
-      onChange={(_, newValue) => {
+      onChange={(_event, newValue) => {
         onChange?.(newValue)
       }}
+      options={sortedCurrencies}
+      autoHighlight
       getOptionLabel={(option) => `${option.name} (${option.code})`}
+      renderOption={(props, option) => (
+        <Box
+          component="li"
+          sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+          {...props}
+          key={option.code}
+        >
+          <img
+            src={'/assets/svg/flags/4x3/' + option.flag + '.svg'}
+            alt={option.name}
+            width={20}
+            style={{ marginRight: 10 }}
+            loading="lazy"
+          />
+          {option.name} ({option.code})
+        </Box>
+      )}
       groupBy={(option) => {
         if (option.suggested) {
           return 'Suggested'
         }
-        return 'Other Currencies'
+        return 'Other Countries'
       }}
-      getOptionSelected={(option, value) => option.code === value.code}
-      renderOption={renderOption}
-      renderValue={(option) => renderOption({}, option)}
+      getStartAdornment={(value) => {
+        if (value && value !== null) {
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+              <img
+                src={'/assets/svg/flags/4x3/' + value.flag + '.svg'}
+                alt={value.name}
+                width={20}
+                style={{ marginRight: 10 }}
+                loading="lazy"
+              />
+            </Box>
+          )
+        }
+        return null
+      }}
+      {...formFieldProps}
     />
   )
 })

@@ -28,7 +28,7 @@ export interface AutocompleteFieldProps<
    */
   getStartAdornment?: (
     value: AutocompleteValue<T, Multiple, DisableClearable, FreeSolo>,
-  ) => JSX.Element
+  ) => JSX.Element | null
   /**
    * The helper text content.
    * Optional, if not passed will not show any FormHelper Component

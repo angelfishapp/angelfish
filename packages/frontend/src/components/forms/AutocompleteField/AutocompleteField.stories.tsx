@@ -37,6 +37,7 @@ export const SingleSelect: Story = {
     error: false,
     fullWidth: true,
     disabled: false,
+    loading: false,
     helperText: 'Here is some helper text',
     placeholder: 'Select a tag',
   },
@@ -50,6 +51,7 @@ export const MultiSelect: Story = {
     error: false,
     fullWidth: true,
     disabled: false,
+    loading: false,
     helperText: 'Here is some helper text',
     filterSelectedOptions: true,
   },
@@ -65,6 +67,7 @@ export const CustomValueDisplay: Story = {
     disabled: false,
     helperText: 'Here is some helper text',
     filterSelectedOptions: true,
+    loading: false,
     getStartAdornment: (value) => {
       const tag = value as ITag
       return (
