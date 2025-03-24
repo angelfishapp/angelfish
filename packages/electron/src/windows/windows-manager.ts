@@ -41,7 +41,7 @@ interface WindowProcess {
 /**
  * Manages the creation and lifecycle of windows in the Electron app.
  */
-export const WindowManager = new (class {
+class WindowManagerClass {
   /**
    * List of all windows managed by the WindowManager.
    */
@@ -251,4 +251,7 @@ export const WindowManager = new (class {
   public has(id: string): boolean {
     return this._windows.some((w) => w.id === id)
   }
-})()
+}
+
+// Export instance of Class
+export const WindowManager = new WindowManagerClass()

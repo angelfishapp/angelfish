@@ -13,7 +13,7 @@ import { LogEvents } from './logging-events'
  * and setting up the correct transports for each logger, as well as updating
  * log levels when user settings change
  */
-export const LogManager = new (class {
+class LogManagerClass {
   /**
    * Hold a list of all loggers created by the LogManager
    */
@@ -109,7 +109,7 @@ export const LogManager = new (class {
     // For development and production, use local settings
     return settings.get('logLevel', 'debug')
   }
-})()
+}
 
 // Listen for userSettings updates to app logging level and update loggers accordingly
 settings.onDidChange('logLevel', (newValue) => {
@@ -121,3 +121,6 @@ settings.onDidChange('logLevel', (newValue) => {
     })
   }
 })
+
+// Export instance of Class
+export const LogManager = new LogManagerClass()
