@@ -129,7 +129,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
                         label="Country"
                         fullWidth
                         required
-                        value={getCountryFromCode(value)}
+                        value={getCountryFromCode(value) ?? undefined}
                         onChange={(country) => {
                           if (country) {
                             onChange(country.code)
@@ -159,7 +159,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
                       label="Default Currency"
                       fullWidth
                       required
-                      value={getCurrencyFromCode(value)}
+                      value={getCurrencyFromCode(value) ?? undefined}
                       onChange={(currency) => {
                         if (currency) {
                           onChange(currency.code)

@@ -166,8 +166,9 @@ export function buildTableRows(
   const institutionRows: AccountTableRow[] = institutionsWithoutAccounts.map((institution) => ({
     id: -1,
     acc_type: getAccountType('other', 'other') as AccountType,
-    acc_country: getCountryFromCode(institution.country),
-    acc_iso_currency: getCountryFromCode(institution.country).currency,
+    acc_country: getCountryFromCode(institution.country) as AccountTableRow['acc_country'],
+    acc_iso_currency: getCountryFromCode(institution.country)
+      ?.currency as AccountTableRow['acc_iso_currency'],
     acc_owners: 'Unknown',
     acc_owner_users: [],
     acc_institution_id: institution.id,
@@ -188,7 +189,9 @@ export function buildTableRows(
         account.acc_type as string,
         account.acc_subtype as string,
       ) as AccountType,
-      acc_country: getCountryFromCode(account.institution?.country || 'Unknown'),
+      acc_country: getCountryFromCode(
+        account.institution?.country || 'Unknown',
+      ) as AccountTableRow['acc_country'],
       acc_iso_currency: account.acc_iso_currency || '',
       acc_owners:
         account.acc_owners

@@ -183,9 +183,9 @@ export default function AccountTableRow({
             fontWeight: 'bold',
           }}
         >
-          <ListItemIcon sx={{ fontSize: '2rem' }}>{currency.symbol}</ListItemIcon>
+          <ListItemIcon sx={{ fontSize: '2rem' }}>{currency?.symbol}</ListItemIcon>
           <ListItemText
-            primary={currency.name}
+            primary={currency?.name}
             primaryTypographyProps={{ noWrap: true, fontWeight: 'bold' }}
           />
           <CurrencyLabel

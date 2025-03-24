@@ -6,6 +6,7 @@ import { ImportTransactions } from '@/components/modals/ImportTransactions'
 import { reloadAccounts } from '@/redux/accounts/actions'
 import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
 import type { ImportTransactionsMapper, ReconciledTransaction } from '@angelfish/core'
+import { AppCommandIds, CommandsClient } from '@angelfish/core'
 import type { ImportTransactionsContainerProps } from './ImportTransactionsContainer.interface'
 
 /** ************************************************************************************************
@@ -20,9 +21,9 @@ import type { ImportTransactionsContainerProps } from './ImportTransactionsConta
  * @returns             Path to selected file or null if none selected
  */
 async function onOpenFileDialog(multiple: boolean, fileTypes?: string[]) {
-  const filePath = await window.electron.openOpenDialog({
+  const filePath = await CommandsClient.executeAppCommand(AppCommandIds.SHOW_OPEN_FILE_DIALOG, {
     title: 'Select File Location...',
-    multiple,
+    properties: multiple ? ['openFile', 'multiSelections'] : ['openFile'],
     filters: [
       {
         name: 'Financial Transactions File',
@@ -42,7 +43,7 @@ async function onOpenFileDialog(multiple: boolean, fileTypes?: string[]) {
  * @returns             ParsedFileMappings object
  */
 async function onGetFileMappings(file: string, delimiter?: string) {
-  return await window.api.read_import_mappings({
+  return await CommandsClient.executeAppCommand(AppCommandIds.IMPORT_MAPPINGS, {
     filePath: file,
     delimiter,
   })
@@ -57,10 +58,13 @@ async function onGetFileMappings(file: string, delimiter?: string) {
  */
 async function onReconcileTransactions(file: string, mapper: ImportTransactionsMapper) {
   try {
-    const reconciledTransactions: ReconciledTransaction[] = await window.api.read_import_file({
-      filePath: file,
-      mapper,
-    })
+    const reconciledTransactions: ReconciledTransaction[] = await CommandsClient.executeAppCommand(
+      AppCommandIds.IMPORT_FILE,
+      {
+        filePath: file,
+        mapper,
+      },
+    )
     // Ensure Dates are converted to Date objects
     reconciledTransactions.forEach((t) => {
       t.date = moment(t.date).toDate()
@@ -79,7 +83,9 @@ async function onReconcileTransactions(file: string, mapper: ImportTransactionsM
  * @param transactions The list of reconciled transactions to import
  */
 async function onImportTransactions(transactions: ReconciledTransaction[]) {
-  await window.api.import_transactions({ transactions })
+  await CommandsClient.executeAppCommand(AppCommandIds.IMPORT_TRANSACTIONS, {
+    reconciledTransactions: transactions,
+  })
 }
 
 /**

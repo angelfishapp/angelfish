@@ -146,7 +146,7 @@ export default function SetupBookStep({
                           label="Country"
                           fullWidth
                           required
-                          value={value ? getCountryFromCode(value) : undefined}
+                          value={value ? (getCountryFromCode(value) ?? undefined) : undefined}
                           onChange={(country) => {
                             if (country) {
                               onChange(country.code)
@@ -177,7 +177,7 @@ export default function SetupBookStep({
                           label="Default Currency"
                           fullWidth
                           required
-                          value={value ? getCurrencyFromCode(value) : undefined}
+                          value={value ? (getCurrencyFromCode(value) ?? undefined) : undefined}
                           onChange={(currency) => {
                             if (currency) {
                               onChange(currency.code)

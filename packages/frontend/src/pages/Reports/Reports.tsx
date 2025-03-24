@@ -27,11 +27,12 @@ import { selectAllTags } from '@/redux/tags/selectors'
 import { deleteTransaction, listTransactions, saveTransactions } from '@/redux/transactions/actions'
 import { selectAllTransactions } from '@/redux/transactions/selectors'
 import type {
+  AppCommandRequest,
   ITransactionUpdate,
   ReportsData,
   ReportsQuery,
-  TransactionQuery,
 } from '@angelfish/core'
+import { AppCommandIds, CommandsClient } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
 import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
@@ -83,14 +84,16 @@ export default function Reports() {
   const [showPeriodDetailDrawer, setShowPeriodDetailDrawer] = React.useState<boolean>(false)
   const [periodDetailDrawerTitle, setPeriodDetailDrawerTitle] = React.useState<string>('')
   const [showSettingsDrawer, setShowSettingsDrawer] = React.useState<boolean>(false)
-  const [transactionQuery, setTransactionQuery] = React.useState<TransactionQuery>({})
+  const [transactionQuery, setTransactionQuery] = React.useState<
+    AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>
+  >({})
   const transactions = useSelector(selectAllTransactions)
   const accounts = useSelector(selectAllAccountsWithRelations)
   const tags = useSelector(selectAllTags)
 
   // Get Reports Data when date ranges changed
   React.useEffect(() => {
-    window.api.run_report(reportsQuery).then((response) => {
+    CommandsClient.executeAppCommand(AppCommandIds.RUN_REPORT, reportsQuery).then((response) => {
       setReportData(response)
     })
   }, [
@@ -227,18 +230,24 @@ export default function Reports() {
                             label: 'Excel (XLSX)',
                             disabled: false,
                             onClick: async () => {
-                              const filePath = await window.electron.openSaveDialog({
-                                title: 'Export Report to Excel (XLSX)',
-                                defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
-                                filters: [{ name: 'Excel', extensions: ['xlsx'] }],
-                              })
+                              const filePath = await CommandsClient.executeAppCommand(
+                                AppCommandIds.SHOW_SAVE_FILE_DIALOG,
+                                {
+                                  title: 'Export Report to Excel (XLSX)',
+                                  defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
+                                  filters: [{ name: 'Excel', extensions: ['xlsx'] }],
+                                },
+                              )
 
                               if (filePath) {
-                                await window.api.export_report({
-                                  filePath,
-                                  fileType: 'XLSX',
-                                  query: reportsQuery,
-                                })
+                                await CommandsClient.executeAppCommand(
+                                  AppCommandIds.EXPORT_REPORT,
+                                  {
+                                    filePath,
+                                    fileType: 'XLSX',
+                                    query: reportsQuery,
+                                  },
+                                )
                               }
                             },
                           },

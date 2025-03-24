@@ -115,7 +115,7 @@ export default function BankAccountDrawer({
               onChange={(institution) => {
                 onChange(institution)
                 const country = getCountryFromCode(institution.country)
-                setValue('currency', country.currency)
+                setValue('currency', country?.currency as string)
               }}
               value={value ?? null}
               error={errors?.institution ? true : false}
@@ -220,7 +220,7 @@ export default function BankAccountDrawer({
               fullWidth
               value={value}
               allowNegative={true}
-              currency={currency ? getCurrencyFromCode(currency).symbol : undefined}
+              currency={currency ? getCurrencyFromCode(currency)?.symbol : undefined}
               error={errors?.start_balance ? true : false}
               helperText={
                 errors?.start_balance
@@ -242,7 +242,7 @@ export default function BankAccountDrawer({
               fullWidth
               value={value}
               allowNegative={true}
-              currency={currency ? getCurrencyFromCode(currency).symbol : undefined}
+              currency={currency ? getCurrencyFromCode(currency)?.symbol : undefined}
               error={errors?.account_limit ? true : false}
               helperText={
                 errors?.account_limit
