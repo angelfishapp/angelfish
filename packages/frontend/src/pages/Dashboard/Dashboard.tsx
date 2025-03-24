@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 import { endOfMonth, format, startOfMonth, subMonths } from 'date-fns'
 import React from 'react'
 import { useSelector } from 'react-redux'
@@ -7,6 +8,8 @@ import { AppCommandIds, CommandsClient } from '@angelfish/core'
 import { selectBook } from '@/redux/app/selectors'
 import type { ReportsData } from '@angelfish/core'
 import { getDataSetColors } from '../../utils/palette.utils'
+import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
+// import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
 
 /**
  * Dashboard Page of Application
@@ -33,23 +36,21 @@ export default function Dashboard() {
     })
   }, [])
 
-  return null
-
-  // return (
-  //   <Box py={2} px={8}>
-  //     {!!yearlyData && (
-  //       <FinancialFreedomProgressBar
-  //         data={yearlyData}
-  //         currency={book?.default_currency as string}
-  //       />
-  //     )}
-  //     {!!yearlyData && (
-  //       <IncomeAndExpensesSankey
-  //         data={yearlyData}
-  //         currency={book?.default_currency as string}
-  //         periods={12}
-  //       />
-  //     )}
-  //   </Box>
-  // )
+  return (
+    <Box py={2} px={8}>
+      {!!yearlyData && (
+        <FinancialFreedomProgressBar
+          data={yearlyData}
+          currency={book?.default_currency as string}
+        />
+      )}
+      {/* {!!yearlyData && (
+        <IncomeAndExpensesSankey
+          data={yearlyData}
+          currency={book?.default_currency as string}
+          periods={12}
+        />
+      )} */}
+    </Box>
+  )
 }

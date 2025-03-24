@@ -77,7 +77,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
       'Broadband/Cable/Telephone': {
         description: 'Broadband internet, cable or landline utility bills',
         type: 'Critical',
-        icon: 'telephone',
+        icon: 'phone',
       },
       Electricity: {
         description: 'Electric utility bills',

@@ -54,6 +54,9 @@ export default React.forwardRef<HTMLDivElement, CountryFieldProps>(function Coun
       autoHighlight
       selectOnFocus
       getOptionLabel={(option) => option.name}
+      isOptionEqualToValue={(option, value) => {
+        return option.code === (value as Country)?.code
+      }}
       renderOption={(props, option) => {
         // Remove the key from props to avoid React warning about duplicate keys
         const { key: _key, ...rest } = props

@@ -10,6 +10,7 @@ import { CountryField } from '@/components/forms/CountryField'
 import { CurrencyField } from '@/components/forms/CurrencyField'
 import { TextField } from '@/components/forms/TextField'
 import type { IBook } from '@angelfish/core'
+import { BOOK_AVATARS } from '@angelfish/core'
 import { getCountryFromCode } from '@angelfish/core/src/data/countries'
 import { getCurrencyFromCode } from '@angelfish/core/src/data/currencies'
 
@@ -88,7 +89,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
               rules={{ required: true }}
               render={({ field }) => (
                 <AvatarField
-                  avatars={[]}
+                  avatars={BOOK_AVATARS}
                   size={100}
                   required
                   error={errors?.logo ? true : false}

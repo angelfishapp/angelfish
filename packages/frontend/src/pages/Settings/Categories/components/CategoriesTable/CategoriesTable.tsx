@@ -69,7 +69,7 @@ export function CategoriesTable({
     <Card sx={{ padding: '.5rem 0 0 0 ' }}>
       <div className={classes.categoryDataGridPointer} style={{ left: pointerPosition }} />
       <Table
-        data={categories}
+        data={categories ?? []}
         columns={columns}
         initialState={{
           sorting: [{ id: 'name', desc: false }],

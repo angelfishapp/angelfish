@@ -55,6 +55,9 @@ export default React.forwardRef<HTMLDivElement, CurrencyFieldProps>(function Cur
       selectOnFocus
       placeholder={placeholder}
       getOptionLabel={(option) => `${option.name} (${option.code})`}
+      isOptionEqualToValue={(option, value) => {
+        return option.code === (value as Currency)?.code
+      }}
       renderOption={(props, option) => {
         // Remove the key from props to avoid React warning about duplicate keys
         const { key: _key, ...rest } = props
