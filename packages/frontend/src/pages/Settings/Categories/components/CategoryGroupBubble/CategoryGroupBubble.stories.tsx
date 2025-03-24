@@ -1,8 +1,8 @@
 import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { CategoryGroupBubble } from '.'
 import type { ICategoryGroup } from '@angelfish/core'
+import { CategoryGroupBubble } from '.'
 
 const meta = {
   title: 'Categories/Category Group Bubble',

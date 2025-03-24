@@ -6,7 +6,6 @@ import React from 'react'
 
 import { Avatar } from '@/components/Avatar'
 import { AutocompleteField } from '@/components/forms/AutocompleteField'
-import type { IUser } from '@angelfish/core'
 import type { UserFieldProps } from './UserField.interface'
 import { useStyles } from './UserField.styles'
 
@@ -24,36 +23,41 @@ export default React.forwardRef<HTMLDivElement, UserFieldProps>(function UserFie
   return (
     <AutocompleteField
       id={id}
-      formRef={ref}
+      ref={ref}
       multiple={true}
-      {...formFieldProps}
+      freeSolo={false}
+      disableClearable={false}
       options={users}
       value={value}
       onChange={(_, newValue) => {
         if (newValue) {
-          onChange?.(newValue as IUser[])
+          onChange?.(newValue)
         }
       }}
+      {...formFieldProps}
       getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
       filterSelectedOptions
-      getOptionSelected={(option, value) => {
-        return value.id == option.id
+      renderOption={(props, option) => {
+        // Remove the key from props to avoid React warning about duplicate keys
+        // as it uses getOptionLabel to generate the key for the ListItem which may
+        // not be unique if the first and last names are the same for multiple users
+        const { key: _key, ...rest } = props
+        return (
+          <ListItem className={classes.item} key={option.id} {...rest}>
+            <ListItemIcon>
+              <Avatar
+                avatar={option.avatar}
+                firstName={option.first_name}
+                lastName={option.last_name}
+                size={30}
+                className={classes.avatar}
+                displayBorder={true}
+              />
+            </ListItemIcon>
+            <ListItemText primary={`${option.first_name} ${option.last_name}`} />
+          </ListItem>
+        )
       }}
-      renderOption={(props, option) => (
-        <ListItem className={classes.item} {...props}>
-          <ListItemIcon>
-            <Avatar
-              avatar={option.avatar}
-              firstName={option.first_name}
-              lastName={option.last_name}
-              size={30}
-              className={classes.avatar}
-              displayBorder={true}
-            />
-          </ListItemIcon>
-          <ListItemText primary={`${option.first_name} ${option.last_name}`} />
-        </ListItem>
-      )}
       renderTags={(tags, getTagProps) => {
         return tags.map((option, index) => {
           const tagProps = getTagProps({ index })

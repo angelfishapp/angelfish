@@ -1,4 +1,4 @@
-import { type Row, type RowData, type Table as ReactTable } from '@tanstack/react-table'
+import { type Table as ReactTable, type Row, type RowData } from '@tanstack/react-table'
 import React from 'react'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'

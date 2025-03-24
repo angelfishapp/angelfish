@@ -1,3 +1,4 @@
+import type React from 'react'
 import type { EmojiProps } from './Emoji.interface'
 
 import data from './apple.json'
@@ -7,7 +8,7 @@ import data from './apple.json'
  * sheets so Emoji's still work when user isn't connected to internet. If invalid emoji is passed
  * it will fallback to a question mark emoji.
  */
-export function Emoji({ emoji, size }: EmojiProps) {
+export function Emoji({ emoji, size, style }: EmojiProps) {
   // Handle no Emoji
   if (!emoji) return null
 
@@ -17,22 +18,22 @@ export function Emoji({ emoji, size }: EmojiProps) {
     fallbackEmoji = 'question'
   }
 
+  // Get the emoji skin data from the JSON file
   const emojiSkin = (data.emojis as Record<string, (typeof data.emojis)[keyof typeof data.emojis]>)[
     fallbackEmoji
   ].skins[0]
 
-  return (
-    <span
-      style={{
-        display: 'block',
-        width: size,
-        height: size,
-        backgroundImage: `url(/assets/img/emojis/sheet_apple_64.png)`,
-        backgroundSize: `${100 * data.sheet.cols}% ${100 * data.sheet.rows}%`,
-        backgroundPosition: `${
-          (100 / (data.sheet.cols - 1)) * emojiSkin.x
-        }% ${(100 / (data.sheet.rows - 1)) * emojiSkin.y}%`,
-      }}
-    ></span>
-  )
+  const spriteStyle: React.CSSProperties = {
+    ...style,
+    display: 'block',
+    width: size,
+    height: size,
+    backgroundImage: `url(/assets/img/emojis/sheet_apple_64.png)`,
+    backgroundSize: `${100 * data.sheet.cols}% ${100 * data.sheet.rows}%`,
+    backgroundPosition: `${
+      (100 / (data.sheet.cols - 1)) * emojiSkin.x
+    }% ${(100 / (data.sheet.rows - 1)) * emojiSkin.y}%`,
+  }
+
+  return <span style={spriteStyle}></span>
 }

@@ -10,7 +10,13 @@ import type { CountryFieldProps } from './CountryField.interface'
  * Form Field to select a Country using an Autocomplete input
  */
 export default React.forwardRef<HTMLDivElement, CountryFieldProps>(function CountryField(
-  { onChange, value, id = 'country-field', ...formFieldProps }: CountryFieldProps,
+  {
+    onChange,
+    value,
+    id = 'country-field',
+    placeholder = 'Search Countries...',
+    ...formFieldProps
+  }: CountryFieldProps,
   ref,
 ) {
   // Convert string value to Country
@@ -44,25 +50,31 @@ export default React.forwardRef<HTMLDivElement, CountryFieldProps>(function Coun
         onChange?.(newValue)
       }}
       options={sortedCountries}
+      placeholder={placeholder}
       autoHighlight
+      selectOnFocus
       getOptionLabel={(option) => option.name}
-      renderOption={(props, option) => (
-        <Box
-          component="li"
-          sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-          {...props}
-          key={option.code}
-        >
-          <img
-            src={'/assets/svg/flags/4x3/' + option.code + '.svg'}
-            alt={option.name}
-            width={20}
-            style={{ marginRight: 10 }}
-            loading="lazy"
-          />
-          {option.name}
-        </Box>
-      )}
+      renderOption={(props, option) => {
+        // Remove the key from props to avoid React warning about duplicate keys
+        const { key: _key, ...rest } = props
+        return (
+          <Box
+            component="li"
+            key={option.code}
+            sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+            {...rest}
+          >
+            <img
+              src={'/assets/svg/flags/4x3/' + option.code + '.svg'}
+              alt={option.name}
+              width={20}
+              style={{ marginRight: 10 }}
+              loading="lazy"
+            />
+            {option.name}
+          </Box>
+        )
+      }}
       groupBy={(option) => {
         if (option.suggested) {
           return 'Suggested'

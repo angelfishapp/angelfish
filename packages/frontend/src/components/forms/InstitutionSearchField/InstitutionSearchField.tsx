@@ -19,6 +19,7 @@ export default React.forwardRef<HTMLDivElement, InstitutionSearchFieldProps>(
       onSearch,
       value,
       id = 'institution-search-field',
+      placeholder = 'Type in Institution Name...',
       ...formFieldProps
     }: InstitutionSearchFieldProps,
     ref,
@@ -67,7 +68,9 @@ export default React.forwardRef<HTMLDivElement, InstitutionSearchFieldProps>(
         multiple={false}
         options={searchResults}
         loading={isLoading}
-        placeholder="Type in Institution Name..."
+        placeholder={placeholder}
+        autoHighlight
+        selectOnFocus
         open={isOpen}
         getOptionLabel={(option) => {
           if (typeof option === 'string') {
@@ -75,7 +78,6 @@ export default React.forwardRef<HTMLDivElement, InstitutionSearchFieldProps>(
           }
           return option.name
         }}
-        getOptionSelected={(option, value) => option.id === value.id}
         renderOption={(props, option: IInstitutionUpdate) => {
           // Use current string value
           if (option.id === -1) {

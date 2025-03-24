@@ -27,10 +27,10 @@ import { selectAllTags } from '@/redux/tags/selectors'
 import { deleteTransaction, listTransactions, saveTransactions } from '@/redux/transactions/actions'
 import { selectAllTransactions } from '@/redux/transactions/selectors'
 import type {
+  ITransactionUpdate,
   ReportsData,
   ReportsQuery,
   TransactionQuery,
-  ITransactionUpdate,
 } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
 import { ReportsChart } from './components/ReportsChart'

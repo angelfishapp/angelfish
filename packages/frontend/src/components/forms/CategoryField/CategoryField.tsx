@@ -5,11 +5,10 @@ import ListItem from '@mui/material/ListItem'
 import ListSubheader from '@mui/material/ListSubheader'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import type { FilterOptionsState } from '@mui/material/useAutocomplete'
 import React from 'react'
 
 import BankIcon from '@/components/BankIcon/BankIcon'
-import CategoryLabel from '@/components/CategoryLabel/CategoryLabel'
+// import CategoryLabel from '@/components/CategoryLabel/CategoryLabel'
 import { Emoji } from '@/components/Emoji'
 import AutocompleteField from '@/components/forms/AutocompleteField/AutocompleteField'
 import type { IAccount } from '@angelfish/core'
@@ -75,165 +74,6 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
     return searchOptions
   }, [sortedAccounts])
 
-  /**
-   * Filter Options Callback As User Types in Search Field
-   */
-  const filterOptions = React.useCallback(
-    (options: IAccount[], params: FilterOptionsState<IAccount>) => {
-      if (params.inputValue != '') {
-        const searchTerm = params.inputValue.toLowerCase()
-        const filtered = options.filter((account) => {
-          return searchOptions[account.id].indexOf(searchTerm) > -1
-        })
-
-        if (filtered.length < 1 && onCreate) {
-          // Suggest the creation of a new Category
-          filtered.push({
-            id: 0,
-            name: `Create "${params.inputValue}"`,
-            acc_type: params.inputValue,
-            class: 'CATEGORY',
-            cat_icon: ':new:',
-            cat_description: 'Create New Category',
-            created_on: new Date(),
-            modified_on: new Date(),
-            current_balance: 0,
-            local_current_balance: 0,
-          })
-        }
-
-        // If filterOptions provided, apply it
-        if (componentFilterOptions) {
-          return componentFilterOptions(filtered, params)
-        }
-
-        return filtered
-      }
-
-      // If filterOptions provided, apply it
-      if (componentFilterOptions) {
-        return componentFilterOptions(options, params)
-      }
-
-      // Return all options
-      return options
-    },
-    [searchOptions, componentFilterOptions, onCreate],
-  )
-
-  /**
-   * Callback to render value. Show Unclassified if create option is selected
-   */
-  const renderValue = React.useCallback((option: IAccount) => {
-    return <CategoryLabel account={option?.id === 0 ? undefined : option} />
-  }, [])
-
-  /**
-   * Callback to render list option
-   */
-  const renderOption = React.useCallback(
-    (props: React.HTMLAttributes<HTMLLIElement>, option: IAccount) => {
-      if (option.id == 0) {
-        // Render Create Category Option if onCreate provided
-        return (
-          <ListItem {...props}>
-            <Box display="flex" alignItems="center" width="100%">
-              <Box marginRight={1}>
-                <Emoji size={24} emoji={option.cat_icon ?? ''} />
-              </Box>
-              <Box minWidth={200} flexGrow={1}>
-                <Typography style={{ lineHeight: 1.1 }}>{option.name}</Typography>
-              </Box>
-              <Box></Box>
-            </Box>
-          </ListItem>
-        )
-      }
-      if (option.class == 'ACCOUNT') {
-        // Render Bank Account
-        return (
-          <ListItem {...props}>
-            <Box display="flex" alignItems="center" width="100%">
-              <Box marginRight={1}>
-                <BankIcon logo={option.institution?.logo} size={24} />
-              </Box>
-              <Box minWidth={200} flexGrow={1}>
-                <Typography style={{ lineHeight: 1.1 }} noWrap>
-                  {option.name}
-                </Typography>
-                <Typography style={{ lineHeight: 1.1 }} color="textSecondary" noWrap>
-                  {option.institution?.name}
-                </Typography>
-              </Box>
-              {!disableTooltip && (
-                <Box>
-                  <Tooltip
-                    title="Account Transfer"
-                    placement="right"
-                    classes={{
-                      tooltip: classes.descriptionTooltip,
-                    }}
-                  >
-                    <InfoIcon fontSize="small" color="primary" />
-                  </Tooltip>
-                </Box>
-              )}
-            </Box>
-          </ListItem>
-        )
-      }
-
-      // Render Category
-      return (
-        <ListItem {...props}>
-          <Box display="flex" alignItems="center" width="100%">
-            <Box marginRight={1} width={30}>
-              <Emoji size={24} emoji={option.cat_icon ?? ''} />
-            </Box>
-            <Box minWidth={200} flexGrow={1}>
-              <Typography style={{ lineHeight: 1.1 }} noWrap>
-                {option.name}
-              </Typography>
-              <Typography style={{ lineHeight: 1.1 }} color="textSecondary" noWrap>
-                {`${option.categoryGroup?.type} - ${option.categoryGroup?.name}`}
-              </Typography>
-            </Box>
-            {!disableTooltip && (
-              <Box>
-                <Tooltip
-                  title={option.cat_description}
-                  placement="right"
-                  classes={{
-                    tooltip: classes.descriptionTooltip,
-                  }}
-                >
-                  <InfoIcon fontSize="small" color="primary" />
-                </Tooltip>
-              </Box>
-            )}
-          </Box>
-        </ListItem>
-      )
-    },
-    [classes, disableTooltip],
-  )
-
-  /**
-   * Render Group - required to display virtualized rows
-   */
-  const renderGroup = React.useCallback((params: AutocompleteRenderGroupParams) => {
-    if (!params.group) {
-      return [params.children]
-    }
-
-    return [
-      <ListSubheader key={params.key} component="div">
-        {params.group}
-      </ListSubheader>,
-      params.children,
-    ]
-  }, [])
-
   // Render
   return (
     <AutocompleteField
@@ -241,9 +81,12 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
       formRef={ref}
       multiple={false}
       freeSolo={onCreate ? true : false}
-      {...formFieldProps}
+      disableClearable={false}
       options={sortedAccounts}
       value={value}
+      placeholder={placeholder}
+      autoHighlight
+      selectOnFocus
       onChange={(_, newValue) => {
         if (newValue) {
           if (typeof newValue !== 'string') {
@@ -267,19 +110,15 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
         if (option.id == 0) {
           return option.acc_type ?? ''
         }
+        if (renderAsValue) {
+          // Only render the name if renderAsValue is true
+          return option.name
+        }
+        // Otherwise return full label, i.e. "Category Group > Category Name"
         if (option.class == 'CATEGORY') {
-          return (option.categoryGroup?.name ?? '') + ':' + option.name
+          return (option.categoryGroup?.name ?? '') + ' > ' + option.name
         }
-        return (option.institution?.name ?? '') + ':' + option.name
-      }}
-      getOptionSelected={(option, value) => {
-        if (!value) {
-          return false
-        }
-        if (value.id > 0) {
-          return option.id == value.id
-        }
-        return false
+        return (option.institution?.name ?? '') + ' > ' + option.name
       }}
       groupBy={
         !disableGroupBy
@@ -294,12 +133,174 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
             }
           : undefined
       }
-      virtualize={true}
-      renderGroup={renderGroup}
-      renderOption={renderOption}
-      renderValue={renderAsValue ? renderValue : undefined}
-      filterOptions={filterOptions}
-      placeholder={placeholder}
+      virtualize={false}
+      renderGroup={(params: AutocompleteRenderGroupParams) => {
+        if (!params.group) {
+          return [params.children]
+        }
+
+        return [
+          <ListSubheader key={params.key} component="div">
+            {params.group}
+          </ListSubheader>,
+          params.children,
+        ]
+      }}
+      renderOption={(props, option) => {
+        // Remove the key from props to avoid React warning about
+        // spread JSX and duplicate keys
+        const { key: _key, ...rest } = props
+
+        if (option.id == 0) {
+          // Render Create Category Option if onCreate provided
+          return (
+            <ListItem key={option.id} {...rest}>
+              <Box display="flex" alignItems="center" width="100%">
+                <Box marginRight={1}>
+                  <Emoji size={24} emoji={option.cat_icon ?? ''} />
+                </Box>
+                <Box minWidth={200} flexGrow={1}>
+                  <Typography style={{ lineHeight: 1.1 }}>{option.name}</Typography>
+                </Box>
+                <Box></Box>
+              </Box>
+            </ListItem>
+          )
+        }
+        if (option.class == 'ACCOUNT') {
+          // Render Bank Account
+          return (
+            <ListItem key={option.id} {...rest}>
+              <Box display="flex" alignItems="center" width="100%">
+                <Box marginRight={1}>
+                  <BankIcon logo={option.institution?.logo} size={24} />
+                </Box>
+                <Box minWidth={200} flexGrow={1}>
+                  <Typography style={{ lineHeight: 1.1 }} noWrap>
+                    {option.name}
+                  </Typography>
+                  <Typography style={{ lineHeight: 1.1 }} color="textSecondary" noWrap>
+                    {option.institution?.name}
+                  </Typography>
+                </Box>
+                {!disableTooltip && (
+                  <Box>
+                    <Tooltip
+                      title="Account Transfer"
+                      placement="right"
+                      classes={{
+                        tooltip: classes.descriptionTooltip,
+                      }}
+                    >
+                      <InfoIcon fontSize="small" color="primary" />
+                    </Tooltip>
+                  </Box>
+                )}
+              </Box>
+            </ListItem>
+          )
+        }
+
+        // Render Category
+        return (
+          <ListItem key={option.id} {...rest}>
+            <Box display="flex" alignItems="center" width="100%">
+              <Box marginRight={1} width={30}>
+                <Emoji size={24} emoji={option.cat_icon ?? ''} />
+              </Box>
+              <Box minWidth={200} flexGrow={1}>
+                <Typography style={{ lineHeight: 1.1 }} noWrap>
+                  {option.name}
+                </Typography>
+                <Typography style={{ lineHeight: 1.1 }} color="textSecondary" noWrap>
+                  {`${option.categoryGroup?.type} - ${option.categoryGroup?.name}`}
+                </Typography>
+              </Box>
+              {!disableTooltip && (
+                <Box>
+                  <Tooltip
+                    title={option.cat_description}
+                    placement="right"
+                    classes={{
+                      tooltip: classes.descriptionTooltip,
+                    }}
+                  >
+                    <InfoIcon fontSize="small" color="primary" />
+                  </Tooltip>
+                </Box>
+              )}
+            </Box>
+          </ListItem>
+        )
+      }}
+      filterOptions={(options, params) => {
+        if (params.inputValue != '') {
+          const searchTerm = params.inputValue.toLowerCase()
+          const filtered = options.filter((account) => {
+            return searchOptions[account.id].indexOf(searchTerm) > -1
+          })
+
+          if (filtered.length < 1 && onCreate) {
+            // Suggest the creation of a new Category
+            filtered.push({
+              id: 0,
+              name: `Create "${params.inputValue}"`,
+              acc_type: params.inputValue,
+              class: 'CATEGORY',
+              cat_icon: 'new',
+              cat_description: 'Create New Category',
+              created_on: new Date(),
+              modified_on: new Date(),
+              current_balance: 0,
+              local_current_balance: 0,
+            })
+          }
+
+          // If filterOptions provided, apply it
+          if (componentFilterOptions) {
+            return componentFilterOptions(filtered, params)
+          }
+
+          return filtered
+        }
+
+        // If filterOptions provided, apply it
+        if (componentFilterOptions) {
+          return componentFilterOptions(options, params)
+        }
+
+        // Return all options
+        return options
+      }}
+      getStartAdornment={(value) => {
+        if (value && value !== null && typeof value !== 'string' && renderAsValue) {
+          if (value.id == 0) {
+            // Render Create Category Icon
+            return (
+              <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                <Emoji size={24} emoji={value.cat_icon ?? ''} />
+              </Box>
+            )
+          }
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {value.class == 'CATEGORY' ? (
+                <React.Fragment>
+                  <Emoji size={24} emoji={value.cat_icon ?? ''} style={{ marginRight: 8 }} />
+                  {value.categoryGroup?.name} &gt;
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <BankIcon logo={value.institution?.logo} size={24} style={{ marginRight: 8 }} />
+                  {value.institution?.name} &gt;
+                </React.Fragment>
+              )}
+            </Box>
+          )
+        }
+        return null
+      }}
+      {...formFieldProps}
     />
   )
 })

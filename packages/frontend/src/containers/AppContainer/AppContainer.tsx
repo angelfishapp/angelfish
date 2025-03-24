@@ -8,6 +8,7 @@ import { getAppState } from '@/redux/app/actions'
 import { selectAuthenticatedUser, selectBook, selectIsInitialised } from '@/redux/app/selectors'
 import { initStore, startIPCChannels } from '@/redux/common/actions'
 import type { IAuthenticatedUser } from '@angelfish/core'
+import { AppCommandIds, AppProcessIDs, CommandsClient } from '@angelfish/core'
 
 /** ************************************************************************************************
  * IPC Callback Functions
@@ -17,7 +18,7 @@ import type { IAuthenticatedUser } from '@angelfish/core'
  * Log current user out of the App
  */
 async function onLogout() {
-  await window.api.auth_logout({})
+  await CommandsClient.executeAppCommand(AppCommandIds.AUTH_LOGOUT)
 }
 
 /**
@@ -38,7 +39,7 @@ export default function AppContainer() {
    * listeners for App state changes from Main process
    */
   React.useEffect(() => {
-    window.ipc.ipcSocketReady().then(() => {
+    CommandsClient.isReady([AppProcessIDs.MAIN, AppProcessIDs.WORKER]).then(() => {
       dispatch(getAppState({}))
       dispatch(startIPCChannels({}))
     })

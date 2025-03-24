@@ -83,7 +83,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:^1.6.1"
     "@storybook/addon-essentials": "npm:^8.6.4"
     "@storybook/addon-interactions": "npm:^8.6.4"
-    "@storybook/addon-onboarding": "npm:^8.6.4"
     "@storybook/addon-webpack5-compiler-swc": "npm:^2.1.0"
     "@storybook/blocks": "npm:^8.6.4"
     "@storybook/react": "npm:^8.6.4"
@@ -2551,15 +2550,6 @@ __metadata:
   peerDependencies:
     storybook: ^8.6.4
   checksum: 10/fccba0060990deb7a7e1994a37c1b615fb7d5ec0faacdd39e1d110153fe14910e061c4703ccf8784c91fd7c343867c578dbcd07a1961a29444087869bb32e5c3
-  languageName: node
-  linkType: hard
-
-"@storybook/addon-onboarding@npm:^8.6.4":
-  version: 8.6.4
-  resolution: "@storybook/addon-onboarding@npm:8.6.4"
-  peerDependencies:
-    storybook: ^8.6.4
-  checksum: 10/27effb4e2b559a6729ea6e20c3c7ee1f024a7de00b35584ca6494420d603c801404c94aa3fb78c5e3a1271fc8b83d2156de245e6e8ee2cd100284d115ced62fd
   languageName: node
   linkType: hard
 

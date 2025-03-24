@@ -1,5 +1,5 @@
 import type { PopoverPosition } from '@mui/material/Popover'
-import type { Row, Table, RowSelectionState } from '@tanstack/react-table'
+import type { Row, RowSelectionState, Table } from '@tanstack/react-table'
 import type { MouseEvent } from 'react'
 
 /**

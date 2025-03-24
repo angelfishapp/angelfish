@@ -9,7 +9,7 @@ import reduxStore from '@/redux/store'
 import { AppRootStyles } from './AppRoot.styles'
 import theme from './theme'
 
-import { AppContainer } from 'src/containers/AppContainer'
+import { AppContainer } from '@/containers/AppContainer'
 
 /**
  * Root Component

@@ -18,6 +18,11 @@ export interface InstitutionSearchFieldProps extends FormFieldProps {
    */
   onSearch: (query: string) => Promise<IInstitutionUpdate[]>
   /**
+   * Optional placeholder for the TextField
+   * @default 'Type in Institution Name...'
+   */
+  placeholder?: string
+  /**
    * Optionally set the current name value for Field
    */
   value?: string

@@ -14,6 +14,11 @@ export interface InstitutionFieldProps extends FormFieldProps {
    */
   onChange?: (institution: IInstitution) => void
   /**
+   * Optional placeholder for the TextField
+   * @default 'Search Institutions...'
+   */
+  placeholder?: string
+  /**
    * Optionally set the current value for Field
    */
   value?: IInstitution

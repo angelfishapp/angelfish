@@ -86,7 +86,6 @@ export default function UserSettings() {
             avatar: formData.avatar,
             first_name: formData.firstName,
             last_name: formData.lastName,
-            email: formData.email,
             phone: formData.phone.number ? `+${formData.phone.number}` : undefined,
           },
         }),
@@ -181,7 +180,7 @@ export default function UserSettings() {
                         fullWidth
                         required
                         error={errors?.email ? true : false}
-                        helperText={"COMING SOON: Email can't be changed right now..."}
+                        helperText="COMING SOON: Email can't be changed right now..."
                         {...field}
                       />
                     )}

@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
-import ClickAwayListener from '@mui/material/ClickAwayListener'
 import IconButton from '@mui/material/IconButton'
+import Popover from '@mui/material/Popover'
 import React from 'react'
 
 import { Emoji, EmojiPicker } from '@/components/Emoji'
@@ -20,21 +20,7 @@ export default React.forwardRef<HTMLDivElement, EmojiFieldProps>(function EmojiF
 
   // Component State
   const [emoji, setEmoji] = React.useState<string | undefined>(value ? value : defaultValue)
-  const [open, setOpen] = React.useState(false)
-
-  /**
-   * Handle Icon Button Click
-   */
-  const handleClick = () => {
-    setOpen((prev) => !prev)
-  }
-
-  /**
-   * Handle Clicking Away
-   */
-  const handleClickAway = () => {
-    setOpen(false)
-  }
+  const [emojiAnchorEl, setEmojiAnchorEl] = React.useState<HTMLElement | null>(null)
 
   /**
    * Make sure updating value updates field
@@ -45,24 +31,34 @@ export default React.forwardRef<HTMLDivElement, EmojiFieldProps>(function EmojiF
 
   // Render
   return (
-    <ClickAwayListener onClickAway={handleClickAway}>
-      <Box sx={{ position: 'relative' }}>
-        <FormField ref={ref} {...formFieldProps}>
-          <IconButton className={classes.emojiFieldIcon} onClick={handleClick} size="large">
-            <Emoji emoji={emoji ? emoji : 'question'} size={32} />
-          </IconButton>
+    <Box sx={{ position: 'relative' }}>
+      <FormField ref={ref} {...formFieldProps}>
+        <IconButton
+          className={classes.emojiFieldIcon}
+          onClick={(e) => setEmojiAnchorEl(e.currentTarget)}
+          size="large"
+        >
+          <Emoji emoji={emoji ? emoji : 'question'} size={32} />
+        </IconButton>
+        <Popover
+          open={Boolean(emojiAnchorEl)}
+          disableScrollLock
+          disablePortal
+          onClose={() => setEmojiAnchorEl(null)}
+          {...{ anchorEl: emojiAnchorEl }}
+        >
           <EmojiPicker
-            open={open}
+            open={Boolean(emojiAnchorEl)}
             onSelect={(emoji: string) => {
               setEmoji(emoji)
-              setOpen(false)
+              setEmojiAnchorEl(null)
               if (onChange) {
                 onChange(emoji)
               }
             }}
           />
-        </FormField>
-      </Box>
-    </ClickAwayListener>
+        </Popover>
+      </FormField>
+    </Box>
   )
 })

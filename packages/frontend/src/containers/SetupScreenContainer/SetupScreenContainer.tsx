@@ -9,7 +9,7 @@ import { deleteInstitution, saveInstitution } from '@/redux/institutions/actions
 import { selectAllInstitutions } from '@/redux/institutions/selectors'
 import { deleteUser, saveUser, updateAuthenticatedUser } from '@/redux/users/actions'
 import { selectAllUsers } from '@/redux/users/selectors'
-import { BOOK_AVATARS, USER_AVATARS } from '@angelfish/core'
+import { AppCommandIds, BOOK_AVATARS, CommandsClient, USER_AVATARS } from '@angelfish/core'
 import type { SetupScreenContainerProps } from './SetupScreenContainer.interface'
 
 /**
@@ -28,7 +28,7 @@ export default function SetupScreenContainer({ onComplete }: SetupScreenContaine
    * Callback to search available Institutions via API/Database
    */
   const onSearchInstitutions = React.useCallback(async (query: string) => {
-    return await window.api.search_institutions({ query })
+    return await CommandsClient.executeAppCommand(AppCommandIds.SEARCH_INSTITUTIONS, { query })
   }, [])
 
   /**
@@ -44,7 +44,7 @@ export default function SetupScreenContainer({ onComplete }: SetupScreenContaine
   const onCreateBook = React.useCallback(
     async (name: string, country: string, currency: string, logo?: string) => {
       // Open Save Dialog to select file location
-      const filePath = await window.electron.openSaveDialog({
+      const filePath = await CommandsClient.executeAppCommand(AppCommandIds.SHOW_SAVE_FILE_DIALOG, {
         title: 'Select File Location...',
         defaultPath: `${name}.afish`,
         filters: [
@@ -57,13 +57,15 @@ export default function SetupScreenContainer({ onComplete }: SetupScreenContaine
 
       // If filePath selected, create book file
       if (filePath) {
-        await window.api.create_new_file({
-          name,
-          country,
-          default_currency: currency,
+        await CommandsClient.executeAppCommand(AppCommandIds.CREATE_BOOK, {
           filePath,
-          logo,
-          entity: 'HOUSEHOLD',
+          book: {
+            name,
+            country,
+            default_currency: currency,
+            logo,
+            entity: 'HOUSEHOLD',
+          },
         })
       } else {
         throw new Error('No File Path Selected')
@@ -80,16 +82,14 @@ export default function SetupScreenContainer({ onComplete }: SetupScreenContaine
       dispatch(
         updateAuthenticatedUser({
           user: {
-            id: authenticatedUser?.id as string,
             first_name: firstName,
             last_name: lastName,
-            email: authenticatedUser?.email as string,
             avatar,
           },
         }),
       )
     },
-    [dispatch, authenticatedUser?.email, authenticatedUser?.id],
+    [dispatch],
   )
 
   // Render

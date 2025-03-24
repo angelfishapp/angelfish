@@ -3,7 +3,7 @@ import { getWorkerLogger } from './logger'
 
 import { AccountService } from './services/accounts'
 import { BookService } from './services/book'
-import { CatoryGroupService } from './services/category-groups'
+import { CategoryGroupsService } from './services/category-groups'
 import { DatasetService } from './services/datasets'
 import { ImportService } from './services/import'
 import { InstitutionService } from './services/institutions'
@@ -25,7 +25,7 @@ window.onload = async () => {
     BookService,
     UserService,
     AccountService,
-    CatoryGroupService,
+    CategoryGroupsService,
     InstitutionService,
     TagService,
     TransactionService,

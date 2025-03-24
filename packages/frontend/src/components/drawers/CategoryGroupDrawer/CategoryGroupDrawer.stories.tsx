@@ -1,8 +1,8 @@
 import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { CategoryGroupDrawer } from '.'
 import type { CategoryGroupType, ICategoryGroup } from '@angelfish/core'
+import { CategoryGroupDrawer } from '.'
 
 const categoryGroup = {
   name: 'Test Category Group',

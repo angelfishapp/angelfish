@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 import ListItem from '@mui/material/ListItem'
 import React from 'react'
 
@@ -18,6 +19,7 @@ export default React.forwardRef<HTMLDivElement, CategoryGroupFieldProps>(
       onChange,
       value,
       id = 'CategoryGroup-Field',
+      placeholder = 'Search Category Groups...',
       ...formFieldProps
     }: CategoryGroupFieldProps,
     ref,
@@ -35,49 +37,54 @@ export default React.forwardRef<HTMLDivElement, CategoryGroupFieldProps>(
       })
     }, [categoryGroups])
 
-    /**
-     * Callback to render list option
-     */
-    const renderOption = React.useCallback(
-      (props: React.HTMLAttributes<HTMLLIElement>, option: ICategoryGroup) => {
-        if (option) {
-          return (
-            <ListItem {...props}>
-              <span className={classes.emojiIcon}>
-                <Emoji size={25} emoji={option.icon} />
-              </span>
-              <span className={classes.name}>{option.name}</span>
-            </ListItem>
-          )
-        }
-        return <em>Search Category Groups...</em>
-      },
-      [classes],
-    )
-
     // Render
     return (
       <AutocompleteField
         id={id}
         formRef={ref}
         multiple={false}
-        {...formFieldProps}
+        disableClearable={false}
         options={sortedCategoryGroups}
         value={value}
+        placeholder={placeholder}
+        autoHighlight
+        selectOnFocus
         onChange={(_, newValue) => {
           onChange?.(newValue as ICategoryGroup, value as ICategoryGroup)
         }}
         getOptionLabel={(option) => option.name}
-        getOptionSelected={(option, value) => option.id == value?.id}
         groupBy={(option) => {
           if (option.type == 'Income') {
             return 'Income'
           }
           return 'Expense'
         }}
-        renderOption={renderOption}
-        renderValue={(option) => renderOption({}, option)}
-        placeholder="Search Category Groups..."
+        renderOption={(props, option) => {
+          // Remove the key from props to avoid React warning about duplicate keys
+          const { key: _key, ...rest } = props
+          if (option) {
+            return (
+              <ListItem key={option.id} {...rest}>
+                <span className={classes.emojiIcon}>
+                  <Emoji size={25} emoji={option.icon} />
+                </span>
+                <span className={classes.name}>{option.name}</span>
+              </ListItem>
+            )
+          }
+          return <em>Search Category Groups...</em>
+        }}
+        getStartAdornment={(value) => {
+          if (value && value !== null) {
+            return (
+              <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                <Emoji size={25} emoji={value.icon} />
+              </Box>
+            )
+          }
+          return null
+        }}
+        {...formFieldProps}
       />
     )
   },

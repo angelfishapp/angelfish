@@ -84,4 +84,4 @@ class CategoryGroupsServiceClass {
 }
 
 // Export instance of Class
-export const CategoryGroupService = new CategoryGroupsServiceClass()
+export const CategoryGroupsService = new CategoryGroupsServiceClass()

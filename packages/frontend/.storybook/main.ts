@@ -20,7 +20,6 @@ const config: StorybookConfig = {
         docs: false,
       },
     },
-    getAbsolutePath('@storybook/addon-onboarding'),
     getAbsolutePath('@chromatic-com/storybook'),
     getAbsolutePath('@storybook/addon-interactions'),
   ],

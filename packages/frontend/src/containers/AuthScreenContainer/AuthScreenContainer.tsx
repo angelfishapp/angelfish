@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux'
 
+import { AppCommandIds, CommandsClient } from '@angelfish/core'
+
 import { AuthScreen } from '@/app/components/AuthScreen'
 import { selectIsAuthenticated, selectUserSettings } from '@/redux/app/selectors'
 import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
@@ -15,7 +17,7 @@ import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
  * @throws          Error if unsuccessful
  */
 async function onGetOOBCode(email: string) {
-  await window.api.auth_get_oob_code({ email })
+  await CommandsClient.executeAppCommand(AppCommandIds.AUTH_SEND_OOB_CODE, { email })
 }
 
 /**
@@ -25,7 +27,7 @@ async function onGetOOBCode(email: string) {
  * @throws          Error if unsuccessful authentication
  */
 async function onAuthenticate(oob_code: string) {
-  await window.api.auth_authenticate({ oob_code })
+  await CommandsClient.executeAppCommand(AppCommandIds.AUTH_AUTHENTICATE, { oob_code })
 }
 
 /**

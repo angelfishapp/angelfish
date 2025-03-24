@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
 import type { PopoverPosition } from '@mui/material/Popover'
+import type { ReactNode } from 'react'
 
 import type { DropdownMenuItem } from '@/components/DropdownMenuButton/DropdownMenuButton.interfaces'
 

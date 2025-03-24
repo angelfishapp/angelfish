@@ -19,9 +19,9 @@ const useStyles = makeStyles<Theme>(() => ({
  * ListboxComponent Adaptor for Virtualiszed List Component
  */
 export const VirtualizedListboxComponent = React.forwardRef<
-  HTMLDivElement,
+  HTMLUListElement,
   React.HTMLAttributes<HTMLElement>
->(function VirtualizedListboxComponent({ children, ...other }, _ref) {
+>(function VirtualizedListboxComponent({ children, ...other }, ref) {
   const classes = useStyles()
 
   const itemData = React.Children.toArray(children)
@@ -39,7 +39,7 @@ export const VirtualizedListboxComponent = React.forwardRef<
 
   return (
     <div ref={listContainerRef} className={classes.virtualList} {...other}>
-      <ul style={{ height: virtualizer.getTotalSize(), position: 'relative' }}>
+      <ul style={{ height: virtualizer.getTotalSize(), position: 'relative' }} ref={ref}>
         {virtualizer.getVirtualItems().map((virtualItem) => {
           return React.cloneElement(itemData[virtualItem.index] as any, {
             key: virtualItem.key,

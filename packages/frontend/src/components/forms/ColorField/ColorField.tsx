@@ -1,4 +1,3 @@
-import ClickAwayListener from '@mui/material/ClickAwayListener'
 import IconButton from '@mui/material/IconButton'
 import Popover from '@mui/material/Popover'
 import React from 'react'
@@ -45,23 +44,18 @@ export default React.forwardRef<HTMLDivElement, ColorFieldProps>(function ColorF
         open={Boolean(colorAnchorEl)}
         disableScrollLock
         disablePortal
+        onClose={() => setColorAnchorEl(null)}
         {...{ anchorEl: colorAnchorEl }}
       >
-        <ClickAwayListener
-          onClickAway={() => {
-            setColorAnchorEl(null)
+        <SketchPicker
+          color={color}
+          onChange={(color: ColorResult) => {
+            setColor(color.hex)
+            if (onChange) {
+              onChange(color.hex)
+            }
           }}
-        >
-          <SketchPicker
-            color={color}
-            onChange={(color: ColorResult) => {
-              setColor(color.hex)
-              if (onChange) {
-                onChange(color.hex)
-              }
-            }}
-          />
-        </ClickAwayListener>
+        />
       </Popover>
     </FormField>
   )

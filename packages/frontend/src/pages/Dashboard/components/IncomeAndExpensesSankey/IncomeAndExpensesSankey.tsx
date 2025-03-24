@@ -2,14 +2,14 @@ import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import {
   Chart as ChartJS,
-  registerables,
   Tooltip as ChartTooltip,
+  registerables,
   type ChartOptions,
 } from 'chart.js'
 import { Flow, SankeyController } from 'chartjs-chart-sankey'
 import { format, isAfter, parse, subMonths } from 'date-fns'
 import { groupBy } from 'lodash-es'
-import React, { type ReactNode } from 'react'
+import React, { type JSX } from 'react'
 import { Chart } from 'react-chartjs-2'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
@@ -262,7 +262,7 @@ export default function IncomeAndExpensesSankey({
 /**
  * Custom Tooltip Component used in slider
  */
-function ToolTipComponent({ children }: { children: ReactNode }) {
+function ToolTipComponent({ children }: { children: JSX.Element }) {
   return (
     <IncomeAndExpensesSankeyTooltip open enterTouchDelay={0} placement="top" title=" ">
       {children}

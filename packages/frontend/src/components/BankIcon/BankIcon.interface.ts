@@ -25,4 +25,8 @@ export interface BankIconProps {
    * @default 50
    */
   size?: number
+  /**
+   * Optional CSS styles to apply to the BankIcon component
+   */
+  style?: React.CSSProperties
 }

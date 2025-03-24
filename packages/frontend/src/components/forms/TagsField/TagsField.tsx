@@ -50,9 +50,6 @@ export default React.forwardRef<HTMLDivElement, TagsFieldProps>(function TagsFie
         }
         return option.name
       }}
-      getOptionSelected={(option, value) => {
-        return option.id === value.id
-      }}
       renderTags={(tags, getTagProps) => {
         return tags.map((option, index) => {
           const tagProps = getTagProps({ index })

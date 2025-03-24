@@ -17,6 +17,11 @@ export interface AccountTypeFieldProps extends FormFieldProps {
    */
   onChange?: (type: AccountType | null) => void
   /**
+   * Optional placeholder for the TextField
+   * @default 'Search Account Types...'
+   */
+  placeholder?: string
+  /**
    * Optionally filter account types to specific type as Angelfish will initially
    * exclude some account types like investment, loan, etc. so the user shouldn't be
    * able to select them.

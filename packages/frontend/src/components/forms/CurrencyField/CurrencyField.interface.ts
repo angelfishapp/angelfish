@@ -11,6 +11,11 @@ export interface CurrencyFieldProps extends FormFieldProps {
    */
   onChange?: (currency: Currency | null) => void
   /**
+   * Optional placeholder for the TextField
+   * @default 'Search Currencies...'
+   */
+  placeholder?: string
+  /**
    * Optionally set the current value for Field
    */
   value?: Currency | string

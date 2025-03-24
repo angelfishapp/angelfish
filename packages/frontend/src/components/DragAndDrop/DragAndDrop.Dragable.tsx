@@ -1,6 +1,6 @@
-import type { JSX } from 'react'
 import type { UseDraggableArguments } from '@dnd-kit/core'
 import { useDraggable } from '@dnd-kit/core'
+import type { JSX } from 'react'
 
 /**
  * Component we can use to wrap children instead of using `useDraggable` hook

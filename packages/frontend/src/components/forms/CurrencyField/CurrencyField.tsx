@@ -11,7 +11,13 @@ import type { CurrencyFieldProps } from './CurrencyField.interface'
  */
 
 export default React.forwardRef<HTMLDivElement, CurrencyFieldProps>(function CurrencyField(
-  { onChange, value, id = 'currency-field', ...formFieldProps }: CurrencyFieldProps,
+  {
+    onChange,
+    value,
+    id = 'currency-field',
+    placeholder = 'Search Currencies...',
+    ...formFieldProps
+  }: CurrencyFieldProps,
   ref,
 ) {
   // Convert string value to Currency
@@ -46,24 +52,30 @@ export default React.forwardRef<HTMLDivElement, CurrencyFieldProps>(function Cur
       }}
       options={sortedCurrencies}
       autoHighlight
+      selectOnFocus
+      placeholder={placeholder}
       getOptionLabel={(option) => `${option.name} (${option.code})`}
-      renderOption={(props, option) => (
-        <Box
-          component="li"
-          sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-          {...props}
-          key={option.code}
-        >
-          <img
-            src={'/assets/svg/flags/4x3/' + option.flag + '.svg'}
-            alt={option.name}
-            width={20}
-            style={{ marginRight: 10 }}
-            loading="lazy"
-          />
-          {option.name} ({option.code})
-        </Box>
-      )}
+      renderOption={(props, option) => {
+        // Remove the key from props to avoid React warning about duplicate keys
+        const { key: _key, ...rest } = props
+        return (
+          <Box
+            component="li"
+            key={option.code}
+            sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+            {...rest}
+          >
+            <img
+              src={'/assets/svg/flags/4x3/' + option.flag + '.svg'}
+              alt={option.name}
+              width={20}
+              style={{ marginRight: 10 }}
+              loading="lazy"
+            />
+            {option.name} ({option.code})
+          </Box>
+        )
+      }}
       groupBy={(option) => {
         if (option.suggested) {
           return 'Suggested'

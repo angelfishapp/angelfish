@@ -13,7 +13,7 @@ export interface UserFieldProps extends FormFieldProps {
   /**
    * Optional onChange function to return selected Users after its changed
    */
-  onChange?: (users: IUser[] | null) => void
+  onChange?: (users: IUser[]) => void
   /**
    * Optionally set the current value for Field
    */

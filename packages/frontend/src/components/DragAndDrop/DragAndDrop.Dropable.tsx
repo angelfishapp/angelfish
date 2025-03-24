@@ -1,6 +1,6 @@
-import type { JSX } from 'react'
 import type { UseDroppableArguments } from '@dnd-kit/core'
 import { useDroppable } from '@dnd-kit/core'
+import type { JSX } from 'react'
 
 /**
  * Component we can use to wrap children instead of using `useDroppable` hook

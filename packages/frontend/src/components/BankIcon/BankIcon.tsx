@@ -8,7 +8,13 @@ import type { BankIconProps } from './BankIcon.interface'
 /**
  * Main Component
  */
-export default function BankIcon({ error, isSyncing = false, logo, size = 50 }: BankIconProps) {
+export default function BankIcon({
+  error,
+  isSyncing = false,
+  logo,
+  size = 50,
+  style,
+}: BankIconProps) {
   return (
     <Badge
       color="error"
@@ -31,6 +37,7 @@ export default function BankIcon({ error, isSyncing = false, logo, size = 50 }: 
           height: size,
           overflow: 'hidden',
           backgroundColor: '#FFF',
+          ...style,
         }}
       >
         {logo ? (

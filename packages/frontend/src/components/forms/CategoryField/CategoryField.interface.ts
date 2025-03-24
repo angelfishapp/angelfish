@@ -1,4 +1,4 @@
-import type { FilterOptionsState } from '@mui/base/useAutocomplete'
+import type { FilterOptionsState } from '@mui/material/useAutocomplete'
 
 import type { IAccount } from '@angelfish/core'
 import type { FormFieldProps } from '../FormField'

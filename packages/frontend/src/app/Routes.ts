@@ -2,14 +2,14 @@ import AccountsIcon from '@mui/icons-material/AccountBalance'
 import ReportsIcon from '@mui/icons-material/BarChart'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 
-import { Accounts } from 'src/pages/Accounts'
-import Dashboard from 'src/pages/Dashboard/Dashboard'
-import Reports from 'src/pages/Reports/Reports'
-import Settings from 'src/pages/Settings/Settings'
+import { Accounts } from '@/pages/Accounts'
+import Dashboard from '@/pages/Dashboard/Dashboard'
+import Reports from '@/pages/Reports/Reports'
+import Settings from '@/pages/Settings/Settings'
 
-import BookSettings from '../pages/Settings/Book/BookSettings'
-import Categories from '../pages/Settings/Categories/CategorySettings'
-import UserSettings from '../pages/Settings/User/UserSettings'
+import BookSettings from '@/pages/Settings/Book/BookSettings'
+import Categories from '@/pages/Settings/Categories/CategorySettings'
+import UserSettings from '@/pages/Settings/User/UserSettings'
 
 /**
  * All top level page routes should go here. If pages contain subroutes for their
