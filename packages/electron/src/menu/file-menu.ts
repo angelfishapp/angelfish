@@ -13,11 +13,7 @@ export const FileMenu: MenuItemConstructorOptions = {
       label: 'Create new Book...',
       id: 'file-create',
       click: async () => {
-        try {
-          await AppCommandsRegistryMain.executeAppCommand(AppCommandIds.CLOSE_BOOK)
-        } catch (_error) {
-          // Ignore errors if no book is open
-        }
+        await AppCommandsRegistryMain.executeAppCommand(AppCommandIds.CLOSE_BOOK)
       },
     },
     { type: 'separator' },

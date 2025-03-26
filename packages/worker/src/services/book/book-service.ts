@@ -26,19 +26,17 @@ class BookServiceClass {
    * Initialize the BookService. Will open current file from settings if not null
    */
   public async init(): Promise<void> {
-    const filePath = await CommandsClient.executeAppCommand(
-      AppCommandIds.GET_BOOK_FILE_PATH_SETTING,
-    )
+    let filePath = await CommandsClient.executeAppCommand(AppCommandIds.GET_BOOK_FILE_PATH_SETTING)
     if (filePath != null) {
       logger.debug(`BookService init: filePath=${filePath}`)
       try {
         await this._openDatabase(filePath)
       } catch (_error) {
-        // Ignore, should be already logged
+        filePath = null
       }
     }
 
-    logger.info(`Successfully Initialised AppService: filePath=${filePath}`)
+    logger.info(`Successfully Initialised BookService: filePath=${filePath}`)
   }
 
   /**
@@ -83,12 +81,10 @@ class BookServiceClass {
   public async closeBook(
     _request: AppCommandRequest<AppCommandIds.CLOSE_BOOK>,
   ): AppCommandResponse<AppCommandIds.CLOSE_BOOK> {
-    if (!DatabaseManager.isInitialized) {
-      throw new Error('No Book is currently opened')
+    if (DatabaseManager.isInitialized) {
+      // Close the database connection
+      await DatabaseManager.close()
     }
-
-    // Close the database connection
-    await DatabaseManager.close()
 
     // Reset filePath setting
     await CommandsClient.executeAppCommand(AppCommandIds.SET_BOOK_FILE_PATH_SETTING, {
