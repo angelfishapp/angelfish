@@ -52,10 +52,10 @@ const schema: ElectronStore.Schema<IAppSettings> = {
         format: 'date-time',
       },
       first_name: {
-        type: 'string',
+        type: ['string', 'null'], // null if user registering with email first time
       },
       last_name: {
-        type: 'string',
+        type: ['string', 'null'], // null if user registering with email first time
       },
       email: {
         type: 'string',

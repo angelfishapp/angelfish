@@ -56,8 +56,18 @@ export function HandleCloudError(
           throw new UnauthorizedError()
         }
 
-        // Log other Axios errors
-        logger.error(`AxiosError caught in ${String(propertyName)}: ${formatAxiosError(error)}`)
+        // Log other Axios errors - if response exists, return response error message
+        if (error.response) {
+          logger.error(
+            `${error.response.status} AxiosError caught in ${String(propertyName)}. Response:`,
+            error.response.data,
+          )
+          throw new Error(error.response.data.error)
+        }
+
+        logger.error(
+          `Unknown AxiosError caught in ${String(propertyName)}: ${formatAxiosError(error)}`,
+        )
       } else if (error instanceof UnauthorizedError) {
         logger.warn(`UnauthorizedError caught in ${String(propertyName)}`)
       } else {
