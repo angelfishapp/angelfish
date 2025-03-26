@@ -20,7 +20,7 @@ export function* fetchInstitutions(): Generator<any, void, any> {
       CommandsClient.executeAppCommand,
       AppCommandIds.LIST_INSTITUTIONS,
     )
-    yield put(setInstitutions({ institutions }))
+    yield put(setInstitutions(institutions))
   } catch (err) {
     logger.error(err)
   }

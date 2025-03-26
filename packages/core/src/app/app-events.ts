@@ -43,7 +43,7 @@ export enum AppEventIds {
 export interface AppEventDefinitions {
   [AppEventIds.ON_LOGIN]: { authenticatedUser: IAuthenticatedUser }
   [AppEventIds.ON_LOGOUT]: void
-  [AppEventIds.ON_BOOK_OPEN]: { book: IBook }
+  [AppEventIds.ON_BOOK_OPEN]: { book: IBook; isNew: boolean }
   [AppEventIds.ON_BOOK_CLOSE]: void
   [AppEventIds.ON_ONLINE_STATUS_CHANGED]: { isOnline: boolean }
   [AppEventIds.ON_USER_SETTINGS_UPDATED]: IUserSettings

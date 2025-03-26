@@ -15,7 +15,7 @@ import type { SetupScreenContainerProps } from './SetupScreenContainer.interface
 /**
  * Container for Setup Screen to handle all logic and data fetching
  */
-export default function SetupScreenContainer({ onComplete }: SetupScreenContainerProps) {
+export default function SetupScreenContainer({ onComplete, onStart }: SetupScreenContainerProps) {
   // Redux Hooks
   const dispatch = useDispatch()
   const authenticatedUser = useSelector(selectAuthenticatedUser)
@@ -57,6 +57,7 @@ export default function SetupScreenContainer({ onComplete }: SetupScreenContaine
 
       // If filePath selected, create book file
       if (filePath) {
+        onStart()
         await CommandsClient.executeAppCommand(AppCommandIds.CREATE_BOOK, {
           filePath,
           book: {
@@ -71,7 +72,7 @@ export default function SetupScreenContainer({ onComplete }: SetupScreenContaine
         throw new Error('No File Path Selected')
       }
     },
-    [],
+    [onStart],
   )
 
   /**

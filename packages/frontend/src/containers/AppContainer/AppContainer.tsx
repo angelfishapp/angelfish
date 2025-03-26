@@ -27,6 +27,7 @@ async function onLogout() {
 export default function AppContainer() {
   // Component State
   const [showSetup, setShowSetup] = React.useState<boolean>(false)
+  const [setupInProgress, setSetupInProgress] = React.useState<boolean>(false)
 
   // Redux State
   const dispatch = useDispatch()
@@ -50,14 +51,13 @@ export default function AppContainer() {
    */
   React.useEffect(() => {
     if (isInitialised) {
-      // If no book loaded, will need to run setup
-      if (!book) {
-        setShowSetup(true)
-      } else {
+      if (book && !setupInProgress) {
         setShowSetup(false)
+      } else {
+        setShowSetup(true)
       }
     }
-  }, [isInitialised, book])
+  }, [isInitialised, book, setupInProgress])
 
   /**
    * Reload Redux Store whenever book changes
@@ -75,7 +75,13 @@ export default function AppContainer() {
     return (
       <AuthScreenContainer>
         {showSetup ? (
-          <SetupScreenContainer onComplete={() => setShowSetup(false)} />
+          <SetupScreenContainer
+            onStart={() => setSetupInProgress(true)}
+            onComplete={() => {
+              setShowSetup(false)
+              setSetupInProgress(false)
+            }}
+          />
         ) : (
           <AppLayout
             authenticatedUser={authenticatedUser as IAuthenticatedUser}

@@ -10,15 +10,23 @@ const logger = Logger.scope('InstitutionsReducer')
  * Create Institution Slice.
  */
 
+type InstitutionsState = {
+  institutions: IInstitution[]
+}
+
+const initialState: InstitutionsState = {
+  institutions: [],
+}
+
 const institutionSlice = createSlice({
   name: 'institutions',
-  initialState: [] as IInstitution[],
+  initialState,
   reducers: {
     /**
      * Set array of Institutions to store
      */
-    setInstitutions: (state, { payload: { institutions } }) => {
-      state.splice(0, institutions.length, ...institutions)
+    setInstitutions: (state, action: PayloadAction<IInstitution[]>) => {
+      state.institutions = action.payload
     },
 
     /**
@@ -26,13 +34,15 @@ const institutionSlice = createSlice({
      */
     setInstitution: (state, action: PayloadAction<IInstitution>) => {
       // See if Institution is already in store, if not will return -1
-      const index = state.findIndex((institution) => institution.id === action.payload.id)
+      const index = state.institutions.findIndex(
+        (institution) => institution.id === action.payload.id,
+      )
       if (index > -1) {
         // Replace Institution with updated Institution
-        state.splice(index, 1, action.payload)
+        state.institutions.splice(index, 1, action.payload)
       } else {
         // Add Institution to store
-        state.push(action.payload)
+        state.institutions.push(action.payload)
       }
     },
 
@@ -41,9 +51,9 @@ const institutionSlice = createSlice({
      */
     removeInstitution: (state, action: PayloadAction<number>) => {
       // Check if Institution is already in store, if not will return -1
-      const index = state.findIndex((institution) => institution.id === action.payload)
+      const index = state.institutions.findIndex((institution) => institution.id === action.payload)
       if (index > -1) {
-        state.splice(index, 1)
+        state.institutions.splice(index, 1)
       } else {
         logger.error('No Institution with ID ' + action.payload + ' found.')
       }

@@ -7,18 +7,26 @@ import { Logger } from '@angelfish/core'
 const logger = Logger.scope('UsersReducer')
 
 /**
- * Create Institution Slice.
+ * Create User Slice.
  */
+
+type TagState = {
+  users: IUser[]
+}
+
+const initialState: TagState = {
+  users: [],
+}
 
 const usersSlice = createSlice({
   name: 'users',
-  initialState: [] as IUser[],
+  initialState,
   reducers: {
     /**
      * Set array of Users to store
      */
-    setUsers: (state, { payload: { users } }) => {
-      state.splice(0, users.length, ...users)
+    setUsers: (state, action: PayloadAction<IUser[]>) => {
+      state.users = action.payload
     },
 
     /**
@@ -26,13 +34,13 @@ const usersSlice = createSlice({
      */
     setUser: (state, action: PayloadAction<IUser>) => {
       // See if User is already in store, if not will return -1
-      const index = state.findIndex((user) => user.id === action.payload.id)
+      const index = state.users.findIndex((user) => user.id === action.payload.id)
       if (index > -1) {
         // Replace User with updated User
-        state.splice(index, 1, action.payload)
+        state.users.splice(index, 1, action.payload)
       } else {
         // Add User to store
-        state.push(action.payload)
+        state.users.push(action.payload)
       }
     },
 
@@ -41,9 +49,9 @@ const usersSlice = createSlice({
      */
     removeUser: (state, action: PayloadAction<number>) => {
       // Check if Institution is already in store, if not will return -1
-      const index = state.findIndex((user) => user.id === action.payload)
+      const index = state.users.findIndex((user) => user.id === action.payload)
       if (index > -1) {
-        state.splice(index, 1)
+        state.users.splice(index, 1)
       } else {
         logger.error('No User with ID ' + action.payload + ' found.')
       }

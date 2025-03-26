@@ -10,15 +10,23 @@ const logger = Logger.scope('CategoryGroupsReducer')
  * Create CategoryGroup Slice.
  */
 
+type CategoryGroupState = {
+  categoryGroups: ICategoryGroup[]
+}
+
+const initialState: CategoryGroupState = {
+  categoryGroups: [],
+}
+
 const categoryGroupSlice = createSlice({
   name: 'categoryGroups',
-  initialState: [] as ICategoryGroup[],
+  initialState,
   reducers: {
     /**
      * Set array of CategoryGroups to store
      */
-    setCategoryGroups: (state, { payload: { categoryGroups } }) => {
-      state.splice(0, categoryGroups.length, ...categoryGroups)
+    setCategoryGroups: (state, action: PayloadAction<ICategoryGroup[]>) => {
+      state.categoryGroups = action.payload
     },
 
     /**
@@ -26,13 +34,15 @@ const categoryGroupSlice = createSlice({
      */
     setCategoryGroup: (state, action: PayloadAction<ICategoryGroup>) => {
       // See if category group is already in store, if not will return -1
-      const index = state.findIndex((categoryGroup) => categoryGroup.id === action.payload.id)
+      const index = state.categoryGroups.findIndex(
+        (categoryGroup) => categoryGroup.id === action.payload.id,
+      )
       if (index > -1) {
         // Replace CategoryGroup with updated CategoryGroup
-        state.splice(index, 1, action.payload)
+        state.categoryGroups.splice(index, 1, action.payload)
       } else {
         // Add category to store, and increment Category Group total_count
-        state.push(action.payload)
+        state.categoryGroups.push(action.payload)
       }
     },
 
@@ -41,9 +51,11 @@ const categoryGroupSlice = createSlice({
      */
     removeCategoryGroup: (state, action: PayloadAction<number>) => {
       // Check if category group is already in store, if not will return -1
-      const index = state.findIndex((categoryGroup) => categoryGroup.id === action.payload)
+      const index = state.categoryGroups.findIndex(
+        (categoryGroup) => categoryGroup.id === action.payload,
+      )
       if (index > -1) {
-        state.splice(index, 1)
+        state.categoryGroups.splice(index, 1)
         // TODO - NEED TO RE-ASSIGN EXISTING CATEGORIES TO ANOTHER GROUP!
       } else {
         logger.error('No Category Group with ID ' + action.payload + ' found.')

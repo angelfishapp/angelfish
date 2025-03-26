@@ -16,7 +16,7 @@ const logger = Logger.scope('AccountsSagas')
 export function* fetchAccounts(): Generator<any, void, any> {
   try {
     const accounts = yield call(CommandsClient.executeAppCommand, AppCommandIds.LIST_ACCOUNTS)
-    yield put(setAccounts({ accounts }))
+    yield put(setAccounts(accounts))
   } catch (err) {
     logger.error(err)
   }

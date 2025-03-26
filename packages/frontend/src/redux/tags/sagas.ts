@@ -16,7 +16,7 @@ const logger = Logger.scope('TagSagas')
 export function* fetchTags(): Generator<any, void, any> {
   try {
     const tags = yield call(CommandsClient.executeAppCommand, AppCommandIds.LIST_TAGS)
-    yield put(setTags({ tags }))
+    yield put(setTags(tags))
   } catch (err) {
     logger.error(err)
   }

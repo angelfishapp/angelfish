@@ -16,7 +16,7 @@ const logger = Logger.scope('UserSagas')
 export function* fetchUsers(): Generator<any, void, any> {
   try {
     const users = yield call(CommandsClient.executeAppCommand, AppCommandIds.LIST_USERS)
-    yield put(setUsers({ users }))
+    yield put(setUsers(users))
   } catch (err) {
     logger.error(err)
   }

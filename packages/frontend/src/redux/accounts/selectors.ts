@@ -13,7 +13,7 @@ import type { IAccount, IUser } from '@angelfish/core'
 /**
  * Fetches all the Accounts in the Store
  */
-export const selectAllAccounts = (state: RootState) => state.accounts.accounts as IAccount[]
+export const selectAllAccounts = (state: RootState) => state.accounts.accounts
 
 /**
  * Fetches all the Accounts in the store with parent Institutions/Categories attached

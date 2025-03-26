@@ -10,15 +10,23 @@ const logger = Logger.scope('TagsReducer')
  * Create Tag Slice.
  */
 
+type TagState = {
+  tags: ITag[]
+}
+
+const initialState: TagState = {
+  tags: [],
+}
+
 const tagSlice = createSlice({
   name: 'tags',
-  initialState: [] as ITag[],
+  initialState,
   reducers: {
     /**
      * Set array of Tags to store
      */
-    setTags: (state, { payload: { tags } }) => {
-      state.splice(0, tags.length, ...tags)
+    setTags: (state, action: PayloadAction<ITag[]>) => {
+      state.tags = action.payload
     },
 
     /**
@@ -26,13 +34,13 @@ const tagSlice = createSlice({
      */
     setTag: (state, action: PayloadAction<ITag>) => {
       // See if Tag is already in store, if not will return -1
-      const index = state.findIndex((tag) => tag.id === action.payload.id)
+      const index = state.tags.findIndex((tag) => tag.id === action.payload.id)
       if (index > -1) {
         // Replace Tag with updated Tag
-        state.splice(index, 1, action.payload)
+        state.tags.splice(index, 1, action.payload)
       } else {
         // Add Tag to store
-        state.push(action.payload)
+        state.tags.push(action.payload)
       }
     },
 
@@ -41,9 +49,9 @@ const tagSlice = createSlice({
      */
     removeTag: (state, action: PayloadAction<number>) => {
       // Check if Tag is already in store, if not will return -1
-      const index = state.findIndex((tag) => tag.id === action.payload)
+      const index = state.tags.findIndex((tag) => tag.id === action.payload)
       if (index > -1) {
-        state.splice(index, 1)
+        state.tags.splice(index, 1)
       } else {
         logger.error('No Tag with ID ' + action.payload + ' found.')
       }

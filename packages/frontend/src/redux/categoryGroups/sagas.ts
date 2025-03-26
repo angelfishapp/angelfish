@@ -19,7 +19,7 @@ export function* fetchCategoryGroups(): Generator<any, void, any> {
       CommandsClient.executeAppCommand,
       AppCommandIds.LIST_CATEGORY_GROUPS,
     )
-    yield put(setCategoryGroups({ categoryGroups }))
+    yield put(setCategoryGroups(categoryGroups))
   } catch (err) {
     logger.error(err)
   }

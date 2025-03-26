@@ -207,7 +207,7 @@ class BookServiceClass {
         // Create the database book
         const savedBook = await this.saveBook(book)
         // Emit BOOK_OPEN event to notify other services
-        CommandsClient.emitAppEvent(AppEventIds.ON_BOOK_OPEN, { book: savedBook })
+        CommandsClient.emitAppEvent(AppEventIds.ON_BOOK_OPEN, { book: savedBook, isNew: true })
         return savedBook
       }
       // Opening exising database, check it exists
@@ -221,7 +221,7 @@ class BookServiceClass {
 
         const dbBook = await this.getBook()
         // Emit BOOK_OPEN event to notify other services
-        CommandsClient.emitAppEvent(AppEventIds.ON_BOOK_OPEN, { book: dbBook })
+        CommandsClient.emitAppEvent(AppEventIds.ON_BOOK_OPEN, { book: dbBook, isNew: false })
         return dbBook
       }
       throw new FileNotFoundError(filePath)

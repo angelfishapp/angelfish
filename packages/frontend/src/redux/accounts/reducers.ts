@@ -5,6 +5,7 @@ import type { IAccount } from '@angelfish/core'
 import { Logger } from '@angelfish/core'
 
 const logger = Logger.scope('AccountsReducer')
+
 /**
  * Create Account Slice.
  */
@@ -24,10 +25,9 @@ const accountsSlice = createSlice({
     /**
      * Set the Accounts Array with new Array of Accounts
      */
-    setAcounts: (state, { payload: { accounts } }) => ({
-      ...state,
-      accounts,
-    }),
+    setAcounts: (state, { payload }: PayloadAction<IAccount[]>) => {
+      state.accounts = payload
+    },
 
     /**
      * Update or Add a new Account to Array of Accounts
