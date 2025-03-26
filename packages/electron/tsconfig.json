@@ -4,6 +4,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "outDir": "dist",
+    "composite": true,
     "paths": {
       "*": ["node_modules/*"]
     },
