@@ -26,6 +26,8 @@ class CloudServiceClass {
   private _authAPI: CloudAuthAPIs = new CloudAuthAPIs(AUTH_API_URL)
   // CloudV1APIs instance to call the Cloud V1 APIs
   private _v1API?: CloudV1APIs = undefined
+  // Current Refresh token used for authentication
+  private _current_refresh_token?: string = undefined
   // Current JWT token used for authentication
   private _current_jwt_token?: string = undefined
 
@@ -41,26 +43,10 @@ class CloudServiceClass {
     if (!refreshToken) {
       throw new Error('No refresh token provided to initialise API Client')
     }
+    this._current_refresh_token = refreshToken
 
-    // Get a new JWT Token and set the V1 API Client
-    const tokenResponse = await this._refreshToken(refreshToken)
-
-    // Create a new JWTAuthHelper instance with the new token and refresh token
-    const jwtAuthHelper = new JWTAuthHelper(
-      tokenResponse.token,
-      tokenResponse.refresh_token,
-      async (refresh_token: string): Promise<TokenResponse> => {
-        logger.debug('Refreshing JWT Token with refresh token')
-        return await this._refreshToken(refresh_token)
-      },
-    )
-
-    // Set the V1 API Client
-    this._v1API = new CloudV1APIs(
-      API_URL,
-      AUTH_API_URL,
-      jwtAuthHelper.refreshToken.bind(jwtAuthHelper),
-    )
+    // Get a new JWT Token to validate current refresh token is valid
+    await this._refreshToken(refreshToken)
   }
 
   /**
@@ -70,8 +56,25 @@ class CloudServiceClass {
    * @throws  UnauthorizedError if not authenticated
    */
   private _getAuthenticatedClient(): CloudV1APIs {
-    if (!this._v1API) {
+    if (!this._current_refresh_token) {
       throw new UnauthorizedError()
+    }
+    if (!this._v1API) {
+      // Create a new JWTAuthHelper instance with the new token and refresh token
+      const jwtAuthHelper = new JWTAuthHelper(
+        this._current_jwt_token ?? '',
+        this._current_refresh_token,
+        async (refresh_token: string): Promise<TokenResponse> => {
+          logger.info('JWTAuthHelper: Refreshing JWT Token')
+          return await this._refreshToken(refresh_token)
+        },
+      )
+      // Set the V1 API Client
+      this._v1API = new CloudV1APIs(
+        API_URL,
+        AUTH_API_URL,
+        jwtAuthHelper.refreshToken.bind(jwtAuthHelper),
+      )
     }
     return this._v1API
   }
@@ -119,7 +122,7 @@ class CloudServiceClass {
    */
   @HandleCloudError
   private async _refreshToken(refreshToken: string): Promise<TokenResponse> {
-    logger.info('Refreshing JWT Token with refresh token', refreshToken)
+    logger.debug('Refreshing JWT Token with refresh token', refreshToken)
     const tokenResponse = await this._authAPI.refreshToken(refreshToken)
     // Save new refresh token to local storage
     await CommandsClient.executeAppCommand(AppCommandIds.SET_AUTHENTICATION_SETTINGS, {
@@ -127,6 +130,7 @@ class CloudServiceClass {
     })
     // Set the current JWT token to the new token
     this._current_jwt_token = tokenResponse.token
+    this._current_refresh_token = tokenResponse.refresh_token
     return tokenResponse
   }
 

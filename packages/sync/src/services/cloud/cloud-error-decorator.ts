@@ -39,7 +39,6 @@ export function HandleCloudError(
       return result
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        logger.info('message')
         // Handle NetworkOfflineError
         if (error.message === 'Network Error' || error.message.includes('getaddrinfo ENOTFOUND')) {
           if (!navigator.onLine) {
@@ -70,9 +69,11 @@ export function HandleCloudError(
         )
       } else if (error instanceof UnauthorizedError) {
         logger.warn(`UnauthorizedError caught in ${String(propertyName)}`)
+      } else if (error instanceof NetworkOfflineError) {
+        logger.warn(`NetworkOfflineError caught in ${String(propertyName)}`)
       } else {
         // Log other errors
-        logger.error(`Error caught in ${String(propertyName)}: ${error}`, error)
+        logger.error(`Error caught in ${String(propertyName)}:`, error)
       }
       // Re-throw the error
       throw error

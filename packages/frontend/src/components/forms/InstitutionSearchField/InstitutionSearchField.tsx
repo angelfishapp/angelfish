@@ -79,17 +79,18 @@ export default React.forwardRef<HTMLDivElement, InstitutionSearchFieldProps>(
           return option.name
         }}
         renderOption={(props, option: IInstitutionUpdate) => {
+          const { key, ...rest } = props
           // Use current string value
           if (option.id === -1) {
             return (
-              <ListItem {...props}>
+              <ListItem key={key} {...rest}>
                 <ListItemText primary={`Use ${option.name}`} />
               </ListItem>
             )
           }
           // Render search result
           return (
-            <ListItem {...props}>
+            <ListItem key={key} {...rest}>
               <ListItemIcon>
                 <BankIcon logo={option.logo} />
               </ListItemIcon>
