@@ -10,7 +10,7 @@ import { Environment } from './utils/environment'
 const logger = LogManager.getMainLogger('MainCommands')
 
 // Keep track of current App state
-let book_isOpen: boolean = false
+let book_isOpen: boolean = settings.get('currentFilePath') !== null
 
 /**
  * Setup Main Event Listerners and Commands
@@ -22,13 +22,29 @@ export function setupMainCommands() {
   AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOGIN, () => {
     const appMenu = Menu.getApplicationMenu()
     if (appMenu) {
+      const fileCreate = appMenu.getMenuItemById('file-create')
+      if (fileCreate) {
+        fileCreate.enabled = true
+      }
+      const fileOpen = appMenu.getMenuItemById('file-open')
+      if (fileOpen) {
+        fileOpen.enabled = true
+      }
+      const fileOpenRecent = appMenu.getMenuItemById('file-open-recent')
+      if (fileOpenRecent) {
+        fileOpenRecent.enabled = true
+      }
+      const fileSettings = appMenu.getMenuItemById('file-settings')
+      if (fileSettings) {
+        fileSettings.enabled = true
+      }
       const fileSync = appMenu.getMenuItemById('file-syncronize')
-      const fileLogout = appMenu.getMenuItemById('file-logout')
       if (fileSync) {
         if (book_isOpen) {
           fileSync.enabled = true
         }
       }
+      const fileLogout = appMenu.getMenuItemById('file-logout')
       if (fileLogout) {
         fileLogout.enabled = true
       }
@@ -39,11 +55,27 @@ export function setupMainCommands() {
   AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOGOUT, () => {
     const appMenu = Menu.getApplicationMenu()
     if (appMenu) {
+      const fileCreate = appMenu.getMenuItemById('file-create')
+      if (fileCreate) {
+        fileCreate.enabled = false
+      }
+      const fileOpen = appMenu.getMenuItemById('file-open')
+      if (fileOpen) {
+        fileOpen.enabled = false
+      }
+      const fileOpenRecent = appMenu.getMenuItemById('file-open-recent')
+      if (fileOpenRecent) {
+        fileOpenRecent.enabled = false
+      }
+      const fileSettings = appMenu.getMenuItemById('file-settings')
+      if (fileSettings) {
+        fileSettings.enabled = false
+      }
       const fileSync = appMenu.getMenuItemById('file-syncronize')
-      const fileLogout = appMenu.getMenuItemById('file-logout')
       if (fileSync) {
         fileSync.enabled = false
       }
+      const fileLogout = appMenu.getMenuItemById('file-logout')
       if (fileLogout) {
         fileLogout.enabled = false
       }
@@ -59,6 +91,10 @@ export function setupMainCommands() {
       if (fileSync) {
         fileSync.enabled = true
       }
+      const fileSettings = appMenu.getMenuItemById('file-settings')
+      if (fileSettings) {
+        fileSettings.enabled = true
+      }
     }
   })
 
@@ -69,7 +105,11 @@ export function setupMainCommands() {
     if (appMenu) {
       const fileSync = appMenu.getMenuItemById('file-syncronize')
       if (fileSync) {
-        fileSync.enabled = true
+        fileSync.enabled = false
+      }
+      const fileSettings = appMenu.getMenuItemById('file-settings')
+      if (fileSettings) {
+        fileSettings.enabled = false
       }
     }
   })

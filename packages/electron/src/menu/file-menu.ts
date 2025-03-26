@@ -10,11 +10,20 @@ export const FileMenu: MenuItemConstructorOptions = {
   role: 'fileMenu',
   submenu: [
     {
-      label: 'Create new Book',
+      label: 'Create new Book...',
+      id: 'file-create',
+      click: async () => {
+        try {
+          await AppCommandsRegistryMain.executeAppCommand(AppCommandIds.CLOSE_BOOK)
+        } catch (_error) {
+          // Ignore errors if no book is open
+        }
+      },
     },
     { type: 'separator' },
     {
       label: 'Open Book...',
+      id: 'file-open',
       click: async () => {
         const filePaths = await dialog.showOpenDialog({
           title: 'Select Angelfish File',
@@ -36,6 +45,7 @@ export const FileMenu: MenuItemConstructorOptions = {
     },
     {
       label: 'Open Recent Book',
+      id: 'file-open-recent',
       role: 'recentDocuments',
       submenu: [
         {
@@ -48,12 +58,12 @@ export const FileMenu: MenuItemConstructorOptions = {
     {
       label: 'Book Settings',
       id: 'file-settings',
-      enabled: false,
+      enabled: settings.get('currentFilePath') !== null,
     },
     {
       label: 'Syncronize Book',
       id: 'file-syncronize',
-      enabled: false,
+      enabled: settings.get('currentFilePath') !== null,
       click: async (menuItem: MenuItem) => {
         menuItem.enabled = false
         await AppCommandsRegistryMain.executeAppCommand(AppCommandIds.START_SYNC)
@@ -64,7 +74,7 @@ export const FileMenu: MenuItemConstructorOptions = {
     {
       label: 'Logout',
       id: 'file-logout',
-      enabled: settings.get('refreshToken') != null,
+      enabled: settings.get('refreshToken') !== null,
       click: async () => {
         await AppCommandsRegistryMain.executeAppCommand(AppCommandIds.AUTH_LOGOUT)
       },
