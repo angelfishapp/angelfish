@@ -1,5 +1,6 @@
 import type { Row } from '@tanstack/react-table'
 
+import type { IInstitution } from '@angelfish/core'
 import type { AccountTableRow } from '../AccountTable.data'
 import type { AccountTableProps } from '../AccountTable.interface'
 
@@ -25,9 +26,10 @@ export interface AccountTableRowProps {
   selectedAccountId?: AccountTableProps['selectedAccountId']
   /**
    * Callback function to create a new Bank Account
-   * iid: Institution ID to create account under
+   * Optionally pass an Institution to pre-select the Institution
+   * in the form
    */
-  onCreateAccount: (iid: number) => void
+  onCreateAccount: (institution?: IInstitution) => void
   /**
    * Callback function to edit a Bank Account
    * Return undefined to cr

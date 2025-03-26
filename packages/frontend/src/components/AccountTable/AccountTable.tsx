@@ -160,10 +160,9 @@ export default function AccountTable({
                   book_default_currency={book_default_currency}
                   groupBy={groupBy}
                   selectedAccountId={selectedAccountId}
-                  onCreateAccount={(iid) => {
-                    const selectedInstitution = institutions.find((inst) => inst.id === iid)
-                    setSelectedInstitution(selectedInstitution)
-                    onCreateAccount()
+                  onCreateAccount={(institution) => {
+                    setSelectedInstitution(institution)
+                    onCreateAccount(institution)
                   }}
                   onEditAccount={(aid) => {
                     const selectedAccount = accountsWithRelations.find((acc) => acc.id === aid)

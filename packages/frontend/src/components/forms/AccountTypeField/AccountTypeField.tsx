@@ -58,6 +58,9 @@ export default React.forwardRef<HTMLDivElement, AccountTypeFieldProps>(function 
         }
       }}
       getOptionLabel={(option) => option.name}
+      isOptionEqualToValue={(option, value) =>
+        option.type === value.type && option.subtype === value.subtype
+      }
       groupBy={(option) => getAccountTypeLabel(option.type)}
       renderOption={(props, option) => {
         const { key, ...rest } = props

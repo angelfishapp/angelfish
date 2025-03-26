@@ -217,7 +217,7 @@ export default function AccountTableRow({
                 }
                 secondary={
                   <a
-                    onClick={() => onCreateAccount(row.original.acc_institution_id)}
+                    onClick={() => onCreateAccount(row.original.acc_institution)}
                     style={{ cursor: 'pointer', textDecoration: 'underline' }}
                   >
                     Add An Account

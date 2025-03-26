@@ -55,17 +55,20 @@ export default React.forwardRef<AccountTableMethods, AccountTableUIContainerProp
     /**
      * Callback to create a new Bank Account
      */
-    const onAddBankAccount = React.useCallback(() => {
-      setSelectedAccount({
-        class: 'ACCOUNT',
-        institution: selectedInstitution,
-        acc_iso_currency: getCountryFromCode(selectedInstitution?.country || '')?.currency,
-        acc_is_open: true,
-        acc_start_balance: 0,
-        acc_limit: 0,
-      })
-      setShowAccountDrawer(true)
-    }, [setSelectedAccount, setShowAccountDrawer, selectedInstitution])
+    const onAddBankAccount = React.useCallback(
+      (institution?: IInstitution) => {
+        setSelectedAccount({
+          class: 'ACCOUNT',
+          institution,
+          acc_iso_currency: getCountryFromCode(institution?.country || '')?.currency,
+          acc_is_open: true,
+          acc_start_balance: 0,
+          acc_limit: 0,
+        })
+        setShowAccountDrawer(true)
+      },
+      [setSelectedAccount, setShowAccountDrawer],
+    )
 
     /**
      * Callback to create a new Institution

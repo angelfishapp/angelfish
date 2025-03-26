@@ -45,9 +45,11 @@ export interface AccountTableProps {
    */
   onSelectAccount: (account?: IAccount) => void
   /**
-   * Callback function to create a new Bank Account
+   * Callback function to create a new Bank Account.
+   * Optionally pass an Institution to pre-select the Institution
+   * in the form
    */
-  onCreateAccount: () => void
+  onCreateAccount: (institution?: IInstitution) => void
   /**
    * Callback function to edit a Bank Account
    */

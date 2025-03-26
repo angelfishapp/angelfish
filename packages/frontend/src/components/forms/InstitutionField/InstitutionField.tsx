@@ -41,6 +41,7 @@ export default React.forwardRef<HTMLDivElement, InstitutionFieldProps>(function 
           onChange?.(newValue)
         }
       }}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.name}
       renderOption={(props, option) => {
         // Remove the key from props to avoid React warning about duplicate keys

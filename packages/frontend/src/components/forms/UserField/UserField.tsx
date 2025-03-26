@@ -36,6 +36,7 @@ export default React.forwardRef<HTMLDivElement, UserFieldProps>(function UserFie
       }}
       {...formFieldProps}
       getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       filterSelectedOptions
       renderOption={(props, option) => {
         // Remove the key from props to avoid React warning about duplicate keys
