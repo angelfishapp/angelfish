@@ -1,0 +1,36 @@
+name: PR Checks
+
+on:
+  pull_request: # Triggers on PR submissions & updates
+    branches:
+      - main
+
+jobs:
+  lint-and-test:
+    name: Run Pull Request Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+
+      - name: Run Prettier Checks
+        run: yarn prettier --check .
+
+      - name: Run Lint Checks
+        run: yarn lint
+
+      - name: Run TypeScript Checks
+        run: yarn ts-check
+
+      - name: Build Packages
+        run: yarn build:packages
+
+      - name: Run Tests
+        run: yarn test
+
+      - name: Run angelfish Package Tests
+        run: yarn package:angelfish test

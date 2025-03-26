@@ -7,7 +7,7 @@ import {
   type ChartOptions,
 } from 'chart.js'
 import { Flow, SankeyController } from 'chartjs-chart-sankey'
-import { format, isAfter, parse, subMonths } from 'date-fns'
+import { compareAsc, format, isAfter, isValid, parse, subMonths } from 'date-fns'
 import { groupBy } from 'lodash-es'
 import React, { type JSX } from 'react'
 import { Chart } from 'react-chartjs-2'
@@ -43,6 +43,13 @@ export default function IncomeAndExpensesSankey({
 
   // Process Data to display on Sankey
   const { dataset, filteredGrouped, filtered } = React.useMemo(() => {
+    // Step 1: Parse all months into Dates
+    const allDates = data.periods.map((i) => parse(i, 'MM-yyyy', new Date())).filter(isValid)
+    // Step 2: Find the latest date in the data
+    const latestDate = allDates.reduce((latest, current) =>
+      compareAsc(latest, current) === 1 ? latest : current,
+    )
+    // Step 3: Map data into DataFlows and filter out months older than the latest date minus the periods
     const group: DataFlow[] = data.rows
       .reduce<DataFlow[]>((acc, { icon, id, name, type, color, categories, total, ...months }) => {
         const data = Object.entries(months).map(([month, value]) => ({
@@ -61,7 +68,7 @@ export default function IncomeAndExpensesSankey({
 
         return [...acc, ...data]
       }, [])
-      .filter((i) => isAfter(parse(i.month, 'MM-yyyy', new Date()), subMonths(new Date(), periods)))
+      .filter((i) => isAfter(parse(i.month, 'MM-yyyy', new Date()), subMonths(latestDate, periods)))
 
     const filtered = groupBy(
       group.filter((data) => data.flow),

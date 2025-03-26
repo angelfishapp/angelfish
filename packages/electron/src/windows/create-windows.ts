@@ -1,4 +1,5 @@
 import type { BrowserWindow } from 'electron'
+import { app } from 'electron'
 import path from 'path'
 
 import { AppProcessIDs } from '@angelfish/core'
@@ -57,6 +58,19 @@ function createMainAppWindow(): BrowserWindow {
       height: size[1],
     })
   })
+
+  // Handle MacOS activation to maximize window if minimized
+  const maximizeWindow = () => {
+    if (appWindow && !appWindow.isDestroyed()) {
+      if (appWindow.isMinimized()) {
+        appWindow.restore()
+      }
+      appWindow.show()
+      appWindow.focus()
+    }
+  }
+  app.on('activate', maximizeWindow)
+  appWindow.on('closed', () => app.removeListener('activate', maximizeWindow))
 
   return appWindow
 }

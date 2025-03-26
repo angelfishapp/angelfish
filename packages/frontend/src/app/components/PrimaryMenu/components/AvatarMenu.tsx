@@ -33,7 +33,7 @@ type AvatarMenuProps = {
   /**
    * Current User logged into app
    */
-  authenticatedUser: IAuthenticatedUser
+  authenticatedUser?: IAuthenticatedUser
   /**
    * Callback to handle logging out user
    */
@@ -60,9 +60,9 @@ export default function AvatarMenu({ authenticatedUser, onLogout }: AvatarMenuPr
         size="large"
       >
         <Avatar
-          avatar={authenticatedUser.avatar}
-          firstName={authenticatedUser.first_name}
-          lastName={authenticatedUser.last_name}
+          avatar={authenticatedUser?.avatar}
+          firstName={authenticatedUser?.first_name}
+          lastName={authenticatedUser?.last_name}
         />
       </IconButton>
 

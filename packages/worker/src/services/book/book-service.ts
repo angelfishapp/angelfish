@@ -68,6 +68,10 @@ class BookServiceClass {
   public async openBook({
     filePath,
   }: AppCommandRequest<AppCommandIds.OPEN_BOOK>): AppCommandResponse<AppCommandIds.OPEN_BOOK> {
+    if (DatabaseManager.isInitialized) {
+      // Close current book before opening new one if open
+      await this.closeBook()
+    }
     return await this._openDatabase(filePath)
   }
 

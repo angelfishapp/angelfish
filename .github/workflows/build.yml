@@ -1,0 +1,75 @@
+# Main workflow to package and release a new build of the Angelfish
+# Electron.js application using Electron Forge
+
+name: Package and Release
+
+# Trigger action if commit contains a v* tag
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        # macos-13 is last intel macos version
+        os: [macos-latest, ubuntu-latest, windows-latest. macos-13]
+
+    steps:
+      # Setup Environment
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+
+      - name: Build Workspace Dependency packages
+        run: yarn build:packages
+
+      - name: Add MacOS Certificates
+        if: matrix.os == 'macos-latest' || matrix.os == 'macos-13'
+        run: chmod +x ./packages/angelfish/resources/build/macos/add-osx-cert.sh && ./packages/angelfish/resources/build/macos/add-osx-cert.sh
+        env:
+          CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
+          CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
+
+      - name: Add Windows Certificate
+        if: matrix.os == 'windows-latest'
+        id: write_file
+        uses: timheuer/base64-to-file@v1
+        with:
+          fileName: 'win-certificate.pfx'
+          encodedString: ${{ secrets.WINDOWS_PFX_FILE }}
+
+      # Package App
+
+      - name: Make
+        run: yarn make
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          WINDOWS_PFX_FILE: ${{ steps.write_file.outputs.filePath }}
+          WINDOWS_PFX_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
+
+      # Create New Release for App
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
+        with:
+          repository: angelfishapp/desktop-releases
+          files: |
+            ./packages/angelfish/out/**/*.deb
+            ./packages/angelfish/out/**/*.dmg
+            ./packages/angelfish/out/**/*Setup.exe
+            ./packages/angelfish/out/**/*.rpm
+            ./packages/angelfish/out/**/*.zip

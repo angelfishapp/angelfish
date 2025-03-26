@@ -1,4 +1,4 @@
-import { dialog, Menu, Notification, safeStorage, shell } from 'electron'
+import { app, dialog, Menu, Notification, safeStorage, shell } from 'electron'
 
 import type { AppCommandRequest, AppCommandResponse, IBook } from '@angelfish/core'
 import { AppCommandIds, AppEventIds } from '@angelfish/core'
@@ -266,6 +266,10 @@ export function setupMainCommands() {
       filePath,
     }: AppCommandRequest<AppCommandIds.SET_BOOK_FILE_PATH_SETTING>): AppCommandResponse<AppCommandIds.SET_BOOK_FILE_PATH_SETTING> => {
       settings.set('currentFilePath', filePath)
+      if (filePath) {
+        // Add file to recent documents
+        app.addRecentDocument(filePath)
+      }
     },
   )
 

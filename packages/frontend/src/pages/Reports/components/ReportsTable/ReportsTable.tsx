@@ -38,7 +38,10 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
       } as unknown as ReportsDataRow
 
       data.periods.forEach((period) => {
-        const periodTotal = data.rows.reduce((total, row) => total + (row[period] as number), 0)
+        const periodTotal = data.rows.reduce((total, row) => {
+          const value = Number(row[period])
+          return isNaN(value) ? total : total + value
+        }, 0)
 
         ;(summary as ReportsDataRow)[period] = periodTotal
       })

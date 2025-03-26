@@ -3,17 +3,18 @@ import { dialog } from 'electron'
 
 import { AppCommandIds } from '@angelfish/core'
 import { AppCommandsRegistryMain } from '../commands/commands-registry-main'
+import { settings } from '../settings'
 
 export const FileMenu: MenuItemConstructorOptions = {
   label: 'File',
   role: 'fileMenu',
   submenu: [
     {
-      label: 'Create new Household',
+      label: 'Create new Book',
     },
     { type: 'separator' },
     {
-      label: 'Open Household...',
+      label: 'Open Book...',
       click: async () => {
         const filePaths = await dialog.showOpenDialog({
           title: 'Select Angelfish File',
@@ -27,16 +28,25 @@ export const FileMenu: MenuItemConstructorOptions = {
         })
 
         if (!filePaths.canceled) {
-          // TODO
+          await AppCommandsRegistryMain.executeAppCommand(AppCommandIds.OPEN_BOOK, {
+            filePath: filePaths.filePaths[0],
+          })
         }
       },
     },
     {
-      label: 'Recent Households',
+      label: 'Open Recent Book',
+      role: 'recentDocuments',
+      submenu: [
+        {
+          label: 'Clear Recent Books',
+          role: 'clearRecentDocuments',
+        },
+      ],
     },
     { type: 'separator' },
     {
-      label: 'Household Settings',
+      label: 'Book Settings',
       id: 'file-settings',
       enabled: false,
     },
@@ -54,7 +64,7 @@ export const FileMenu: MenuItemConstructorOptions = {
     {
       label: 'Logout',
       id: 'file-logout',
-      enabled: false,
+      enabled: settings.get('refreshToken') != null,
       click: async () => {
         await AppCommandsRegistryMain.executeAppCommand(AppCommandIds.AUTH_LOGOUT)
       },
