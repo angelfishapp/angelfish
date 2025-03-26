@@ -48,8 +48,14 @@ class AuthServiceClass {
         await executeLocalCommand(LocalCommandIds.INIT_API_CLIENT, {
           refreshToken: authState.refreshToken,
         })
-      } catch (error) {
-        logger.error('Error Initialising API Client with refresh token:', error)
+        this._isAuthenticated = true
+      } catch (error: any) {
+        if (error.message === 'The Network Is Offline') {
+          logger.warn('Network Offline, initialising AuthService in offline mode.')
+          this._isAuthenticated = true
+        } else {
+          logger.error('Error Initialising API Client with refresh token:', error)
+        }
       }
     }
 
