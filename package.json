@@ -1,16 +1,20 @@
 {
   "name": "angelfish-monorepo",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A local-first personal finance app for people to track, manage and plan their finances to acheive financial freedom!",
   "keywords": [],
   "author": {
     "name": "Angelfish Software LLC",
     "email": "support@angelfish.app"
   },
+  "private": true,
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "start": "yarn workspace angelfish start",
+    "start": "yarn workspace @angelfish/electron start",
     "build:packages": "yarn workspaces foreach -Rpt --from  '{@angelfish/core,@angelfish/tests,@angelfish/cloudapiclient,@angelfish/financeimporter}' run build",
+    "package": "yarn workspace @angelfish/electron package",
+    "make": "yarn workspace @angelfish/electron make",
+    "release": "yarn workspace @angelfish/electron publish",
     "lint": "yarn eslint . --fix",
     "prettify": "yarn prettier . -w",
     "format": "yarn prettify && yarn lint",
@@ -19,12 +23,13 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "storybook": "yarn workspace @angelfish/frontend storybook",
+    "generate-api-cli": "yarn workspace @angelfish/cloudapiclient generate-api-cli",
+    "generate-app-icons": "yarn workspace @angelfish/electron generate-app-icons",
     "generate-avatars": "yarn workspace @angelfish/core generate-avatars"
   },
   "engines": {
     "node": ">=20.18.2"
   },
-  "private": true,
   "workspaces": {
     "packages": [
       "packages/*"

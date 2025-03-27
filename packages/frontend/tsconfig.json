@@ -11,7 +11,7 @@
     // For Material-UI
     "lib": ["es6", "dom"],
     "paths": {
-      // Also add aliases to webpack/webpack.alias.js
+      // Also add aliases to webpack/webpack.renderer.config.ts
       "@/*": ["./src/*"]
     }
   },

@@ -6,6 +6,7 @@
     "name": "Angelfish Software LLC",
     "email": "support@angelfish.app"
   },
+  "private": true,
   "license": "AGPL-3.0-or-later",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -5,9 +5,8 @@
     "outDir": "dist",
     "paths": {
       "*": ["node_modules/*"]
-    },
-    "types": ["vitest/globals"]
+    }
   },
   "include": ["src/**/*", "webpack/**/*"],
-  "exclude": ["node_modules", ".webpack"]
+  "exclude": ["node_modules", ".webpack", "**/*.test.ts"]
 }

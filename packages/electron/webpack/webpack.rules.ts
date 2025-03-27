@@ -43,7 +43,7 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
     },
   },
-  createTSRule('electron'),
+  createTSRule('electron', 'tsconfig.build.json'),
   createTSRule('frontend'),
   createTSRule('worker'),
   createTSRule('sync'),
