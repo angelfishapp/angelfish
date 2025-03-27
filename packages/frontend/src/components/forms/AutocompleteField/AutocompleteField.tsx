@@ -109,6 +109,7 @@ export default function AutocompleteField<
               ...params.inputProps,
               autoComplete: 'off',
             }}
+            sx={{ backgroundColor: 'white' }}
             InputProps={{
               ...params.InputProps,
               placeholder,
