@@ -9,7 +9,7 @@ import { selectBook } from '@/redux/app/selectors'
 import type { ReportsData } from '@angelfish/core'
 import { getDataSetColors } from '../../utils/palette.utils'
 import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
-// import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
+import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
 
 /**
  * Dashboard Page of Application
@@ -44,13 +44,13 @@ export default function Dashboard() {
           currency={book?.default_currency as string}
         />
       )}
-      {/* {!!yearlyData && (
+      {!!yearlyData && (
         <IncomeAndExpensesSankey
           data={yearlyData}
           currency={book?.default_currency as string}
           periods={12}
         />
-      )} */}
+      )}
     </Box>
   )
 }

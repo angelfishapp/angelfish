@@ -1,11 +1,6 @@
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
-import {
-  Chart as ChartJS,
-  Tooltip as ChartTooltip,
-  registerables,
-  type ChartOptions,
-} from 'chart.js'
+import { type ChartOptions, Chart as ChartJS } from 'chart.js'
 import { Flow, SankeyController } from 'chartjs-chart-sankey'
 import { compareAsc, format, isAfter, isValid, parse, subMonths } from 'date-fns'
 import { groupBy } from 'lodash-es'
@@ -18,8 +13,7 @@ import { DashboardChart } from '../DashboardChart'
 import type { IncomeAndExpensesSankeyProps } from './IncomeAndExpensesSankey.interface'
 import { IncomeAndExpensesSankeyTooltip } from './IncomeAndExpensesSankey.style'
 
-// Register ChartJS Plugins
-ChartJS.register(SankeyController, Flow, ChartTooltip, ...registerables)
+ChartJS.register(SankeyController, Flow)
 
 /**
  * Represents a row of data to display on the Sankey as a Flow
