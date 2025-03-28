@@ -1,29 +1,25 @@
-import type { Theme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
+import { styled } from '@mui/material/styles'
 
 /**
  * BubbleStep Component Styles
  */
 
-export const useStyles = makeStyles<Theme>(() => ({
-  step: {
-    display: 'flex',
-    alignItems: 'center',
-    whiteSpace: 'nowrap',
-  },
-  bubble: {
+export const BubbleStepContainer = styled('li')(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  whiteSpace: 'nowrap',
+
+  // .bubble
+  '.bubble': {
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
     transform: 'scale(0)',
     transition: 'transform 1s ease',
   },
-  done: {
-    '&  $number': {
-      opacity: 0,
-    },
-  },
-  animationWrapper: {
+
+  // .animationWrapper
+  '.animationWrapper': {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -40,30 +36,43 @@ export const useStyles = makeStyles<Theme>(() => ({
       inset: 0,
     },
 
-    '& ~ $number': {
+    '& ~ .number': {
       marginLeft: 4,
       opacity: 1,
     },
   },
-  number: {
+
+  // .number
+  '.number': {
     fontSize: 18,
     color: '#fff',
     fontWeight: 'bold',
     opacity: 1,
     transition: 'opacity .3s ease',
   },
-  label: {
+
+  // .label
+  '.label': {
     fontSize: 18,
     color: '#fff',
     fontWeight: 'bold',
     opacity: 1,
     transition: 'opacity .3s ease, font 0.3s ease',
   },
-  active: {
-    '& $animationWrapper': {
+
+  // .done modifier
+  '&.done': {
+    '.number': {
+      opacity: 0,
+    },
+  },
+
+  // .active modifier
+  '&.active': {
+    '.animationWrapper': {
       transform: 'scale(1.65)',
     },
-    '& $label': {
+    '.label': {
       fontSize: 24,
     },
   },

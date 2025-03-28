@@ -7,8 +7,8 @@ import type { Control, UseFormGetValues } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
 import { AutocompleteField } from '@/components/forms/AutocompleteField'
-import type { CSVHeader, ParsedFileMappings } from '@angelfish/core'
-import { useStyles } from '../../ImportTransactions.styled'
+import type { ParsedFileMappings } from '@angelfish/core'
+import { MapperHeading } from '../../ImportTransactions.styled'
 import type { ImportMapperForm } from './ImportTransactions-Mapping'
 
 /**
@@ -54,8 +54,6 @@ export default function ImportCSVTransactionsMapping({
   fileMappings,
   getValues,
 }: ImportCSVTransactionsMappingProps) {
-  const classes = useStyles()
-
   const scrollDiv = React.useRef<HTMLDivElement>(null)
 
   // Make sure fields are scrolled to top when headers are loaded
@@ -69,15 +67,15 @@ export default function ImportCSVTransactionsMapping({
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           {error && <span style={{ color: 'red', fontWeight: 'bold' }}>{error}</span>}
           Map the CSV column headers to Transaction fields below:
         </Grid>
-        <Grid item xs={3}>
-          <h3 className={classes.mapperHeadings}>Transaction Fields</h3>
+        <Grid size={3}>
+          <MapperHeading>Transaction Fields</MapperHeading>
         </Grid>
-        <Grid item xs={9}>
-          <h3 className={classes.mapperHeadings}>CSV Column</h3>
+        <Grid size={9}>
+          <MapperHeading>CSV Column</MapperHeading>
         </Grid>
       </Grid>
       <Grid
@@ -94,10 +92,10 @@ export default function ImportCSVTransactionsMapping({
       >
         {TransactionMapperFields.map((mapperField) => (
           <React.Fragment key={mapperField.name}>
-            <Grid item xs={3}>
+            <Grid size={3}>
               <strong>{mapperField.label}</strong>
             </Grid>
-            <Grid item xs={8}>
+            <Grid size={8}>
               <Controller
                 name={
                   `csvMapper.fields.${mapperField.name}` as
@@ -141,13 +139,11 @@ export default function ImportCSVTransactionsMapping({
                       )
                     }}
                     getOptionLabel={(option) => option.header}
-                    renderOption={(
-                      props: React.HTMLAttributes<HTMLLIElement>,
-                      option: CSVHeader,
-                    ) => {
+                    renderOption={(props, option) => {
+                      const { key, ...rest } = props
                       if (option) {
                         return (
-                          <ListItem {...props}>
+                          <ListItem key={key} {...rest}>
                             <ListItemText
                               primary={option.header}
                               secondary={option.samples.join(', ')}
@@ -165,13 +161,13 @@ export default function ImportCSVTransactionsMapping({
         ))}
       </Grid>
       <Grid container spacing={0} sx={{ marginBottom: 3 }}>
-        <Grid item xs={12}>
-          <h3 className={classes.mapperHeadings}>Import Settings</h3>
+        <Grid size={12}>
+          <MapperHeading>Import Settings</MapperHeading>
         </Grid>
-        <Grid item xs={2}>
+        <Grid size={2}>
           <strong>Date Format *</strong>
         </Grid>
-        <Grid item xs={4} sx={{ paddingRight: 3 }}>
+        <Grid size={4} sx={{ paddingRight: 3 }}>
           <Controller
             name="csvMapper.settings.date_format"
             control={formController}
@@ -209,10 +205,10 @@ export default function ImportCSVTransactionsMapping({
             )}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid size={2}>
           <strong>CSV Delimiter *</strong>
         </Grid>
-        <Grid item xs={4} sx={{ paddingRight: 3 }}>
+        <Grid size={4} sx={{ paddingRight: 3 }}>
           <Controller
             name="csvMapper.settings.csv_delimiter"
             control={formController}

@@ -5,7 +5,6 @@ import NumberFormat from 'react-number-format'
 
 import { TextField } from '@/components/forms/TextField'
 import type { AmountFieldProps } from './AmountField.interface'
-import { useStyles } from './AmountField.styles'
 
 /**
  * Helper Component for Input Field
@@ -58,8 +57,6 @@ export default React.forwardRef<HTMLDivElement, AmountFieldProps>(function Amoun
   }: AmountFieldProps,
   ref,
 ) {
-  const classes = useStyles()
-
   /**
    * Handle changing of input values
    */
@@ -82,7 +79,14 @@ export default React.forwardRef<HTMLDivElement, AmountFieldProps>(function Amoun
       }}
       startAdornment={
         currency ? (
-          <InputAdornment position="start" className={classes.currencySymbol}>
+          <InputAdornment
+            position="start"
+            sx={{
+              '& p': {
+                fontSize: (theme) => theme.typography.h5.fontSize,
+              },
+            }}
+          >
             {currency}
           </InputAdornment>
         ) : undefined

@@ -87,15 +87,15 @@ export default function SetupBookStep({
       onNext={() => handleSubmit(handleSave)()}
     >
       <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="body1">
             Your Houehold is your private underwater home where you and your household members can
             track all your finances in one place.
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
-            <Grid item xs={2} marginLeft={1}>
+            <Grid size={2} marginLeft={1}>
               <Controller
                 name="logo"
                 control={control}
@@ -115,8 +115,8 @@ export default function SetupBookStep({
                 )}
               />
             </Grid>
-            <Grid item xs={9}>
-              <Grid item xs={12}>
+            <Grid size={9}>
+              <Grid size={12}>
                 <Controller
                   name="name"
                   control={control}
@@ -134,9 +134,9 @@ export default function SetupBookStep({
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <Controller
                       name="country"
                       control={control}
@@ -165,7 +165,7 @@ export default function SetupBookStep({
                       )}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <Controller
                       name="currency"
                       control={control}

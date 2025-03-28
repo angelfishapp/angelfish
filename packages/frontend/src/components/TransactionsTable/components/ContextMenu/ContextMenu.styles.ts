@@ -1,20 +1,21 @@
-import type { Theme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
+import { styled } from '@mui/material/styles'
+
+import { ContextMenu } from '@/components/ContextMenu'
 
 /**
  * Transactions Table ContextMenu Component Styles
  */
 
-export const useStyles = makeStyles((theme: Theme) => ({
-  menuItemRemove: {
+export const StyledContextMenu = styled(ContextMenu)(({ theme }) => ({
+  '& .menuItemRemove': {
     color: theme.palette.error.main,
   },
-  menuSummary: {
+  '& .menuSummary': {
     color: theme.palette.grey[600],
     cursor: 'default',
     userSelect: 'text',
   },
-  categoriesSubMenu: {
+  '& .categoriesSubMenu': {
     minWidth: 350,
     paddingTop: 10,
     paddingBottom: 10,
@@ -26,7 +27,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
       },
     },
   },
-  tagsSubMenu: {
+  '& .tagsSubMenu': {
     minWidth: 300,
     width: 300,
     '& .tags': {

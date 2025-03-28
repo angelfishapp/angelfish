@@ -9,7 +9,6 @@ import { Emoji } from '@/components/Emoji'
 import { Table } from '@/components/Table'
 import type { IAccount } from '@angelfish/core'
 import type { CategoriesTableProps } from './CategoriesTable.interface'
-import { useTableStyles } from './CategoriesTable.styles'
 
 /**
  * Categories Table Component
@@ -20,8 +19,6 @@ export function CategoriesTable({
   onSelect,
   EmptyView,
 }: CategoriesTableProps) {
-  const classes = useTableStyles()
-
   const columns: ColumnDef<IAccount>[] = [
     {
       header: '',
@@ -67,7 +64,19 @@ export function CategoriesTable({
 
   return (
     <Card sx={{ padding: '.5rem 0 0 0 ' }}>
-      <div className={classes.categoryDataGridPointer} style={{ left: pointerPosition }} />
+      <div
+        style={{
+          left: pointerPosition,
+          position: 'absolute',
+          width: 0,
+          height: 0,
+          borderLeft: '1rem solid transparent',
+          borderRight: '1rem solid transparent',
+          borderBottom: '1rem solid white',
+          top: 0,
+          transform: 'translate(-50%,-100%)',
+        }}
+      />
       <Table
         data={categories ?? []}
         columns={columns}

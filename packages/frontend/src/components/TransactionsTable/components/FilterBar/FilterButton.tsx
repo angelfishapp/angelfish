@@ -1,12 +1,10 @@
-import ButtonBase from '@mui/material/ButtonBase'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import Paper from '@mui/material/Paper'
 import Popper from '@mui/material/Popper'
-import clsx from 'clsx'
 import React from 'react'
 
 import type { FilterButtonProps } from './FilterButton.interface'
-import { useStyles } from './FilterButton.styles'
+import { StyledFilterButton } from './FilterButton.styles'
 import { renderFilterView } from './FilterButton.utils'
 
 /**
@@ -14,8 +12,6 @@ import { renderFilterView } from './FilterButton.utils'
  */
 
 export default function FilterButton({ table, column }: FilterButtonProps) {
-  const classes = useStyles()
-
   // Component State
   const [filterPopoverAnchorEl, setFilterPopoverAnchorEl] = React.useState<HTMLElement | null>(null)
   const isPopoverOpen = Boolean(filterPopoverAnchorEl)
@@ -47,15 +43,15 @@ export default function FilterButton({ table, column }: FilterButtonProps) {
 
   return (
     <>
-      <ButtonBase
-        className={clsx(classes.filterButton, filterApplied ? 'filtered' : undefined)}
+      <StyledFilterButton
+        filtered={filterApplied}
         sx={{
           boxShadow: (theme) => (isPopoverOpen ? theme.shadows[2] : theme.shadows[0]),
         }}
         onClick={(e) => setFilterPopoverAnchorEl(e.target as HTMLElement)}
       >
         {column.columnDef.header as string}
-      </ButtonBase>
+      </StyledFilterButton>
       <Popper
         open={isPopoverOpen}
         anchorEl={filterPopoverAnchorEl}
@@ -74,7 +70,15 @@ export default function FilterButton({ table, column }: FilterButtonProps) {
             onClose()
           }}
         >
-          <Paper className={classes.dropDown}>{renderFilterView(table, column, onClose)}</Paper>
+          <Paper
+            sx={{
+              minWidth: 250,
+              padding: 0,
+              zIndex: (theme) => theme.zIndex.modal + 1,
+            }}
+          >
+            {renderFilterView(table, column, onClose)}
+          </Paper>
         </ClickAwayListener>
       </Popper>
     </>

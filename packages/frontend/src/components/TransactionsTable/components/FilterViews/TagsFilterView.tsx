@@ -8,8 +8,6 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import type { Theme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import React from 'react'
 
@@ -17,23 +15,9 @@ import type { ITag } from '@angelfish/core'
 import type { FilterViewProps } from './FilterView.interface'
 
 /**
- * TagsFilterView Component Styles
- */
-const useStyles = makeStyles<Theme>((theme: Theme) => ({
-  virtualizedListItem: {
-    height: 40,
-  },
-  listCheckBox: {
-    minWidth: 0,
-    marginRight: theme.spacing(1),
-  },
-}))
-
-/**
  * Main Filter Component for Tags Column
  */
 export default function TagsFilterView({ table, column, onClose }: FilterViewProps) {
-  const classes = useStyles()
   const filterValue = column.getFilterValue() as number[]
   const filteredRows = table.getFilteredRowModel().rows
 
@@ -79,15 +63,20 @@ export default function TagsFilterView({ table, column, onClose }: FilterViewPro
         <List sx={{ height: virtualizer.getTotalSize(), width: '100%' }}>
           {virtualizer.getVirtualItems().map((virtualItem) => (
             <ListItem
-              className={classes.virtualizedListItem}
               key={virtualItem.key}
               title={tags[virtualItem.index].name}
               style={{
                 position: 'absolute',
                 transform: `translateY(${virtualItem.start}px)`,
+                height: 40,
               }}
             >
-              <ListItemIcon className={classes.listCheckBox}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  marginRight: (theme) => theme.spacing(1),
+                }}
+              >
                 <Checkbox
                   edge="start"
                   color="primary"
@@ -106,9 +95,11 @@ export default function TagsFilterView({ table, column, onClose }: FilterViewPro
                 />
               </ListItemIcon>
               <ListItemText
-                primaryTypographyProps={{
-                  noWrap: true,
-                  textOverflow: 'ellipsis',
+                slotProps={{
+                  primary: {
+                    noWrap: true,
+                    textOverflow: 'ellipsis',
+                  },
                 }}
               >
                 {tags[virtualItem.index].name}

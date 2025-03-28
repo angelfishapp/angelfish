@@ -1,29 +1,11 @@
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { Avatar } from '@/components/Avatar'
 import type { IAuthenticatedUser } from '@angelfish/core'
-
-/**
- * Component Styles
- */
-
-const useStyles = makeStyles(() => ({
-  iconButton: {
-    width: 64,
-    height: 64,
-  },
-  menuPopup: {
-    marginLeft: 63,
-  },
-  menuPaper: {
-    padding: 0,
-  },
-}))
 
 /**
  * Component Properties
@@ -46,8 +28,6 @@ type AvatarMenuProps = {
  */
 
 export default function AvatarMenu({ authenticatedUser, onLogout }: AvatarMenuProps) {
-  const classes = useStyles()
-
   // Component State
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
 
@@ -55,9 +35,9 @@ export default function AvatarMenu({ authenticatedUser, onLogout }: AvatarMenuPr
   return (
     <>
       <IconButton
-        className={classes.iconButton}
         onClick={(e) => setAnchorEl(e.currentTarget)}
         size="large"
+        sx={{ width: 64, height: 64 }}
       >
         <Avatar
           avatar={authenticatedUser?.avatar}
@@ -71,7 +51,7 @@ export default function AvatarMenu({ authenticatedUser, onLogout }: AvatarMenuPr
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         role={undefined}
-        className={classes.menuPopup}
+        sx={{ marginLeft: 63 }}
         onClose={() => setAnchorEl(null)}
       >
         <MenuItem component={Link} to="/settings/" onClick={() => setAnchorEl(null)}>

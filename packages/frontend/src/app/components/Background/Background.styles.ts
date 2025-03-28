@@ -1,5 +1,4 @@
-import type { Theme } from '@mui/material/styles'
-import { makeStyles } from '@mui/styles'
+import { keyframes, styled } from '@mui/material/styles'
 
 /**
  * Background Component Styles
@@ -11,18 +10,23 @@ type StyleProps = {
   viewTransitionTime: string
 }
 
-export const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
-  // Main Background Container
+// Keyframes for the stars animation
+const starsScroll = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+`
 
-  bgContainer: {
-    width: '100%',
-    height: '100vh',
-    position: 'fixed',
-  },
-
-  // Background Sky/Stars/Sun
-
-  sky_bg: {
+export const BackgroundContainer = styled('div', {
+  shouldForwardProp: (prop) => prop !== 'small',
+})<StyleProps>(({ theme, view, phase, viewTransitionTime }) => ({
+  width: '100%',
+  height: '100vh',
+  position: 'fixed',
+  '& .sky_bg': {
     zIndex: -1100,
     content: '""',
     position: 'fixed',
@@ -30,19 +34,15 @@ export const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
     left: 0,
     width: '100vw',
     height: '100vh',
-    transition: ({ viewTransitionTime }) => `background ${viewTransitionTime} ease-in-out`,
-    background: ({ phase }) => {
-      switch (phase) {
-        case 'day':
-          return theme.custom.gradients.daytime
-        case 'morning':
-          return theme.custom.gradients.morning
-        case 'evening':
-          return theme.custom.gradients.evening
-        case 'night':
-          return theme.custom.gradients.night
-      }
-    },
+    transition: `background ${viewTransitionTime} ease-in-out`,
+    background:
+      phase === 'day'
+        ? theme.custom.gradients.daytime
+        : phase === 'morning'
+          ? theme.custom.gradients.morning
+          : phase === 'evening'
+            ? theme.custom.gradients.evening
+            : theme.custom.gradients.night,
     '& .sky_bg_sun': {
       position: 'absolute',
       backgroundSize: 'contain',
@@ -51,35 +51,23 @@ export const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
       height: 333,
       top: 0,
       left: '10%',
-      backgroundImage: ({ phase }) =>
+      backgroundImage:
         phase == 'morning' ? 'url(assets/svg/sun--morning.svg)' : 'url(assets/svg/sun--day.svg)',
-      transform: ({ view }) =>
+      transform:
         view == 'land'
           ? 'translate3d(0,0,0)'
           : view == 'sky'
             ? 'translate3d(0,50px,0)'
             : 'translate3d(0,-50px,0)',
-      transition: ({ viewTransitionTime }) =>
-        `transform 2s ease, background-image ${viewTransitionTime} ease-in-out`,
+      transition: `transform 2s ease, background-image ${viewTransitionTime} ease-in-out`,
     },
     '& .sky_bg_stars': {
       top: 0,
       left: 0,
       bottom: 0,
       right: 0,
-      opacity: ({ phase }) => {
-        switch (phase) {
-          case 'day':
-            return 0
-          case 'morning':
-            return 0.3
-          case 'evening':
-            return 0.3
-          case 'night':
-            return 1
-        }
-      },
-      transition: ({ viewTransitionTime }) => `opacity ${viewTransitionTime} ease-in-out`,
+      opacity: phase === 'night' ? 1 : phase === 'morning' || phase === 'evening' ? 0.3 : 0,
+      transition: `opacity ${viewTransitionTime} ease-in-out`,
       '&::before': {
         content: '""',
         position: 'absolute',
@@ -89,7 +77,7 @@ export const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
         bottom: 0,
         backgroundImage: 'url(assets/svg/stars.svg)',
         backgroundSize: '50% auto',
-        animation: '$stars 120s linear infinite',
+        animation: `${starsScroll} 120s linear infinite`,
       },
       '&::after': {
         content: '""',
@@ -100,30 +88,22 @@ export const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
         bottom: 0,
         backgroundImage: 'url(assets/svg/stars-2.svg)',
         backgroundSize: '50% auto',
-        animation: '$stars 120s linear infinite',
+        animation: `${starsScroll} 120s linear infinite`,
         animationDuration: '240s',
       },
-    },
-  },
-  '@keyframes stars': {
-    '0%': {
-      transform: 'translateX(0)',
-    },
-    '100%': {
-      transform: 'translateX(-50%)',
     },
   },
 
   // Main BackGround - all transitions between views happen here
 
-  bg: {
+  '& .main': {
     position: 'fixed',
     top: 0,
     left: 0,
     width: '100vw',
     height: '100vh',
     transition: 'transform 2s ease',
-    transform: ({ view }) =>
+    transform:
       view == 'land'
         ? 'translate3d(0,-100%,0)'
         : view == 'sky'
@@ -131,42 +111,35 @@ export const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
           : 'translate3d(0,-200%,0)',
     zIndex: -1000,
   },
-  bg_view: {
+  '& .main_view': {
     transition: 'transform 2s ease',
     width: '100vw',
     height: '100vh',
     position: 'relative',
   },
 
-  // Forgot Password (sky) view
-  bg_forgot_pass: {},
+  // Land view
 
-  // Login (land) view
-
-  bg_login: {
+  '& .land_bg': {
     '& > *': {
       position: 'absolute',
       backgroundSize: 'contain',
       backgroundRepeat: 'no-repeat',
     },
-    '& .bg_login_water': {
+    '& .land_bg_water': {
       bottom: 0,
       left: 0,
       right: 0,
       height: '45%',
-      background: ({ phase }) => {
-        switch (phase) {
-          case 'day':
-            return 'linear-gradient(180deg, #9FE4D5 0%, #88DECB 100%)'
-          case 'morning':
-            return 'linear-gradient(180deg, #6CBBE9 0%, #FFA976 100%)'
-          case 'evening':
-            return 'linear-gradient(180deg, #B2E9DD 0%, #BEABC8 100%)'
-          case 'night':
-            return 'linear-gradient(180deg, #10364C 0%, #89A7B9 100%)'
-        }
-      },
-      transition: ({ viewTransitionTime }) => `background ${viewTransitionTime} ease-in-out`,
+      background:
+        phase === 'day'
+          ? 'linear-gradient(180deg, #9FE4D5 0%, #88DECB 100%)'
+          : phase === 'morning'
+            ? 'linear-gradient(180deg, #6CBBE9 0%, #FFA976 100%)'
+            : phase === 'evening'
+              ? 'linear-gradient(180deg, #B2E9DD 0%, #BEABC8 100%)'
+              : 'linear-gradient(180deg, #10364C 0%, #89A7B9 100%)',
+      transition: `background ${viewTransitionTime} ease-in-out`,
     },
     '& .mountains_left': {
       left: 0,
@@ -193,29 +166,25 @@ export const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
     },
   },
 
-  // App (Underwater) View
+  // Underwater view
 
-  bg_app: {
-    background: ({ phase }) => {
-      switch (phase) {
-        case 'day':
-          return 'linear-gradient(180deg, #47CCAF 0%, #1B97DE 100%)'
-        case 'morning':
-          return 'linear-gradient(180deg, #FF9454 0%, #1B97DE 100%)'
-        case 'evening':
-          return 'linear-gradient(180deg, #9A7EAA 0.29%, #FFBED2 100%)'
-        case 'night':
-          return 'linear-gradient(180deg, #6C92A8 0.29%, #47CCAF 100%)'
-      }
-    },
-    transition: ({ viewTransitionTime }) => `background ${viewTransitionTime} ease-in-out`,
+  '& .underwater_bg': {
+    background:
+      phase === 'day'
+        ? 'linear-gradient(180deg, #47CCAF 0%, #1B97DE 100%)'
+        : phase === 'morning'
+          ? 'linear-gradient(180deg, #FF9454 0%, #1B97DE 100%)'
+          : phase === 'evening'
+            ? 'linear-gradient(180deg, #9A7EAA 0.29%, #FFBED2 100%)'
+            : 'linear-gradient(180deg, #6C92A8 0.29%, #47CCAF 100%)',
+    transition: `background ${viewTransitionTime} ease-in-out`,
     '& > *': {
       position: 'absolute',
       backgroundSize: 'contain',
       backgroundRepeat: 'no-repeat',
     },
   },
-  aquarium: {
+  '& .aquarium': {
     position: 'absolute',
     top: 0,
     left: 0,

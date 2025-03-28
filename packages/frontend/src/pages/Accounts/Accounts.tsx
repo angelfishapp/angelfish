@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import type { FC } from 'react'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -16,7 +15,6 @@ import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { CategoryDrawer } from '@/components/drawers'
 import { ImportTransactionsContainer } from '@/containers/ImportTransactionsContainer'
 
-import { useStyles } from './Accounts.styled'
 import { AccountsMenu } from './components/AccountsMenu'
 import { AccountsView } from './views/AccountsView'
 
@@ -24,8 +22,7 @@ import { AccountsView } from './views/AccountsView'
  * Main Accounts page for viewing and editing Accounts and their associated Transactions
  */
 
-const Accounts: FC = () => {
-  const classes = useStyles()
+export default function Accounts() {
   const dispatch = useDispatch()
 
   // Redux Store Data
@@ -163,21 +160,34 @@ const Accounts: FC = () => {
         <Box display="flex" marginBottom={1} marginRight={2}>
           <Box display="flex" flexGrow={1}>
             {selectedAccount && (
-              <Typography variant="h5" className={classes.accountsHeading} noWrap>
+              <Typography variant="h5" sx={{ color: (theme) => theme.palette.common.white }} noWrap>
                 {selectedAccount.institution?.name} &gt; {selectedAccount.name}
               </Typography>
             )}
           </Box>
 
-          <Box textAlign="right">
+          <Box
+            textAlign="right"
+            sx={{
+              '& .headerCurrencyLabel': {
+                display: 'inline',
+                color: (theme) => theme.palette.common.white,
+                fontSize: (theme) => theme.typography.h5.fontSize,
+              },
+            }}
+          >
             {selectedAccount && (
               <>
-                <Typography variant="h5" className={classes.accountsHeading} component="span">
+                <Typography
+                  variant="h5"
+                  sx={{ color: (theme) => theme.palette.common.white }}
+                  component="span"
+                >
                   Current Balance:
                 </Typography>
                 &nbsp;
                 <CurrencyLabel
-                  className={classes.currencyLabel}
+                  className="headerCurrencyLabel"
                   value={selectedAccount.current_balance}
                   currency={selectedAccount.acc_iso_currency}
                 />
@@ -222,5 +232,3 @@ const Accounts: FC = () => {
     </Box>
   )
 }
-
-export default Accounts

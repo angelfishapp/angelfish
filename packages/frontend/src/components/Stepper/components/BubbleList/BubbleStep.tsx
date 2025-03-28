@@ -5,7 +5,7 @@ import React from 'react'
 
 import { default as animationData } from './animations/bubble.json'
 import type { BubbleStepProps } from './BubbleStep.interface'
-import { useStyles } from './BubbleStep.styles'
+import { BubbleStepContainer } from './BubbleStep.styles'
 
 /**
  * Displays animated Bubble with number inside it to show
@@ -19,7 +19,6 @@ export default function BubbleStep({
   isComplete = false,
   showDelay = 1.5,
 }: BubbleStepProps) {
-  const classes = useStyles()
   const bubbleLi = React.useRef<HTMLLIElement>(null)
   const animationDiv = React.useRef<HTMLDivElement>(null)
   const [animation, setAnimation] = React.useState<AnimationItem>()
@@ -67,19 +66,15 @@ export default function BubbleStep({
 
   // Render
   return (
-    <li
+    <BubbleStepContainer
       // className={classes.step}
       ref={bubbleLi}
-      className={clsx(
-        classes.bubble,
-        isActive ? classes.active : undefined,
-        isComplete ? classes.done : undefined,
-      )}
+      className={clsx(isActive ? 'active' : undefined, isComplete ? 'done' : undefined)}
     >
-      <div ref={animationDiv} className={`${classes.animationWrapper}`}>
-        <div className={classes.number}>{stepNumber}</div>
+      <div ref={animationDiv} className="animationWrapper">
+        <div className="number">{stepNumber}</div>
       </div>
-      <div className={classes.label}>{label}</div>
-    </li>
+      <div className="label">{label}</div>
+    </BubbleStepContainer>
   )
 }

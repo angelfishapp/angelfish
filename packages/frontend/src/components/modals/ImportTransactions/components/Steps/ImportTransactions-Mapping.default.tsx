@@ -125,7 +125,7 @@ export default function ImportDefaultTransactionsMapping({
             <Grid container spacing={2}>
               {accountsMapperFields.map((accountField, index) => (
                 <React.Fragment key={accountField.id}>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Controller
                       name={`accountsMapper.${index}.value` as any}
                       control={formController}
@@ -179,7 +179,7 @@ export default function ImportDefaultTransactionsMapping({
             </Grid>
           ) : (
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Controller
                   name="defaultAccountId"
                   control={formController}
@@ -231,10 +231,10 @@ export default function ImportDefaultTransactionsMapping({
               <React.Fragment>
                 {categoriesMapperFields.map((categoryField, index) => (
                   <React.Fragment key={categoryField.id}>
-                    <Grid item xs={4}>
+                    <Grid size={4}>
                       <strong>{categoryField.key}</strong>
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid size={8}>
                       <Controller
                         name={`categoriesMapper.${index}.value` as any}
                         control={formController}

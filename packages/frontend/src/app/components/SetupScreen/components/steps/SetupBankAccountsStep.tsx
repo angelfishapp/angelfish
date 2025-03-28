@@ -105,15 +105,14 @@ export default function SetupBankAccountsStep({
         justifyContent="flex-start"
         sx={{ width: '100%', marginLeft: 0 }}
       >
-        <Grid item xs={12} sx={{ paddingLeft: '0px !important', paddingBottom: 2 }}>
+        <Grid size={12} sx={{ paddingLeft: '0px !important', paddingBottom: 2 }}>
           <Typography variant="body1">
             Add some Bank Accounts to your Household so you can start tracking your Income and
             Expenses in Angelfish across them.
           </Typography>
         </Grid>
         <Grid
-          item
-          xs={12}
+          size={12}
           border={(theme) => `1px solid ${theme.palette.grey[300]}`}
           sx={{ padding: '0px !important', maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}
         >

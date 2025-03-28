@@ -1,5 +1,5 @@
 import MuiDrawer from '@mui/material/Drawer'
-import { styled } from '@mui/styles'
+import { styled } from '@mui/material/styles'
 
 /**
  * Drawer Component Styles

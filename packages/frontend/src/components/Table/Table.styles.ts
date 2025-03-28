@@ -1,6 +1,6 @@
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
-import { styled } from '@mui/styles'
+import { styled } from '@mui/material/styles'
 
 /**
  * Table Component Styles

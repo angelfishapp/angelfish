@@ -1,28 +1,32 @@
-import type { Theme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
+import Paper from '@mui/material/Paper'
+import { styled } from '@mui/material/styles'
 
 /**
  * Step Component Styles
  */
 
-export const useStyles = makeStyles<Theme>((theme: Theme) => ({
-  stepPanel: {
-    minHeight: 200,
-    width: '100%',
-    padding: 15,
-    '& p:not(.MuiTypography-root)': {
-      margin: '0px 0px 10px 0px',
-    },
+export const StepPanelContainer = styled(Paper)(({ theme }) => ({
+  minHeight: 200,
+  width: '100%',
+  padding: 15,
+
+  // Target <p> elements that are NOT MUI Typography
+  '& p:not(.MuiTypography-root)': {
+    margin: '0px 0px 10px 0px',
   },
-  header: {
+
+  // Scoped styles for nested elements
+  '.header': {
     margin: 0,
     fontWeight: 'bold',
     height: 50,
   },
-  button: {
+
+  '.button': {
     width: '50%',
   },
-  cancelButton: {
+
+  '.cancelButton': {
     width: 150,
     marginRight: theme.spacing(2),
   },

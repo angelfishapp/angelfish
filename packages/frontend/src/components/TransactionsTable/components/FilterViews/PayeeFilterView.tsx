@@ -8,34 +8,16 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import type { Theme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import React from 'react'
 
 import type { FilterViewProps } from './FilterView.interface'
 
 /**
- * PayeeFilterView Component Styles
- */
-
-const useStyles = makeStyles<Theme>((theme: Theme) => ({
-  virtualizedListItem: {
-    height: 40,
-  },
-  listCheckBox: {
-    minWidth: 0,
-    marginRight: theme.spacing(1),
-  },
-}))
-
-/**
  * Main Filter Component for Payee Column
  */
 
 export default function PayeeFilterView({ column, onClose }: FilterViewProps) {
-  const classes = useStyles()
-
   const filterValue = column.getFilterValue() as string[]
   const filteredValues = column.getFacetedUniqueValues()
 
@@ -75,15 +57,20 @@ export default function PayeeFilterView({ column, onClose }: FilterViewProps) {
         <List sx={{ height: virtualizer.getTotalSize(), width: '100%' }}>
           {virtualizer.getVirtualItems().map((virtualItem) => (
             <ListItem
-              className={classes.virtualizedListItem}
               key={virtualItem.key}
               title={payees[virtualItem.index] as string}
               style={{
                 position: 'absolute',
                 transform: `translateY(${virtualItem.start}px)`,
+                height: 40,
               }}
             >
-              <ListItemIcon className={classes.listCheckBox}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  marginRight: (theme) => theme.spacing(1),
+                }}
+              >
                 <Checkbox
                   edge="start"
                   color="primary"
@@ -102,9 +89,11 @@ export default function PayeeFilterView({ column, onClose }: FilterViewProps) {
                 />
               </ListItemIcon>
               <ListItemText
-                primaryTypographyProps={{
-                  noWrap: true,
-                  textOverflow: 'ellipsis',
+                slotProps={{
+                  primary: {
+                    noWrap: true,
+                    textOverflow: 'ellipsis',
+                  },
                 }}
               >
                 {payees[virtualItem.index]}

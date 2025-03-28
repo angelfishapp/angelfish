@@ -1,7 +1,6 @@
 import CameraIcon from '@mui/icons-material/CameraAltOutlined'
 import ZoomInIcon from '@mui/icons-material/ZoomIn'
 import ZoomOutIcon from '@mui/icons-material/ZoomOut'
-import MuiAvatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -11,12 +10,11 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Grid from '@mui/material/Grid'
 import Slider from '@mui/material/Slider'
 import Tooltip from '@mui/material/Tooltip'
-import clsx from 'clsx'
 import React from 'react'
 import AvatarEditor from 'react-avatar-editor'
 
 import type { AvatarPickerDialogProps } from './AvatarDialog.interface'
-import { useStyles } from './AvatarDialog.styles'
+import { StyledAvatar } from './AvatarDialog.styles'
 
 /**
  * Form Field which provides a dialog to select an avatar from a list of avatars or upload a custom
@@ -31,7 +29,6 @@ export default function AvatarPickerDialog({
   size = 60,
   title = 'Pick Your Avatar',
 }: AvatarPickerDialogProps) {
-  const classes = useStyles()
   const inputFile = React.useRef<HTMLInputElement>(null)
   const avatarEditor = React.useRef<AvatarEditor>(undefined)
   const [currentAvatar, setCurrentAvatar] = React.useState<string>(current)
@@ -74,47 +71,48 @@ export default function AvatarPickerDialog({
       }}
       fullWidth={true}
       maxWidth="sm"
-      className={classes.dialog}
+      sx={{
+        '& h2': {
+          fontSize: '1.25rem',
+          fontWeight: 500,
+          lineHeight: 1.6,
+          letterSpacing: '0.0075em',
+        },
+      }}
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         {!showUpload && (
           <div>
             <Grid container spacing={1}>
-              <Grid item>
+              <Grid>
                 <Tooltip title="Upload Custom Image" placement="top">
-                  <MuiAvatar
-                    className={clsx(classes.avatar, classes.upload)}
+                  <StyledAvatar
+                    className="upload"
                     onClick={() => {
                       setShowUpload(true)
                     }}
                     sx={{ width: size, height: size }}
                   >
                     <CameraIcon />
-                  </MuiAvatar>
+                  </StyledAvatar>
                 </Tooltip>
               </Grid>
               {customAvatar && (
-                <Grid item>
-                  <MuiAvatar
+                <Grid>
+                  <StyledAvatar
                     src={`data:image/png;base64, ${customAvatar}`}
-                    className={clsx(
-                      classes.avatar,
-                      currentAvatar == customAvatar ? 'selected' : undefined,
-                    )}
+                    className={currentAvatar == customAvatar ? 'selected' : undefined}
                     onClick={() => setCurrentAvatar(customAvatar)}
                     sx={{ width: size, height: size }}
                   />
                 </Grid>
               )}
               {avatars.map((avatar, index) => (
-                <Grid item key={index}>
-                  <MuiAvatar
+                <Grid key={index}>
+                  <StyledAvatar
                     src={`data:image/png;base64, ${avatar}`}
-                    className={clsx(
-                      classes.avatar,
-                      currentAvatar == avatar ? 'selected' : undefined,
-                    )}
+                    className={currentAvatar == avatar ? 'selected' : undefined}
                     onClick={() => setCurrentAvatar(avatar)}
                     sx={{ width: size, height: size }}
                   />
@@ -145,10 +143,10 @@ export default function AvatarPickerDialog({
                   scale={editZoom}
                 />
                 <Grid container spacing={2}>
-                  <Grid item>
+                  <Grid size={2}>
                     <ZoomOutIcon />
                   </Grid>
-                  <Grid item xs>
+                  <Grid size="grow">
                     <Slider
                       aria-label="raceSlider"
                       value={editZoom}
@@ -158,7 +156,7 @@ export default function AvatarPickerDialog({
                       onChange={(event, value) => setEditZoom(value as number)}
                     />
                   </Grid>
-                  <Grid item>
+                  <Grid size={2}>
                     <ZoomInIcon />
                   </Grid>
                 </Grid>

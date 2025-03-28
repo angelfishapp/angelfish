@@ -1,12 +1,11 @@
 import SearchIcon from '@mui/icons-material/Search'
 import SearchOffIcon from '@mui/icons-material/SearchOff'
-import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import InputBase from '@mui/material/InputBase'
 import React from 'react'
 
 import type { SearchProps } from './Search.interface'
-import { useStyles } from './Search.styles'
+import { SearchContainer } from './Search.styles'
 
 /**
  * Provides Styled Search Input Field
@@ -18,16 +17,14 @@ export default function Search({
   value,
   ...props
 }: SearchProps) {
-  const classes = useStyles({ hasShadow })
-
   // Keep reference to current value to determine search Icon to show
   const [currentValue, setCurrentValue] = React.useState<string>(value as string)
 
   // Render
   return (
-    <Box display="flex" className={classes.searchInputWrapper}>
+    <SearchContainer hasShadow={hasShadow}>
       <InputBase
-        className={classes.searchInput}
+        className="searchInput"
         onChange={(event) => {
           setCurrentValue(event.target.value)
           onChange?.(event.target.value)
@@ -37,7 +34,7 @@ export default function Search({
         autoFocus={false}
       />
       <IconButton
-        className={classes.searchInputButton}
+        className="searchInputButton"
         size="large"
         onClick={() => {
           if (currentValue) {
@@ -48,6 +45,6 @@ export default function Search({
       >
         {currentValue ? <SearchOffIcon /> : <SearchIcon />}
       </IconButton>
-    </Box>
+    </SearchContainer>
   )
 }

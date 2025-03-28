@@ -1,5 +1,4 @@
-import type { Theme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
+import { styled } from '@mui/material/styles'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import React from 'react'
 
@@ -7,11 +6,9 @@ import React from 'react'
  * Component Styles
  */
 
-const useStyles = makeStyles<Theme>(() => ({
-  virtualList: {
-    '& ul': {
-      margin: 0,
-    },
+export const VirtualListContainer = styled('div')(() => ({
+  '& ul': {
+    margin: 0,
   },
 }))
 
@@ -22,8 +19,6 @@ export const VirtualizedListboxComponent = React.forwardRef<
   HTMLUListElement,
   React.HTMLAttributes<HTMLElement>
 >(function VirtualizedListboxComponent({ children, ...other }, ref) {
-  const classes = useStyles()
-
   const itemData = React.Children.toArray(children)
 
   // React-Virtual State
@@ -38,7 +33,7 @@ export const VirtualizedListboxComponent = React.forwardRef<
   })
 
   return (
-    <div ref={listContainerRef} className={classes.virtualList} {...other}>
+    <VirtualListContainer ref={listContainerRef} {...other}>
       <ul style={{ height: virtualizer.getTotalSize(), position: 'relative' }} ref={ref}>
         {virtualizer.getVirtualItems().map((virtualItem) => {
           return React.cloneElement(itemData[virtualItem.index] as any, {
@@ -53,6 +48,6 @@ export const VirtualizedListboxComponent = React.forwardRef<
           })
         })}
       </ul>
-    </div>
+    </VirtualListContainer>
   )
 })

@@ -1,11 +1,9 @@
-import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import FormLabel from '@mui/material/FormLabel'
-import clsx from 'clsx'
 import React from 'react'
 
 import type { FormFieldProps } from './FormField.interface'
-import { useStyles } from './FormField.styles'
+import { StyledFormControl } from './FormField.styles'
 
 /**
  * Provides base properties and controller for Form Fields. Allows you to have consistent Form Fields with label, helper text, errors, focus
@@ -34,13 +32,10 @@ export default React.forwardRef<HTMLDivElement, FormFieldProps>(function FormFie
 ) {
   const labelId = label && id ? `${id}-label` : undefined
   const helperTextId = helperText && id ? `${id}-helper-text` : undefined
-
-  const classes = useStyles({ margin })
-
   // Render
   return (
-    <FormControl
-      className={clsx(classes.formField, className)}
+    <StyledFormControl
+      className={className}
       disabled={disabled}
       error={error}
       fullWidth={fullWidth}
@@ -48,11 +43,11 @@ export default React.forwardRef<HTMLDivElement, FormFieldProps>(function FormFie
       ref={ref}
       required={required}
       color={color}
-      margin="none"
+      margin={margin}
       {...other}
     >
       {label && (
-        <FormLabel htmlFor={id} id={labelId} className={classes.formLabel} {...FormLabelProps}>
+        <FormLabel htmlFor={id} id={labelId} {...FormLabelProps}>
           {label}
         </FormLabel>
       )}
@@ -64,6 +59,6 @@ export default React.forwardRef<HTMLDivElement, FormFieldProps>(function FormFie
           {helperText}
         </FormHelperText>
       )}
-    </FormControl>
+    </StyledFormControl>
   )
 })

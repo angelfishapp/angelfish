@@ -1,18 +1,15 @@
 import type { FC } from 'react'
 import React from 'react'
 
-import { Table } from '@/components/Table'
 import type { ReportsDataRow } from '@angelfish/core'
 import { getNetTableColumns, getTableColumns } from './ReportsTable.columns'
 import type { ReportsTableProps } from './ReportsTable.interface'
-import { useStyles } from './ReportsTable.styles'
+import { StyledNetSummaryTable, StyledReportsTable } from './ReportsTable.styles'
 
 /**
  * Main Table for Reports Page
  */
 const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
-  const classes = useStyles()
-
   // Setup React-Table
   const initialState = {
     columnPinning: {
@@ -52,10 +49,9 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
   // Render table
   return (
     <React.Fragment>
-      <Table
+      <StyledReportsTable
         data={data.rows.filter((row) => row.type === 'Income')}
         columns={incomeColumns}
-        className={classes.table}
         initialState={initialState}
         // @ts-ignore: ReportsDataRow is not compatible with ReportsDataCategoryRow
         getSubRows={(row) => {
@@ -67,10 +63,9 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
         enablePinning={true}
         enableRowSelection={false}
       />
-      <Table
+      <StyledReportsTable
         data={data.rows.filter((row) => row.type === 'Expense')}
         columns={expenseColumns}
-        className={classes.table}
         initialState={initialState}
         // @ts-ignore: ReportsDataRow is not compatible with ReportsDataCategoryRow
         getSubRows={(row) => {
@@ -82,10 +77,9 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
         enablePinning={true}
         enableRowSelection={false}
       />
-      <Table
+      <StyledNetSummaryTable
         data={netSummaryRow ? [netSummaryRow] : []}
         columns={netSummaryColumns}
-        className={classes.netSummary}
         initialState={initialState}
         displayHeader={false}
         displayFooter={false}

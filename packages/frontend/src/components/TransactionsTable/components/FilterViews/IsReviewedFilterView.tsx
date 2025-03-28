@@ -16,10 +16,10 @@ export default function IsReviewedFilterView({ column, onClose }: FilterViewProp
     <Box width={250}>
       <Box paddingTop={2}>
         <Grid container spacing={0}>
-          <Grid item xs={6} sx={{ paddingLeft: 1, alignItems: 'center' }}>
+          <Grid size={6} sx={{ paddingLeft: 1, alignItems: 'center' }}>
             <strong>Is Reviewed?</strong>
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <SwitchField value={filterValue} onChange={(value) => column.setFilterValue(value)} />
           </Grid>
         </Grid>

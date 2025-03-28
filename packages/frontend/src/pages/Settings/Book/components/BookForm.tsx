@@ -82,7 +82,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
         </Typography>
 
         <Grid container spacing={2}>
-          <Grid item sm={2}>
+          <Grid size={2}>
             <Controller
               name="logo"
               control={control}
@@ -99,10 +99,10 @@ export default function BookForm({ book, onSave }: BookFormProps) {
               )}
             />
           </Grid>
-          <Grid item sm={10}>
+          <Grid size={10}>
             <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
               <Grid container spacing={2}>
-                <Grid item sm={6}>
+                <Grid size={6}>
                   <Controller
                     name="name"
                     control={control}
@@ -120,7 +120,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
                     )}
                   />
                 </Grid>
-                <Grid item sm={6}>
+                <Grid size={6}>
                   <Controller
                     name="country"
                     control={control}
@@ -148,7 +148,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
               </Grid>
             </Grid>
             <Grid container spacing={1}>
-              <Grid item sm={6}>
+              <Grid size={6}>
                 <Controller
                   name="currency"
                   control={control}

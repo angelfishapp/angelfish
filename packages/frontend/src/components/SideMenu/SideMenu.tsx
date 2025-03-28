@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper'
 import React from 'react'
 
 import type { SideMenuProps } from './SideMenu.interface'
-import { COLLAPSED_WIDTH, MAX_WIDTH, MIN_WIDTH, useStyles } from './SideMenu.styles'
+import { COLLAPSED_WIDTH, MAX_WIDTH, MIN_WIDTH, SideBarWrapper } from './SideMenu.styles'
 
 /**
  * Provides a left handed side menu which is resizable and collapsable for Page menus. Ensures all
@@ -21,8 +21,6 @@ export default function SideMenu({
   resizeable = true,
   onResize,
 }: SideMenuProps) {
-  const classes = useStyles()
-
   /**
    * Handle Collapsing
    */
@@ -80,9 +78,8 @@ export default function SideMenu({
 
   // Render
   return (
-    <div
+    <SideBarWrapper
       ref={menuRef}
-      className={classes.sidebarWrapper}
       style={{
         width,
         marginLeft: isCollapsed ? (width - COLLAPSED_WIDTH) * -1 : undefined,
@@ -90,14 +87,22 @@ export default function SideMenu({
         top: sticky ? 16 : undefined,
       }}
     >
-      <Paper className={classes.paper} sx={{ width, overflowX: 'hidden' }}>
-        <div className={classes.children} style={{ opacity: isCollapsed ? 0 : 1 }}>
+      <Paper
+        sx={{
+          width,
+          overflowX: 'hidden',
+          padding: '0 !important',
+          left: (theme) => theme.spacing(2),
+          minHeight: 100,
+        }}
+      >
+        <div style={{ opacity: isCollapsed ? 0 : 1, transition: 'opacity 500ms linear' }}>
           {children}
         </div>
       </Paper>
       {(resizeable || collapsable) && (
         <div
-          className={classes.resizeBar}
+          className="resizeBar"
           draggable={false}
           onMouseDown={resizeable && !isCollapsed ? resize : undefined}
           onDoubleClick={() => setIsCollapsed(!isCollapsed)}
@@ -107,7 +112,15 @@ export default function SideMenu({
         >
           <div></div>
           <IconButton
-            className={classes.collapseButton}
+            className="collapseButton"
+            sx={(theme) => ({
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.common.white,
+              visibility: 'hidden',
+              '&:hover': {
+                backgroundColor: theme.palette.primary.main,
+              },
+            })}
             size="small"
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
@@ -116,6 +129,6 @@ export default function SideMenu({
           <div></div>
         </div>
       )}
-    </div>
+    </SideBarWrapper>
   )
 }

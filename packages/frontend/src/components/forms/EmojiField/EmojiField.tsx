@@ -6,7 +6,6 @@ import React from 'react'
 import { Emoji, EmojiPicker } from '@/components/Emoji'
 import { FormField } from '../FormField'
 import type { EmojiFieldProps } from './EmojiField.interface'
-import { useStyles } from './EmojiField.styles'
 
 /**
  * Provides Emoji Picker Field to Select Icons on Forms
@@ -16,8 +15,6 @@ export default React.forwardRef<HTMLDivElement, EmojiFieldProps>(function EmojiF
   { defaultValue = 'question', onChange, value, ...formFieldProps }: EmojiFieldProps,
   ref,
 ) {
-  const classes = useStyles()
-
   // Component State
   const [emoji, setEmoji] = React.useState<string | undefined>(value ? value : defaultValue)
   const [emojiAnchorEl, setEmojiAnchorEl] = React.useState<HTMLElement | null>(null)
@@ -34,7 +31,12 @@ export default React.forwardRef<HTMLDivElement, EmojiFieldProps>(function EmojiF
     <Box sx={{ position: 'relative' }}>
       <FormField ref={ref} {...formFieldProps}>
         <IconButton
-          className={classes.emojiFieldIcon}
+          sx={{
+            width: 35,
+            height: 35,
+            padding: 0,
+            borderRadius: '50%',
+          }}
           onClick={(e) => setEmojiAnchorEl(e.currentTarget)}
           size="large"
         >

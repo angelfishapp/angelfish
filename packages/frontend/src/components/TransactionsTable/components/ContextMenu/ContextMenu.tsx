@@ -9,7 +9,6 @@ import React from 'react'
 
 import { CategoryLabel } from '@/components/CategoryLabel'
 import type { ContextMenuItem } from '@/components/ContextMenu'
-import { ContextMenu } from '@/components/ContextMenu'
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { CategoryField } from '@/components/forms/CategoryField'
 import { TagsField } from '@/components/forms/TagsField'
@@ -17,7 +16,7 @@ import type { TableContextMenuProps } from '@/components/Table'
 import type { IAccount, ITag } from '@angelfish/core'
 import { hasSplitTransaction } from '@angelfish/core'
 import type { TransactionRow } from '../../data'
-import { useStyles } from './ContextMenu.styles'
+import { StyledContextMenu } from './ContextMenu.styles'
 
 /**
  * Context Menu for TransactionsTable
@@ -28,7 +27,6 @@ export default function TransactionTableContextMenu({
   onClose,
   table,
 }: TableContextMenuProps<TransactionRow>) {
-  const classes = useStyles()
   const selectedRows = table.getSelectedRowModel().rows
 
   // Component State
@@ -62,7 +60,7 @@ export default function TransactionTableContextMenu({
 
   // Render
   return (
-    <ContextMenu
+    <StyledContextMenu
       anchorPosition={anchorPosition}
       windowMarginX={300}
       windowMarginY={1}
@@ -80,7 +78,7 @@ export default function TransactionTableContextMenu({
         {
           item: 'Change Category',
           icon: EditIcon,
-          subMenuClassName: classes.categoriesSubMenu,
+          subMenuClassName: 'categoriesSubMenu',
           subMenuIsOpen: showSubMenu === 'categories',
           disabled: hasSplitTransactions,
           disabledText: 'Cannot Change Category as Selection Contains Split Transaction',
@@ -125,7 +123,7 @@ export default function TransactionTableContextMenu({
         {
           item: 'Add Tag',
           icon: TagIcon,
-          subMenuClassName: classes.tagsSubMenu,
+          subMenuClassName: 'tagsSubMenu',
           subMenuIsOpen: showSubMenu === 'tags',
           disabled: hasSplitTransactions,
           disabledText: 'Cannot Add Tag as Selection Contains Split Transaction',
@@ -208,7 +206,7 @@ export default function TransactionTableContextMenu({
         {
           item: 'Remove',
           icon: DeleteIcon,
-          className: classes.menuItemRemove,
+          className: 'menuItemRemove',
           divider: true,
           onHover: () => {
             setShowSubMenu(null)
@@ -224,7 +222,7 @@ export default function TransactionTableContextMenu({
             setShowSubMenu(null)
           },
           item: (
-            <Typography variant="body2" component="span" className={classes.menuSummary}>
+            <Typography variant="body2" component="span" className="menuSummary">
               {`${selectedRows.length} transaction${selectedRows.length == 1 ? '' : 's'} : `}
               <CurrencyLabel
                 value={totalSum}

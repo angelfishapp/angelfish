@@ -9,11 +9,12 @@
     "outDir": "dist",
     // For Material-UI
     "lib": ["es6", "dom"],
+    "allowSyntheticDefaultImports": true,
     "paths": {
       // Also add aliases to webpack/webpack.renderer.config.ts
       "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*", "src/**/*.json"],
-  "exclude": ["dist", "node_modules", "**/*.test.ts"]
+  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"]
 }

@@ -1,8 +1,7 @@
-import clsx from 'clsx'
 import type React from 'react'
 
 import type { BubbleListProps } from './BubbleList.interface'
-import { useStyles } from './BubbleList.styles'
+import { BubbleListContainer } from './BubbleList.styles'
 import BubbleStep from './BubbleStep'
 
 /**
@@ -11,8 +10,6 @@ import BubbleStep from './BubbleStep'
  */
 
 export default function BubbleList({ totalSteps, activeStep, className, labels }: BubbleListProps) {
-  const classes = useStyles()
-
   // Make sure component properties are valid
   if (totalSteps < 0) totalSteps = 0
   if (activeStep < 0) activeStep = 0
@@ -38,5 +35,5 @@ export default function BubbleList({ totalSteps, activeStep, className, labels }
   }
 
   // Render
-  return <ol className={clsx(classes.bubbleList, className)}>{bubbles}</ol>
+  return <BubbleListContainer className={className}>{bubbles}</BubbleListContainer>
 }

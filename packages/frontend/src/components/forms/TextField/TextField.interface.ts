@@ -74,11 +74,6 @@ export interface TextFieldProps extends FormFieldProps {
    */
   placeholder?: string
   /**
-   * Optionally render the value of the TextField as HTML until user clicks on
-   * the field and is replaced with text input field to edit
-   */
-  renderValue?: React.ReactNode
-  /**
    * Number of rows to display when multiline option is set to true.
    */
   rows?: string | number

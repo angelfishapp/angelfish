@@ -10,8 +10,6 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material'
-import type { Theme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import React from 'react'
 
@@ -19,25 +17,6 @@ import { BankIcon } from '@/components/BankIcon'
 import { Emoji } from '@/components/Emoji'
 import type { IAccount } from '@angelfish/core'
 import type { FilterViewProps } from './FilterView.interface'
-
-/**
- * CategoryFilterView Component Styles
- */
-
-const useStyles = makeStyles<Theme>((theme: Theme) => ({
-  virtualizedListItem: {
-    height: 40,
-  },
-  listCheckBox: {
-    minWidth: 0,
-    marginRight: theme.spacing(1),
-  },
-  name: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-}))
 
 /**
  * Helper Functions
@@ -59,8 +38,6 @@ function getTitle(account: IAccount | undefined): string {
  * Main Filter Component for Category Column
  */
 export default function CategoryFilterView({ table, column, onClose }: FilterViewProps) {
-  const classes = useStyles()
-
   const filterValue = column.getFilterValue() as number[]
   const filteredRows = table.getFilteredRowModel().rows
 
@@ -102,7 +79,12 @@ export default function CategoryFilterView({ table, column, onClose }: FilterVie
     if (account) {
       return (
         <React.Fragment>
-          <ListItemIcon className={classes.listCheckBox}>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              marginRight: (theme) => theme.spacing(1),
+            }}
+          >
             <Checkbox
               edge="start"
               color="primary"
@@ -123,22 +105,22 @@ export default function CategoryFilterView({ table, column, onClose }: FilterVie
           <ListItemText>
             {account.class == 'CATEGORY' ? (
               <Grid container alignItems="flex-start" wrap="nowrap" spacing={2}>
-                <Grid item>
+                <Grid>
                   <Emoji emoji={account.cat_icon ?? ''} size={24} />
                 </Grid>
-                <Grid item>
-                  <Typography className={classes.name}>
+                <Grid>
+                  <Typography textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
                     {account.categoryGroup?.name}: {account.name}
                   </Typography>
                 </Grid>
               </Grid>
             ) : (
               <Grid container alignItems="flex-start" wrap="nowrap" spacing={2}>
-                <Grid item>
+                <Grid>
                   <BankIcon logo={account.institution?.logo} size={24} />
                 </Grid>
-                <Grid item>
-                  <Typography className={classes.name}>
+                <Grid>
+                  <Typography textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
                     {account.institution?.name}: {account.name}
                   </Typography>
                 </Grid>
@@ -151,7 +133,12 @@ export default function CategoryFilterView({ table, column, onClose }: FilterVie
     // Handle Unclassified (null) Transactions
     return (
       <React.Fragment>
-        <ListItemIcon className={classes.listCheckBox}>
+        <ListItemIcon
+          sx={{
+            minWidth: 0,
+            marginRight: (theme) => theme.spacing(1),
+          }}
+        >
           <Checkbox
             edge="start"
             color="primary"
@@ -185,7 +172,9 @@ export default function CategoryFilterView({ table, column, onClose }: FilterVie
 
             return (
               <ListItem
-                className={classes.virtualizedListItem}
+                sx={{
+                  height: 40,
+                }}
                 key={virtualItem.key}
                 title={getTitle(account)}
                 style={{

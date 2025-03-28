@@ -8,7 +8,6 @@ import { AutocompleteField } from '@/components/forms/AutocompleteField'
 import type { AccountType } from '@angelfish/core'
 import { getAccountTypeLabel, groupedAccountTypes } from '@angelfish/core'
 import type { AccountTypeFieldProps } from './AccountTypeField.interface'
-import { useStyles } from './AccountTypeField.styles'
 
 /**
  * Displays autocomplete search field to select an account type
@@ -26,8 +25,6 @@ export default React.forwardRef<HTMLDivElement, AccountTypeFieldProps>(function 
   }: AccountTypeFieldProps,
   ref,
 ) {
-  const classes = useStyles()
-
   // Filter options
   const filteredOptions: AccountType[] = React.useMemo(() => {
     // First filter account types
@@ -70,8 +67,14 @@ export default React.forwardRef<HTMLDivElement, AccountTypeFieldProps>(function 
             <Tooltip
               title={option.description}
               placement="right"
-              classes={{
-                tooltip: classes.descriptionTooltip,
+              slotProps={{
+                tooltip: {
+                  sx: {
+                    maxWidth: 200,
+                    backgroundColor: (theme) => theme.palette.grey[400],
+                    fontSize: '1em',
+                  },
+                },
               }}
             >
               <InfoIcon fontSize="small" color="primary" />

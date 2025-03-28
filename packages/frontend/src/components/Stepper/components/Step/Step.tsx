@@ -1,10 +1,9 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 
 import type { StepProps } from './Step.interface'
-import { useStyles } from './Step.styles'
+import { StepPanelContainer } from './Step.styles'
 
 /**
  * Displays a Step Panel with form for user to complete
@@ -19,25 +18,23 @@ export default function StepPanel({
   onCancel,
   onNext,
 }: StepProps) {
-  const classes = useStyles()
-
   // Render
   return (
-    <Paper className={classes.stepPanel}>
-      <Typography variant="h5" className={classes.header} noWrap>
+    <StepPanelContainer>
+      <Typography variant="h5" className="header" noWrap>
         {title}
       </Typography>
       {children}
       <Box display="flex" alignContent="center" justifyContent="center" marginTop="20px">
         {onCancel && (
-          <Button variant="outlined" onClick={() => onCancel?.()} className={classes.cancelButton}>
+          <Button variant="outlined" onClick={() => onCancel?.()} className="cancelButton">
             Cancel
           </Button>
         )}
-        <Button disabled={!isReady} onClick={() => onNext()} className={classes.button}>
+        <Button disabled={!isReady} onClick={() => onNext()} className="button">
           {nextStep}
         </Button>
       </Box>
-    </Paper>
+    </StepPanelContainer>
   )
 }

@@ -103,7 +103,7 @@ export default function UserSettings() {
         </Typography>
 
         <Grid container spacing={2}>
-          <Grid item sm={2}>
+          <Grid size={2}>
             <Controller
               name="avatar"
               control={control}
@@ -120,11 +120,11 @@ export default function UserSettings() {
               )}
             />
           </Grid>
-          <Grid item sm={10}>
+          <Grid size={10}>
             <form>
               <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
                 <Grid container spacing={2}>
-                  <Grid item sm={6}>
+                  <Grid size={6}>
                     <Controller
                       name="firstName"
                       control={control}
@@ -142,7 +142,7 @@ export default function UserSettings() {
                       )}
                     />
                   </Grid>
-                  <Grid item sm={6}>
+                  <Grid size={6}>
                     <Controller
                       name="lastName"
                       control={control}
@@ -163,7 +163,7 @@ export default function UserSettings() {
                 </Grid>
               </Grid>
               <Grid container spacing={1}>
-                <Grid item sm={6}>
+                <Grid size={6}>
                   <Controller
                     name="email"
                     control={control}
@@ -186,7 +186,7 @@ export default function UserSettings() {
                     )}
                   />
                 </Grid>
-                <Grid item sm={6}>
+                <Grid size={6}>
                   <Controller
                     name="phone"
                     control={control}

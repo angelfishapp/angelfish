@@ -10,7 +10,7 @@
  *
  */
 
-import type { Theme, ThemeOptions } from '@mui/material/styles'
+import type { ThemeOptions } from '@mui/material/styles'
 import { createTheme } from '@mui/material/styles'
 
 /**
@@ -39,13 +39,24 @@ declare module '@mui/material/styles' {
   }
 
   interface ThemeOptions extends Partial<Theme> {
-    components?: ThemeOptions['components'] & {}
+    custom?: {
+      gradients?: {
+        morning?: string
+        daytime?: string
+        evening?: string
+        night?: string
+      }
+      side?: {
+        width?: number
+      }
+      colors?: {
+        inputUnfocused?: string
+        inputFocused?: string
+        tagBackground?: string
+        tagColor?: string
+      }
+    }
   }
-}
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line  @typescript-eslint/no-empty-object-type
-  interface DefaultTheme extends Theme {}
 }
 
 /**

@@ -1,77 +1,82 @@
-import type { Theme } from '@mui/material/styles'
-import { makeStyles, styled } from '@mui/styles'
+import { keyframes, styled } from '@mui/material/styles'
 
 /**
  * AuthScreen Styles
  */
-export const useStyles = makeStyles<Theme>(() => ({
-  mainScreen: {
-    width: '100vw',
-    height: '100vh',
-    position: 'fixed',
-  },
-  authContainer: {
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`
+
+export const AuthScreenContainer = styled('div')(() => ({
+  // mainScreen
+  width: '100vw',
+  height: '100vh',
+  position: 'fixed',
+
+  // authContainer
+  '.authContainer': {
     transition: 'opacity 0.5s ease, visibility 0.5s ease',
     perspective: '1500px',
+
     '&.sky': {
-      '& $email_screen': {
+      '.email_screen': {
         visibility: 'visible',
         opacity: 1,
       },
-      '& $auth_screen': {
+      '.auth_screen': {
         visibility: 'hidden',
         opacity: 0,
       },
     },
+
     '&.land': {
-      '& $email_screen': {
+      '.email_screen': {
         visibility: 'hidden',
         opacity: 0,
       },
-      '& $auth_screen': {
+      '.auth_screen': {
         visibility: 'visible',
         opacity: 1,
         transform: 'rotateY(0deg)',
       },
     },
+
     '&.underwater': {
-      '& $email_screen': {
+      '.email_screen': {
         visibility: 'hidden',
         opacity: 0,
       },
-      '& $auth_screen': {
+      '.auth_screen': {
         visibility: 'hidden',
         opacity: 0,
       },
     },
   },
-  email_screen: {
+
+  // email_screen
+  '.email_screen': {
     position: 'absolute',
     top: 0,
     width: '100%',
     transition: 'visibility 0.5s ease 0.5s, opacity 0.5s ease',
-    '& .formHeader': {
+
+    '.formHeader': {
       textAlign: 'center',
     },
   },
-  auth_screen: {
+
+  // auth_screen
+  '.auth_screen': {
     transition: 'visibility 0.5s linear 0.5s, opacity 0.5s ease 0.5s',
   },
-  app_screen: {
+
+  // app_screen
+  '.app_screen': {
     opacity: 0,
-    animationName: '$fadeIn',
-    animationDuration: ' 4s',
-    animationDelay: '0s',
-    animationFillMode: 'forwards',
+    animation: `${fadeIn} 4s 0s forwards`,
     overflow: 'hidden',
-  },
-  '@keyframes fadeIn': {
-    from: {
-      opacity: 0,
-    },
-    to: {
-      opacity: 1,
-    },
   },
 }))
 

@@ -7,9 +7,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import Box from '@mui/material/Box'
 import CheckBox from '@mui/material/Checkbox'
 import Chip from '@mui/material/Chip'
-import Box from '@mui/system/Box'
 import type { ColumnDef, RowData, Table } from '@tanstack/react-table'
 import clsx from 'clsx'
 import type { ReactNode } from 'react'
@@ -172,11 +172,7 @@ export function buildColumns(
                           onChange(date)
                         }}
                         {...restField}
-                        value={(value as Date)?.toLocaleDateString('en-GB', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        value={value as Date}
                       />
                     )}
                   />

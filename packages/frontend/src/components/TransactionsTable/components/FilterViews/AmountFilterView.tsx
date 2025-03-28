@@ -73,7 +73,7 @@ export default function AmountFilterView({ table, column, onClose }: FilterViewP
   // Render
   return (
     <Grid container spacing={1} width={400} padding={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         {/* Histogram Chart */}
         <Chart
           type="bar"
@@ -131,7 +131,7 @@ export default function AmountFilterView({ table, column, onClose }: FilterViewP
           }}
         />
       </Grid>
-      <Grid item xs={12} padding={2} alignContent="center">
+      <Grid size={12} padding={2} alignContent="center">
         <Slider
           min={min}
           max={max}
@@ -146,7 +146,7 @@ export default function AmountFilterView({ table, column, onClose }: FilterViewP
           }}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <AmountField
           label="Min"
           fullWidth
@@ -160,7 +160,7 @@ export default function AmountFilterView({ table, column, onClose }: FilterViewP
           }}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <AmountField
           label="Max"
           fullWidth
@@ -174,7 +174,7 @@ export default function AmountFilterView({ table, column, onClose }: FilterViewP
           }}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Divider sx={{ marginBottom: 1 }} />
         <Button
           fullWidth

@@ -94,7 +94,7 @@ export default function SetupUserStep({
       onNext={() => handleSubmit(handleSave)()}
     >
       <Grid container spacing={3} alignItems="center" justifyContent="flex-start">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="body1">
             {firstTimeUser ? (
               <React.Fragment>
@@ -108,7 +108,7 @@ export default function SetupUserStep({
             )}
           </Typography>
         </Grid>
-        <Grid item xs={3}>
+        <Grid size={3}>
           <Controller
             name="avatar"
             control={control}
@@ -125,7 +125,7 @@ export default function SetupUserStep({
             )}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid size={3}>
           <Controller
             name="firstName"
             control={control}
@@ -143,7 +143,7 @@ export default function SetupUserStep({
             )}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid size={3}>
           <Controller
             name="lastName"
             control={control}

@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import React from 'react'
 
 import type { BackgroundProps } from './Background.interface'
-import { useStyles } from './Background.styles'
+import { BackgroundContainer } from './Background.styles'
 import { getCurrentPhase } from './Background.utils'
 import Aquarium from './effects/aquarium'
 import WaterGlimmer from './effects/water-glimmer'
@@ -26,9 +26,6 @@ export default function Background({
   const [glimmerEffect, setGlimmerEffect] = React.useState<WaterGlimmer | null>(null)
   const [waterlightEffect, setWaterlightEffect] = React.useState<WaterLightRays | null>(null)
   const [aquariumEffect, setAquariumEffect] = React.useState<Aquarium | null>(null)
-
-  // Component Styles
-  const classes = useStyles({ view, phase: currentPhase, viewTransitionTime: '2s' })
 
   /**
    * Turn on/off login view animations
@@ -121,13 +118,13 @@ export default function Background({
 
   // Render
   return (
-    <div className={classes.bgContainer}>
-      <div className={classes.sky_bg}>
+    <BackgroundContainer view={view} phase={currentPhase} viewTransitionTime="2s">
+      <div className="sky_bg">
         <div className="sky_bg_stars"></div>
         <div className="sky_bg_sun"></div>
       </div>
       <div
-        className={classes.bg}
+        className="main"
         onTransitionEnd={() => {
           if (view == 'underwater') {
             enableLoginAnimations(false)
@@ -137,18 +134,18 @@ export default function Background({
           }
         }}
       >
-        <div className={clsx(classes.bg_view, classes.bg_forgot_pass)}></div>
-        <div className={clsx(classes.bg_view, classes.bg_login)}>
-          <div className="bg_login_water" id="login-water">
+        <div className="main_view"></div>
+        <div className={clsx('main_view', 'land_bg')}>
+          <div className="land_bg_water" id="login-water">
             <div className="login_splash" id="login-splash-target"></div>
           </div>
           <div className="mountains_left"></div>
           <div className="mountains_right"></div>
         </div>
-        <div className={clsx(classes.bg_view, classes.bg_app)} id="app-bg">
-          <div className={classes.aquarium} id="aquarium"></div>
+        <div className={clsx('main_view', 'underwater_bg')} id="app-bg">
+          <div className="aquarium" id="aquarium"></div>
         </div>
       </div>
-    </div>
+    </BackgroundContainer>
   )
 }

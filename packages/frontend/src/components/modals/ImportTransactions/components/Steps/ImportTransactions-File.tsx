@@ -69,9 +69,9 @@ export default function ImportTransactionsFile({
       onNext={() => onNext(getValues('file'), getValues('csvDelimiter'))}
     >
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           {error && <span style={{ color: 'red', fontWeight: 'bold' }}>{error}</span>}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Controller
               name="file"
               control={control}
@@ -95,9 +95,9 @@ export default function ImportTransactionsFile({
           </Grid>
         </Grid>
         {isCVSFile && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Grid container spacing={1}>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Controller
                   name="account"
                   control={control}
@@ -121,7 +121,7 @@ export default function ImportTransactionsFile({
                   )}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Controller
                   name="csvDelimiter"
                   control={control}

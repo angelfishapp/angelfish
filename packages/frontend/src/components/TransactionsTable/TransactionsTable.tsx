@@ -3,7 +3,7 @@ import React from 'react'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
-import { handleRowContextMenu, handleRowSelection, Table } from '@/components/Table'
+import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
 import type { ITransaction, SplitLineItem, TransactionProperties } from '@angelfish/core'
 import { createNewTransaction, splitTransaction, updateTransactions } from '@angelfish/core'
 import { ContextMenu } from './components/ContextMenu'
@@ -17,7 +17,7 @@ import {
   getRecentCategories,
 } from './data'
 import type { TransactionsTableProps } from './TransactionsTable.interface'
-import { useStyles } from './TransactionsTable.styles'
+import { StyledTransactionTable } from './TransactionsTable.styles'
 
 /*
  * Extend react-table to add custom metadata for TransactionsTable
@@ -129,9 +129,6 @@ export default function TransactionsTable({
   id,
   variant = 'raised',
 }: TransactionsTableProps) {
-  // Component Styles
-  const classes = useStyles({ variant })
-
   // Component State
   const showFooter = (account && account.acc_start_balance != 0) || false
   // Keep track of rows which are in edit state when double clicked
@@ -174,8 +171,8 @@ export default function TransactionsTable({
 
   // Render
   return (
-    <Table
-      className={classes.transactionTable}
+    <StyledTransactionTable
+      tableVarient={variant}
       data={[...transactionRows, ...(newRow !== undefined ? [newRow] : [])]}
       columns={displayColumns}
       scrollElement={scrollElement}

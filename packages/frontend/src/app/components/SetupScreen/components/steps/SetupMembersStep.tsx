@@ -56,14 +56,14 @@ export default function SetupMembersStep({
   return (
     <Step title="Add Household Members" nextStep={nextStep} isReady={true} onNext={onNext}>
       <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="body1">
             Optionally add other people to your Household such as your partner so you can assign
             Bank Accounts to them and break down income and expenses by different members of your
             Household.
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <UserTableUIContainer
             avatars={userAvatars}
             users={users}

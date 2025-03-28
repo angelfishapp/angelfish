@@ -1,7 +1,6 @@
 import CssBaseline from '@mui/material/CssBaseline'
 import GlobalStyles from '@mui/material/GlobalStyles'
-import ThemeProvider from '@mui/material/styles/ThemeProvider'
-import StyledEngineProvider from '@mui/styled-engine/StyledEngineProvider'
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 

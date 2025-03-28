@@ -10,6 +10,7 @@
     "types": ["vitest/globals", "@testing-library/jest-dom"],
     // For Material-UI
     "lib": ["es6", "dom"],
+    "allowSyntheticDefaultImports": true,
     "paths": {
       // Also add aliases to webpack/webpack.renderer.config.ts
       "@/*": ["./src/*"]

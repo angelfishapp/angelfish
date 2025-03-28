@@ -64,17 +64,3 @@ export const MultiLineText: Story = {
     disabled: false,
   },
 }
-
-export const RenderValue: Story = {
-  args: {
-    renderValue: <i>Render Me This</i>,
-    label: 'Render Value Textfield',
-    required: true,
-    multiline: false,
-    fullWidth: false,
-    error: false,
-    placeholder: 'Placeholder text...',
-    helperText: 'Here is some helper text',
-    disabled: false,
-  },
-}

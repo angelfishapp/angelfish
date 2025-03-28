@@ -1,11 +1,10 @@
-import clsx from 'clsx'
 import React from 'react'
 
 import { ClickAwayListener } from '@mui/material'
 import Fade from '@mui/material/Fade'
 import { BubbleList } from './components/BubbleList'
 import type { StepperProps } from './Stepper.interface'
-import { useStyles } from './Stepper.styles'
+import { BubbleContainer, StepContainer, StepperContainer } from './Stepper.styles'
 
 /**
  * Stepper component that allows for a list of steps to be shown on screen with numbered bubbles
@@ -23,8 +22,6 @@ export default function Stepper({
   onClose,
   onTransitionEnd,
 }: StepperProps) {
-  const classes = useStyles()
-
   const [show, setShow] = React.useState(open)
 
   React.useEffect(() => {
@@ -43,7 +40,7 @@ export default function Stepper({
       in={open}
       timeout={500}
     >
-      <div className={clsx(classes.stepperContainer, displayBackdrop ? 'backdrop' : undefined)}>
+      <StepperContainer className={displayBackdrop ? 'backdrop' : undefined}>
         {(show || open) && (
           <div>
             <ClickAwayListener
@@ -53,7 +50,7 @@ export default function Stepper({
                 }
               }}
             >
-              <ol className={classes.stepContainer}>
+              <StepContainer>
                 {children.map((child, index) => (
                   <li
                     key={index}
@@ -69,17 +66,18 @@ export default function Stepper({
                     {child}
                   </li>
                 ))}
-              </ol>
+              </StepContainer>
             </ClickAwayListener>
-            <BubbleList
-              labels={labels ?? children.map((_) => '')}
-              totalSteps={children.length}
-              activeStep={activeStep}
-              className={classes.bubbleContainer}
-            />
+            <BubbleContainer>
+              <BubbleList
+                labels={labels ?? children.map((_) => '')}
+                totalSteps={children.length}
+                activeStep={activeStep}
+              />
+            </BubbleContainer>
           </div>
         )}
-      </div>
+      </StepperContainer>
     </Fade>
   )
 }

@@ -7,7 +7,6 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import UploadIcon from '@mui/icons-material/Upload'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import clsx from 'clsx'
 import React from 'react'
 
 import type { DropdownMenuItem } from '@/components/DropdownMenuButton'
@@ -15,7 +14,7 @@ import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { Search } from '@/components/Search'
 import type { TableFilterBarProps } from '@/components/Table'
 import type { TransactionRow } from '../../data'
-import { useStyles } from './FilterBar.styles'
+import { StyledFilterBar } from './FilterBar.styles'
 import FilterButton from './FilterButton'
 
 /**
@@ -23,8 +22,6 @@ import FilterButton from './FilterButton'
  */
 
 export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>) {
-  const classes = useStyles()
-
   // Component State
   const [filtersVisible, setFiltersVisible] = React.useState<boolean>(false)
 
@@ -32,7 +29,21 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
     <Box display="flex" width="100%" alignItems="center" marginBottom={2}>
       {/* Show/Hide Filter Bar Button */}
       <IconButton
-        className={clsx(classes.showFilterButton, filtersVisible && classes.showFilterButtonActive)}
+        sx={(theme) => ({
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: 48,
+          height: 48,
+          boxShadow: '0 3px 10px rgba(0,0,0,0.25)',
+          backgroundColor: filtersVisible ? theme.palette.primary.main : theme.palette.common.white,
+          color: filtersVisible ? theme.palette.common.white : theme.palette.text.primary,
+          '&:hover': {
+            backgroundColor: filtersVisible
+              ? theme.palette.primary.main
+              : theme.palette.common.white,
+          },
+        })}
         onClick={() => {
           setFiltersVisible(!filtersVisible)
           table.resetColumnFilters()
@@ -43,7 +54,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
       </IconButton>
       {filtersVisible ? (
         /* Render Filter Bar */
-        <Box className={classes.filterBar} marginLeft={1}>
+        <StyledFilterBar marginLeft={1}>
           {/* Render Filter Buttons */}
           <>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -58,7 +69,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
             ))}
           </>
 
-          <div className={classes.divVertical}></div>
+          <div className="divVertical"></div>
 
           <Search
             autoFocus
@@ -69,9 +80,9 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
             hasShadow={false}
             value={table.getState().globalFilter || ''}
           />
-        </Box>
+        </StyledFilterBar>
       ) : (
-        <Box flexGrow={1} display="flex">
+        <StyledFilterBar flexGrow={1} display="flex">
           <Box flexGrow={1} marginLeft={1}>
             <Search
               autoFocus
@@ -88,7 +99,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
               onClick={() => table.options.meta?.transactionsTable?.insertNewRow()}
               size="large"
               title="Add Transaction"
-              className={classes.actionButton}
+              className="actionButton"
               sx={{ marginRight: 1 }}
             >
               <AddIcon />
@@ -99,20 +110,20 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
                 onClick={() => table.options.meta?.transactionsTable?.onImportTransactions?.()}
                 size="large"
                 title="Import Transactions"
-                className={classes.actionButton}
+                className="actionButton"
               >
                 <UploadIcon />
               </IconButton>
             )}
           </Box>
-        </Box>
+        </StyledFilterBar>
       )}
-      <Box marginLeft={1}>
+      <StyledFilterBar marginLeft={1}>
         <DropdownMenuButton
           Icon={SettingsIcon}
           label="Table Settings"
           size="large"
-          className={clsx(classes.actionButton, 'settingsButton')}
+          className="actionButton"
           menuItems={(
             [
               {
@@ -136,7 +147,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
               })),
           )}
         />
-      </Box>
+      </StyledFilterBar>
     </Box>
   )
 }

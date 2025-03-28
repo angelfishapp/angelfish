@@ -15,7 +15,6 @@ import { Line } from 'react-chartjs-2'
 
 import theme from '@/app/theme'
 import type { ChartProps } from './Chart.interface'
-import { useStyles } from './Chart.styles'
 import { getChartData } from './Chart.utils'
 
 ChartJS.register(CategoryScale, Filler, LinearScale, PointElement, LineElement, Tooltip)
@@ -74,7 +73,6 @@ const options: ChartOptions<'line'> = {
  */
 
 export default function Chart({ account, transactions }: ChartProps) {
-  const classes = useStyles()
   const chartRef = React.useRef<ChartJS<'line', number[], string>>(null)
   const [chartData, setChartData] = React.useState<ChartData<'line'>>({
     datasets: [],
@@ -124,7 +122,13 @@ export default function Chart({ account, transactions }: ChartProps) {
 
   // Render
   return (
-    <Paper className={classes.chartPaper}>
+    <Paper
+      sx={{
+        height: 250,
+        marginBottom: 20,
+        padding: 10,
+      }}
+    >
       <Line ref={chartRef} data={chartData} options={options} />
     </Paper>
   )

@@ -51,10 +51,16 @@ const meta = {
             direction="column"
             alignItems="center"
             justifyContent="center"
-            style={{ minHeight: '100vh', top: 0, position: 'absolute', minWidth: '100wh' }}
+            sx={{
+              height: '100vh',
+              width: '100vw',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+            }}
           >
-            <Grid item xs={3}>
-              <Paper style={{ padding: 10 }}>
+            <Grid size={3}>
+              <Paper style={{ padding: 10, textAlign: 'center' }}>
                 You are now in the app!
                 <br />
                 <Button onClick={() => setAuthenticated(false)}>Logout</Button>

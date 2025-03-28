@@ -73,6 +73,7 @@ const meta = {
               alignSelf: 'auto',
               padding: 2,
               paddingLeft: 0,
+              marginLeft: 2,
             }}
           >
             <Paper>Main Content Here</Paper>

@@ -1,6 +1,5 @@
 import DateRangeIcon from '@mui/icons-material/DateRange'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
-import InputBase from '@mui/material/InputBase'
 import Paper from '@mui/material/Paper'
 import Popper from '@mui/material/Popper'
 import { format } from 'date-fns'
@@ -10,7 +9,7 @@ import type { DateRange } from '@/components/DateRangePicker'
 import { DateRangePicker, isSameRange } from '@/components/DateRangePicker'
 import { FormField } from '../FormField'
 import type { DateRangeFieldProps } from './DateRangeField.interface'
-import { useStyles } from './DateRangeField.styles'
+import { StyledInputBase } from './DateRangeField.styles'
 
 /**
  * DateRangeField renders a date range field with dropdown data range selector
@@ -30,8 +29,6 @@ export default React.forwardRef<HTMLDivElement, DateRangeFieldProps>(function Da
   }: DateRangeFieldProps,
   ref,
 ) {
-  const classes = useStyles({ border })
-
   // Component State
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [open, setOpen] = React.useState<boolean>(false)
@@ -58,9 +55,9 @@ export default React.forwardRef<HTMLDivElement, DateRangeFieldProps>(function Da
   // Render
   return (
     <FormField ref={ref} {...formFieldProps}>
-      <InputBase
+      <StyledInputBase
         ref={inputRef}
-        className={classes.textField}
+        border={border}
         endAdornment={endAdornment}
         placeholder="Select Date Range..."
         readOnly
@@ -71,7 +68,12 @@ export default React.forwardRef<HTMLDivElement, DateRangeFieldProps>(function Da
       />
       <Popper open={open} anchorEl={inputRef?.current} placement="bottom-start">
         <ClickAwayListener onClickAway={() => setOpen(false)}>
-          <Paper className={classes.paper}>
+          <Paper
+            sx={{
+              padding: 0,
+              borderRadius: 8,
+            }}
+          >
             <DateRangePicker
               dateRanges={dateRanges}
               minDate={minDate}

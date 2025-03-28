@@ -1,11 +1,10 @@
 import EditIcon from '@mui/icons-material/CameraAltOutlined'
-import Badge from '@mui/material/Badge'
 import React from 'react'
 
 import { Avatar } from '../../Avatar'
 import { FormField } from '../FormField'
 import type { AvatarFieldProps } from './AvatarField.interface'
-import { useStyles } from './AvatarField.styles'
+import { StyledAvatarBadge } from './AvatarField.styles'
 import AvatarDialog from './components/AvatarDialog'
 
 /**
@@ -27,7 +26,6 @@ export default React.forwardRef<HTMLDivElement, AvatarFieldProps>(function Avata
   }: AvatarFieldProps,
   ref,
 ) {
-  const classes = useStyles({ size })
   const [isOpen, setIsOpen] = React.useState<boolean>(false)
 
   /**
@@ -42,7 +40,7 @@ export default React.forwardRef<HTMLDivElement, AvatarFieldProps>(function Avata
   // Render
   return (
     <FormField ref={ref} {...formFieldProps}>
-      <Badge
+      <StyledAvatarBadge
         overlap="circular"
         anchorOrigin={{
           vertical: 'bottom',
@@ -50,14 +48,11 @@ export default React.forwardRef<HTMLDivElement, AvatarFieldProps>(function Avata
         }}
         color="primary"
         badgeContent={<EditIcon fontSize="small" />}
-        classes={{
-          root: classes.badgeRoot,
-          badge: classes.badge,
-        }}
+        size={size}
         onClick={() => setIsOpen(true)}
       >
         <Avatar avatar={value} size={size} displayBorder={true} Icon={Icon} />
-      </Badge>
+      </StyledAvatarBadge>
       <AvatarDialog
         current={value ?? ''}
         avatars={avatars}

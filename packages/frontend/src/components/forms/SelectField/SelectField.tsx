@@ -1,9 +1,8 @@
-import Select from '@mui/material/Select'
 import React from 'react'
 
 import { FormField } from '../FormField'
 import type { SelectFieldProps } from './SelectField.interface'
-import { useStyles } from './SelectField.styles'
+import { StyledSelectField } from './SelectField.styles'
 
 /**
  * SelectField renders a Select dropdown for FormField
@@ -27,14 +26,11 @@ export default React.forwardRef<HTMLDivElement, SelectFieldProps>(function Selec
   }: SelectFieldProps,
   ref,
 ) {
-  const classes = useStyles()
-
   // Render
   return (
     <FormField ref={ref} {...formFieldProps}>
-      <Select
+      <StyledSelectField
         autoWidth={autoWidth}
-        className={classes.selectField}
         defaultValue={defaultValue}
         IconComponent={IconComponent}
         multiple={multiple}
@@ -51,7 +47,7 @@ export default React.forwardRef<HTMLDivElement, SelectFieldProps>(function Selec
         }}
       >
         {children}
-      </Select>
+      </StyledSelectField>
     </FormField>
   )
 })

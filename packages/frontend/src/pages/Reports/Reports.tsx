@@ -37,7 +37,6 @@ import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
 import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
 import { ReportsTable } from './components/ReportsTable'
-import { useStyles } from './Reports.styles'
 import { renderPeriodHeader } from './Reports.utils'
 
 /**
@@ -45,7 +44,6 @@ import { renderPeriodHeader } from './Reports.utils'
  */
 
 export default function Reports() {
-  const classes = useStyles()
   const dispatch = useDispatch()
 
   /**
@@ -168,11 +166,24 @@ export default function Reports() {
     <Box padding={2}>
       <Box display="flex" flexDirection="column" flexGrow={1}>
         <Box display="flex" flexGrow={1}>
-          <Typography variant="h5" className={classes.reportsHeading} noWrap>
+          <Typography
+            variant="h5"
+            sx={{
+              color: (theme) => theme.palette.common.white,
+              fontWeight: 700,
+              marginBottom: (theme) => theme.spacing(1),
+            }}
+            noWrap
+          >
             Monthly Income and Expenses
           </Typography>
         </Box>
-        <Paper className={classes.paper}>
+        <Paper
+          sx={{
+            padding: '0 !important',
+            overflow: 'hidden',
+          }}
+        >
           <RollingContainer>
             <Box
               display="flex"

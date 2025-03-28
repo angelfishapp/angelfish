@@ -7,7 +7,6 @@ import React from 'react'
 import { Avatar } from '@/components/Avatar'
 import { AutocompleteField } from '@/components/forms/AutocompleteField'
 import type { UserFieldProps } from './UserField.interface'
-import { useStyles } from './UserField.styles'
 
 /**
  * Search field to multi-select users from the database
@@ -17,8 +16,6 @@ export default React.forwardRef<HTMLDivElement, UserFieldProps>(function UserFie
   { users, onChange, value, id = 'user-field', ...formFieldProps }: UserFieldProps,
   ref,
 ) {
-  const classes = useStyles()
-
   // Render
   return (
     <AutocompleteField
@@ -44,14 +41,13 @@ export default React.forwardRef<HTMLDivElement, UserFieldProps>(function UserFie
         // not be unique if the first and last names are the same for multiple users
         const { key: _key, ...rest } = props
         return (
-          <ListItem className={classes.item} key={option.id} {...rest}>
-            <ListItemIcon>
+          <ListItem key={option.id} {...rest}>
+            <ListItemIcon sx={{ paddingRight: 10 }}>
               <Avatar
                 avatar={option.avatar}
                 firstName={option.first_name}
                 lastName={option.last_name}
                 size={30}
-                className={classes.avatar}
                 displayBorder={true}
               />
             </ListItemIcon>
@@ -75,7 +71,6 @@ export default React.forwardRef<HTMLDivElement, UserFieldProps>(function UserFie
                   firstName={option.first_name}
                   lastName={option.last_name}
                   size={30}
-                  className={classes.avatar}
                   displayBorder={true}
                 />
               }

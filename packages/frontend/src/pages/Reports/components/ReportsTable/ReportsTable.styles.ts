@@ -1,11 +1,15 @@
-import type { Theme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
+import { styled } from '@mui/material/styles'
+
+import { Table } from '@/components/Table'
+import type { ReportsDataRow } from '@angelfish/core'
+
+const UnStyledTable = Table<ReportsDataRow>
 
 /**
  * ReportsTable Component Styles
  */
 
-export const useStyles = makeStyles<Theme>((theme: Theme) => ({
+export const StyledReportsTable = styled(UnStyledTable)(({ theme }) => ({
   table: {
     '& table': {
       // Make sure name cell right border doesn't scroll with sticky column
@@ -56,24 +60,25 @@ export const useStyles = makeStyles<Theme>((theme: Theme) => ({
       textOverflow: 'ellipsis',
     },
   },
-  netSummary: {
+}))
+
+export const StyledNetSummaryTable = styled(UnStyledTable)(({ theme }) => ({
+  cursor: 'default',
+  '& .MuiTableCell-root.isPinned': {
+    // Make name cell width 300px
+    width: 300,
+    // Make sure ::after shadow isn't hidden
+    overflow: 'visible',
+  },
+  '& td': {
+    fontWeight: 600,
+    fontSize: 18,
+    textAlign: 'right',
+    color: theme.palette.common.white,
+    backgroundColor: `${theme.palette.primary.dark} !important`,
     cursor: 'default',
-    '& .MuiTableCell-root.isPinned': {
-      // Make name cell width 300px
-      width: 300,
-      // Make sure ::after shadow isn't hidden
-      overflow: 'visible',
-    },
-    '& td': {
-      fontWeight: 600,
-      fontSize: 18,
-      textAlign: 'right',
-      color: theme.palette.common.white,
-      backgroundColor: `${theme.palette.primary.dark} !important`,
-      cursor: 'default',
-    },
-    '& .col-id-total': {
-      borderLeft: `1px solid ${theme.palette.grey[400]}`,
-    },
+  },
+  '& .col-id-total': {
+    borderLeft: `1px solid ${theme.palette.grey[400]}`,
   },
 }))

@@ -5,7 +5,6 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom'
 
 import { SideMenu } from '@/components/SideMenu'
 import { SettingsRoutes } from '../../app/Routes'
-import { useStyles } from './Settings.styles'
 
 /**
  * Main Component - Settings Page Container providing left hand menu and router to switch
@@ -13,7 +12,6 @@ import { useStyles } from './Settings.styles'
  */
 
 export default function Settings() {
-  const classes = useStyles()
   const location = useLocation()
   const currentPage = location.pathname.split('/')[2] ? location.pathname.split('/')[2] : '/'
 
@@ -38,13 +36,21 @@ export default function Settings() {
         }}
       >
         <SideMenu id="settings-menu" resizeable={false} collapsable={false} minWidth={250}>
-          <List component="nav">
+          <List
+            component="nav"
+            sx={{
+              '& .Mui-selected': {
+                backgroundColor: (theme) => `${theme.palette.primary.main} !important`,
+                color: (theme) => `${theme.palette.common.white} !important`,
+                boxShadow: '0 3px 10px rgba(0,0,0,0.2)',
+              },
+            }}
+          >
             {SettingsRoutes.map(({ label, path }) => (
               <ListItemButton
                 selected={(path ? path : '/') == currentPage}
                 key={path ? path : '/'}
                 sx={{ whiteSpace: 'nowrap' }}
-                classes={{ selected: classes.selected }}
                 component={Link}
                 to={path}
               >
@@ -55,7 +61,15 @@ export default function Settings() {
         </SideMenu>
       </Box>
       {/* Settings Page Container */}
-      <Box display="flex" flexGrow={1} flexDirection="column" className={classes.page}>
+      <Box
+        display="flex"
+        flexGrow={1}
+        flexDirection="column"
+        sx={{
+          padding: '24px 16px',
+          height: '100vh',
+        }}
+      >
         <Routes>
           {/* Need to slice (copy) then reverse as / path should be last or switching doesn't work */}
           {SettingsRoutes.slice()

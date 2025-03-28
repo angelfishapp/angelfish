@@ -3,7 +3,7 @@ import React from 'react'
 
 import { Background } from '../Background'
 import type { AuthScreenProps } from './AuthScreen.interface'
-import { useStyles } from './AuthScreen.styles'
+import { AuthScreenContainer } from './AuthScreen.styles'
 import AuthForm from './components/AuthForm/AuthForm'
 import EmailForm from './components/EmailForm/EmailForm'
 
@@ -18,8 +18,6 @@ export default function AuthScreen({
   disableBackgroundAnimation = false,
   children,
 }: AuthScreenProps) {
-  const classes = useStyles()
-
   // Component State
   /* Current background view to display */
   const [backgroundView, setBackgroundView] = React.useState<'underwater' | 'land' | 'sky'>(
@@ -66,7 +64,7 @@ export default function AuthScreen({
 
   // Render
   return (
-    <div className={classes.mainScreen}>
+    <AuthScreenContainer>
       {/* App Background */}
       <Background
         disableAnimations={disableBackgroundAnimation}
@@ -84,9 +82,9 @@ export default function AuthScreen({
       {/* Login Screens */}
 
       {showLogin ? (
-        <div className={clsx(classes.authContainer, backgroundView)}>
+        <div className={clsx('authContainer', backgroundView)}>
           {/* Main Authentication Form (land) */}
-          <div className={classes.auth_screen}>
+          <div className="auth_screen">
             <AuthForm
               focused={backgroundView === 'land'}
               onAuthenticate={handleAuthenticate}
@@ -96,7 +94,7 @@ export default function AuthScreen({
           </div>
 
           {/* Email Form (sky) */}
-          <div className={classes.email_screen}>
+          <div className="email_screen">
             <EmailForm
               focused={backgroundView === 'sky'}
               onGetOOBCode={onGetOOBCode}
@@ -105,11 +103,11 @@ export default function AuthScreen({
           </div>
         </div>
       ) : (
-        <div className={classes.app_screen}>
+        <div className="app_screen">
           {/* Main Application Screen (underwater) */}
           {children}
         </div>
       )}
-    </div>
+    </AuthScreenContainer>
   )
 }

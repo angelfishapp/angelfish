@@ -8,12 +8,10 @@ import Typography from '@mui/material/Typography'
 import React from 'react'
 
 import BankIcon from '@/components/BankIcon/BankIcon'
-// import CategoryLabel from '@/components/CategoryLabel/CategoryLabel'
 import { Emoji } from '@/components/Emoji'
 import AutocompleteField from '@/components/forms/AutocompleteField/AutocompleteField'
 import type { IAccount } from '@angelfish/core'
 import type { CategoryFieldProps } from './CategoryField.interface'
-import { useStyles } from './CategoryField.styles'
 
 /**
  * Autocomplete Field for selecting a Category or Account
@@ -36,8 +34,6 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
   }: CategoryFieldProps,
   ref,
 ) {
-  const classes = useStyles()
-
   /**
    * Optionally filter then Sort Options By Category Group
    */
@@ -188,8 +184,14 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
                     <Tooltip
                       title="Account Transfer"
                       placement="right"
-                      classes={{
-                        tooltip: classes.descriptionTooltip,
+                      slotProps={{
+                        tooltip: {
+                          sx: {
+                            maxWidth: 200,
+                            backgroundColor: (theme) => theme.palette.grey[400],
+                            fontSize: '1em',
+                          },
+                        },
                       }}
                     >
                       <InfoIcon fontSize="small" color="primary" />
@@ -221,8 +223,14 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
                   <Tooltip
                     title={option.cat_description}
                     placement="right"
-                    classes={{
-                      tooltip: classes.descriptionTooltip,
+                    slotProps={{
+                      tooltip: {
+                        sx: {
+                          maxWidth: 200,
+                          backgroundColor: (theme) => theme.palette.grey[400],
+                          fontSize: '1em',
+                        },
+                      },
                     }}
                   >
                     <InfoIcon fontSize="small" color="primary" />

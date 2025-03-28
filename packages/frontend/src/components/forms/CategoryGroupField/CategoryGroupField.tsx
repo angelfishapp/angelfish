@@ -6,7 +6,7 @@ import { Emoji } from '@/components/Emoji'
 import { AutocompleteField } from '@/components/forms/AutocompleteField'
 import type { ICategoryGroup } from '@angelfish/core'
 import type { CategoryGroupFieldProps } from './CategoryGroupField.interface'
-import { useStyles } from './CategoryGroupField.styles'
+import { StyledEmojiIcon } from './CategoryGroupField.styles'
 
 /**
  * Form Field to select a Category Group using an Autocomplete input
@@ -24,8 +24,6 @@ export default React.forwardRef<HTMLDivElement, CategoryGroupFieldProps>(
     }: CategoryGroupFieldProps,
     ref,
   ) {
-    const classes = useStyles()
-
     /**
      * Sort Options By Type
      */
@@ -65,10 +63,10 @@ export default React.forwardRef<HTMLDivElement, CategoryGroupFieldProps>(
           if (option) {
             return (
               <ListItem key={option.id} {...rest}>
-                <span className={classes.emojiIcon}>
+                <StyledEmojiIcon>
                   <Emoji size={25} emoji={option.icon} />
-                </span>
-                <span className={classes.name}>{option.name}</span>
+                </StyledEmojiIcon>
+                <span style={{ height: 24 }}>{option.name}</span>
               </ListItem>
             )
           }

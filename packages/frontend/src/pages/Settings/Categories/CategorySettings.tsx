@@ -20,7 +20,7 @@ import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
 import { listTransactions } from '@/redux/transactions/actions'
 import { selectAllTransactions } from '@/redux/transactions/selectors'
 import type { AppCommandIds, AppCommandRequest, IAccount, ICategoryGroup } from '@angelfish/core'
-import { useStyles } from './CategorySettings.styles'
+import { StyledCategoryGroupDivider, StyledCategoryGroupName } from './CategorySettings.styles'
 import { CategoriesTable } from './components/CategoriesTable'
 import { CategoryDeleteModal } from './components/CategoryDeleteModal'
 import { BUBBLE_SIZE, CategoryGroupBubble } from './components/CategoryGroupBubble'
@@ -33,7 +33,6 @@ const BUBBLEWIDTH = BUBBLE_SIZE + 16 + 8
  */
 
 export default function CategorySettings() {
-  const classes = useStyles()
   const dispatch = useDispatch()
 
   // Component State
@@ -347,8 +346,8 @@ export default function CategorySettings() {
         {!!categoryGroupsIncome?.length && (
           <Box>
             <Box display="flex" alignItems="center" my={2}>
-              <div className={classes.categoryGroupName}>Income</div>
-              <div className={classes.categoryGroupDivider}></div>
+              <StyledCategoryGroupName>Income</StyledCategoryGroupName>
+              <StyledCategoryGroupDivider></StyledCategoryGroupDivider>
             </Box>
 
             <Box display="flex" flexWrap="wrap" alignItems="center">
@@ -444,8 +443,8 @@ export default function CategorySettings() {
         {!!categoryGroupsExpense?.length && (
           <Box>
             <Box display="flex" alignItems="center" my={2}>
-              <div className={classes.categoryGroupName}>Expenses</div>
-              <div className={classes.categoryGroupDivider}></div>
+              <StyledCategoryGroupName>Expenses</StyledCategoryGroupName>
+              <StyledCategoryGroupDivider></StyledCategoryGroupDivider>
             </Box>
 
             <Box display="flex" flexWrap="wrap" alignItems="center">
