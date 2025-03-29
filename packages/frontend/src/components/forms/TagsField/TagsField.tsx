@@ -29,6 +29,7 @@ export default React.forwardRef<HTMLDivElement, TagsFieldProps>(function TagsFie
       freeSolo
       filterSelectedOptions
       options={sortedTags}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       value={value ? value : []}
       onChange={(_, newValue) => {
         const onChangeValue: ITagUpdate[] = newValue.map((tag) => {

@@ -7,7 +7,7 @@ import React from 'react'
  */
 
 export default React.forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
-  { slotProps, ...props }: TextFieldProps,
+  { slotProps, margin = 'normal', ...props }: TextFieldProps,
   ref,
 ) {
   // Render
@@ -18,6 +18,7 @@ export default React.forwardRef<HTMLDivElement, TextFieldProps>(function TextFie
         inputLabel: FormLabel,
       }}
       sx={{
+        marginBottom: margin === 'normal' ? 2 : margin === 'dense' ? 1 : 0,
         fieldset: {
           legend: {
             display: 'none',
@@ -31,11 +32,9 @@ export default React.forwardRef<HTMLDivElement, TextFieldProps>(function TextFie
             fontWeight: 600,
             color: theme.palette.common.black,
             marginBottom: 1,
-
             '&.Mui-focused': {
               color: theme.custom.colors.inputFocused,
             },
-
             '&.Mui-error': {
               color: theme.palette.error.main,
             },

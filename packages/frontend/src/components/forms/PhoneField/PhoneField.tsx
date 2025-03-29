@@ -1,7 +1,6 @@
 import InputAdornment from '@mui/material/InputAdornment'
 import React from 'react'
-import type { InputAttributes } from 'react-number-format'
-import NumberFormat from 'react-number-format'
+import { PatternFormat } from 'react-number-format'
 
 import type { PhoneCountry } from '@angelfish/core'
 import { getDialCodeLookupArray, inferCountryFromPhone } from '@angelfish/core'
@@ -11,51 +10,10 @@ import type { PhoneFieldProps } from './PhoneField.interface'
 const DEFAULT_DIAL_FORMAT = '+### ### ### ### ###'
 
 /**
- * Helper Component for Input Field
- */
-
-interface PhoneInputProps {
-  onChange?: (event: {
-    target: { name: string; value: string; validity: { valid: boolean } }
-  }) => void
-  name?: string
-  format?: string
-}
-
-const PhoneInput = React.forwardRef<NumberFormat<InputAttributes>, PhoneInputProps>(
-  function PhoneInput(props, ref) {
-    const { onChange, format, name, ...other } = props
-
-    return (
-      <NumberFormat
-        {...other}
-        getInputRef={ref}
-        onValueChange={(values) => {
-          onChange?.({
-            target: {
-              name: name ? name : '',
-              value: values.value,
-              validity: {
-                valid: values.formattedValue
-                  ? values.formattedValue.replace(/\s/g, '').length ===
-                    format?.replace(/\s/g, '').length
-                  : true,
-              },
-            },
-          })
-        }}
-        isNumericString
-        format={format}
-      />
-    )
-  },
-)
-
-/**
  * PhoneField renders a Phone Input with Country Dropdown
  */
 
-export default React.forwardRef<HTMLDivElement, PhoneFieldProps>(function PhoneField(
+export default React.forwardRef<HTMLInputElement, PhoneFieldProps>(function PhoneField(
   { onChange, value = '', ...formFieldProps }: PhoneFieldProps,
   ref,
 ) {
@@ -84,26 +42,37 @@ export default React.forwardRef<HTMLDivElement, PhoneFieldProps>(function PhoneF
 
   // Render
   return (
-    <TextField
-      ref={ref}
-      onChange={(event) => onChange?.(event.target.value, event.target.validity.valid)}
-      value={value}
-      inputComponent={PhoneInput as any}
-      inputProps={{
-        format,
+    <PatternFormat
+      customInput={TextField}
+      getInputRef={ref}
+      format={format}
+      allowEmptyFormatting
+      defaultValue={value}
+      valueIsNumericString={true}
+      onValueChange={(values) => {
+        onChange?.(
+          values.formattedValue,
+          values.formattedValue
+            ? values.formattedValue.replace(/\s/g, '').length === format?.replace(/\s/g, '').length
+            : false,
+        )
       }}
-      startAdornment={
-        <InputAdornment position="start">
-          <img
-            src={'/assets/svg/flags/4x3/' + (country ? country.code : 'XX') + '.svg'}
-            width={20}
-            title={country ? country.name : 'Unknown'}
-            style={{
-              cursor: 'pointer',
-            }}
-          />
-        </InputAdornment>
-      }
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <img
+                src={'/assets/svg/flags/4x3/' + (country ? country.code : 'XX') + '.svg'}
+                width={20}
+                title={country ? country.name : 'Unknown'}
+                style={{
+                  cursor: 'pointer',
+                }}
+              />
+            </InputAdornment>
+          ),
+        },
+      }}
       {...formFieldProps}
     />
   )

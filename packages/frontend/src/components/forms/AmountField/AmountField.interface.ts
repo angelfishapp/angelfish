@@ -1,14 +1,11 @@
-import type { TextFieldProps } from '@/components/forms/TextField'
+import type { FormFieldProps } from '@/components/forms/FormField'
 
 /**
  * AmountField Component Properties
  */
 
 export interface AmountFieldProps
-  extends Omit<
-    TextFieldProps,
-    'defaultValue' | 'onChange' | 'inputComponent' | 'placeholder' | 'value'
-  > {
+  extends Omit<FormFieldProps, 'defaultValue' | 'onChange' | 'value'> {
   /**
    * Optionally allow negative values
    * @default false

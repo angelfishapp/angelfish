@@ -29,6 +29,10 @@ export const Default: Story = {
   args: {
     label: 'Amount',
     allowNegative: false,
+    helperText: 'Enter amount',
+    error: false,
+    disabled: false,
+    required: true,
   },
 }
 
@@ -37,5 +41,6 @@ export const DefaultValue: Story = {
     label: 'Amount',
     value: 1222.22,
     currency: '£',
+    allowNegative: true,
   },
 }

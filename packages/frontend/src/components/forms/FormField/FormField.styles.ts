@@ -18,7 +18,7 @@ export const StyledFormControl = styled(FormControl, {
   '& .MuiFormLabel-root': {
     fontWeight: 600,
     color: theme.palette.common.black,
-    marginBottom: 10,
+    marginBottom: theme.spacing(1),
 
     '&.Mui-focused': {
       color: theme.custom.colors.inputFocused,

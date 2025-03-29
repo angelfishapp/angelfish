@@ -4,6 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import moment from 'moment'
 import React from 'react'
 
+import { TextField } from '../TextField'
 import type { DateFieldProps } from './DateField.interface'
 
 /**
@@ -22,22 +23,25 @@ export default React.forwardRef<HTMLDivElement, DateFieldProps>(function DateFie
     maxDate,
     onChange,
     value,
+    disabled,
     id = 'data-picker-field',
     ...formFieldProps
   }: DateFieldProps,
   ref,
 ) {
-  const { disabled } = formFieldProps
-
   // Render
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={locale}>
       <DesktopDatePicker
         ref={ref}
+        slots={{
+          textField: TextField,
+        }}
         slotProps={{
           textField: {
             className,
             id,
+            ...formFieldProps,
           },
           desktopPaper: {
             sx: {
@@ -46,7 +50,6 @@ export default React.forwardRef<HTMLDivElement, DateFieldProps>(function DateFie
             },
           },
         }}
-        label=""
         value={value ? moment(value) : null}
         onChange={(date) => {
           onChange?.(date.toDate())

@@ -9,8 +9,8 @@ import type { AmountFieldProps } from './AmountField.interface'
  * Shows an input field for an amounts which will automatically form the input based on the currency
  */
 
-export default React.forwardRef<HTMLDivElement, AmountFieldProps>(function AmountField(
-  { allowNegative = false, currency = '$', onChange, value }: AmountFieldProps,
+export default React.forwardRef<HTMLInputElement, AmountFieldProps>(function AmountField(
+  { allowNegative = false, currency = '$', onChange, value, ...rest }: AmountFieldProps,
   ref,
 ) {
   // Render
@@ -24,7 +24,6 @@ export default React.forwardRef<HTMLDivElement, AmountFieldProps>(function Amoun
       allowNegative={allowNegative}
       decimalScale={2}
       fixedDecimalScale
-      label="Amount Field"
       slotProps={{
         input: {
           startAdornment: currency ? (
@@ -41,6 +40,7 @@ export default React.forwardRef<HTMLDivElement, AmountFieldProps>(function Amoun
           ) : undefined,
         },
       }}
+      {...rest}
     />
   )
 })

@@ -230,6 +230,8 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                       />
                     )
                   case 'is_reviewed':
+                  case 'owner':
+                  case 'account':
                     return (
                       <TableCell
                         key={`${index}-${cell.id}`}

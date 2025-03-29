@@ -85,7 +85,7 @@ export const Logo: Story = {
     dialogSize: 150,
     dialogTitle: 'Pick Your Household Logo',
     helperText: 'Here is some helper text',
-    value: undefined,
+    value: BOOK_AVATARS[0],
     avatars: BOOK_AVATARS,
   },
 }
