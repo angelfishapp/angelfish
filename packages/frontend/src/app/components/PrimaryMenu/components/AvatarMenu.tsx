@@ -51,7 +51,7 @@ export default function AvatarMenu({ authenticatedUser, onLogout }: AvatarMenuPr
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         role={undefined}
-        sx={{ marginLeft: 63 }}
+        sx={{ marginLeft: (theme) => `${theme.custom.side.width - 17}px` }}
         onClose={() => setAnchorEl(null)}
       >
         <MenuItem component={Link} to="/settings/" onClick={() => setAnchorEl(null)}>
