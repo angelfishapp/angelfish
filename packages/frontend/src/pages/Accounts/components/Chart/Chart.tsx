@@ -125,8 +125,8 @@ export default function Chart({ account, transactions }: ChartProps) {
     <Paper
       sx={{
         height: 250,
-        marginBottom: 20,
-        padding: 10,
+        marginBottom: 2,
+        padding: 1,
       }}
     >
       <Line ref={chartRef} data={chartData} options={options} />

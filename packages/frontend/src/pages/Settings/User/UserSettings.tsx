@@ -122,44 +122,48 @@ export default function UserSettings() {
           </Grid>
           <Grid size={10}>
             <form>
-              <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
-                <Grid container spacing={2}>
-                  <Grid size={6}>
-                    <Controller
-                      name="firstName"
-                      control={control}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <TextField
-                          label="First Name"
-                          placeholder="Enter your First Name"
-                          fullWidth
-                          required
-                          error={errors?.firstName ? true : false}
-                          helperText={errors?.firstName ? 'First Name is required' : undefined}
-                          {...field}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid size={6}>
-                    <Controller
-                      name="lastName"
-                      control={control}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <TextField
-                          label="Last Name"
-                          placeholder="Enter your Last Name"
-                          fullWidth
-                          required
-                          error={errors?.lastName ? true : false}
-                          helperText={errors?.lastName ? 'Last Name is required' : undefined}
-                          {...field}
-                        />
-                      )}
-                    />
-                  </Grid>
+              <Grid
+                container
+                spacing={1}
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+              >
+                <Grid size={6}>
+                  <Controller
+                    name="firstName"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        label="First Name"
+                        placeholder="Enter your First Name"
+                        fullWidth
+                        required
+                        error={errors?.firstName ? true : false}
+                        helperText={errors?.firstName ? 'First Name is required' : undefined}
+                        {...field}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={6}>
+                  <Controller
+                    name="lastName"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        label="Last Name"
+                        placeholder="Enter your Last Name"
+                        fullWidth
+                        required
+                        error={errors?.lastName ? true : false}
+                        helperText={errors?.lastName ? 'Last Name is required' : undefined}
+                        {...field}
+                      />
+                    )}
+                  />
                 </Grid>
               </Grid>
               <Grid container spacing={1}>

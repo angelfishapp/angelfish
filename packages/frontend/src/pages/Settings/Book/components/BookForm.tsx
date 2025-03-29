@@ -100,70 +100,49 @@ export default function BookForm({ book, onSave }: BookFormProps) {
             />
           </Grid>
           <Grid size={10}>
-            <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
-              <Grid container spacing={2}>
-                <Grid size={6}>
-                  <Controller
-                    name="name"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      <TextField
-                        label="Name"
-                        placeholder="Enter a Name for your Household"
-                        fullWidth
-                        required
-                        error={errors?.name ? true : false}
-                        helperText={errors?.name ? 'Household Name is required' : undefined}
-                        {...field}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={6}>
-                  <Controller
-                    name="country"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange, ...rest } }) => (
-                      <CountryField
-                        label="Country"
-                        fullWidth
-                        required
-                        value={getCountryFromCode(value) ?? undefined}
-                        onChange={(country) => {
-                          if (country) {
-                            onChange(country.code)
-                            setValue('currency', country.currency, {
-                              shouldDirty: true,
-                              shouldValidate: true,
-                            })
-                          }
-                        }}
-                        {...rest}
-                      />
-                    )}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid container spacing={1}>
+            <Grid
+              container
+              spacing={1}
+              direction="row"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
               <Grid size={6}>
                 <Controller
-                  name="currency"
+                  name="name"
                   control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { value, onChange, ...rest } }) => (
-                    <CurrencyField
-                      label="Default Currency"
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <TextField
+                      label="Name"
+                      placeholder="Enter a Name for your Household"
                       fullWidth
                       required
-                      value={getCurrencyFromCode(value) ?? undefined}
-                      onChange={(currency) => {
-                        if (currency) {
-                          onChange(currency.code)
+                      error={errors?.name ? true : false}
+                      helperText={errors?.name ? 'Household Name is required' : undefined}
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={6}>
+                <Controller
+                  name="country"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, ...rest } }) => (
+                    <CountryField
+                      label="Country"
+                      fullWidth
+                      required
+                      value={getCountryFromCode(value) ?? undefined}
+                      onChange={(country) => {
+                        if (country) {
+                          onChange(country.code)
+                          setValue('currency', country.currency, {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          })
                         }
                       }}
                       {...rest}
@@ -171,6 +150,29 @@ export default function BookForm({ book, onSave }: BookFormProps) {
                   )}
                 />
               </Grid>
+            </Grid>
+            <Grid container spacing={1}>
+              <Controller
+                name="currency"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { value, onChange, ...rest } }) => (
+                  <CurrencyField
+                    label="Default Currency"
+                    fullWidth
+                    required
+                    value={getCurrencyFromCode(value) ?? undefined}
+                    onChange={(currency) => {
+                      if (currency) {
+                        onChange(currency.code)
+                      }
+                    }}
+                    {...rest}
+                  />
+                )}
+              />
             </Grid>
           </Grid>
         </Grid>
