@@ -37,9 +37,9 @@ export interface DateFieldProps extends FormFieldProps {
   /**
    * Optional onChange function to return current Currency after its changed
    */
-  onChange?: (date: Date, value?: string) => void
+  onChange?: (date: Date) => void
   /**
    * Optionally set the current value for Field
    */
-  value?: any
+  value?: Date
 }

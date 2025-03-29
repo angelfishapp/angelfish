@@ -35,7 +35,7 @@ export const Default: Story = {
 export const DefaultValue: Story = {
   args: {
     label: 'Amount',
-    defaultValue: Number('1222.22'),
+    value: 1222.22,
     currency: '£',
   },
 }

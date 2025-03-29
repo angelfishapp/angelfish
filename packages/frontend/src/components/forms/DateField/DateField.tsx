@@ -1,9 +1,9 @@
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import moment from 'moment'
 import React from 'react'
 
-import { TextField } from '../TextField'
 import type { DateFieldProps } from './DateField.interface'
 
 /**
@@ -32,38 +32,30 @@ export default React.forwardRef<HTMLDivElement, DateFieldProps>(function DateFie
   // Render
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={locale}>
-      <DatePicker
+      <DesktopDatePicker
         ref={ref}
-        renderInput={({ inputRef, inputProps, InputProps }) => {
-          const { helperText, ...fieldProps } = formFieldProps
-          return (
-            <TextField
-              inputRef={inputRef}
-              inputProps={inputProps}
-              InputProps={InputProps}
-              id={id}
-              className={className}
-              helperText={helperText ? helperText : `Format: ${inputProps?.placeholder}`}
-              {...fieldProps}
-            />
-          )
+        slotProps={{
+          textField: {
+            className,
+            id,
+          },
+          desktopPaper: {
+            sx: {
+              padding: 0,
+              borderRadius: 4,
+            },
+          },
         }}
-        label="Date Picker"
-        value={value}
-        onChange={(date, value) => {
-          onChange?.(date.toDate(), value)
+        label=""
+        value={value ? moment(value) : null}
+        onChange={(date) => {
+          onChange?.(date.toDate())
         }}
         disablePast={disablePast}
         disableFuture={disableFuture}
         minDate={minDate}
         maxDate={maxDate}
         disabled={disabled}
-        PaperProps={{
-          sx: {
-            padding: 0,
-            borderRadius: 4,
-          },
-        }}
       />
     </LocalizationProvider>
   )

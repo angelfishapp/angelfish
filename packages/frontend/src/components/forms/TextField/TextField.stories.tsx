@@ -45,8 +45,12 @@ export const WithAdornments: Story = {
     fullWidth: false,
     helperText: 'Here is some helper text',
     disabled: false,
-    startAdornment: <InputAdornment position="start">$</InputAdornment>,
-    endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+    slotProps: {
+      input: {
+        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+      },
+    },
   },
 }
 

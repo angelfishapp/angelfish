@@ -60,11 +60,6 @@ export default React.forwardRef<HTMLDivElement, TagsFieldProps>(function TagsFie
               tabIndex={tagProps.tabIndex}
               onDelete={tagProps.onDelete}
               label={option.name}
-              sx={{
-                backgroundColor: (theme) => theme.custom.colors.tagBackground,
-                color: (theme) => theme.custom.colors.tagColor,
-                marginLeft: 1,
-              }}
             />
           )
         })

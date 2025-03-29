@@ -132,9 +132,12 @@ const angelfishTheme: ThemeOptions = {
 
     MuiChip: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           borderRadius: 8,
-        },
+          backgroundColor: theme.custom.colors.tagBackground,
+          color: theme.custom.colors.tagColor,
+          marginLeft: theme.spacing(1),
+        }),
       },
     },
 
@@ -200,16 +203,40 @@ const angelfishTheme: ThemeOptions = {
     },
 
     MuiTextField: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+    },
+
+    MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
-          '& .MuiOutlinedInput-root': {
-            borderRadius: 8,
-            '&.Mui-focused': {
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: theme.custom.colors.inputFocused,
-                borderWidth: 1,
-              },
-            },
+          borderRadius: 8,
+          backgroundColor: theme.palette.common.white,
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme.custom.colors.inputFocused,
+            borderWidth: 1,
+          },
+        }),
+      },
+    },
+
+    MuiFilledInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&.Mui-focused': {
+            backgroundColor: theme.palette.background.paper,
+            borderBottom: `2px solid ${theme.custom.colors.inputFocused}`,
+          },
+        }),
+      },
+    },
+
+    MuiInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&.Mui-focused:after': {
+            borderBottom: `2px solid ${theme.custom.colors.inputFocused}`,
           },
         }),
       },

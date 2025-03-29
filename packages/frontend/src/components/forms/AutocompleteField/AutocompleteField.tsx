@@ -1,10 +1,9 @@
 import type { AutocompleteValue } from '@mui/material/Autocomplete'
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
-import TextField from '@mui/material/TextField'
 import React from 'react'
 
-import FormField from '../FormField/FormField'
+import { TextField } from '../TextField'
 import type { AutocompleteFieldProps } from './AutocompleteField.interface'
 import { VirtualizedListboxComponent } from './components/VirtualList'
 
@@ -37,15 +36,12 @@ export default function AutocompleteField<
   // Autocomplete Props
   multiple,
   value,
-  onFocus,
-  onBlur,
   onChange,
-  ListboxComponent,
+  slots,
   loading,
   ...autoCompleteProps
 }: AutocompleteFieldProps<T, Multiple, DisableClearable, FreeSolo>) {
   // Component State
-  const [isFocused, setIsFocused] = React.useState<boolean>(false)
   const initialValue = (multiple ? [] : null) as AutocompleteValue<
     T,
     Multiple,
@@ -69,50 +65,33 @@ export default function AutocompleteField<
       {...autoCompleteProps}
       multiple={multiple}
       fullWidth={fullWidth}
-      ListboxComponent={virtualize ? VirtualizedListboxComponent : ListboxComponent}
+      slots={{
+        listbox: virtualize ? VirtualizedListboxComponent : slots?.listbox,
+      }}
       disabled={disabled}
       onChange={(_event, newValue, reason, details) => {
         onChange?.(_event, newValue, reason, details)
         setCurrentValue(newValue)
       }}
       value={currentValue ?? initialValue}
-      onFocus={(event) => {
-        setIsFocused(true)
-        onFocus?.(event)
-      }}
-      onBlur={(event) => {
-        setIsFocused(false)
-        onBlur?.(event)
-      }}
       renderInput={(params) => (
-        <FormField
-          label={label}
-          margin={margin}
-          required={required}
-          size={size}
-          helperText={helperText}
-          hiddenLabel={hiddenLabel}
-          focused={isFocused}
+        <TextField
+          {...params}
+          ref={formRef}
           disabled={disabled}
           error={error}
           fullWidth={fullWidth}
-          ref={formRef}
-        >
-          <TextField
-            {...params}
-            label=""
-            error={error}
-            variant="outlined"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: 'off',
-            }}
-            sx={{ backgroundColor: 'white' }}
-            InputProps={{
+          placeholder={placeholder}
+          helperText={helperText}
+          hiddenLabel={hiddenLabel}
+          required={required}
+          label={label}
+          margin={margin}
+          size={size}
+          variant="outlined"
+          slotProps={{
+            input: {
               ...params.InputProps,
-              placeholder,
               startAdornment: (
                 <React.Fragment>
                   {currentValue ? getStartAdornment?.(currentValue) : null}
@@ -125,9 +104,10 @@ export default function AutocompleteField<
                   {params.InputProps.endAdornment}
                 </React.Fragment>
               ),
-            }}
-          />
-        </FormField>
+              autoComplete: 'off',
+            },
+          }}
+        />
       )}
     />
   )

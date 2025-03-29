@@ -147,7 +147,7 @@ __metadata:
     jsdom: "npm:^26.0.0"
     lodash-es: "npm:^4.17.21"
     lottie-web: "npm:^5.7.13"
-    moment: "npm:^2.29.1"
+    moment: "npm:*"
     prop-types: "npm:^15.6.0"
     react: "npm:^19.0.0"
     react-avatar-editor: "npm:^13.0.0"
@@ -155,7 +155,7 @@ __metadata:
     react-color: "npm:^2.19.3"
     react-dom: "npm:^19.0.0"
     react-hook-form: "npm:^7.17.5"
-    react-number-format: "npm:4.9.4"
+    react-number-format: "npm:^5.4.3"
     react-plaid-link: "npm:^3.2.1"
     react-redux: "npm:^7.2.5"
     react-router-dom: "npm:^6.0.0"
@@ -12131,15 +12131,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-number-format@npm:4.9.4":
-  version: 4.9.4
-  resolution: "react-number-format@npm:4.9.4"
-  dependencies:
-    prop-types: "npm:^15.7.2"
+"react-number-format@npm:^5.4.3":
+  version: 5.4.3
+  resolution: "react-number-format@npm:5.4.3"
   peerDependencies:
-    react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-  checksum: 10/184c078eadaf71bfeb8896a4ed40ce75325f044f03f6e2340a12b1d5f58ff11954cb6eadc02e6abecdd601b44da93059c715cc54a5baceba25b50d4148f95be9
+    react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/351c70a8f3dcdc8469f4c27acb7ab18a2010e2bb6ea4eefb0be742aee517ee90a2b14772f1df43393acac158cff9e78268a49909f7f46577ec9acf07f4ec0fdf
   languageName: node
   linkType: hard
 

@@ -74,11 +74,6 @@ export default React.forwardRef<HTMLDivElement, UserFieldProps>(function UserFie
                   displayBorder={true}
                 />
               }
-              sx={{
-                backgroundColor: (theme) => theme.custom.colors.tagBackground,
-                color: (theme) => theme.custom.colors.tagColor,
-                marginLeft: 1,
-              }}
             />
           )
         })
