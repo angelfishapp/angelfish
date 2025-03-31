@@ -9,17 +9,17 @@ const meta = {
   title: 'Components/Forms/Date Field',
   component: DateField,
   args: {
-    onChange: (date, value) => action('onChange')(date, value),
+    onChange: (date) => action('onChange')(date),
     fullWidth: false,
   },
   render: ({ ...args }) => {
     const RenderComponent = () => {
       const { onChange, value, ...props } = args
 
-      const [currentValue, setCurrentValue] = React.useState<Date>(new Date())
+      const [currentValue, setCurrentValue] = React.useState<Date>(value ?? new Date())
       const handleChange = (date: Date, value?: string) => {
         setCurrentValue(date)
-        onChange?.(date, value)
+        onChange?.(date)
       }
 
       return (
