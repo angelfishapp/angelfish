@@ -23,14 +23,11 @@ jobs:
       - name: Run Lint Checks
         run: yarn lint
 
-      - name: Run TypeScript Checks
-        run: yarn ts-check
-
       - name: Build Packages
         run: yarn build:packages
 
-      - name: Run Tests
-        run: yarn test
+      - name: Run TypeScript Checks
+        run: yarn ts-check
 
-      - name: Run angelfish Package Tests
-        run: yarn package:angelfish test
+      - name: Run Tests
+        run: yarn test:run --reporter dot --reporter github-actions
