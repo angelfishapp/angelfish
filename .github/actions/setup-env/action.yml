@@ -18,3 +18,4 @@ runs:
 
     - name: Install Dependencies
       run: yarn install --immutable --network-timeout 1000000 # Ensures lockfile consistency
+      shell: bash
