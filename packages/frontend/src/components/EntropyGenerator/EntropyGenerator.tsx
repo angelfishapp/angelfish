@@ -23,6 +23,8 @@ export default React.forwardRef<EntropyGeneratorMethods, EntropyGeneratorProps>(
   ) {
     // Get the canvas element ref
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null)
+    // Audio player Ref to prevent multiple instances getting created on each render
+    const audioPlayerRef = React.useRef<AudioPlayer | null>(null)
     // Hold the entropy seed value
     const seedRef = React.useRef<string>('')
     // Hold the drawing state
@@ -61,12 +63,14 @@ export default React.forwardRef<EntropyGeneratorMethods, EntropyGeneratorProps>(
           willReadFrequently: true,
         }) as CanvasRenderingContext2D
         // Create audio player for sound effects
-        const audioPlayer = new AudioPlayer('assets/sounds/Underwater.mp3', {
-          fadeIn: true,
-          fadeOut: true,
-          fadeDuration: 0.5,
-          loop: true,
-        })
+        if (!audioPlayerRef.current) {
+          audioPlayerRef.current = new AudioPlayer('assets/sounds/Underwater.mp3', {
+            fadeIn: true,
+            fadeOut: true,
+            fadeDuration: 0.5,
+            loop: true,
+          })
+        }
 
         const recordPositions = (e: PointerEvent) => {
           // Update mouse positions
@@ -97,15 +101,15 @@ export default React.forwardRef<EntropyGeneratorMethods, EntropyGeneratorProps>(
         canvas.onpointerdown = (e) => {
           recordPositions(e)
           drawRef.current = true
-          audioPlayer.play()
+          audioPlayerRef.current?.play()
         }
         canvas.onpointerup = () => {
           drawRef.current = false
-          audioPlayer.stop()
+          audioPlayerRef.current?.stop()
         }
         canvas.onpointerout = () => {
           drawRef.current = false
-          audioPlayer.stop()
+          audioPlayerRef.current?.stop()
         }
 
         // Cleanup event listeners
