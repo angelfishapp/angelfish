@@ -21,7 +21,7 @@ const starsScroll = keyframes`
 `
 
 export const BackgroundContainer = styled('div', {
-  shouldForwardProp: (prop) => prop !== 'small',
+  shouldForwardProp: (prop) => !['view', 'phase', 'viewTransitionTime'].includes(prop as string),
 })<StyleProps>(({ theme, view, phase, viewTransitionTime }) => ({
   width: '100%',
   height: '100vh',

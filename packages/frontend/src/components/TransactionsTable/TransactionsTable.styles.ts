@@ -15,7 +15,7 @@ type StyleProps = {
 }
 
 export const StyledTransactionTable = styled(UnstyledTable, {
-  shouldForwardProp: (prop) => prop !== 'variant',
+  shouldForwardProp: (prop) => prop !== 'tableVarient',
 })<StyleProps>(({ theme, tableVarient }) => ({
   // Reset table zIndex
   zIndex: 0,
