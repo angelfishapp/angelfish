@@ -74,10 +74,11 @@ export default React.forwardRef<EntropyGeneratorMethods, EntropyGeneratorProps>(
 
         const recordPositions = (e: PointerEvent) => {
           // Update mouse positions
+          const rect = canvas.getBoundingClientRect()
           prevXRef.current = currXRef.current
           prevYRef.current = currYRef.current
-          currXRef.current = e.clientX - canvas.offsetLeft
-          currYRef.current = e.clientY - canvas.offsetTop
+          currXRef.current = e.clientX - rect.left
+          currYRef.current = e.clientY - rect.top
         }
 
         // Set up canvas event handlers
