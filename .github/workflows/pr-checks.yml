@@ -23,11 +23,11 @@ jobs:
       - name: Run Lint Checks
         run: yarn lint
 
-      - name: Run TypeScript Checks
-        run: yarn ts-check
-
       - name: Build Packages
         run: yarn build:packages
+
+      - name: Run TypeScript Checks
+        run: yarn ts-check
 
       - name: Run Tests
         run: yarn test
