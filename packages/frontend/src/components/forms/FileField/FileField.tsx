@@ -29,15 +29,19 @@ export default React.forwardRef<HTMLInputElement, FileFieldProps>(function FileF
     >
       <TextField
         inputRef={ref}
-        InputProps={{ style: { minWidth: 300 } }}
-        inputProps={{ readOnly: true }}
         placeholder={placeholder ? placeholder : multiple ? 'Select Files' : 'Select File'}
         value={value ? (multiple ? (value as string[]).join(', ') : value) : ''}
-        endAdornment={
-          <InputAdornment component="label" position="end" style={{ cursor: 'pointer' }}>
-            <FileUploadOutlined />
-          </InputAdornment>
-        }
+        slotProps={{
+          input: {
+            style: { minWidth: 300, cursor: 'pointer' },
+            readOnly: true,
+            endAdornment: (
+              <InputAdornment component="label" position="end" style={{ cursor: 'pointer' }}>
+                <FileUploadOutlined />
+              </InputAdornment>
+            ),
+          },
+        }}
         {...formField}
       />
     </div>
