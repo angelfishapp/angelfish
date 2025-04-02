@@ -44,5 +44,6 @@ export const Currencies = {
       'SELECT date, rate FROM currencies WHERE currency == ? AND date != "LATEST" ORDER BY date ASC',
     getDateRangeRates:
       'SELECT date, rate FROM currencies WHERE currency == ? AND date >= ? AND date <= ? AND date != "LATEST" ORDER BY date ASC',
+    dropCurrency: 'DELETE FROM currencies WHERE currency == ?',
   },
 } as DatasetConfig<CurrencyRate>

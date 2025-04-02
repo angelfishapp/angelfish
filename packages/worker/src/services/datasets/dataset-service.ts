@@ -47,6 +47,7 @@ class DatasetServiceClass {
     this._ajv = new Ajv()
 
     const dbPath = Environment.isTest ? ':memory:' : `${Environment.userDataDir}/datasets.db`
+    logger.debug(`Using SQLite database at ${dbPath}`)
     this._db = new sqlite3.Database(dbPath, (err) => {
       if (err) logger.error(`Error opening Datasets database ${dbPath}:`, err.message)
       else logger.info('Connected to Datasets SQLite database.')
