@@ -5,7 +5,7 @@
 import type { IAuthenticatedUser } from '@angelfish/core'
 import { AppCommandIds, AppEventIds, CommandsClient, registerCommands } from '@angelfish/core'
 import { mockRegisterTypedAppCommand, TestLogger } from '@angelfish/tests'
-import { CloudService } from '../cloud'
+import { MockCloudService } from '../../../tests/mock-cloud-service'
 
 import { AuthService } from '.'
 
@@ -35,7 +35,7 @@ beforeAll(async () => {
     return authenticatedState
   })
   // Depends on CloudService Commands to make requests to Cloud API
-  registerCommands([CloudService])
+  registerCommands([MockCloudService])
   // Register AuthService Event Listeners to handle authentication events
   CommandsClient.addAppEventListener(AppEventIds.ON_LOGIN, (event) => {
     TestLogger.info(AppEventIds.ON_LOGIN, event)
@@ -51,7 +51,7 @@ beforeAll(async () => {
 
 describe('AuthService', () => {
   test('test authentication', async () => {
-    await AuthService.sendOOBCode({ email: 'test@angelfish.app' })
+    await AuthService.sendOOBCode({ email: 'john@test.com' })
     await AuthService.authenticate({ oob_code: '123456' })
   })
 

@@ -129,6 +129,11 @@ class TransactionServiceClass {
       )
     }
 
+    // If requires_sync is specified, filter on that
+    if (requires_sync) {
+      query.andWhere('transaction.requires_sync = :requires_sync', { requires_sync })
+    }
+
     logger.silly('Query:', query.getSql())
 
     const results = await query.getMany()

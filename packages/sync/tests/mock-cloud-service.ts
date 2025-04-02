@@ -1,82 +1,26 @@
-import type { TokenResponse } from '@angelfish/cloudapiclient'
-import {
-  CloudAuthAPIs,
-  CloudV1APIs,
-  JWTAuthHelper,
-  UnauthorizedError,
-  convertCloudUserProfile,
-} from '@angelfish/cloudapiclient'
-import type { AppCommandRequest, AppCommandResponse, IInstitutionUpdate } from '@angelfish/core'
-import { AppCommandIds, Command, CommandsClient, Logger } from '@angelfish/core'
-import type { LocalCommandRequest, LocalCommandResponse } from '../../local-commands'
-import { LocalCommandIds } from '../../local-commands'
-import { HandleCloudError } from './cloud-error-decorator'
+import type { CurrencyCodes } from '@angelfish/cloudapiclient'
+import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
+import { AppCommandIds, Command, Logger, allCurrencies } from '@angelfish/core'
+import type { LocalCommandRequest, LocalCommandResponse } from '../src/local-commands'
+import { LocalCommandIds } from '../src/local-commands'
 
-const logger = Logger.scope('CloudService')
+import { authenticatedUser, searchInstitutions } from '@angelfish/tests'
 
-// API Endpoints
-const AUTH_API_URL = 'https://auth.angelfish.app'
-const API_URL = 'https://api.angelfish.app'
+const logger = Logger.scope('MockCloudService')
 
 /**
- * Service to call the Cloud APIs with authentication and online/offline handling
+ * Mock Cloud Service for tests without calling Cloud APIs
  */
-class CloudServiceClass {
-  // CloudAuthAPIs instance to call the Cloud Auth APIs
-  private _authAPI: CloudAuthAPIs = new CloudAuthAPIs(AUTH_API_URL)
-  // CloudV1APIs instance to call the Cloud V1 APIs
-  private _v1API?: CloudV1APIs = undefined
-  // Current Refresh token used for authentication
-  private _current_refresh_token?: string = undefined
-  // Current JWT token used for authentication
-  private _current_jwt_token?: string = undefined
-
+class MockCloudServiceClass {
   /**
    * Initialise the API Client with authentication tokens. This is called from the AuthService
    * when initialised or new user is authenticated into App.
    */
   @Command(LocalCommandIds.INIT_API_CLIENT)
-  @HandleCloudError
   public async initialiseAPIClient({
     refreshToken,
   }: LocalCommandRequest<LocalCommandIds.INIT_API_CLIENT>): LocalCommandResponse<LocalCommandIds.INIT_API_CLIENT> {
-    if (!refreshToken) {
-      throw new Error('No refresh token provided to initialise API Client')
-    }
-    this._current_refresh_token = refreshToken
-
-    // Get a new JWT Token to validate current refresh token is valid
-    await this._refreshToken(refreshToken)
-  }
-
-  /**
-   * Get the authenticated V1 API Client
-   *
-   * @returns The authenticated V1 API Client
-   * @throws  UnauthorizedError if not authenticated
-   */
-  private _getAuthenticatedClient(): CloudV1APIs {
-    if (!this._current_refresh_token) {
-      throw new UnauthorizedError()
-    }
-    if (!this._v1API) {
-      // Create a new JWTAuthHelper instance with the new token and refresh token
-      const jwtAuthHelper = new JWTAuthHelper(
-        this._current_jwt_token ?? '',
-        this._current_refresh_token,
-        async (refresh_token: string): Promise<TokenResponse> => {
-          logger.info('JWTAuthHelper: Refreshing JWT Token')
-          return await this._refreshToken(refresh_token)
-        },
-      )
-      // Set the V1 API Client
-      this._v1API = new CloudV1APIs(
-        API_URL,
-        AUTH_API_URL,
-        jwtAuthHelper.refreshToken.bind(jwtAuthHelper),
-      )
-    }
-    return this._v1API
+    logger.debug('Initialising API Client with refresh token', refreshToken)
   }
 
   /**
@@ -86,12 +30,11 @@ class CloudServiceClass {
    * @returns       The session ID for the OOB Code
    */
   @Command(LocalCommandIds.CLOUD_API_SEND_OOB_CODE)
-  @HandleCloudError
   public async sendOOBCode({
     email,
   }: LocalCommandRequest<LocalCommandIds.CLOUD_API_SEND_OOB_CODE>): LocalCommandResponse<LocalCommandIds.CLOUD_API_SEND_OOB_CODE> {
-    const session_id = await this._authAPI.getOOBCode(email)
-    return session_id
+    logger.debug(`Sending OOB Code to ${email}`)
+    return '7740ba7a-a816-44c1-a2ba-d6d9f8bcf946'
   }
 
   /**
@@ -103,35 +46,17 @@ class CloudServiceClass {
    * @returns           A TokenResponse containing the JWT access token and refresh token
    */
   @Command(LocalCommandIds.CLOUD_API_AUTHENTICATE)
-  @HandleCloudError
   public async authenticate({
     session_id,
     oob_code,
   }: LocalCommandRequest<LocalCommandIds.CLOUD_API_AUTHENTICATE>): LocalCommandResponse<LocalCommandIds.CLOUD_API_AUTHENTICATE> {
-    const tokenResponse = await this._authAPI.authenticate('oob_code', session_id, {
-      oob_code,
-    })
-    return tokenResponse
-  }
-
-  /**
-   * Get a new access token and refresh token using the given refresh token
-   *
-   * @param refreshToken    The current refresh token
-   * @returns               A TokenResponse containing the new JWT access token and refresh token
-   */
-  @HandleCloudError
-  private async _refreshToken(refreshToken: string): Promise<TokenResponse> {
-    logger.debug('Refreshing JWT Token with refresh token', refreshToken)
-    const tokenResponse = await this._authAPI.refreshToken(refreshToken)
-    // Save new refresh token to local storage
-    await CommandsClient.executeAppCommand(AppCommandIds.SET_AUTHENTICATION_SETTINGS, {
-      refreshToken: tokenResponse.refresh_token,
-    })
-    // Set the current JWT token to the new token
-    this._current_jwt_token = tokenResponse.token
-    this._current_refresh_token = tokenResponse.refresh_token
-    return tokenResponse
+    logger.debug(`Authenticating OOB Code ${oob_code} for session ID ${session_id}`)
+    return {
+      token:
+        'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhbmdlbGZpc2guYXBwIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLmFuZ2VsZmlzaC5hcHAiLCJzdWIiOiJiNDY4NGMyMy1mZDExLTQ0ZDgtYjNiNi1jNDM4MzNjZWE4YTEiLCJlbWFpbCI6InRlc3RAYW5nZWxmaXNoLmFwcCIsImV4cCI6MTc0MzYxOTU4Mn0.Cweh7ASNOUX3zDjBHD4NPnNyj9_Zx_4tc6SjHdoIxOrU1r3fYo59sAkK6PvKUbQWB3DC9DsxQWYr8_45xPs7_9iONw3OyT0hvu9tNeXY7CjUqrBaAc-577Qx5-Bmycd3AkxEvxWyoJC47Ndc_y-nQ67D4VYbCa_4olH4HFxOPzWrL_OhOh7xgia5Y7rRpEbFbXhhUXF24nTKIqxvcrQtZOqXP2NI7bEf2EY8c4K9FUILJazR45EvOo9XqsrKUD_LCKr2twO4ZYvOykewbmfteC70AShr7ufDSO-aYGPXTJ2Mdc3ghLF02dqxOLDqKFvZUQwyvblbJZ8d3vJjD9fZ2w',
+      refresh_token:
+        '1ef788e636db28b9b568f53a6ee7e3967aa9685d35af79a5ad4af644b39fc16ea79ba8f6ac692c8baa972a89ad0cf46e381dda6d91edb874ec1d207361371ae0a7e1c61b8c3bc0d5b6292d1d76bdbcb6e5a4dbdbcbe1ecb2841f89fe3bd2a7c8f6ff85c5667c14c661621724d45fc230ab74a2bbac55f6d91bdb8faf03ca9317b2f2aba7440e6c2f4e9983adcdb04a14623d646c385bff868c41c3d754bac65ac9b6c119452f8477bb9d2edd854941d7782034c5543dfcb0fbfc7ca1249c76f2d7544b712b5b82ab32c7d947ecebe6ffd45f373ba669f61ae1d95cffaaafc9eb4b9c2a2f411123f63542f95df65af786f3a4fb52d23a2f85927',
+    }
   }
 
   /**
@@ -144,13 +69,10 @@ class CloudServiceClass {
    * @param token  The JWT access token to logout with
    */
   @Command(LocalCommandIds.CLOUD_API_LOGOUT)
-  @HandleCloudError
   public async logout(
     _request: LocalCommandRequest<LocalCommandIds.CLOUD_API_LOGOUT>,
   ): LocalCommandResponse<LocalCommandIds.CLOUD_API_LOGOUT> {
-    if (this._current_jwt_token) {
-      await this._authAPI.logout(this._current_jwt_token)
-    }
+    logger.debug('Logging out user')
   }
 
   /**
@@ -160,12 +82,10 @@ class CloudServiceClass {
    * @throws    UnauthorizedError if not authenticated
    */
   @Command(LocalCommandIds.CLOUD_API_GET_USER_PROFILE)
-  @HandleCloudError
   public async getUserProfile(
     _request: LocalCommandRequest<LocalCommandIds.CLOUD_API_GET_USER_PROFILE>,
   ): LocalCommandResponse<LocalCommandIds.CLOUD_API_GET_USER_PROFILE> {
-    const userProfile = await this._getAuthenticatedClient().userAPI.getUser()
-    return convertCloudUserProfile(userProfile.data)
+    return authenticatedUser
   }
 
   /**
@@ -175,7 +95,6 @@ class CloudServiceClass {
    * @returns       The remote updated user profile
    */
   @Command(LocalCommandIds.CLOUD_API_UPDATE_USER_PROFILE)
-  @HandleCloudError
   public async updateUserProfile(
     user: LocalCommandRequest<LocalCommandIds.CLOUD_API_UPDATE_USER_PROFILE>,
   ): LocalCommandResponse<LocalCommandIds.CLOUD_API_UPDATE_USER_PROFILE> {
@@ -185,12 +104,14 @@ class CloudServiceClass {
         first_name: user.first_name,
         last_name: user.last_name,
         avatar: user.avatar,
-        phone_number: user.phone,
+        phone: user.phone,
       }).filter(([_, value]) => value != null), // Remove null and undefined values
     )
     logger.debug('Updating User Profile Data on Cloud', user, requestBody)
-    const userProfile = await this._getAuthenticatedClient().userAPI.updateUser(requestBody)
-    return convertCloudUserProfile(userProfile.data)
+    return {
+      ...authenticatedUser,
+      ...requestBody,
+    }
   }
 
   /**
@@ -200,24 +121,10 @@ class CloudServiceClass {
    * @returns         Promise<IInstitutionUpdate[]>
    */
   @Command(AppCommandIds.SEARCH_INSTITUTIONS)
-  @HandleCloudError
   public async searchInstitutions({
     query,
   }: AppCommandRequest<AppCommandIds.SEARCH_INSTITUTIONS>): AppCommandResponse<AppCommandIds.SEARCH_INSTITUTIONS> {
-    const institutions: IInstitutionUpdate[] = []
-    const response = await this._getAuthenticatedClient().institutionAPI.searchInstitutions(query)
-    if (response.status == 200) {
-      // Convert to IInstitutionUpdate, Select First Country Code in List
-      for (const bank of response.data) {
-        institutions.push({
-          name: bank.name,
-          url: bank.url,
-          country: bank.country_codes[0],
-          logo: bank.logo,
-        })
-      }
-    }
-    return institutions
+    return await searchInstitutions(query)
   }
 
   /**
@@ -226,12 +133,15 @@ class CloudServiceClass {
    * @returns   Promise<Currency[]>
    */
   @Command(LocalCommandIds.CLOUD_GET_CURRENCIES)
-  @HandleCloudError
   public async getCurrencies(
     _request: LocalCommandRequest<LocalCommandIds.CLOUD_GET_CURRENCIES>,
   ): Promise<LocalCommandResponse<LocalCommandIds.CLOUD_GET_CURRENCIES>> {
-    const response = await this._getAuthenticatedClient().currencyAPI.getCurrencies()
-    return response.data
+    return allCurrencies.map((currency) => ({
+      code: currency.code as CurrencyCodes,
+      name: currency.name,
+      symbol: currency.symbol,
+      flag: currency.flag,
+    }))
   }
 
   /**
@@ -242,16 +152,19 @@ class CloudServiceClass {
    * @returns           Promise<LatestCurrencyExchangeRates
    */
   @Command(LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES)
-  @HandleCloudError
   public async getSpotCurrencyRates({
     currencies,
     base,
   }: LocalCommandRequest<LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES>): LocalCommandResponse<LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES> {
-    const response = await this._getAuthenticatedClient().currencyAPI.getCurrencyLatestRates(
-      currencies,
-      base,
-    )
-    return response.data
+    logger.debug(`Getting Spot Currency Rates for currencies ${currencies} for base ${base}`)
+    return {
+      base: 'USD',
+      rates: {
+        EUR: 0.9261,
+        GBP: 0.7738,
+        USD: 1,
+      },
+    }
   }
 
   /**
@@ -264,22 +177,56 @@ class CloudServiceClass {
    * @returns           Promise<HistoricalCurrencyExchangeRates>
    */
   @Command(LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES)
-  @HandleCloudError
   public async getHistoricCurrencyRates({
     currency,
     startDate,
     endDate,
     base,
   }: LocalCommandRequest<LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES>): LocalCommandResponse<LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES> {
-    const response = await this._getAuthenticatedClient().currencyAPI.getCurrencyRates(
-      currency,
-      startDate,
-      endDate,
-      base,
+    logger.debug(
+      `Getting Historical Currency Rates for currency ${currency} for base ${base} from ${startDate} to ${endDate}`,
     )
-    return response.data
+    return {
+      currency: currency as CurrencyCodes,
+      base: base as CurrencyCodes,
+      start_date: startDate,
+      end_date: endDate,
+      rates: {
+        '2025-03-31': 0.9244,
+        '2025-03-30': 0.9238,
+        '2025-03-29': 0.9195,
+        '2025-03-28': 0.9195,
+        '2025-03-27': 0.9259,
+        '2025-03-26': 0.931,
+        '2025-03-25': 0.9269,
+        '2025-03-24': 0.9257,
+        '2025-03-23': 0.9228,
+        '2025-03-22': 0.9196,
+        '2025-03-21': 0.9194,
+        '2025-03-20': 0.9214,
+        '2025-03-19': 0.9164,
+        '2025-03-18': 0.9142,
+        '2025-03-17': 0.9159,
+        '2025-03-16': 0.9191,
+        '2025-03-15': 0.916,
+        '2025-03-14': 0.9155,
+        '2025-03-13': 0.9212,
+        '2025-03-12': 0.9186,
+        '2025-03-11': 0.9162,
+        '2025-03-10': 0.9226,
+        '2025-03-09': 0.9208,
+        '2025-03-08': 0.9232,
+        '2025-03-07': 0.9229,
+        '2025-03-06': 0.927,
+        '2025-03-05': 0.9264,
+        '2025-03-04': 0.9413,
+        '2025-03-03': 0.9537,
+        '2025-03-02': 0.9604,
+        '2025-03-01': 0.9636,
+      },
+    }
   }
 }
 
 // Export instance of Class
-export const CloudService = new CloudServiceClass()
+export const MockCloudService = new MockCloudServiceClass()
