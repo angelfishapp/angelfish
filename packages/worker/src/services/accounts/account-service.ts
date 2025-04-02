@@ -1,7 +1,7 @@
 import { validate } from 'class-validator'
 
 import type { AppCommandRequest, AppCommandResponse, IAccount } from '@angelfish/core'
-import { AppCommandIds, Command } from '@angelfish/core'
+import { AppCommandIds, Command, CommandsClient } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { AccountEntity, LineItemEntity, TransactionEntity } from '../../database/entities'
 import { getWorkerLogger } from '../../logger'
@@ -54,6 +54,43 @@ class AccountServiceClass {
     //   this.currentBook?.default_currency as string,
     //   this.datasetService,
     // )
+  }
+
+  /**
+   * List all the distinct currencies for the accounts in the database
+   * It will also return the default currency for the book
+   *
+   * @returns        A list of all distinct currencies for the accounts in the database
+   *                and the default currency for the book
+   */
+  @Command(AppCommandIds.LIST_ACCOUNT_CURRENCIES)
+  public async listAccountCurrencies(
+    _r: AppCommandRequest<AppCommandIds.LIST_ACCOUNT_CURRENCIES>,
+  ): AppCommandResponse<AppCommandIds.LIST_ACCOUNT_CURRENCIES> {
+    // Get the default currency for the book
+    const default_currency = (
+      await CommandsClient.executeAppCommand(AppCommandIds.GET_BOOK)
+    ).default_currency.toUpperCase()
+
+    const query = DatabaseManager.getConnection()
+      .createQueryBuilder(AccountEntity, 'account')
+      .select('DISTINCT account.acc_iso_currency')
+    const foreign_currencies =
+      (await query.getRawMany())
+        .filter((row: { acc_iso_currency: string }) => {
+          if (row.acc_iso_currency === null) {
+            return false
+          }
+          return row.acc_iso_currency.toUpperCase() !== default_currency
+        })
+        .map((row: { acc_iso_currency: string }) => row.acc_iso_currency.toUpperCase()) ?? []
+
+    logger.debug(`Default currency: ${default_currency}; Foreign currencies: ${foreign_currencies}`)
+
+    return {
+      default_currency,
+      foreign_currencies,
+    }
   }
 
   /**

@@ -2,7 +2,10 @@
  * Tests for all the AccountService Methods
  */
 
+import { book, mockRegisterTypedAppCommand } from '@angelfish/tests'
+
 import type { IAccount } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 
 import { AccountService } from '.'
@@ -12,6 +15,9 @@ import { AccountService } from '.'
  */
 beforeAll(async () => {
   await DatabaseManager.initConnection(':memory:')
+  mockRegisterTypedAppCommand(AppCommandIds.GET_BOOK, async () => {
+    return book
+  })
 })
 
 /**
@@ -30,6 +36,13 @@ describe('AccountService', () => {
     // Test Getting all accounts in DB
     const response = await AccountService.listAccounts({})
     expect(response.length).toEqual(121)
+  })
+
+  test('test list-account-currencies', async () => {
+    // Test Getting all currencies in DB
+    const response = await AccountService.listAccountCurrencies()
+    expect(response.default_currency).toEqual('USD')
+    expect(response.foreign_currencies.length).toEqual(0)
   })
 
   test('test get-account', async () => {
