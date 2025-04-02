@@ -10,11 +10,10 @@ import IconButton from '@mui/material/IconButton'
 import React from 'react'
 
 import type { DropdownMenuItem } from '@/components/DropdownMenuButton'
-import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { Search } from '@/components/Search'
 import type { TableFilterBarProps } from '@/components/Table'
 import type { TransactionRow } from '../../data'
-import { StyledFilterBar } from './FilterBar.styles'
+import { StyledActionButton, StyledFilterBar, StyledSettingsButton } from './FilterBar.styles'
 import FilterButton from './FilterButton'
 
 /**
@@ -82,7 +81,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
           />
         </StyledFilterBar>
       ) : (
-        <StyledFilterBar flexGrow={1} display="flex">
+        <Box flexGrow={1} display="flex">
           <Box flexGrow={1} marginLeft={1}>
             <Search
               autoFocus
@@ -94,36 +93,33 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
             />
           </Box>
           <Box marginLeft={1}>
-            <IconButton
+            <StyledActionButton
               color="primary"
               onClick={() => table.options.meta?.transactionsTable?.insertNewRow()}
               size="large"
               title="Add Transaction"
-              className="actionButton"
               sx={{ marginRight: 1 }}
             >
               <AddIcon />
-            </IconButton>
+            </StyledActionButton>
             {table.options.meta?.transactionsTable?.onImportTransactions && (
-              <IconButton
+              <StyledActionButton
                 color="primary"
                 onClick={() => table.options.meta?.transactionsTable?.onImportTransactions?.()}
                 size="large"
                 title="Import Transactions"
-                className="actionButton"
               >
                 <UploadIcon />
-              </IconButton>
+              </StyledActionButton>
             )}
           </Box>
-        </StyledFilterBar>
+        </Box>
       )}
-      <StyledFilterBar marginLeft={1}>
-        <DropdownMenuButton
+      <Box marginLeft={1}>
+        <StyledSettingsButton
           Icon={SettingsIcon}
           label="Table Settings"
           size="large"
-          className="actionButton"
           menuItems={(
             [
               {
@@ -147,7 +143,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
               })),
           )}
         />
-      </StyledFilterBar>
+      </Box>
     </Box>
   )
 }
