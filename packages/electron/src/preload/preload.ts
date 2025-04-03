@@ -78,7 +78,7 @@ commandRegistry.addEventListener(
   LogEvents.ON_LOGGING_LEVEL_CHANGED,
   (change: { level: LevelOption }) => {
     // As we're only logging to console in development, check if we're in development
-    if (environmentBridge.platform === 'development') {
+    if (environmentBridge.environment === 'development') {
       log.transports.console.level = change.level
       environmentBridge.logLevel = change.level
       log.scope('Preload').info(`Log level changed to ${change.level}`)
