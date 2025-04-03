@@ -57,6 +57,7 @@ class WindowManagerClass {
    *
    * @param name                The name of the process
    * @param url                 The URL to load in the window
+   * @param allowedDomains      The list of allowed domains the process can access externally
    * @param nodeIntegration     Whether to enable Node.js integration
    * @param directIPCChannel    Whether to enable direct IPC channel for all other windows to connect directly to this process
    * @returns                   The new {BrowserWindow}
@@ -64,16 +65,18 @@ class WindowManagerClass {
   public createProcessWindow(
     id: string,
     url: string,
+    allowedDomains: string[] = [],
     nodeIntegration: boolean = false,
     directIPCChannel: boolean = false,
   ): BrowserWindow {
+    const processSession = session.fromPartition(`persist:${id}`)
     const processWindow = new BrowserWindow({
       width: 900,
       height: 600,
       show: Environment.nodeEnvironment === Environment.DEVELOPMENT,
       title: `Process: ${id}`,
       webPreferences: {
-        session: session.fromPartition(`persist:${id}`),
+        session: processSession,
         nodeIntegration,
         webSecurity: !nodeIntegration,
         // TODO - For some reason preload doesn't work with contextIsolation and nodeIntegration enabled
@@ -85,6 +88,16 @@ class WindowManagerClass {
       },
     })
     processWindow.loadURL(url)
+
+    // Set up CSP header to allow external domains
+    processSession.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': [this._getCSPHeader(allowedDomains)],
+        },
+      })
+    })
 
     // Initialise new process window
     this._initialiseWindow(id, processWindow, directIPCChannel)
@@ -240,6 +253,18 @@ class WindowManagerClass {
       this._windows = this._windows.filter((w) => w.id !== id)
       this._hasClosedWindow = true
     })
+  }
+
+  /**
+   *
+   * @param allowedDomains  The list of allowed domains the process can access externally
+   * @returns               The Content Security Policy header
+   */
+  private _getCSPHeader(allowedDomains: string[]): string {
+    if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
+      return `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self'${allowedDomains.length > 0 ? ` ${allowedDomains.join(' ')};` : ';'}`
+    }
+    return `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-inline'; connect-src 'self'${allowedDomains.length > 0 ? ` ${allowedDomains.join(' ')};` : ';'}`
   }
 
   /**

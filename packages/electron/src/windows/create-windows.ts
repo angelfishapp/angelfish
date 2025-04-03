@@ -19,12 +19,20 @@ declare const SYNC_WORKER_WEBPACK_ENTRY: string
 export function createWindows() {
   if (!WindowManager.has(AppProcessIDs.WORKER)) {
     // Create Worker Window
-    WindowManager.createProcessWindow(AppProcessIDs.WORKER, WORKER_WINDOW_WEBPACK_ENTRY, true, true)
+    WindowManager.createProcessWindow(
+      AppProcessIDs.WORKER,
+      WORKER_WINDOW_WEBPACK_ENTRY,
+      [],
+      true,
+      true,
+    )
   }
 
   if (!WindowManager.has(AppProcessIDs.SYNC)) {
     // Create Sync Worker Window
-    WindowManager.createProcessWindow(AppProcessIDs.SYNC, SYNC_WORKER_WEBPACK_ENTRY)
+    WindowManager.createProcessWindow(AppProcessIDs.SYNC, SYNC_WORKER_WEBPACK_ENTRY, [
+      '*.angelfish.app',
+    ])
   }
 
   if (!WindowManager.has(AppProcessIDs.APP)) {

@@ -128,8 +128,6 @@ const config: ForgeConfig = {
           },
         },
       },
-      // Set CSP for webpack dev server to allow requests to angelish.app domain
-      devContentSecurityPolicy: `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' *.angelfish.app;`,
       mainConfig,
       renderer: {
         config: rendererConfig,
