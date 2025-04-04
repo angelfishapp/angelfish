@@ -18,6 +18,8 @@ export class Environment {
   public static readonly MACOS = 'darwin'
   public static readonly LINUX = 'linux'
 
+  public static readonly APP_NAME = 'Angelfish'
+
   /**
    * Get the current platform the app is running on:
    *  win31, darwin (MacOS), linux
@@ -113,27 +115,35 @@ export class Environment {
         os.homedir(),
         'Library',
         'Application Support',
-        Environment.isProduction ? 'Angelfish' : `Angelfish-${Environment.environment}`,
+        Environment.isProduction
+          ? Environment.APP_NAME
+          : `${Environment.APP_NAME}-${Environment.environment}`,
       )
     }
     if (Environment.isWin) {
       return path.join(
         process.env.APPDATA as string,
-        Environment.isProduction ? 'Angelfish' : `Angelfish-${Environment.environment}`,
+        Environment.isProduction
+          ? Environment.APP_NAME
+          : `${Environment.APP_NAME}-${Environment.environment}`,
       )
     }
     if (Environment.isLinux) {
       const configHome = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '/.config')
       return path.join(
         configHome,
-        Environment.isProduction ? 'Angelfish' : `Angelfish-${Environment.environment}`,
+        Environment.isProduction
+          ? Environment.APP_NAME
+          : `${Environment.APP_NAME}-${Environment.environment}`,
       )
     }
 
     // Unknown OS, use home directory
     return path.join(
       os.homedir(),
-      Environment.isProduction ? 'Angelfish' : `Angelfish-${Environment.environment}`,
+      Environment.isProduction
+        ? Environment.APP_NAME
+        : `${Environment.APP_NAME}-${Environment.environment}`,
     )
   }
 
@@ -151,7 +161,9 @@ export class Environment {
         os.homedir(),
         'Library',
         'Logs',
-        Environment.isProduction ? 'Angelfish' : `Angelfish-${Environment.environment}`,
+        Environment.isProduction
+          ? Environment.APP_NAME
+          : `${Environment.APP_NAME}-${Environment.environment}`,
       )
     }
     return path.join(Environment.userDataDir, 'logs')
