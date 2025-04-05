@@ -36,7 +36,7 @@ jobs:
 
       - name: Add MacOS Certificates
         if: matrix.os == 'macos-latest' || matrix.os == 'macos-13'
-        run: chmod +x ./packages/angelfish/resources/build/macos/add-osx-cert.sh && ./packages/angelfish/resources/build/macos/add-osx-cert.sh
+        run: chmod +x ./packages/electron/resources/build/macos/add-osx-cert.sh && ./packages/electron/resources/build/macos/add-osx-cert.sh
         env:
           CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
