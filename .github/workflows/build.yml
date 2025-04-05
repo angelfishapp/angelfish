@@ -7,7 +7,7 @@ name: Package and Release
 on:
   push:
     branches:
-      - master
+      - main
     tags:
       - v*
 

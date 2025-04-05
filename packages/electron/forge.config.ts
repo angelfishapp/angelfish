@@ -13,10 +13,14 @@ import { FusesPlugin } from '@electron-forge/plugin-fuses'
 import { WebpackPlugin } from '@electron-forge/plugin-webpack'
 import type { ForgeConfig } from '@electron-forge/shared-types'
 import { FuseV1Options, FuseVersion } from '@electron/fuses'
+import dotenv from 'dotenv'
 import path from 'path'
 
 import { mainConfig } from './webpack/webpack.main.config'
 import { rendererConfig } from './webpack/webpack.renderer.config'
+
+// Load environment variables from root .env file if it exists
+dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 
 /**
  * Main configuration for Electron Forge
@@ -26,21 +30,25 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     darwinDarkModeSupport: true,
+    appCategoryType: 'public.app-category.finance',
     icon: './resources/icons/icon',
     name: 'Angelfish',
     osxSign: {
-      identity: 'Developer ID Application: David Gildeh (R9LJ95VR58)',
-      optionsForFile: (_filePath) => ({
-        entitlements: './resources/build/macos/entitlements.plist',
-        hardenedRuntime: true,
-      }),
+      identity: process.env['OSX_SIGN_IDENTITY'] as string,
+      identityValidation: true,
+      keychain: 'build',
+      optionsForFile: () => {
+        return {
+          entitlements: './resources/build/macos/entitlements.plist',
+          hardenedRuntime: true,
+        }
+      },
     },
     osxNotarize: {
       appleId: process.env['APPLE_ID'] as string,
       appleIdPassword: process.env['APPLE_ID_PASSWORD'] as string,
       teamId: process.env['APPLE_TEAM_ID'] as string,
     },
-    executableName: 'angelfish',
   },
   rebuildConfig: {},
   makers: [
@@ -49,44 +57,21 @@ const config: ForgeConfig = {
       format: 'ULFO',
       icon: './resources/icons/icon.icns',
       iconSize: 150,
-      contents: [
-        {
-          x: 500,
-          y: 249,
-          type: 'link',
-          path: '/Applications',
-          name: 'Applications',
-        },
-        {
-          x: 170,
-          y: 249,
-          type: 'file',
-          path: path.resolve(process.cwd(), 'out/angelfish/Angelfish-darwin-x64/Angelfish.app'),
-          name: 'Angelfish',
-        },
-        {
-          x: 170,
-          y: 600,
-          type: 'position',
-          path: '.background',
-          name: 'Background',
-        },
-        {
-          x: 500,
-          y: 600,
-          type: 'position',
-          path: '.VolumeIcon.icns',
-          name: 'Volume Icon',
-        },
-      ],
-      additionalDMGOptions: {
-        'background-color': '#2FAFC8',
-        window: {
-          size: {
-            width: 658,
-            height: 498,
+      contents: (options) => {
+        return [
+          {
+            x: 500,
+            y: 249,
+            type: 'link',
+            path: '/Applications',
           },
-        },
+          {
+            x: 170,
+            y: 249,
+            type: 'file',
+            path: path.resolve(process.cwd(), options.appPath),
+          },
+        ]
       },
     }),
     new MakerSquirrel({
