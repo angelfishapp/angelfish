@@ -1,4 +1,5 @@
-import { BrowserWindow, MessageChannelMain, session } from 'electron'
+import { BrowserWindow, MessageChannelMain, net, session } from 'electron'
+import path from 'path'
 
 import { AppProcessIDs, CommandRegistryEvents } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
@@ -121,6 +122,20 @@ class WindowManagerClass {
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,
       },
     })
+
+    // Override file:// protocol for serving static assets in distribution
+    rendererSession.protocol.handle('file', (request) => {
+      const url = request.url.substring(7) /* all urls start with 'file://' */
+      if (url.includes('/assets/')) {
+        // Only rewrite files looking for assets folder
+        const assetUrl = url.split('/assets/')[1]
+        const newPath = path.normalize(`${__dirname}/../renderer/assets/${assetUrl}`)
+        logger.debug(`Intercepted File protocol: url=${url}, newPath=${newPath}`)
+        return net.fetch(`file://${newPath}`)
+      }
+      return net.fetch(`file://${url}`)
+    })
+
     rendererWindow.loadURL(url)
 
     // Initialise new process window

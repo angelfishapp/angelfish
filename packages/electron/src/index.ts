@@ -1,5 +1,4 @@
-import { app, Menu, net, protocol } from 'electron'
-import path from 'path'
+import { app, Menu } from 'electron'
 import { updateElectronApp } from 'update-electron-app'
 
 // Set user data path as early as possible
@@ -42,19 +41,6 @@ if (Environment.nodeEnvironment !== Environment.environment) {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   logger.debug('Electron Ready...')
-
-  // Override file:// protocol for serving static assets in distribution
-  protocol.handle('file', (request) => {
-    const url = request.url.substring(7) /* all urls start with 'file://' */
-    if (url.includes('/assets/')) {
-      // Only rewrite files looking for assets folder
-      const assetUrl = url.split('/assets/')[1]
-      const newPath = path.normalize(`${__dirname}/../renderer/assets/${assetUrl}`)
-      logger.debug(`Intercepted File protocol: url=${url}, newPath=${newPath}`)
-      return net.fetch(`file://${newPath}`)
-    }
-    return net.fetch(`file://${url}`)
-  })
 
   // Create Windows
   createWindows()

@@ -35,14 +35,11 @@ const config: ForgeConfig = {
     name: 'Angelfish',
     osxSign: {
       identity: process.env['OSX_SIGN_IDENTITY'] as string,
-      identityValidation: true,
-      keychain: 'build',
-      optionsForFile: () => {
-        return {
-          entitlements: './resources/build/macos/entitlements.plist',
-          hardenedRuntime: true,
-        }
-      },
+      keychain: 'build.keychain',
+      optionsForFile: () => ({
+        entitlements: './resources/build/macos/entitlements.plist',
+        hardenedRuntime: true,
+      }),
     },
     osxNotarize: {
       appleId: process.env['APPLE_ID'] as string,
