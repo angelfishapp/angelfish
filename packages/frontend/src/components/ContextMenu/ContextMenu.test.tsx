@@ -6,7 +6,7 @@ import * as stories from './ContextMenu.stories' // Ensure correct path
 
 const composed = composeStories(stories)
 // to-check: this a partial test should I do it for all the  Items we have 
-describe('ConfirmDialog', () => {
+describe('Context Menu', () => {
   test('calls onConfirm when confirm button is clicked', async () => {
     const mockAction = vi.fn() 
     const items = composed.Default.args.items
