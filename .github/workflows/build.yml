@@ -8,8 +8,9 @@ on:
   push:
     branches:
       - main
-    tags:
-      - v*
+      - launch
+    # tags:
+    #  - v*
 
 jobs:
   build:
@@ -53,6 +54,7 @@ jobs:
       - name: Make
         run: yarn make
         env:
+          OSX_SIGN_IDENTITY: ${{ secrets.OSX_SIGN_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
