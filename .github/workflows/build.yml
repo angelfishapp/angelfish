@@ -69,4 +69,8 @@ jobs:
       - name: Publish
         run: yarn publish
         env:
+          OSX_SIGN_IDENTITY: ${{ secrets.OSX_SIGN_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

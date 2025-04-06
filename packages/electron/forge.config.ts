@@ -20,7 +20,7 @@ import { mainConfig } from './webpack/webpack.main.config'
 import { rendererConfig } from './webpack/webpack.renderer.config'
 
 // Load environment variables from root .env file if it exists
-dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: false })
+dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 
 /**
  * Main configuration for Electron Forge
