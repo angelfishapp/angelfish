@@ -27,6 +27,12 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') })
  */
 const config: ForgeConfig = {
   buildIdentifier: 'angelfish',
+  hooks: {
+    readPackageJson: async (forgeConfig, packageJson) => {
+      packageJson.name = forgeConfig.buildIdentifier
+      return packageJson
+    },
+  },
   packagerConfig: {
     asar: true,
     darwinDarkModeSupport: true,
