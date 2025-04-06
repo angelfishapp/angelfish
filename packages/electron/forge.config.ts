@@ -29,7 +29,10 @@ const config: ForgeConfig = {
   buildIdentifier: 'angelfish',
   hooks: {
     readPackageJson: async (forgeConfig, packageJson) => {
-      packageJson.name = forgeConfig.buildIdentifier
+      // Set the package.json name to the executable name as deb maker
+      // uses this to determine the name of the previously built executable as its
+      // input src, which isn't @angelfish/electron
+      packageJson.name = forgeConfig.packagerConfig.executableName
       return packageJson
     },
   },

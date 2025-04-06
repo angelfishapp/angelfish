@@ -19,8 +19,9 @@ jobs:
 
     strategy:
       matrix:
-        # macos-13 is last intel macos version
-        os: [macos-latest, ubuntu-latest, windows-latest. macos-13]
+        # macos-13 is last intel macos version, add back windows-latest
+        os: [macos-latest, ubuntu-latest, macos-13]
+      fail-fast: false
 
     # Set GITHUB_TOKEN permissions to allow release creation during publish step
     permissions:
@@ -62,8 +63,6 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          WINDOWS_PFX_FILE: ${{ steps.write_file.outputs.filePath }}
-          WINDOWS_PFX_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
 
       # Create New Release for App
 
