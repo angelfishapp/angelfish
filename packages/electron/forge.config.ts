@@ -22,6 +22,8 @@ import { rendererConfig } from './webpack/webpack.renderer.config'
 // Load environment variables from root .env file if it exists
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 
+console.log('Loading Electron Forge config...', process.env)
+
 /**
  * Main configuration for Electron Forge
  */
