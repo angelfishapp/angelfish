@@ -81,6 +81,7 @@ const config: ForgeConfig = {
     }),
     new MakerDeb({
       options: {
+        name: 'angelfish',
         productName: 'Angelfish',
         categories: ['Office'],
         maintainer: 'Angelfish Software LLC',
