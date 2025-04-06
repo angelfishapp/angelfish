@@ -33,6 +33,7 @@ const config: ForgeConfig = {
     appCategoryType: 'public.app-category.finance',
     icon: './resources/icons/icon',
     name: 'Angelfish',
+    executableName: 'angelfish',
     osxSign: {
       identity: process.env['OSX_SIGN_IDENTITY'] as string,
       keychain: 'build.keychain',
