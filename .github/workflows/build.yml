@@ -22,6 +22,10 @@ jobs:
         # macos-13 is last intel macos version
         os: [macos-latest, ubuntu-latest, windows-latest. macos-13]
 
+    # Set GITHUB_TOKEN permissions to allow release creation during publish step
+    permissions:
+      contents: write
+
     steps:
       # Setup Environment
 
@@ -63,15 +67,5 @@ jobs:
 
       # Create New Release for App
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
-        with:
-          repository: angelfishapp/desktop-releases
-          files: |
-            ./packages/angelfish/out/**/*.deb
-            ./packages/angelfish/out/**/*.dmg
-            ./packages/angelfish/out/**/*Setup.exe
-            ./packages/angelfish/out/**/*.rpm
-            ./packages/angelfish/out/**/*.zip
+      - name: Publish
+        run: yarn publish

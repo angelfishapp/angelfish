@@ -89,6 +89,18 @@ const config: ForgeConfig = {
     }),
     new MakerZIP({}, ['darwin']),
   ],
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'angelfishapp',
+          name: 'angelfish',
+        },
+        prerelease: true,
+      },
+    },
+  ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({

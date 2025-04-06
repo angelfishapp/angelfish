@@ -25,7 +25,7 @@ if (require('electron-squirrel-startup')) {
 
 if (Environment.isProduction && !Environment.isLinux) {
   updateElectronApp({
-    repo: 'angelfishapp/desktop-releases',
+    repo: 'angelfishapp/angelfish',
     updateInterval: '1 hour',
     logger,
   })

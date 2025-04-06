@@ -24,3 +24,7 @@ security find-identity -p codesigning -v
 
 # remove certs
 rm -fr *.p12
+
+# Import the Apple Developer certificate to ensure the certificates are trusted
+echo "Importing DeveloperIDG2CA.cer certificate..."
+security import DeveloperIDG2CA.cer -k $KEY_CHAIN -T /usr/bin/codesign

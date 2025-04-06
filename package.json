@@ -14,7 +14,7 @@
     "build:packages": "yarn workspaces foreach -Rpt --from  '{@angelfish/core,@angelfish/tests,@angelfish/cloudapiclient,@angelfish/financeimporter}' run build",
     "package": "yarn workspace @angelfish/electron package",
     "make": "yarn workspace @angelfish/electron make",
-    "release": "yarn workspace @angelfish/electron publish",
+    "publish": "yarn workspace @angelfish/electron publish",
     "lint": "yarn eslint . --fix",
     "prettify": "yarn prettier . -w",
     "format": "yarn prettify && yarn lint",
