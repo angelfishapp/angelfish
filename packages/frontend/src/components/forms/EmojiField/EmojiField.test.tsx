@@ -10,7 +10,6 @@ const { Default } = composeStories(stories)
 
 describe('EmojiFIeld', () => {
   it('opens EmojiFIeld and triggers onChange when EMoji is selected', async () => {
-    const user = userEvent.setup()
     render(
       <ThemeProvider theme={theme}>
         <Default />
