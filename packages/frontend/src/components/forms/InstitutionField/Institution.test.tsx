@@ -43,9 +43,9 @@ describe('InstitutionField', () => {
     expect(handleChange).toHaveBeenCalledWith(INSTITUTIONS[0])
   })
 
-it('renders the selected value with an icon', () => {
+  it('renders the selected value with an icon', () => {
     renderWithTheme(<WithValue />)
     const input = screen.getByPlaceholderText('Search Institutions...')
     expect(input).toHaveValue(INSTITUTIONS[1].name)
-})
+  })
 })
