@@ -1,21 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import React from 'react'
 import { describe, expect, it } from 'vitest'
-import * as stories from './AuthScreen.stories'
+import * as stories from './Background.stories'
 
-vi.mock('lottie-web', () => ({
-  loadAnimation: () => ({
-    play: vi.fn(),
-    stop: vi.fn(),
-    destroy: vi.fn(),
-  }),
-}))
 globalThis.Path2D = class {
   constructor() {}
   addPath = vi.fn()
@@ -58,25 +48,26 @@ HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
   return null
 })
 
-const { Default } = composeStories(stories)
+const { LandDay, SubmergedEvening } = composeStories(stories)
 
-describe('AuthLogin tests', () => {
+describe('Background component tests', () => {
   const renderWithTheme = (ui: React.ReactElement) =>
     render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>)
 
-  it('renders login form without crashing', () => {
-    vi.mock('@/app/context/AuthContext', () => ({
-      useAuth: () => ({
-        isAuthenticated: false,
-        login: vi.fn(),
-        logout: vi.fn(),
-      }),
-    }))
+  it('renders PrimaryBackground without crashing', () => {
+    const { container } = renderWithTheme(<LandDay />)
+    expect(container.querySelector('.land_bg_water')).toBeInTheDocument()
+    expect(container.querySelector('.login_splash')).toBeInTheDocument()
+    expect(container.querySelector('.water-shimmer')).toBeInTheDocument()
+    expect(container.querySelector('.mountains_left')).toBeInTheDocument()
+    expect(container.querySelector('.mountains_right')).toBeInTheDocument()
+    expect(container.querySelector('.underwater_bg')).toBeInTheDocument()
+  })
 
-    renderWithTheme(<Default isAuthenticated={false} />)
-
-    expect(screen.getByText(/Enter Your Email/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/aquaman@atlantis.com/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Send Code to Email/i })).toBeInTheDocument()
+  it('renders SubmergedEvening without crashing', () => {
+    const { container } = renderWithTheme(<SubmergedEvening />)
+    expect(container.querySelector('.underwater_bg')).toBeInTheDocument()
+    expect(container.querySelector('.aquarium')).toBeInTheDocument()
+    expect(container.querySelector('.water-shimmer')).toBeInTheDocument()
   })
 })
