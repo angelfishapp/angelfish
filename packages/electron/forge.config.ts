@@ -13,9 +13,11 @@ import { FusesPlugin } from '@electron-forge/plugin-fuses'
 import { WebpackPlugin } from '@electron-forge/plugin-webpack'
 import type { ForgeConfig } from '@electron-forge/shared-types'
 import { FuseV1Options, FuseVersion } from '@electron/fuses'
+import { spawn } from 'child_process'
 import dotenv from 'dotenv'
 import path from 'path'
 
+import { filterPackageJsonForExternals } from './scripts/forge.externals'
 import { mainConfig } from './webpack/webpack.main.config'
 import { rendererConfig } from './webpack/webpack.renderer.config'
 
@@ -34,6 +36,30 @@ const config: ForgeConfig = {
       // input src, which isn't @angelfish/electron
       packageJson.name = forgeConfig.packagerConfig.executableName
       return packageJson
+    },
+    packageAfterPrune: async (_forgeConfig, buildPath) => {
+      // This hook runs after the app is built but before it is packaged
+      // We need to install extneral dependencies before the asar is created
+      // using yarn install, but to only install the dependencies we first modify
+      // the package.json to only include the dependencies we need and remove everything else
+      const externalDeps = Object.keys(rendererConfig.externals ?? {})
+      // TypeORM requires reflect-metadata to be installed as a dependency
+      externalDeps.push('reflect-metadata')
+      filterPackageJsonForExternals(buildPath, externalDeps)
+
+      await new Promise<void>((resolve, reject) => {
+        const child = spawn('yarn', ['install'], {
+          cwd: buildPath,
+          stdio: 'inherit',
+        })
+
+        child.on('exit', (code) => {
+          if (code !== 0) {
+            return reject(new Error('yarn install failed'))
+          }
+          resolve()
+        })
+      })
     },
   },
   packagerConfig: {
@@ -57,7 +83,9 @@ const config: ForgeConfig = {
       teamId: process.env['APPLE_TEAM_ID'] as string,
     },
   },
-  rebuildConfig: {},
+  rebuildConfig: {
+    force: true,
+  },
   makers: [
     new MakerDMG({
       background: './resources/build/macos/background.png',
