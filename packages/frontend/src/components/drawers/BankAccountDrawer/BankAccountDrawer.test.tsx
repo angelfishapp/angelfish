@@ -13,7 +13,7 @@ describe('BankAccount Drawer stories', () => {
         <UpdateBankAccount />
       </ThemeProvider>,
     )
-    const drawer = screen.getByText('Add New Bank Account')
+    const drawer = screen.getByText('Edit Bank Account')
     expect(drawer).toBeInTheDocument()
     expect(screen.getByText('Institution')).toBeInTheDocument()
 
@@ -60,7 +60,7 @@ describe('BankAccount Drawer stories', () => {
         <AddNewBankAccount />
       </ThemeProvider>,
     )
-    const drawer = screen.getByText('Edit Bank Account')
+    const drawer = screen.getByText('Add New Bank Account')
     expect(drawer).toBeInTheDocument()
     expect(screen.getByText('Institution')).toBeInTheDocument()
 
