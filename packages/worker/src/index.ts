@@ -1,4 +1,4 @@
-import { AppProcessIDs, CommandsClient, registerCommands } from '@angelfish/core'
+import { AppEventIds, AppProcessIDs, CommandsClient, registerCommands } from '@angelfish/core'
 import { getWorkerLogger } from './logger'
 
 import { AccountService } from './services/accounts'
@@ -57,5 +57,7 @@ window.onload = async () => {
   } catch (error) {
     logger.error('💥 Error initializing worker process', error)
   }
+
+  CommandsClient.emitAppEvent(AppEventIds.ON_WORKER_READY)
   logger.info('🚀 Worker window loaded')
 }

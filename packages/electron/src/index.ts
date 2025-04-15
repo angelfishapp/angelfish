@@ -42,13 +42,14 @@ if (Environment.nodeEnvironment !== Environment.environment) {
 app.on('ready', () => {
   logger.debug('Electron Ready...')
 
+  // Register Commands & Event Handlers
+  setupMainCommands()
+
   // Create Windows
   createWindows()
 
   // Set Application Menu
   Menu.setApplicationMenu(menu)
-  // Register Commands & Event Handlers
-  setupMainCommands()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

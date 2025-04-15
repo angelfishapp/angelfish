@@ -58,7 +58,7 @@ export const AppCommandsRegistryMain = {
    * @param eventId   The ID of the App event to emit
    * @param event     The event. This is optional and will be inferred
    */
-  emitAppEvent: async <T extends AppEventIds>(
+  emitAppEvent: <T extends AppEventIds>(
     eventId: T,
     ...args: AppEvent<T> extends void ? [] : [AppEvent<T>]
   ) => {
@@ -76,7 +76,7 @@ export const AppCommandsRegistryMain = {
    *                  This is a type-safe wrapper for all App events defined in `app-events.ts`.
    * @returns         A function to remove the event listener.
    */
-  addAppEventListener: async <T extends AppEventIds>(
+  addAppEventListener: <T extends AppEventIds>(
     eventId: T,
     handler: (event?: AppEvent<T>) => void,
   ) => {
