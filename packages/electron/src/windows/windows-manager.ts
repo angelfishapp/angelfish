@@ -124,17 +124,20 @@ class WindowManagerClass {
     })
 
     // Override file:// protocol for serving static assets in distribution
-    rendererSession.protocol.handle('file', (request) => {
-      const url = request.url.substring(7) /* all urls start with 'file://' */
-      if (url.includes('/assets/')) {
-        // Only rewrite files looking for assets folder
-        const assetUrl = url.split('/assets/')[1]
-        const newPath = path.normalize(`${__dirname}/../renderer/assets/${assetUrl}`)
-        logger.silly(`Intercepted File protocol: url=${url}, newPath=${newPath}`)
-        return net.fetch(`file://${newPath}`)
-      }
-      return net.fetch(`file://${url}`)
-    })
+    if (!rendererSession.protocol.isProtocolHandled('file')) {
+      logger.info(`Registering file protocol handler for renderer session persist:${id}`)
+      rendererSession.protocol.handle('file', (request) => {
+        const url = request.url.substring(7) /* all urls start with 'file://' */
+        if (url.includes('/assets/')) {
+          // Only rewrite files looking for assets folder
+          const assetUrl = url.split('/assets/')[1]
+          const newPath = path.normalize(`${__dirname}/../renderer/assets/${assetUrl}`)
+          logger.silly(`Intercepted File protocol: url=${url}, newPath=${newPath}`)
+          return net.fetch(`file://${newPath}`)
+        }
+        return net.fetch(`file://${url}`)
+      })
+    }
 
     rendererWindow.loadURL(url)
 
