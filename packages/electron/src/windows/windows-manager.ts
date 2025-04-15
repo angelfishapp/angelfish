@@ -130,7 +130,7 @@ class WindowManagerClass {
         // Only rewrite files looking for assets folder
         const assetUrl = url.split('/assets/')[1]
         const newPath = path.normalize(`${__dirname}/../renderer/assets/${assetUrl}`)
-        logger.debug(`Intercepted File protocol: url=${url}, newPath=${newPath}`)
+        logger.silly(`Intercepted File protocol: url=${url}, newPath=${newPath}`)
         return net.fetch(`file://${newPath}`)
       }
       return net.fetch(`file://${url}`)

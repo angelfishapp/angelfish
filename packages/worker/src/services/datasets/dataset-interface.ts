@@ -1,4 +1,4 @@
-import type { JSONSchemaType } from 'ajv'
+import type { JSONSchemaType, ValidateFunction } from 'ajv'
 
 /**
  * Configuration options for a new dataset in Angelfish
@@ -22,6 +22,12 @@ export interface DatasetConfig<T> {
    * JSON Schema for the dataset
    */
   schema: JSONSchemaType<T>
+  /**
+   * Precompiled AJV validation function for the dataset. This function will be used to validate
+   * the data before it is inserted into the database. The function should be generated from a
+   * AJV schema using the generate:validations package.json script in this package
+   */
+  validate: ValidateFunction<T>
   /**
    * Primary key columns for the dataset. If not specified, the table will have
    * an auto-incrementing primary key column named "id".

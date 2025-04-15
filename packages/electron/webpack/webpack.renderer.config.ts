@@ -36,6 +36,9 @@ export const rendererConfig: Configuration = {
         terserOptions: {
           keep_classnames: true,
           keep_fnames: true,
+          output: {
+            ascii_only: true,
+          },
         },
       }) as any,
     ],

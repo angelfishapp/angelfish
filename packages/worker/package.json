@@ -12,7 +12,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "ts-check": "tsc --noEmit",
-    "test": "vitest --run"
+    "test": "vitest --run",
+    "generate:validations": "ts-node --compilerOptions '{\"target\":\"ES6\",\"module\":\"commonjs\",\"esModuleInterop\":true, \"types\": [\"node\"]}' ./scripts/generate-ajv-validations.ts"
   },
   "dependencies": {
     "@angelfish/core": "workspace:*",
@@ -30,6 +31,7 @@
     "@angelfish/tests": "workspace:*",
     "@swc/core": "^1.11.8",
     "@types/node": "*",
+    "ts-node": "*",
     "typescript": "*",
     "unplugin-swc": "1.5.1",
     "vitest": "*"

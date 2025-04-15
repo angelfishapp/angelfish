@@ -4,7 +4,10 @@
     "baseUrl": ".",
     "outDir": "dist",
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    // Required for AJV precompiled validation functions in
+    // DatasetService
+    "allowJs": true
   },
   "include": ["src/**/*"],
   "exclude": ["dist", "node_modules", "tests", "**/*.test.ts"]
