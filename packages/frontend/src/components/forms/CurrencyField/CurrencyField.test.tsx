@@ -6,7 +6,7 @@ import * as stories from './CurrencyField.stories'
 
 const { Default } = composeStories(stories)
 
-describe('renders CountryFIeld Story', () => {
+describe('renders CurrencyField Story', () => {
   test('render of default Story', async () => {
     render(
       <ThemeProvider theme={theme}>
