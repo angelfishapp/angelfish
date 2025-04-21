@@ -16,7 +16,7 @@ import {
   subQuarters,
   subYears,
 } from 'date-fns'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
@@ -160,6 +160,21 @@ export default function Reports() {
       reportsQuery.end_date,
     ],
   )
+  // this is a workaround for the issue with the table header not being aligned with the chart header soloving it by
+  // calculating the width for first col in the table and make it the same for range Date section so it would
+  // be aligned with the table header in chart case of resizing the window
+  const [width, setWidth] = useState('332px')
+  const col = document.getElementsByClassName('isPinned')[1] as HTMLElement
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(col?.offsetWidth.toString() + 'px')
+    }
+    window.addEventListener('resize', handleResize)
+    handleResize() 
+    return () => window.removeEventListener('resize', handleResize)
+  }, [col?.offsetWidth, reportsQuery, reportData])
+
 
   // Render
   return (
@@ -191,7 +206,7 @@ export default function Reports() {
               minWidth={`${reportData.periods.length * 150 + 300}px`}
             >
               <Box
-                width="300px"
+                width={width}
                 flex="none"
                 borderRight="1px solid transparent"
                 bgcolor="white"
