@@ -36,6 +36,7 @@ class TransactionServiceClass {
     cat_group_id,
     start_date,
     end_date,
+    requires_sync,
   }: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>): AppCommandResponse<AppCommandIds.LIST_TRANSACTIONS> {
     logger.debug('List Transactions Query', {
       account_id,
@@ -43,10 +44,11 @@ class TransactionServiceClass {
       cat_group_id,
       start_date,
       end_date,
+      requires_sync,
     })
 
     // If query is empty, return empty array
-    if (!account_id && !cat_id && !cat_group_id && !start_date && !end_date) {
+    if (!account_id && !cat_id && !cat_group_id && !start_date && !end_date && !requires_sync) {
       return []
     }
 
@@ -127,12 +129,46 @@ class TransactionServiceClass {
       )
     }
 
+    // If requires_sync is specified, filter on that
+    if (requires_sync) {
+      query.andWhere('transaction.requires_sync = :requires_sync', { requires_sync })
+    }
+
     logger.silly('Query:', query.getSql())
 
     const results = await query.getMany()
     logger.debug(`Found ${results.length} Transactions`)
     logger.debug('Results:', results)
     return results
+  }
+
+  /**
+   * Get the date range of all transactions in the database
+   *
+   * @returns       A date range object with start and end dates
+   *                If no transactions are found, start and end dates will be null
+   */
+  @Command(AppCommandIds.GET_TRANSACTIONS_DATE_RANGE)
+  public async getTransactionsDateRange(
+    _r: AppCommandRequest<AppCommandIds.GET_TRANSACTIONS_DATE_RANGE>,
+  ): AppCommandResponse<AppCommandIds.GET_TRANSACTIONS_DATE_RANGE> {
+    const dateRange = await DatabaseManager.getConnection()
+      .createQueryBuilder(TransactionEntity, 'transaction')
+      .select('MIN(transaction.date)', 'start')
+      .addSelect('MAX(transaction.date)', 'end')
+      .getRawOne()
+    // If no transactions found, return null
+    if (!dateRange) {
+      return {
+        start_date: null,
+        end_date: null,
+      }
+    }
+    // Return results
+    return {
+      start_date: dateRange.start as string,
+      end_date: dateRange.end as string,
+    }
   }
 
   /**

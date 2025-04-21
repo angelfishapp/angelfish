@@ -1,7 +1,7 @@
 import { validate } from 'class-validator'
 
 import type { AppCommandRequest, AppCommandResponse, IAccount } from '@angelfish/core'
-import { AppCommandIds, Command } from '@angelfish/core'
+import { AppCommandIds, Command, CommandsClient } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { AccountEntity, LineItemEntity, TransactionEntity } from '../../database/entities'
 import { getWorkerLogger } from '../../logger'
@@ -46,14 +46,47 @@ class AccountServiceClass {
 
     // Run query
     query.groupBy('account.id, users.id')
-    return await query.getMany()
+    const accounts = await query.getMany()
 
     // For accounts of Class 'ACCOUNT', convert current_balance to Book's default currency
-    // return getLocalCurrentBalances(
-    //   accounts,
-    //   this.currentBook?.default_currency as string,
-    //   this.datasetService,
-    // )
+    return await this._getLocalBalances(accounts)
+  }
+
+  /**
+   * List all the distinct currencies for the accounts in the database
+   * It will also return the default currency for the book
+   *
+   * @returns        A list of all distinct currencies for the accounts in the database
+   *                and the default currency for the book
+   */
+  @Command(AppCommandIds.LIST_ACCOUNT_CURRENCIES)
+  public async listAccountCurrencies(
+    _r: AppCommandRequest<AppCommandIds.LIST_ACCOUNT_CURRENCIES>,
+  ): AppCommandResponse<AppCommandIds.LIST_ACCOUNT_CURRENCIES> {
+    // Get the default currency for the book
+    const default_currency = (
+      await CommandsClient.executeAppCommand(AppCommandIds.GET_BOOK)
+    ).default_currency.toUpperCase()
+
+    const query = DatabaseManager.getConnection()
+      .createQueryBuilder(AccountEntity, 'account')
+      .select('DISTINCT account.acc_iso_currency')
+    const foreign_currencies =
+      (await query.getRawMany())
+        .filter((row: { acc_iso_currency: string }) => {
+          if (row.acc_iso_currency === null) {
+            return false
+          }
+          return row.acc_iso_currency.toUpperCase() !== default_currency
+        })
+        .map((row: { acc_iso_currency: string }) => row.acc_iso_currency.toUpperCase()) ?? []
+
+    logger.debug(`Default currency: ${default_currency}; Foreign currencies: ${foreign_currencies}`)
+
+    return {
+      default_currency,
+      foreign_currencies,
+    }
   }
 
   /**
@@ -72,11 +105,15 @@ class AccountServiceClass {
     query.leftJoinAndSelect('account.acc_owners', 'users')
     query.where('account.id = :id', { id })
     query.groupBy('account.id, users.id')
-    return await query.getOne()
+    const account = await query.getOne()
+    if (!account) {
+      return null
+    }
+    return (await this._getLocalBalances([account]))[0]
   }
 
   /**
-   *  Get an Accounts from the database
+   *  Save an Account to the database
    *
    * @returns        A list of all Accounts in the database
    */
@@ -85,9 +122,23 @@ class AccountServiceClass {
     account: AppCommandRequest<AppCommandIds.SAVE_ACCOUNT>,
   ): AppCommandResponse<AppCommandIds.SAVE_ACCOUNT> {
     const sanitizedAccount = await this._sanitizeAndValidate(account)
+
+    // Get the current currencies in the database before saving
+    const currencesBeforeSave = await this.listAccountCurrencies()
+    // Save account to database
     const savedAccount = await DatabaseManager.getConnection()
       .getRepository(AccountEntity)
       .save(sanitizedAccount)
+    // Check if account has new currency and sync rates for currency if so
+    if (
+      sanitizedAccount.acc_iso_currency &&
+      !currencesBeforeSave.foreign_currencies.includes(sanitizedAccount.acc_iso_currency)
+    ) {
+      await CommandsClient.executeAppCommand(AppCommandIds.START_SYNC, {
+        currencies: true,
+      })
+    }
+
     // Have to get account again to populate current_balance field
     return (await this.getAccount({ id: savedAccount.id })) as AccountEntity
   }
@@ -107,17 +158,41 @@ class AccountServiceClass {
     id,
     reassignId = null,
   }: AppCommandRequest<AppCommandIds.DELETE_ACCOUNT>): AppCommandResponse<AppCommandIds.DELETE_ACCOUNT> {
-    // First update all line_items associated with the account if any
-    await DatabaseManager.getConnection()
-      .createQueryBuilder()
-      .update(LineItemEntity)
-      .set({ account_id: reassignId })
-      .where('account_id = :account_id', { account_id: id })
-      .execute()
+    // Get account to check if it exists
+    const accountsRepo = DatabaseManager.getConnection().getRepository(AccountEntity)
+    const account = await accountsRepo.findOne({ where: { id } })
+    if (!account) {
+      logger.warn(`Account with id ${id} not found`)
+      throw Error(`Account with id ${id} not found`)
+    }
+
+    if (account.class === 'CATEGORY') {
+      // First update all line_items associated with the account if any
+      await DatabaseManager.getConnection()
+        .createQueryBuilder()
+        .update(LineItemEntity)
+        .set({ account_id: reassignId })
+        .where('account_id = :account_id', { account_id: id })
+        .execute()
+    }
 
     // Finally delete the account
-    const accountsRepo = DatabaseManager.getConnection().getRepository(AccountEntity)
     await accountsRepo.delete(id)
+
+    // For class 'ACCOUNT' drop any currencies if no more accounts with that currency exist
+    if (account.class === 'ACCOUNT') {
+      const currencies = await this.listAccountCurrencies()
+      if (
+        account.acc_iso_currency &&
+        !currencies.foreign_currencies.includes(account.acc_iso_currency)
+      ) {
+        await CommandsClient.executeAppCommand(AppCommandIds.RUN_DATASET_QUERY, {
+          datasetName: 'currencies',
+          queryName: 'dropCurrency',
+          params: [account.acc_iso_currency],
+        })
+      }
+    }
   }
 
   /** Sanitize and Validate Account fields to ensure Account is correctly stored
@@ -178,6 +253,74 @@ class AccountServiceClass {
     }
 
     return account
+  }
+
+  /**
+   * Helper function to get the local current balances for all accounts that are not in the book currency
+   * If the currency is not synced yet in dataset database, then the local_current_balance will be the same
+   * as current_balance until next sync.
+   *
+   * @param accounts        The accounts to get the local current balances for
+   * @returns               The accounts with the local current balances set
+   */
+  private async _getLocalBalances(accounts: AccountEntity[]): Promise<AccountEntity[]> {
+    const currencies = await this.listAccountCurrencies()
+    if (currencies.foreign_currencies.length === 0) {
+      logger.debug(
+        'No foreign currency accounts found, returning current balance as local current balance',
+      )
+      return accounts.map((account) => {
+        if (account.class === 'ACCOUNT') {
+          account.local_current_balance = account.current_balance
+        }
+        return account
+      })
+    }
+
+    // Get the latest spot exchange rates
+    const exchangeRates: any[] = await CommandsClient.executeAppCommand(
+      AppCommandIds.RUN_DATASET_QUERY,
+      {
+        datasetName: 'currencies',
+        queryName: 'latestRates',
+      },
+    )
+    if (!exchangeRates || exchangeRates.length === 0) {
+      // If no exchange rates are found, then return local_current_balance as the same as current_balance for now
+      logger.warn('No exchange rates found, returning current balance as local current balance')
+      return accounts.map((account) => {
+        if (account.class === 'ACCOUNT') {
+          account.local_current_balance = account.current_balance
+        }
+        return account
+      })
+    }
+
+    // Get the exchange rate for each foreign currency, if we don't have an exchange rate for a currency, then
+    // just return without converting the balance
+    return accounts.map((account) => {
+      if (
+        account.class === 'ACCOUNT' &&
+        account.acc_iso_currency?.toUpperCase() !== currencies.default_currency
+      ) {
+        const exchangeRate = exchangeRates.find(
+          (rate) => rate.currency === account.acc_iso_currency?.toUpperCase(),
+        )
+        if (exchangeRate) {
+          account.local_current_balance = Number(
+            (account.current_balance / exchangeRate.rate).toFixed(2),
+          )
+        } else {
+          logger.warn(
+            `No exchange rate found for currency: ${account.acc_iso_currency}, returning current balance as local current balance`,
+          )
+          account.local_current_balance = account.current_balance
+        }
+      } else {
+        account.local_current_balance = account.current_balance
+      }
+      return account
+    })
   }
 }
 

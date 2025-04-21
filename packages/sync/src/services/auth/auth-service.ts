@@ -175,6 +175,9 @@ class AuthServiceClass {
       authenticatedUser: updatedUser,
     })
 
+    // Emit event to notify app that user profile has been updated
+    CommandsClient.emitAppEvent(AppEventIds.ON_UPDATE_AUTHENTICATED_USER, updatedUser)
+
     return updatedUser
   }
 }

@@ -167,6 +167,10 @@ export enum AppCommandIds {
    */
   LIST_ACCOUNTS = 'list.accounts',
   /**
+   * List all Account currencies in the database
+   */
+  LIST_ACCOUNT_CURRENCIES = 'list.account.currencies',
+  /**
    * Get an Account from the database by Id
    */
   GET_ACCOUNT = 'get.account',
@@ -232,6 +236,10 @@ export enum AppCommandIds {
    * List all Transactions for given query
    */
   LIST_TRANSACTIONS = 'list.transactions',
+  /**
+   * Get the date range across all transactions in the database
+   */
+  GET_TRANSACTIONS_DATE_RANGE = 'get.transactions.date.range',
   /**
    * Get a Transaction from the database by Id
    */
@@ -392,6 +400,10 @@ export interface AppCommandDefinitions {
     }
     response: IAccount[]
   }
+  [AppCommandIds.LIST_ACCOUNT_CURRENCIES]: {
+    request: void
+    response: { default_currency: string; foreign_currencies: string[] }
+  }
   [AppCommandIds.GET_ACCOUNT]: {
     request: { id: number }
     response: IAccount | null
@@ -459,8 +471,13 @@ export interface AppCommandDefinitions {
       cat_group_id?: number
       start_date?: string
       end_date?: string
+      requires_sync?: boolean
     }
     response: ITransaction[]
+  }
+  [AppCommandIds.GET_TRANSACTIONS_DATE_RANGE]: {
+    request: void
+    response: { start_date: string | null; end_date: string | null }
   }
   [AppCommandIds.GET_TRANSACTION]: {
     request: { id: number }

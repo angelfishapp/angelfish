@@ -13,24 +13,66 @@ import { FusesPlugin } from '@electron-forge/plugin-fuses'
 import { WebpackPlugin } from '@electron-forge/plugin-webpack'
 import type { ForgeConfig } from '@electron-forge/shared-types'
 import { FuseV1Options, FuseVersion } from '@electron/fuses'
+import { spawn } from 'child_process'
+import dotenv from 'dotenv'
 import path from 'path'
 
+import { filterPackageJsonForExternals } from './scripts/forge.externals'
 import { mainConfig } from './webpack/webpack.main.config'
 import { rendererConfig } from './webpack/webpack.renderer.config'
+
+// Load environment variables from root .env file if it exists
+dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 
 /**
  * Main configuration for Electron Forge
  */
 const config: ForgeConfig = {
   buildIdentifier: 'angelfish',
+  hooks: {
+    readPackageJson: async (forgeConfig, packageJson) => {
+      // Set the package.json name to the executable name as deb maker
+      // uses this to determine the name of the previously built executable as its
+      // input src, which isn't @angelfish/electron
+      packageJson.name = forgeConfig.packagerConfig.executableName
+      return packageJson
+    },
+    packageAfterPrune: async (_forgeConfig, buildPath) => {
+      // This hook runs after the app is built but before it is packaged
+      // We need to install extneral dependencies before the asar is created
+      // using yarn install, but to only install the dependencies we first modify
+      // the package.json to only include the dependencies we need and remove everything else
+      const externalDeps = Object.keys(rendererConfig.externals ?? {})
+      // TypeORM requires reflect-metadata to be installed as a dependency
+      externalDeps.push('reflect-metadata')
+      filterPackageJsonForExternals(buildPath, externalDeps)
+
+      await new Promise<void>((resolve, reject) => {
+        const child = spawn('yarn', ['install'], {
+          cwd: buildPath,
+          stdio: 'inherit',
+        })
+
+        child.on('exit', (code) => {
+          if (code !== 0) {
+            return reject(new Error('yarn install failed'))
+          }
+          resolve()
+        })
+      })
+    },
+  },
   packagerConfig: {
     asar: true,
     darwinDarkModeSupport: true,
+    appCategoryType: 'public.app-category.finance',
     icon: './resources/icons/icon',
     name: 'Angelfish',
+    executableName: 'Angelfish',
     osxSign: {
-      identity: 'Developer ID Application: David Gildeh (R9LJ95VR58)',
-      optionsForFile: (_filePath) => ({
+      identity: process.env['OSX_SIGN_IDENTITY'] as string,
+      keychain: 'build.keychain',
+      optionsForFile: () => ({
         entitlements: './resources/build/macos/entitlements.plist',
         hardenedRuntime: true,
       }),
@@ -40,53 +82,31 @@ const config: ForgeConfig = {
       appleIdPassword: process.env['APPLE_ID_PASSWORD'] as string,
       teamId: process.env['APPLE_TEAM_ID'] as string,
     },
-    executableName: 'angelfish',
   },
-  rebuildConfig: {},
+  rebuildConfig: {
+    force: true,
+  },
   makers: [
     new MakerDMG({
       background: './resources/build/macos/background.png',
       format: 'ULFO',
       icon: './resources/icons/icon.icns',
       iconSize: 150,
-      contents: [
-        {
-          x: 500,
-          y: 249,
-          type: 'link',
-          path: '/Applications',
-          name: 'Applications',
-        },
-        {
-          x: 170,
-          y: 249,
-          type: 'file',
-          path: path.resolve(process.cwd(), 'out/angelfish/Angelfish-darwin-x64/Angelfish.app'),
-          name: 'Angelfish',
-        },
-        {
-          x: 170,
-          y: 600,
-          type: 'position',
-          path: '.background',
-          name: 'Background',
-        },
-        {
-          x: 500,
-          y: 600,
-          type: 'position',
-          path: '.VolumeIcon.icns',
-          name: 'Volume Icon',
-        },
-      ],
-      additionalDMGOptions: {
-        'background-color': '#2FAFC8',
-        window: {
-          size: {
-            width: 658,
-            height: 498,
+      contents: (options) => {
+        return [
+          {
+            x: 500,
+            y: 249,
+            type: 'link',
+            path: '/Applications',
           },
-        },
+          {
+            x: 170,
+            y: 249,
+            type: 'file',
+            path: path.resolve(process.cwd(), options.appPath),
+          },
+        ]
       },
     }),
     new MakerSquirrel({
@@ -98,6 +118,7 @@ const config: ForgeConfig = {
     }),
     new MakerDeb({
       options: {
+        name: 'angelfish',
         productName: 'Angelfish',
         categories: ['Office'],
         maintainer: 'Angelfish Software LLC',
@@ -106,6 +127,18 @@ const config: ForgeConfig = {
       },
     }),
     new MakerZIP({}, ['darwin']),
+  ],
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'angelfishapp',
+          name: 'angelfish',
+        },
+        prerelease: true,
+      },
+    },
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
@@ -128,8 +161,6 @@ const config: ForgeConfig = {
           },
         },
       },
-      // Set CSP for webpack dev server to allow requests to angelish.app domain
-      devContentSecurityPolicy: `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' *.angelfish.app;`,
       mainConfig,
       renderer: {
         config: rendererConfig,

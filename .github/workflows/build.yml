@@ -7,9 +7,10 @@ name: Package and Release
 on:
   push:
     branches:
-      - master
-    tags:
-      - v*
+      - main
+      - launch
+    # tags:
+    #  - v*
 
 jobs:
   build:
@@ -18,8 +19,13 @@ jobs:
 
     strategy:
       matrix:
-        # macos-13 is last intel macos version
-        os: [macos-latest, ubuntu-latest, windows-latest. macos-13]
+        # macos-13 is last intel macos version, add back windows-latest
+        os: [macos-latest, ubuntu-latest, macos-13]
+      fail-fast: false
+
+    # Set GITHUB_TOKEN permissions to allow release creation during publish step
+    permissions:
+      contents: write
 
     steps:
       # Setup Environment
@@ -35,7 +41,7 @@ jobs:
 
       - name: Add MacOS Certificates
         if: matrix.os == 'macos-latest' || matrix.os == 'macos-13'
-        run: chmod +x ./packages/angelfish/resources/build/macos/add-osx-cert.sh && ./packages/angelfish/resources/build/macos/add-osx-cert.sh
+        run: chmod +x ./packages/electron/resources/build/macos/add-osx-cert.sh && ./packages/electron/resources/build/macos/add-osx-cert.sh
         env:
           CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
@@ -53,23 +59,18 @@ jobs:
       - name: Make
         run: yarn make
         env:
+          OSX_SIGN_IDENTITY: ${{ secrets.OSX_SIGN_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          WINDOWS_PFX_FILE: ${{ steps.write_file.outputs.filePath }}
-          WINDOWS_PFX_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
 
       # Create New Release for App
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: Publish
+        run: yarn publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
-        with:
-          repository: angelfishapp/desktop-releases
-          files: |
-            ./packages/angelfish/out/**/*.deb
-            ./packages/angelfish/out/**/*.dmg
-            ./packages/angelfish/out/**/*Setup.exe
-            ./packages/angelfish/out/**/*.rpm
-            ./packages/angelfish/out/**/*.zip
+          OSX_SIGN_IDENTITY: ${{ secrets.OSX_SIGN_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

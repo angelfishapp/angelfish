@@ -1,4 +1,3 @@
-import Ajv from 'ajv'
 import sqlite3 from 'sqlite3'
 
 import type { AppCommandRequest, AppCommandResponse } from '@angelfish/core'
@@ -33,8 +32,6 @@ const logger = getWorkerLogger('DatasetService')
 class DatasetServiceClass {
   // Database connection
   private _db: sqlite3.Database
-  // JSON Schema validation instance
-  private _ajv: Ajv
   // Registered Dataset Configurations
   private _datasetConfigs = new Map<string, DatasetConfig<unknown>>()
 
@@ -43,10 +40,8 @@ class DatasetServiceClass {
    * database otherwise will load file from user data directory.
    */
   public constructor() {
-    // Initialise JSON Schema Validator instance
-    this._ajv = new Ajv()
-
     const dbPath = Environment.isTest ? ':memory:' : `${Environment.userDataDir}/datasets.db`
+    logger.debug(`Using SQLite database at ${dbPath}`)
     this._db = new sqlite3.Database(dbPath, (err) => {
       if (err) logger.error(`Error opening Datasets database ${dbPath}:`, err.message)
       else logger.info('Connected to Datasets SQLite database.')
@@ -137,7 +132,7 @@ class DatasetServiceClass {
       if (!datasetConfig) {
         return reject(new Error(`Dataset "${datasetName}" not found.`))
       }
-      const validate = this._ajv.compile(datasetConfig.schema)
+      const validate = datasetConfig.validate
       for (const row of rows) {
         if (!validate(row)) {
           return reject(new InvalidDataError(datasetName, row, validate.errors))

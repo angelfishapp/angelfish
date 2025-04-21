@@ -1,4 +1,4 @@
-import { AppProcessIDs, CommandsClient, registerCommands } from '@angelfish/core'
+import { AppEventIds, AppProcessIDs, CommandsClient, registerCommands } from '@angelfish/core'
 import { getWorkerLogger } from './logger'
 
 import { AccountService } from './services/accounts'
@@ -14,24 +14,50 @@ import { UserService } from './services/user'
 
 const logger = getWorkerLogger('WorkerProcess')
 
+// Global Error Handling
+window.onerror = (message, source, lineno, colno, error) => {
+  logger.error('💥 Uncaught error', {
+    message,
+    source,
+    lineno,
+    colno,
+    stack: error?.stack,
+  })
+}
+
+window.onunhandledrejection = (event) => {
+  logger.error('💥 Unhandled promise rejection', {
+    reason: event.reason,
+    stack: event.reason?.stack,
+  })
+}
+
+// Entry point for the worker process
 window.onload = async () => {
   await CommandsClient.isReady([AppProcessIDs.MAIN])
+  logger.info('🚀 Starting Worker process...')
 
-  // Initialize the database connection
-  await BookService.init()
+  try {
+    // Initialize the database connection
+    await BookService.init()
 
-  // Register Commands
-  registerCommands([
-    BookService,
-    UserService,
-    AccountService,
-    CategoryGroupsService,
-    InstitutionService,
-    TagService,
-    TransactionService,
-    ImportService,
-    ReportsService,
-    DatasetService,
-  ])
+    // Register Commands
+    registerCommands([
+      BookService,
+      UserService,
+      AccountService,
+      CategoryGroupsService,
+      InstitutionService,
+      TagService,
+      TransactionService,
+      ImportService,
+      ReportsService,
+      DatasetService,
+    ])
+  } catch (error) {
+    logger.error('💥 Error initializing worker process', error)
+  }
+
+  CommandsClient.emitAppEvent(AppEventIds.ON_WORKER_READY)
   logger.info('🚀 Worker window loaded')
 }

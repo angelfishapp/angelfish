@@ -5,11 +5,10 @@
     "outDir": "dist",
     "declaration": true,
     "declarationMap": true,
-    "types": ["vitest/globals"],
     // Required for AJV precompiled validation functions in
     // DatasetService
     "allowJs": true
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["dist", "node_modules", "tests", "**/*.test.ts"]
 }

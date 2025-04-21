@@ -1,5 +1,4 @@
-import { app, Menu, net, protocol } from 'electron'
-import path from 'path'
+import { app, Menu } from 'electron'
 import { updateElectronApp } from 'update-electron-app'
 
 // Set user data path as early as possible
@@ -26,7 +25,7 @@ if (require('electron-squirrel-startup')) {
 
 if (Environment.isProduction && !Environment.isLinux) {
   updateElectronApp({
-    repo: 'angelfishapp/desktop-releases',
+    repo: 'angelfishapp/angelfish',
     updateInterval: '1 hour',
     logger,
   })
@@ -43,26 +42,14 @@ if (Environment.nodeEnvironment !== Environment.environment) {
 app.on('ready', () => {
   logger.debug('Electron Ready...')
 
-  // Override file:// protocol for serving static assets in distribution
-  protocol.handle('file', (request) => {
-    const url = request.url.substring(7) /* all urls start with 'file://' */
-    if (url.includes('/assets/')) {
-      // Only rewrite files looking for assets folder
-      const assetUrl = url.split('/assets/')[1]
-      const newPath = path.normalize(`${__dirname}/../renderer/assets/${assetUrl}`)
-      logger.debug(`Intercepted File protocol: url=${url}, newPath=${newPath}`)
-      return net.fetch(`file://${newPath}`)
-    }
-    return net.fetch(`file://${url}`)
-  })
+  // Register Commands & Event Handlers
+  setupMainCommands()
 
   // Create Windows
   createWindows()
 
   // Set Application Menu
   Menu.setApplicationMenu(menu)
-  // Register Commands & Event Handlers
-  setupMainCommands()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

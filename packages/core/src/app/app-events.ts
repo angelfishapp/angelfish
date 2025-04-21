@@ -6,6 +6,10 @@ import type { ISyncSummary } from './app-command-types'
  */
 export enum AppEventIds {
   /**
+   * Event emitted when the worker process is fully initialised and ready
+   */
+  ON_WORKER_READY = 'on.worker.ready',
+  /**
    * Event emitted when user is authenticated with Cloud APIs
    */
   ON_LOGIN = 'on.login',
@@ -13,6 +17,10 @@ export enum AppEventIds {
    * Event emitted when user logs out of Cloud APIs
    */
   ON_LOGOUT = 'on.logout',
+  /**
+   * Event emitted when Authenticated user is updated
+   */
+  ON_UPDATE_AUTHENTICATED_USER = 'on.update.authenticated.user',
   /**
    * Event emitted when a book file is opened
    */
@@ -41,8 +49,10 @@ export enum AppEventIds {
 
 // Define event types for each event
 export interface AppEventDefinitions {
+  [AppEventIds.ON_WORKER_READY]: void
   [AppEventIds.ON_LOGIN]: { authenticatedUser: IAuthenticatedUser }
   [AppEventIds.ON_LOGOUT]: void
+  [AppEventIds.ON_UPDATE_AUTHENTICATED_USER]: IAuthenticatedUser
   [AppEventIds.ON_BOOK_OPEN]: { book: IBook; isNew: boolean }
   [AppEventIds.ON_BOOK_CLOSE]: void
   [AppEventIds.ON_ONLINE_STATUS_CHANGED]: { isOnline: boolean }

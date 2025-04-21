@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@angelfish/tests": "workspace:*",
+    "dotenv": "*",
     "typescript": "*",
     "vitest": "*"
   }

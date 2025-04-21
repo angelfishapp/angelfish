@@ -1,5 +1,8 @@
-import { getCurrencyCodes } from '@angelfish/core'
-import type { DatasetConfig } from './dataset-interface'
+import type { ValidateFunction } from 'ajv'
+
+import type { DatasetConfig } from '../dataset-interface'
+import { CurrenciesSchema } from './currencies-schema'
+import validate from './currencies-validation'
 
 /**
  * Currency Exchange Rate Row
@@ -15,25 +18,8 @@ export interface CurrencyRate {
  */
 export const Currencies = {
   name: 'currencies',
-  schema: {
-    type: 'object',
-    properties: {
-      date: {
-        type: 'string',
-        pattern: '^(LATEST|\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))$', // Must be either 'LATEST' or date in YYYY-MM-DD Format
-      },
-      currency: {
-        type: 'string',
-        enum: getCurrencyCodes(), // Must be valid ISO 4217 currency code
-      },
-      rate: {
-        type: 'number',
-        minimum: 0, // Must be a positive number
-      },
-    },
-    required: ['date', 'currency', 'rate'],
-    additionalProperties: false,
-  },
+  schema: CurrenciesSchema,
+  validate: validate as unknown as ValidateFunction<CurrencyRate>,
   primaryKey: ['date', 'currency'],
   savedQueries: {
     getAvailableCurrencies: 'SELECT DISTINCT currency FROM currencies',
@@ -44,5 +30,6 @@ export const Currencies = {
       'SELECT date, rate FROM currencies WHERE currency == ? AND date != "LATEST" ORDER BY date ASC',
     getDateRangeRates:
       'SELECT date, rate FROM currencies WHERE currency == ? AND date >= ? AND date <= ? AND date != "LATEST" ORDER BY date ASC',
+    dropCurrency: 'DELETE FROM currencies WHERE currency == ?',
   },
 } as DatasetConfig<CurrencyRate>

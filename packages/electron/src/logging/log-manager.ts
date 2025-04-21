@@ -17,12 +17,12 @@ class LogManagerClass {
   /**
    * Hold a list of all loggers created by the LogManager
    */
-  private loggers: Record<string, MainLogger> = {}
+  private _loggers: Record<string, MainLogger> = {}
 
   /**
    * Current logging level for the app
    */
-  private logLevel: LevelOption = 'debug'
+  private _logLevel: LevelOption = 'debug'
 
   /**
    * Default constructor
@@ -35,12 +35,12 @@ class LogManagerClass {
     // Create and configure main logger
     const mainLogger = log.create({ logId: AppProcessIDs.MAIN })
     mainLogger.transports.console.level = this._getLogLevel('console')
-    this.logLevel = this._getLogLevel('file')
-    mainLogger.transports.file.level = this.logLevel
+    this._logLevel = this._getLogLevel('file')
+    mainLogger.transports.file.level = this._logLevel
     mainLogger.transports.file.resolvePathFn = () => {
       return path.join(Environment.logsDir, `${AppProcessIDs.MAIN}.log`)
     }
-    this.loggers[AppProcessIDs.MAIN] = mainLogger
+    this._loggers[AppProcessIDs.MAIN] = mainLogger
   }
 
   /**
@@ -50,7 +50,7 @@ class LogManagerClass {
    * @returns       A scoped logger for Main process
    */
   public getMainLogger(scope: string) {
-    return this.loggers[AppProcessIDs.MAIN].scope(scope)
+    return this._loggers[AppProcessIDs.MAIN].scope(scope)
   }
 
   /**
@@ -67,7 +67,7 @@ class LogManagerClass {
     processLogger.transports.file.resolvePathFn = () => {
       return path.join(Environment.logsDir, `${logId}.log`)
     }
-    this.loggers[logId] = processLogger
+    this._loggers[logId] = processLogger
   }
 
   /**
@@ -76,9 +76,9 @@ class LogManagerClass {
    * @param level   The log level to set
    */
   public setLogLevel(level: LevelOption) {
-    if (this.logLevel !== level) {
+    if (this._logLevel !== level) {
       // Loop through loggers and update log level
-      for (const [id, logger] of Object.entries(this.loggers)) {
+      for (const [id, logger] of Object.entries(this._loggers)) {
         if (id === AppProcessIDs.MAIN) {
           logger.scope('Logger').info(`Changing Log Level to ${level}`)
           logger.transports.console.level = this._getLogLevel('console')

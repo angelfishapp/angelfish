@@ -12,7 +12,6 @@ import {
   subYears,
 } from 'date-fns'
 
-import type { DateRange } from '@/components/DateRangePicker'
 import { DateRangePicker } from '@/components/DateRangePicker'
 import type { FilterViewProps } from './FilterView.interface'
 
@@ -39,7 +38,7 @@ export default function DateFilter({ column, onClose }: FilterViewProps) {
   }
 
   // Get current filter value
-  const filterValue = column.getFilterValue() as DateRange
+  const filterValue = column.getFilterValue() as [Date, Date] | undefined
 
   // Render
   return (
@@ -48,9 +47,9 @@ export default function DateFilter({ column, onClose }: FilterViewProps) {
         <DateRangePicker
           dateRanges={dateRanges}
           maxDate={today}
-          value={filterValue}
+          value={filterValue ? { start: filterValue[0], end: filterValue[1] } : undefined}
           onSelect={(dateRange) => {
-            column.setFilterValue(dateRange)
+            column.setFilterValue([dateRange.start, dateRange.end])
             onClose()
           }}
         />

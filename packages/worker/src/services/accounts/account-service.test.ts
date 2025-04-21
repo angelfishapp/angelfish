@@ -2,8 +2,19 @@
  * Tests for all the AccountService Methods
  */
 
+import {
+  accounts,
+  book,
+  institutions,
+  mockRegisterTypedAppCommand,
+  TestLogger,
+  users,
+} from '@angelfish/tests'
+
 import type { IAccount } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
+import { InstitutionEntity, UserEntity } from '../../database/entities'
 
 import { AccountService } from '.'
 
@@ -12,6 +23,32 @@ import { AccountService } from '.'
  */
 beforeAll(async () => {
   await DatabaseManager.initConnection(':memory:')
+  // Need to setup database with User, Instutition and Account to create Bank Accounts
+  // Do this directly on database without using services to isolate tests from bugs in other
+  // service
+  const userRepo = DatabaseManager.getConnection().getRepository(UserEntity)
+  await userRepo.save(users)
+  const institutionRepo = DatabaseManager.getConnection().getRepository(InstitutionEntity)
+  await institutionRepo.save(institutions)
+  mockRegisterTypedAppCommand(AppCommandIds.GET_BOOK, async () => {
+    return book
+  })
+  mockRegisterTypedAppCommand(AppCommandIds.START_SYNC, async () => ({ completed: true }))
+  mockRegisterTypedAppCommand(AppCommandIds.RUN_DATASET_QUERY, async (request) => {
+    const { datasetName, queryName, params } = request
+    TestLogger.debug(
+      `Running dataset query ${datasetName} ${queryName} with params ${JSON.stringify(params)}`,
+    )
+
+    if (queryName === 'latestRates') {
+      return [
+        { currency: 'GBP', rate: 0.7738 },
+        { currency: 'EUR', rate: 0.9261 },
+      ]
+    }
+
+    return []
+  })
 })
 
 /**
@@ -30,6 +67,13 @@ describe('AccountService', () => {
     // Test Getting all accounts in DB
     const response = await AccountService.listAccounts({})
     expect(response.length).toEqual(121)
+  })
+
+  test('test list-account-currencies', async () => {
+    // Test Getting all currencies in DB
+    const response = await AccountService.listAccountCurrencies()
+    expect(response.default_currency).toEqual('USD')
+    expect(response.foreign_currencies.length).toEqual(0)
   })
 
   test('test get-account', async () => {
@@ -66,5 +110,21 @@ describe('AccountService', () => {
     // Try getting the account, should be null
     const account = await AccountService.getAccount({ id: 122 })
     expect(account).toBeNull()
+  })
+
+  test('test bank-account-currencies', async () => {
+    // Save GBP bank account
+    const gbpAccount = accounts[125] as Partial<IAccount>
+    gbpAccount.name = 'GBP Account'
+    gbpAccount.id = undefined
+    gbpAccount.acc_start_balance = 1000
+    TestLogger.debug('Saving GBP account', gbpAccount)
+    const bankAccount = await AccountService.saveAccount(accounts[125])
+    expect(bankAccount.id).toBeDefined()
+    expect(bankAccount.current_balance).toEqual(1000)
+    expect(bankAccount.local_current_balance).toEqual(1292.32)
+
+    // Delete GBP account
+    await AccountService.deleteAccount({ id: bankAccount.id, reassignId: null })
   })
 })

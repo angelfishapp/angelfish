@@ -1,4 +1,5 @@
-import { BrowserWindow, MessageChannelMain, session } from 'electron'
+import { BrowserWindow, MessageChannelMain, net, session } from 'electron'
+import path from 'path'
 
 import { AppProcessIDs, CommandRegistryEvents } from '@angelfish/core'
 import { CommandsRegistryMain } from '../commands/commands-registry-main'
@@ -6,6 +7,11 @@ import { LogManager } from '../logging/log-manager'
 import { LogEvents } from '../logging/logging-events'
 import { settings } from '../settings'
 import { Environment } from '../utils/environment'
+import type {
+  ProcessWindowOptions,
+  RendererWindowOptions,
+  WindowProcess,
+} from './windows-manager-interface'
 
 const logger = LogManager.getMainLogger('WindowsManager')
 
@@ -13,30 +19,6 @@ const logger = LogManager.getMainLogger('WindowsManager')
 // plugin that tells the Electron app where to look for the Webpack-bundled app code (depending on
 // whether you're running in development or production).
 declare const CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY: string
-
-/**
- * Holds information about a window process.
- */
-interface WindowProcess {
-  /**
-   * The unique identifier of the process.
-   */
-  id: string
-  /**
-   * The window instance.
-   */
-  window: BrowserWindow
-  /**
-   * The type of the process.
-   */
-  type: 'renderer' | 'process'
-  /**
-   * Whether to enable direct IPC channel for all other windows to connect directly to this process
-   * without using the main process as a mediator. Only use this for processes that have a lot of IPC
-   * calls with other processes to reduce performance overhead on main process.
-   */
-  directIPCChannel: boolean
-}
 
 /**
  * Manages the creation and lifecycle of windows in the Electron app.
@@ -57,23 +39,26 @@ class WindowManagerClass {
    *
    * @param name                The name of the process
    * @param url                 The URL to load in the window
+   * @param allowedDomains      The list of allowed domains the process can access externally
    * @param nodeIntegration     Whether to enable Node.js integration
    * @param directIPCChannel    Whether to enable direct IPC channel for all other windows to connect directly to this process
    * @returns                   The new {BrowserWindow}
    */
-  public createProcessWindow(
-    id: string,
-    url: string,
-    nodeIntegration: boolean = false,
-    directIPCChannel: boolean = false,
-  ): BrowserWindow {
+  public createProcessWindow({
+    id,
+    url,
+    allowedDomains = [],
+    nodeIntegration = false,
+    directIPCChannel = false,
+  }: ProcessWindowOptions): BrowserWindow {
+    const processSession = session.fromPartition(`persist:${id}`)
     const processWindow = new BrowserWindow({
       width: 900,
       height: 600,
       show: Environment.nodeEnvironment === Environment.DEVELOPMENT,
       title: `Process: ${id}`,
       webPreferences: {
-        session: session.fromPartition(`persist:${id}`),
+        session: processSession,
         nodeIntegration,
         webSecurity: !nodeIntegration,
         // TODO - For some reason preload doesn't work with contextIsolation and nodeIntegration enabled
@@ -85,6 +70,16 @@ class WindowManagerClass {
       },
     })
     processWindow.loadURL(url)
+
+    // Set up CSP header to allow external domain calls
+    processSession.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': [this._getCSPHeader(allowedDomains)],
+        },
+      })
+    })
 
     // Initialise new process window
     this._initialiseWindow(id, processWindow, directIPCChannel)
@@ -105,19 +100,21 @@ class WindowManagerClass {
    * @param height    The height of the window
    * @returns         The new {BrowserWindow}
    */
-  public createRendererWindow(
-    id: string,
-    url: string,
-    title: string,
-    width: number,
-    height: number,
-  ): BrowserWindow {
-    // Create the browser window.
+  public createRendererWindow({
+    id,
+    url,
+    title,
+    height,
+    width,
+  }: RendererWindowOptions): BrowserWindow {
+    // Create the browser window
+    const rendererSession = session.fromPartition(`persist:${id}`)
     const rendererWindow = new BrowserWindow({
       title,
       height,
       width,
       webPreferences: {
+        session: rendererSession,
         nodeIntegration: false,
         contextIsolation: true,
         sandbox: true,
@@ -125,6 +122,23 @@ class WindowManagerClass {
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,
       },
     })
+
+    // Override file:// protocol for serving static assets in distribution
+    if (!rendererSession.protocol.isProtocolHandled('file')) {
+      logger.info(`Registering file protocol handler for renderer session persist:${id}`)
+      rendererSession.protocol.handle('file', (request) => {
+        const url = request.url.substring(7) /* all urls start with 'file://' */
+        if (url.includes('/assets/')) {
+          // Only rewrite files looking for assets folder
+          const assetUrl = url.split('/assets/')[1]
+          const newPath = path.normalize(`${__dirname}/../renderer/assets/${assetUrl}`)
+          logger.silly(`Intercepted File protocol: url=${url}, newPath=${newPath}`)
+          return net.fetch(`file://${newPath}`)
+        }
+        return net.fetch(`file://${url}`)
+      })
+    }
+
     rendererWindow.loadURL(url)
 
     // Initialise new process window
@@ -243,6 +257,18 @@ class WindowManagerClass {
   }
 
   /**
+   *
+   * @param allowedDomains  The list of allowed domains the process can access externally
+   * @returns               The Content Security Policy header
+   */
+  private _getCSPHeader(allowedDomains: string[]): string {
+    if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
+      return `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self'${allowedDomains.length > 0 ? ` ${allowedDomains.join(' ')};` : ';'}`
+    }
+    return `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-inline'; connect-src 'self'${allowedDomains.length > 0 ? ` ${allowedDomains.join(' ')};` : ';'}`
+  }
+
+  /**
    * Check if a Window with the given ID exists.
    *
    * @param id  The unique identifier of the window
@@ -250,6 +276,20 @@ class WindowManagerClass {
    */
   public has(id: string): boolean {
     return this._windows.some((w) => w.id === id)
+  }
+
+  /**
+   * Get a WindowProcess by ID.
+   *
+   * @param id  The unique identifier of the window
+   * @returns   The WindowProcess if found, null otherwise
+   */
+  public get(id: string): BrowserWindow | null {
+    const window = this._windows.find((w) => w.id === id)
+    if (window) {
+      return window.window
+    }
+    return null
   }
 }
 

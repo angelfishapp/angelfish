@@ -96,16 +96,16 @@ function* createIPCChannel() {
     )
 
     // ON_UPDATE_AUTHENTICATED_USER
-    // const onUpdateAuthenticatedUser = (payload: any) => {
-    //   emit({
-    //     event: AppEventIds.ON_UPDATE_AUTHENTICATED_USER,
-    //     payload,
-    //   })
-    // }
-    // const removeOnUpdateAuthenticatedUser = CommandsClient.addAppEventListener(
-    //   AppEventIds.ON_UPDATE_AUTHENTICATED_USER,
-    //   onUpdateAuthenticatedUser,
-    // )
+    const onUpdateAuthenticatedUser = (payload: any) => {
+      emit({
+        event: AppEventIds.ON_UPDATE_AUTHENTICATED_USER,
+        payload,
+      })
+    }
+    const removeOnUpdateAuthenticatedUser = CommandsClient.addAppEventListener(
+      AppEventIds.ON_UPDATE_AUTHENTICATED_USER,
+      onUpdateAuthenticatedUser,
+    )
 
     // ON_USER_SETTINGS_UPDATED
     const onUpdateUserSettings = (payload: any) => {
@@ -127,7 +127,7 @@ function* createIPCChannel() {
       removeOnBookClosed()
       removeOnSyncStarted()
       removeOnSyncFinished()
-      // removeOnUpdateAuthenticatedUser()
+      removeOnUpdateAuthenticatedUser()
       removeOnUpdateUserSettings()
     }
   })
@@ -143,29 +143,29 @@ export function* initialiseIPCChannel(): Generator<any, void, any> {
     const message = yield take(channel)
     switch (message.event) {
       case AppEventIds.ON_LOGIN:
-        logger.info('ON_LOGIN', message.payload)
+        logger.debug('ON_LOGIN', message.payload)
         yield put(setIsAuthenticated({ isAuthenticated: true }))
         yield put(setAuthenticatedUser({ authenticatedUser: message.payload.authenticatedUser }))
         break
       case AppEventIds.ON_LOGOUT:
-        logger.info('ON_LOGOUT', message.payload)
+        logger.debug('ON_LOGOUT', message.payload)
         yield put(setIsAuthenticated({ isAuthenticated: false }))
         yield put(setAuthenticatedUser({ authenticatedUser: undefined }))
         break
       case AppEventIds.ON_BOOK_OPEN:
-        logger.info('BOOK_OPEN', message.payload)
+        logger.debug('BOOK_OPEN', message.payload)
         yield put(setBook({ book: message.payload.book }))
         break
       case AppEventIds.ON_BOOK_CLOSE:
-        logger.info('BOOK_CLOSE', message.payload)
+        logger.debug('BOOK_CLOSE', message.payload)
         yield put(setBook({ book: undefined }))
         break
       case AppEventIds.ON_SYNC_STARTED:
-        logger.info('SYNC_STARTED', message.payload)
+        logger.debug('SYNC_STARTED', message.payload)
         yield put(setStartSync())
         break
       case AppEventIds.ON_SYNC_FINISHED:
-        logger.info('SYNC_FINISHED', message.payload)
+        logger.debug('SYNC_FINISHED', message.payload)
         yield put(
           setFinishSync({
             success: message.payload.success,
@@ -178,12 +178,12 @@ export function* initialiseIPCChannel(): Generator<any, void, any> {
           yield put(initStore({}))
         }
         break
-      // case AppEventIds.ON_UPDATE_AUTHENTICATED_USER:
-      //   logger.info('ON_UPDATE_AUTHENTICATED_USER', message.payload)
-      //   yield put(setAuthenticatedUser({ authenticatedUser: message.payload.authenticatedUser }))
-      //   break
+      case AppEventIds.ON_UPDATE_AUTHENTICATED_USER:
+        logger.debug('ON_UPDATE_AUTHENTICATED_USER', message.payload)
+        yield put(setAuthenticatedUser({ authenticatedUser: message.payload }))
+        break
       case AppEventIds.ON_USER_SETTINGS_UPDATED:
-        logger.info('ON_UPDATE_USER_SETTINGS', message.payload)
+        logger.debug('ON_UPDATE_USER_SETTINGS', message.payload)
         yield put(setUserSettings({ settings: message.payload }))
         break
       default:

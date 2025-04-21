@@ -19,12 +19,21 @@ declare const SYNC_WORKER_WEBPACK_ENTRY: string
 export function createWindows() {
   if (!WindowManager.has(AppProcessIDs.WORKER)) {
     // Create Worker Window
-    WindowManager.createProcessWindow(AppProcessIDs.WORKER, WORKER_WINDOW_WEBPACK_ENTRY, true, true)
+    WindowManager.createProcessWindow({
+      id: AppProcessIDs.WORKER,
+      url: WORKER_WINDOW_WEBPACK_ENTRY,
+      nodeIntegration: true,
+      directIPCChannel: true,
+    })
   }
 
   if (!WindowManager.has(AppProcessIDs.SYNC)) {
     // Create Sync Worker Window
-    WindowManager.createProcessWindow(AppProcessIDs.SYNC, SYNC_WORKER_WEBPACK_ENTRY)
+    WindowManager.createProcessWindow({
+      id: AppProcessIDs.SYNC,
+      url: SYNC_WORKER_WEBPACK_ENTRY,
+      allowedDomains: ['https://api.angelfish.app', 'https://auth.angelfish.app'],
+    })
   }
 
   if (!WindowManager.has(AppProcessIDs.APP)) {
@@ -40,13 +49,13 @@ export function createWindows() {
  */
 function createMainAppWindow(): BrowserWindow {
   const windowSize = settings.get('windowSize')
-  const appWindow = WindowManager.createRendererWindow(
-    AppProcessIDs.APP,
-    APP_WINDOW_WEBPACK_ENTRY,
-    'Angelfish',
-    windowSize.width,
-    windowSize.height,
-  )
+  const appWindow = WindowManager.createRendererWindow({
+    id: AppProcessIDs.APP,
+    url: APP_WINDOW_WEBPACK_ENTRY,
+    title: 'Angelfish',
+    width: windowSize.width,
+    height: windowSize.height,
+  })
   appWindow.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
   appWindow.setIcon(path.join(__dirname, 'assets', '1024.png'))
 

@@ -11,6 +11,17 @@ const logger = LogManager.getMainLogger('MainCommands')
 
 // Keep track of current App state
 let book_isOpen: boolean = settings.get('currentFilePath') !== null
+// Promise that resolves when the worker is loaded and emits the ON_WORKER_READY event
+const workerLoaded = new Promise((resolve) => {
+  const unsubscribe = AppCommandsRegistryMain.addAppEventListener(
+    AppEventIds.ON_WORKER_READY,
+    () => {
+      logger.info('Worker is ready')
+      resolve(true)
+      unsubscribe()
+    },
+  )
+})
 
 /**
  * Setup Main Event Listerners and Commands
@@ -328,6 +339,7 @@ export function setupMainCommands() {
       const bookFilePath = settings.get('currentFilePath')
       const userSettings = settings.get('userSettings')
 
+      await workerLoaded
       let book: IBook | undefined = undefined
       if (bookFilePath !== null) {
         book = await CommandsRegistryMain.executeCommand<

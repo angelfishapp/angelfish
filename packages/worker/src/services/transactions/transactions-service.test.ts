@@ -69,6 +69,12 @@ async function getAllLineItems() {
  */
 
 describe('TransactionService', () => {
+  test('test get-transactions-date-range empty database', async () => {
+    const response = await TransactionService.getTransactionsDateRange()
+    expect(response.start_date).toEqual(null)
+    expect(response.end_date).toEqual(null)
+  })
+
   test('test save-transaction', async () => {
     const transaction = {
       account_id: newAccount?.id,
@@ -219,6 +225,13 @@ describe('TransactionService', () => {
     const transaction = await TransactionService.getTransaction({ id: 1 })
     expect(transaction).toBeDefined()
     expect(transaction?.id).toEqual(1)
+  })
+
+  test('test get-transactions-date-range with data', async () => {
+    const response = await TransactionService.getTransactionsDateRange()
+    TestLogger.info('getTransactionsDateRange', response)
+    expect(response.start_date).toBeDefined()
+    expect(response.end_date).toBeDefined()
   })
 
   test('test delete-transaction', async () => {

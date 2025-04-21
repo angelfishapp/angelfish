@@ -8,5 +8,5 @@ export const authenticatedUser = {
   first_name: 'John',
   last_name: 'Smith',
   avatar: undefined,
-  phone: '4153333333',
+  phone: '+14153333333',
 } as IAuthenticatedUser
