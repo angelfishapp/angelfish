@@ -116,7 +116,6 @@ describe('renders TextButton DropdownMenu', () => {
     expect(selectButton).toBeInTheDocument()
     expect(selectButton).toHaveClass('MuiButton-outlined')
 
-
     userEvent.click(selectButton)
 
     const title = await screen.findByText(/Sub Menu Header 1/i)
@@ -127,7 +126,7 @@ describe('renders TextButton DropdownMenu', () => {
 
     const title2 = await screen.findByText(/Sub Menu Header 2/i)
     expect(title2).toBeInTheDocument()
-    
+
     const deleteIcon = await screen.findByTestId('DeleteIcon')
     expect(deleteIcon).toBeInTheDocument()
 

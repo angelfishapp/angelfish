@@ -34,7 +34,7 @@ describe('renders Search Story', () => {
     expect(tag3).toBeInTheDocument()
     fireEvent.click(tag3)
     expect(input.value).toBe('Tag 3')
-    
+
     const closeIcon = screen.getByTestId('CloseIcon')
     expect(closeIcon).toBeInTheDocument()
     fireEvent.click(closeIcon)

@@ -2,7 +2,7 @@ import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
-import React from 'react'
+import type React from 'react'
 import { describe, expect, it } from 'vitest'
 import * as stories from './PhoneField.stories'
 

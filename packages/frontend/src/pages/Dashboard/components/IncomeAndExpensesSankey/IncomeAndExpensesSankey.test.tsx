@@ -1,4 +1,4 @@
-import { ReportsData } from '@angelfish/core'
+import type { ReportsData } from '@angelfish/core'
 import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import * as stories from './IncomeAndExpensesSankey.stories'

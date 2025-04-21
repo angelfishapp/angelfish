@@ -19,7 +19,7 @@ describe('DateRangePicker', () => {
 
   test('calls onSelect when a date range is clicked', async () => {
     const handleSelect = vi.fn()
-    const user = userEvent.setup()
+    userEvent.setup()
     render(
       <composed.Default dateRanges={composed.Default.args.dateRanges} onSelect={handleSelect} />,
     )

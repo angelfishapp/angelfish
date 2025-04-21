@@ -3,7 +3,6 @@ import theme from '@/app/theme'
 import { ThemeProvider } from '@emotion/react'
 import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import * as stories from './EmojiField.stories'
 
 const { Default } = composeStories(stories)
@@ -23,7 +22,7 @@ describe('EmojiFIeld', () => {
     // // const picker = await document.querySelector('.sketch-picker')
     // // expect(picker).toBeInTheDocument()
     // // expect(picker).toBeVisible()
-    // // const emoji = screen.getByLabelText('😀') 
+    // // const emoji = screen.getByLabelText('😀')
     // // expect(emoji).toBeInTheDocument()
     // // expect(emoji).toBeVisible()
 

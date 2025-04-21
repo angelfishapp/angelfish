@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import * as stories from './Emoji.stories'
 
 const { Default, InvalidEmoji } = composeStories(stories)
-// to-check both stories is the same I didn't specify a test since the prop is the same for all cases  
+// to-check both stories is the same I didn't specify a test since the prop is the same for all cases
 describe('Emoji stories', () => {
   it('renders the default Emoji story', () => {
     const { container } = render(<Default />)

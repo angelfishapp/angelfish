@@ -47,7 +47,7 @@ describe('BankAccount Drawer stories', () => {
 
     const institutionField = screen.getByPlaceholderText('Type in Institution Name...')
     expect(institutionField).toBeInTheDocument()
-    expect(institutionField).toHaveValue("")
+    expect(institutionField).toHaveValue('')
     expect(screen.getByText('Name')).toBeInTheDocument()
 
     const countryField = screen.getByPlaceholderText('Search Countries...')
@@ -56,7 +56,7 @@ describe('BankAccount Drawer stories', () => {
 
     const websiteField = screen.getByPlaceholderText('E.g. https://www.hsbc.com')
     expect(websiteField).toBeInTheDocument()
-    expect(websiteField).toHaveValue("")
+    expect(websiteField).toHaveValue('')
 
     const isInstitutuinOpenField = screen.getByRole('checkbox')
     expect(isInstitutuinOpenField).toBeInTheDocument()

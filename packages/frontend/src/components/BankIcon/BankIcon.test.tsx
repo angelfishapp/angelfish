@@ -39,8 +39,8 @@ describe('BankIcon', () => {
 
   test('renders placeholder or fallback when no logo is provided', () => {
     render(<composed.NoLogo />)
-    expect(screen.queryByRole('img')).not.toBeInTheDocument();
-    const fallbackIcon = screen.getByTestId('AccountBalanceIcon');
-    expect(fallbackIcon).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+    const fallbackIcon = screen.getByTestId('AccountBalanceIcon')
+    expect(fallbackIcon).toBeInTheDocument()
   })
 })

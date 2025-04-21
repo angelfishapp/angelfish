@@ -16,7 +16,7 @@ describe('renders Search Story', () => {
 
     const [title] = screen.getAllByText(/Account Type Field/i)
     expect(title).toBeInTheDocument()
-    const input = screen.getByPlaceholderText('Search Account Types...')  as HTMLInputElement
+    const input = screen.getByPlaceholderText('Search Account Types...') as HTMLInputElement
     expect(input).toBeInTheDocument()
     const arrow = screen.getByTestId('ArrowDropDownIcon')
     expect(arrow).toBeInTheDocument()

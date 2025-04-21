@@ -1,10 +1,10 @@
 // ColorField.test.tsx
+import theme from '@/app/theme'
 import { ThemeProvider } from '@emotion/react'
 import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as stories from './ColorField.stories'
-import theme from '@/app/theme'
 
 const { Default } = composeStories(stories)
 
@@ -28,8 +28,7 @@ describe('ColorField', () => {
 
     await user.clear(inputById!)
     await user.type(inputById!, '#ff0000')
-    
-    expect((inputById as HTMLInputElement).value).toBe('#ff0000')
 
+    expect((inputById as HTMLInputElement).value).toBe('#ff0000')
   })
 })

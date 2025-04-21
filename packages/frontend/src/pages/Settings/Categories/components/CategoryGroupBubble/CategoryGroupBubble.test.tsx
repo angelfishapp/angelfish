@@ -1,4 +1,4 @@
-import { ICategoryGroup } from '@angelfish/core'
+import type { ICategoryGroup } from '@angelfish/core'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './CategoryGroupBubble.stories'

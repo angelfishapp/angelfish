@@ -1,4 +1,4 @@
-import { IAccount } from '@angelfish/core'
+import type { IAccount } from '@angelfish/core'
 import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import * as stories from './CategoriesTable.stories'
