@@ -1,8 +1,9 @@
 import { Step } from '@/components/Stepper'
-import { Grid, Typography } from '@mui/material'
+import { Button, Grid, Typography } from '@mui/material'
 import React from 'react'
 
 import { AccountTableUIContainer } from '@/components/AccountTable'
+import { BankAccountDrawer, InstitutionDrawer } from '@/components/drawers'
 import type { IAccount, IBook, IInstitution, IInstitutionUpdate, IUser } from '@angelfish/core'
 
 /**
@@ -76,6 +77,8 @@ export default function SetupBankAccountsStep({
 }: SetupBankAccountsStepProps) {
   // Component State
   const [isReady, setIsReady] = React.useState<boolean>(false)
+  const [showInstitutionDrawer, setShowInstitutionDrawer] = React.useState<boolean>(false)
+  const [showAccountDrawer, setShowAccountDrawer] = React.useState<boolean>(false)
 
   // Enable Button When Form Is Ready
   React.useEffect(() => {
@@ -108,7 +111,7 @@ export default function SetupBankAccountsStep({
         <Grid size={12} sx={{ paddingLeft: '0px !important', paddingBottom: 2 }}>
           <Typography variant="body1">
             Add some Bank Accounts to your Household so you can start tracking your Income and
-            Expenses in Angelfish across them.
+            Expenses in Angelfish across them. Double Click an Account or Institution to edit it
           </Typography>
         </Grid>
         <Grid
@@ -134,6 +137,34 @@ export default function SetupBankAccountsStep({
             />
           )}
         </Grid>
+      </Grid>
+      <InstitutionDrawer
+        open={showInstitutionDrawer}
+        onSearch={onSearchInstitutions}
+        onClose={() => setShowInstitutionDrawer(false)}
+        onSave={onSaveInstitution}
+      />
+      <BankAccountDrawer
+        open={showAccountDrawer}
+        onClose={() => setShowAccountDrawer(false)}
+        onSave={(updatedAccount) => onSaveAccount(updatedAccount)}
+        institutions={institutions}
+        users={users}
+      />
+      <Grid
+        size={12}
+        sx={{ paddingLeft: '0px !important', paddingBottom: 2, paddingTop: 2, gap: 2 }}
+      >
+        <Button
+          onClick={() => setShowInstitutionDrawer(true)}
+          className="button"
+          variant="outlined"
+        >
+          Add Institution
+        </Button>
+        <Button onClick={() => setShowAccountDrawer(true)} className="button" variant="outlined">
+          Add Account
+        </Button>
       </Grid>
     </Step>
   )
