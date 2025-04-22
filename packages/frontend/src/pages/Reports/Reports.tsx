@@ -160,21 +160,32 @@ export default function Reports() {
       reportsQuery.end_date,
     ],
   )
-  // this is a workaround for the issue with the table header not being aligned with the chart header soloving it by
   // calculating the width for first col in the table and make it the same for range Date section so it would
   // be aligned with the table header in chart case of resizing the window
-  const [width, setWidth] = useState('332px')
-  const col = document.getElementsByClassName('isPinned')[1] as HTMLElement
+
+  const [dateRangeSectionWidth, setDateRangeSectionWidth] = useState('332px')
+  
+  const cols = Array.from(
+    document.getElementsByClassName(' MuiTableCell-head'),
+  ) as Array<HTMLElement>
+
+  const chartWidth = cols.filter(
+    (item) =>
+      item.className.includes('col-id-') &&
+      !item.className.includes('col-id-name') &&
+      !item.className.includes('col-id-total'),
+  )[0]?.offsetWidth
+
+  const headingCol = document.getElementsByClassName('isPinned')[1] as HTMLElement
 
   useEffect(() => {
     const handleResize = () => {
-      setWidth(col?.offsetWidth.toString() + 'px')
+      setDateRangeSectionWidth(headingCol?.offsetWidth.toString() + 'px')
     }
     window.addEventListener('resize', handleResize)
-    handleResize() 
+    handleResize()
     return () => window.removeEventListener('resize', handleResize)
-  }, [col?.offsetWidth, reportsQuery, reportData])
-
+  }, [headingCol?.offsetWidth, reportsQuery, reportData])
 
   // Render
   return (
@@ -206,7 +217,7 @@ export default function Reports() {
               minWidth={`${reportData.periods.length * 150 + 300}px`}
             >
               <Box
-                width={width}
+                width={dateRangeSectionWidth}
                 flex="none"
                 borderRight="1px solid transparent"
                 bgcolor="white"
@@ -283,7 +294,7 @@ export default function Reports() {
                     </Box>
                   </Box>
                 </Box>
-                <ReportsChart data={reportData} />
+                <ReportsChart data={reportData} chartWidth={chartWidth} />
               </Box>
             </Box>
 
