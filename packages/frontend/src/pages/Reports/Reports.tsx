@@ -164,7 +164,7 @@ export default function Reports() {
   // be aligned with the table header in chart case of resizing the window
 
   const [dateRangeSectionWidth, setDateRangeSectionWidth] = useState('332px')
-  
+
   const cols = Array.from(
     document.getElementsByClassName(' MuiTableCell-head'),
   ) as Array<HTMLElement>
