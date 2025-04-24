@@ -76,8 +76,15 @@ jobs:
           # Export the path for the next GitHub Actions step
           echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT
 
-          # Get the path to the local signtool on runner
-          $signtool = Get-Command signtool.exe | Select-Object -ExpandProperty Source
+          # Get the path to the latest local signtool on runner
+          $signtools = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse -Filter signtool.exe |
+            Where-Object { $_.FullName -like '*x64*' }
+          if ($signtools.Count -eq 0) {
+            Write-Error "❌ signtool.exe not found in Windows Kits folder."
+            exit 1
+          }
+          # Grab the newest one based on folder version
+          $latestSigntool = $signtools | Sort-Object FullName -Descending | Select-Object -First 1
           echo "signtool_path=$signtool" >> $env:GITHUB_OUTPUT
         env:
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
