@@ -52,6 +52,11 @@ jobs:
         id: setup_windows
         shell: pwsh
         run: |
+          # Ensure yarn 4.9.1 is enabled by default
+          corepack enable
+          corepack prepare yarn@4.9.1 --activate
+          yarn --version
+
           # Write metadata.json
           $metadataPath = Join-Path $PWD "metadata.json"
 
@@ -63,6 +68,13 @@ jobs:
 
           $metadata | Out-File -FilePath $metadataPath -Encoding utf8
           echo "metadata_path=$metadataPath" >> $env:GITHUB_OUTPUT
+
+          # Install the NuGet package (without versioned folder)
+          .\nuget.exe install Microsoft.Trusted.Signing.Client -Version 1.0.53 -ExcludeVersion
+          # Resolve the full path to the package directory
+          $packagePath = Join-Path $PWD 'Microsoft.Trusted.Signing.Client'
+          # Export the path for the next GitHub Actions step
+          echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT
         env:
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
           AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
@@ -81,4 +93,5 @@ jobs:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_METADATA_JSON: ${{ steps.setup_windows.outputs.metadata_path }}
+          AZURE_CODE_SIGNING_DLIB: ${{ steps.setup_windows.outputs.package_path }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
