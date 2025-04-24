@@ -4,14 +4,6 @@ import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import * as stories from './ImportTransactions.stories'
 
-vi.mock('lottie-web', () => ({
-  loadAnimation: vi.fn(() => ({
-    play: vi.fn(),
-    stop: vi.fn(),
-    destroy: vi.fn(),
-  })),
-}))
-
 const { Default } = composeStories(stories)
 
 describe('AccountTable', () => {
