@@ -55,5 +55,8 @@ export async function filterPackageJsonForExternals(buildPath: string, externals
 
   await fs.writeFile(pkgPath, JSON.stringify(newPkg, null, 2), 'utf-8')
   // eslint-disable-next-line no-console
-  console.log(`✅ Updated package.json in ${buildPath} with externals: ${externals.join(', ')}`)
+  console.log(
+    `✅ Updated package.json in ${buildPath} with externals: ${externals.join(', ')}`,
+    newPkg,
+  )
 }
