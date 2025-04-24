@@ -86,6 +86,9 @@ jobs:
           # Grab the newest one based on folder version
           $latestSigntool = $signtools | Sort-Object FullName -Descending | Select-Object -First 1
           echo "signtool_path=$latestSigntool" >> $env:GITHUB_OUTPUT
+
+          # Enable DEBUG logging on build modules if needed
+          $env:DEBUG = "electron-forge:*,electron-windows-sign:*,electron-winstaller:*,*"
         env:
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
           AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
