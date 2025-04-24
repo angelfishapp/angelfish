@@ -85,7 +85,7 @@ jobs:
           }
           # Grab the newest one based on folder version
           $latestSigntool = $signtools | Sort-Object FullName -Descending | Select-Object -First 1
-          echo "signtool_path=$latestSigntool.FullName" >> $env:GITHUB_OUTPUT
+          echo "signtool_path=$latestSigntool" >> $env:GITHUB_OUTPUT
         env:
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
           AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
