@@ -52,7 +52,6 @@ export async function filterPackageJsonForExternals(buildPath: string, externals
   }
 
   delete newPkg.devDependencies
-  delete newPkg.installConfig
 
   await fs.writeFile(pkgPath, JSON.stringify(newPkg, null, 2), 'utf-8')
   // eslint-disable-next-line no-console
