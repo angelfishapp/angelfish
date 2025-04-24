@@ -21,7 +21,7 @@ jobs:
       matrix:
         # macos-13 is last intel macos version
         # os: [macos-latest, ubuntu-latest, macos-13, windows-latest]
-        os: [ubuntu-latest]
+        os: [windows-latest]
       fail-fast: false
 
     # Set GITHUB_TOKEN permissions to allow release creation during publish step
@@ -68,10 +68,10 @@ jobs:
           AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
           AZURE_CERT_PROFILE_NAME: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
 
-      # Package App
+      # Create New Release for App
 
-      - name: Make
-        run: yarn make
+      - name: Build & Publish
+        run: yarn publish
         env:
           OSX_SIGN_IDENTITY: ${{ secrets.OSX_SIGN_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
@@ -81,14 +81,4 @@ jobs:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_METADATA_JSON: ${{ steps.setup_windows.outputs.metadata_path }}
-
-      # Create New Release for App
-
-      - name: Publish
-        run: yarn publish
-        env:
-          OSX_SIGN_IDENTITY: ${{ secrets.OSX_SIGN_IDENTITY }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
