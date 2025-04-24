@@ -56,10 +56,6 @@ const config: ForgeConfig = {
 
         child.on('exit', (code) => {
           if (code !== 0) {
-            spawn('yarn', ['why', '@angelfish/core'], {
-              cwd: buildPath,
-              stdio: 'inherit',
-            })
             return reject(new Error('yarn install failed'))
           }
           resolve()

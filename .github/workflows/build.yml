@@ -47,13 +47,26 @@ jobs:
           CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
 
-      - name: Add Windows Certificate
+      - name: Setup Windows Tusted Signing Service
         if: matrix.os == 'windows-latest'
-        id: write_file
-        uses: timheuer/base64-to-file@v1
-        with:
-          fileName: 'win-certificate.pfx'
-          encodedString: ${{ secrets.WINDOWS_PFX_FILE }}
+        id: setup_windows
+        shell: pwsh
+        run: |
+          # Write metadata.json
+          $metadataPath = Join-Path $PWD "metadata.json"
+
+          $metadata = @{
+            Endpoint = "$env:AZURE_ENDPOINT"
+            CodeSigningAccountName = "$env:AZURE_CODE_SIGNING_NAME"
+            CertificateProfileName = "$env:AZURE_CERT_PROFILE_NAME"
+          } | ConvertTo-Json -Depth 10
+
+          $metadata | Out-File -FilePath $metadataPath -Encoding utf8
+          echo "metadata_path=$metadataPath" >> $env:GITHUB_OUTPUT
+        env:
+          AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
+          AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
+          AZURE_CERT_PROFILE_NAME: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
 
       # Package App
 
@@ -67,6 +80,7 @@ jobs:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_METADATA_JSON: ${{ steps.setup_windows.outputs.metadata_path }}
 
       # Create New Release for App
 
