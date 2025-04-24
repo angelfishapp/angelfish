@@ -31,3 +31,6 @@ jobs:
 
       - name: Run Tests
         run: yarn test:run --reporter dot --reporter github-actions
+        env:
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_OOB_CODE: ${{ secrets.TEST_OOB_CODE }}
