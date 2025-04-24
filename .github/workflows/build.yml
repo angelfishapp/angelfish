@@ -75,6 +75,10 @@ jobs:
           $packagePath = Join-Path $PWD 'Microsoft.Trusted.Signing.Client'
           # Export the path for the next GitHub Actions step
           echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT
+
+          # Get the path to the local signtool on runner
+          $signtool = Get-Command signtool.exe | Select-Object -ExpandProperty Source
+          echo "signtool_path=$signtool" >> $env:GITHUB_OUTPUT
         env:
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
           AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
@@ -94,4 +98,5 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_METADATA_JSON: ${{ steps.setup_windows.outputs.metadata_path }}
           AZURE_CODE_SIGNING_DLIB: ${{ steps.setup_windows.outputs.package_path }}
+          SIGNTOOL_PATH: ${{ steps.setup_windows.outputs.signtool_path }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
