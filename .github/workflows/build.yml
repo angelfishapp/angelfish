@@ -8,8 +8,9 @@ on:
   push:
     branches:
       - main
-    tags:
-      - v*
+      - launch
+    # tags:
+    # - v*
 
 jobs:
   build:
@@ -18,8 +19,9 @@ jobs:
 
     strategy:
       matrix:
-        # macos-13 is last intel macos version, add back windows-latest
-        os: [macos-latest, ubuntu-latest, macos-13]
+        # macos-13 is last intel macos version
+        # os: [macos-latest, ubuntu-latest, macos-13, windows-latest]
+        os: [ubuntu-latest]
       fail-fast: false
 
     # Set GITHUB_TOKEN permissions to allow release creation during publish step

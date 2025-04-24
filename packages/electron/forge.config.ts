@@ -49,7 +49,7 @@ const config: ForgeConfig = {
       filterPackageJsonForExternals(buildPath, externalDeps)
 
       await new Promise<void>((resolve, reject) => {
-        const child = spawn('yarn', ['install'], {
+        const child = spawn('yarn', ['install', '--no-immutable'], {
           cwd: buildPath,
           stdio: 'inherit',
         })

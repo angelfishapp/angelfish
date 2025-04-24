@@ -63,5 +63,6 @@
     "typescript": "*",
     "vitest": "*",
     "webpack": "*"
-  }
+  },
+  "packageManager": "yarn@4.8.1"
 }
