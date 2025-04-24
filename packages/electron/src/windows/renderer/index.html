@@ -1,10 +1,33 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <link href="/assets/fonts/Mukta/mukta.css" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link href="/assets/fonts/Mukta/mukta.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script>
+    // Global Error Handling
+    window.onerror = (message, source, lineno, colno, error) => {
+      window.log.error('RendererWindow', '💥 Uncaught error', {
+        message,
+        source,
+        lineno,
+        colno,
+        stack: error?.stack,
+      })
+    }
+
+    window.onunhandledrejection = (event) => {
+      window.log.error('RendererWindow', '💥 Unhandled promise rejection', {
+        reason: event.reason,
+        stack: event.reason?.stack,
+      })
+    }
+  </script>
+</body>
+
 </html>

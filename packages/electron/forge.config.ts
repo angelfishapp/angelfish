@@ -52,6 +52,10 @@ const config: ForgeConfig = {
         const child = spawn('yarn', ['install', '--no-immutable'], {
           cwd: buildPath,
           stdio: 'inherit',
+          shell: true,
+          env: {
+            YARN_NODE_LINKER: 'node-modules',
+          },
         })
 
         child.on('exit', (code) => {
