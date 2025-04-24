@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import moment from 'moment'
 import * as stories from './DateRangeField.stories'
 
@@ -21,10 +21,14 @@ describe('renders Date Field Story', () => {
     const input = screen.getByPlaceholderText('Select Date Range...') as HTMLInputElement
     expect(input).toBeInTheDocument()
 
-    fireEvent.click(input)
+    act(() => {
+      fireEvent.click(input)
+    })
     const todayButton = screen.getByText(/Last 24 Hours/i)
     expect(todayButton).toBeInTheDocument()
-    fireEvent.click(todayButton)
+    act(() => {
+      fireEvent.click(todayButton)
+    })
 
     const todayFormatted = moment().format('MM/DD/YYYY')
     const yesterdayFormatted = moment().subtract(1, 'day').format('MM/DD/YYYY')
@@ -44,10 +48,14 @@ describe('renders Date Field Story', () => {
     const input = screen.getByPlaceholderText('Select Date Range...') as HTMLInputElement
     expect(input).toBeInTheDocument()
 
-    fireEvent.click(input)
+    act(() => {
+      fireEvent.click(input)
+    })
     const todayButton = screen.getByText(/Last 24 Hours/i)
     expect(todayButton).toBeInTheDocument()
-    fireEvent.click(todayButton)
+    act(() => {
+      fireEvent.click(todayButton)
+    })
 
     expect(input.value).toBe('Last 24 Hours')
   })

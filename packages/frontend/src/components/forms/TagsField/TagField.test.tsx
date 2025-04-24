@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import type React from 'react'
 import { describe, expect, it } from 'vitest'
 import * as stories from './TagsField.stories'
@@ -24,8 +24,11 @@ describe('TagField tests', () => {
     const handleChange = vi.fn()
     renderWithTheme(<Default onChange={handleChange} />)
     const inputField = screen.getByRole('combobox')
-    fireEvent.change(inputField, { target: { value: 'Tag 1' } })
-    fireEvent.keyDown(inputField, { key: 'Enter', code: 'Enter' })
+    act(() => {
+      fireEvent.change(inputField, { target: { value: 'Tag 1' } })
+      fireEvent.keyDown(inputField, { key: 'Enter', code: 'Enter' })
+    })
+
     const addedTag = screen.getByText('Tag 1')
     expect(addedTag).toBeInTheDocument()
   })

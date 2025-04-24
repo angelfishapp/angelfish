@@ -1,5 +1,5 @@
 import { composeStories } from '@storybook/react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as stories from './ContextMenu.stories' // Ensure correct path
 
@@ -15,9 +15,9 @@ describe('Context Menu', () => {
     render(<composed.Default />)
 
     const elementToRightClick = screen.getByText(/Right Click On Me/i)
-
-    fireEvent.contextMenu(elementToRightClick)
-
+    act(() => {
+      fireEvent.contextMenu(elementToRightClick)
+    })
     const contextMenu = screen.getByRole('menu')
     expect(contextMenu).toBeInTheDocument()
     const title = screen.getByText(/My context Menu/i)

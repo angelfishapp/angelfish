@@ -1,6 +1,6 @@
 import { createTheme, ThemeProvider } from '@mui/material'
 import { composeStories } from '@storybook/react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as stories from './Drawer.stories'
 
@@ -20,7 +20,9 @@ describe('Drawer stories', () => {
     expect(paper).toHaveClass('MuiDrawer-paperAnchorRight')
     expect(screen.getByText('Edit Drawer')).toBeInTheDocument()
     const moreIconButton = screen.getByTestId('MoreHorizIcon')
-    fireEvent.click(moreIconButton)
+    act(() => {
+      fireEvent.click(moreIconButton)
+    })
     expect(screen.getByText(/Delete Item/i)).toBeInTheDocument()
   })
 
@@ -36,7 +38,9 @@ describe('Drawer stories', () => {
     expect(saveButton).toBeInTheDocument()
 
     const moreIconButton = screen.getByTestId('MoreHorizIcon')
-    fireEvent.click(moreIconButton)
+    act(() => {
+      fireEvent.click(moreIconButton)
+    })
     expect(screen.getByText(/Delete Item/i)).toBeInTheDocument()
   })
 
@@ -51,7 +55,9 @@ describe('Drawer stories', () => {
     expect(screen.getByText('Edit Drawer')).toBeInTheDocument()
 
     const moreIconButton = screen.getByTestId('MoreHorizIcon')
-    fireEvent.click(moreIconButton)
+    act(() => {
+      fireEvent.click(moreIconButton)
+    })
     expect(screen.getByText(/Delete Item/i)).toBeInTheDocument()
   })
 })

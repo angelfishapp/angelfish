@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './AccountTable.stories'
 
 const { Default, Empty } = composeStories(stories)
@@ -26,7 +26,9 @@ describe('AccountTable', () => {
     )
 
     const addLink = screen.getByText('Add An Institution')
-    fireEvent.click(addLink)
+    act(() => {
+      fireEvent.click(addLink)
+    })
     const createAccountTitle = screen.getByText('Add Institution')
     expect(createAccountTitle).toBeInTheDocument()
   })
@@ -40,7 +42,9 @@ describe('AccountTable', () => {
 
     const row = document.querySelector('[data-row="account-123"]') as HTMLElement
     expect(row).toBeInTheDocument()
-    fireEvent.contextMenu(row)
+    act(() => {
+      fireEvent.contextMenu(row)
+    })
 
     expect(screen.getByText('Edit')).toBeInTheDocument()
   })

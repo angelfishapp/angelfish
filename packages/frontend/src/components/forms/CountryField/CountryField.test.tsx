@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './CountryField.stories'
 
 const { Default } = composeStories(stories)
@@ -23,8 +23,11 @@ describe('renders CountryFIeld Story', () => {
     const helperText = screen.getByText(/Select a country from the list/i)
     expect(helperText).toBeInTheDocument()
 
-    fireEvent.change(input, { target: { value: 'canada' } })
-    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
+    act(() => {
+      fireEvent.change(input, { target: { value: 'canada' } })
+      fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
+    })
+
     expect(input.value).toBe('Canada')
   })
 })

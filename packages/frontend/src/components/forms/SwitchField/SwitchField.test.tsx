@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 
 import type React from 'react'
 import { describe, expect, it } from 'vitest'
@@ -25,7 +25,9 @@ describe('SwitchField tests', () => {
     const handleChange = vi.fn()
     renderWithTheme(<Default label="Switch Field" value={false} onChange={handleChange} />)
     const switchInput = screen.getByRole('checkbox')
-    fireEvent.click(switchInput)
+    act(() => {
+      fireEvent.click(switchInput)
+    })
     expect(handleChange).toHaveBeenCalledWith(true)
   })
 
