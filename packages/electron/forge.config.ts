@@ -46,7 +46,7 @@ const config: ForgeConfig = {
       const externalDeps = Object.keys(rendererConfig.externals ?? {})
       // TypeORM requires reflect-metadata to be installed as a dependency
       externalDeps.push('reflect-metadata')
-      filterPackageJsonForExternals(buildPath, externalDeps)
+      await filterPackageJsonForExternals(buildPath, externalDeps)
 
       await new Promise<void>((resolve, reject) => {
         const child = spawn('yarn', ['install', '--no-immutable'], {
