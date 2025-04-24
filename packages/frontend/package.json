@@ -71,6 +71,7 @@
     "@types/react-color": "^3.0.5",
     "@types/react-dom": "^19.0.4",
     "@types/react-redux": "^7.1.18",
+    "canvas": "^3.1.0",
     "jsdom": "^26.0.0",
     "storybook": "^8.6.4",
     "typescript": "*",

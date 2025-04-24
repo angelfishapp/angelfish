@@ -139,6 +139,7 @@ __metadata:
     "@types/react-color": "npm:^3.0.5"
     "@types/react-dom": "npm:^19.0.4"
     "@types/react-redux": "npm:^7.1.18"
+    canvas: "npm:^3.1.0"
     chart.js: "npm:^3.9.1"
     chartjs-chart-sankey: "npm:^0.12.0"
     clsx: "npm:^1.1.1"
@@ -5669,6 +5670,17 @@ __metadata:
   version: 1.0.30001702
   resolution: "caniuse-lite@npm:1.0.30001702"
   checksum: 10/1f756953e5caf6c5b17562413cbbb7768b6b853620001b592aff07235ed98e84a1c169ad627d2cd77acd1524f482b5a9682edbd1b7b5cd3dae7753785d7b021d
+  languageName: node
+  linkType: hard
+
+"canvas@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "canvas@npm:3.1.0"
+  dependencies:
+    node-addon-api: "npm:^7.0.0"
+    node-gyp: "npm:latest"
+    prebuild-install: "npm:^7.1.1"
+  checksum: 10/810f28fd340374b14579d96651afb1e8c0a01fa4aa636f7092260bd376eaf3fa158e3996331ee9fb6c0c805cb44c49c7ebd8a2ca6366c1a494dedc3385ac6112
   languageName: node
   linkType: hard
 

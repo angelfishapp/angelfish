@@ -13,6 +13,7 @@ import { FusesPlugin } from '@electron-forge/plugin-fuses'
 import { WebpackPlugin } from '@electron-forge/plugin-webpack'
 import type { ForgeConfig } from '@electron-forge/shared-types'
 import { FuseV1Options, FuseVersion } from '@electron/fuses'
+import type { HASHES } from '@electron/windows-sign/dist/cjs/types'
 import { spawn } from 'child_process'
 import dotenv from 'dotenv'
 import path from 'path'
@@ -113,8 +114,12 @@ const config: ForgeConfig = {
       name: 'Angelfish',
       iconUrl: 'https://angelfish.app/assets/icon.ico',
       setupIcon: './resources/icons/icon.ico',
-      certificateFile: process.env['WINDOWS_PFX_FILE'],
-      certificatePassword: process.env['WINDOWS_PFX_PASSWORD'],
+      windowsSign: {
+        signToolPath: process.env['SIGNTOOL_PATH'],
+        signWithParams: `/v /debug /dlib ${process.env['AZURE_CODE_SIGNING_DLIB']} /dmdf ${process.env['AZURE_METADATA_JSON']}`,
+        timestampServer: 'http://timestamp.acs.microsoft.com',
+        hashes: ['sha256' as HASHES],
+      },
     }),
     new MakerDeb({
       options: {
