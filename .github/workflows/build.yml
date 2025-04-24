@@ -67,6 +67,7 @@ jobs:
           } | ConvertTo-Json -Depth 10
 
           $metadata | Out-File -FilePath $metadataPath -Encoding utf8
+          Get-Content $metadataPath -Raw
           echo "metadata_path=$metadataPath" >> $env:GITHUB_OUTPUT
 
           # Install the NuGet package (without versioned folder)
@@ -86,9 +87,6 @@ jobs:
           # Grab the newest one based on folder version
           $latestSigntool = $signtools | Sort-Object FullName -Descending | Select-Object -First 1
           echo "signtool_path=$latestSigntool" >> $env:GITHUB_OUTPUT
-
-          # Enable DEBUG logging on build modules if needed
-          $env:DEBUG = "electron-forge:*,electron-windows-sign:*,electron-winstaller:*,*"
         env:
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
           AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
@@ -110,3 +108,4 @@ jobs:
           AZURE_CODE_SIGNING_DLIB: ${{ steps.setup_windows.outputs.package_path }}
           SIGNTOOL_PATH: ${{ steps.setup_windows.outputs.signtool_path }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: "electron-forge:*,electron-windows-sign:*,electron-winstaller:*,*"
