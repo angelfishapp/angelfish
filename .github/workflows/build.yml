@@ -63,11 +63,14 @@ jobs:
           corepack prepare yarn@4.9.1 --activate
           yarn --version
 
-          # Install Windows 10 SDK 10.0.2261.755 or later
-          nuget install Microsoft.Windows.SDK.BuildTools -Version 10.0.22621.3233 -x
+          # Install Trusted Signing Packages
+          Install-Package Microsoft.Windows.SDK.BuildTools -RequiredVersion 10.0.22621.3233 -Source https://www.nuget.org/api/v2/ -Force
+          Install-Package Microsoft.Trusted.Signing.Client -RequiredVersion 1.0.53 -Source https://www.nuget.org/api/v2/ -Force
+          $packagePath = Get-Package -Name Microsoft.Trusted.Signing.Client | Select-Object -ExpandProperty Source
+          Get-ChildItem -Path $packagePath
+          # Export the path for the next GitHub Actions step
+          echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT
 
-          # Make sure .NET 8 is installed and active
-          dotnet --info
 
           # Write metadata.json
           $metadataPath = Join-Path $PWD "metadata.json"
@@ -81,14 +84,6 @@ jobs:
           $metadata | Out-File -FilePath $metadataPath -Encoding utf8
           Get-Content $metadataPath -Raw
           echo "metadata_path=$metadataPath" >> $env:GITHUB_OUTPUT
-
-          # Install the NuGet package (without versioned folder)
-          nuget install Microsoft.Trusted.Signing.Client -Version 1.0.53 -x
-          # Resolve the full path to the package directory
-          $packagePath = Join-Path $PWD 'Microsoft.Trusted.Signing.Client'
-          Get-ChildItem -Path $packagePath
-          # Export the path for the next GitHub Actions step
-          echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT
 
           # Get the path to the latest local signtool on runner
           $signtools = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse -Filter signtool.exe |
