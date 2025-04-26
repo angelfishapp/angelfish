@@ -7,14 +7,16 @@ import { saveAccount } from '@/redux/accounts/actions'
 import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
 import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
 import { selectAllTags } from '@/redux/tags/selectors'
-import { deleteTransaction, listTransactions, saveTransactions } from '@/redux/transactions/actions'
-import { selectAllTransactions } from '@/redux/transactions/selectors'
-import type { IAccount, ITransactionUpdate } from '@angelfish/core'
+import { listTransactions, saveTransactions } from '@/redux/transactions/actions'
+import type { IAccount, ITransaction, ITransactionUpdate } from '@angelfish/core'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { CategoryDrawer } from '@/components/drawers'
 import { ImportTransactionsContainer } from '@/containers/ImportTransactionsContainer'
 
+import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction'
+import { useGetTransactions } from '@/hooks/transactions/useGetTransactions'
+import { useSaveTransactions } from '@/hooks/transactions/useSaveTransactions'
 import { AccountsMenu } from './components/AccountsMenu'
 import { AccountsView } from './views/AccountsView'
 
@@ -27,7 +29,11 @@ export default function Accounts() {
 
   // Redux Store Data
   const accounts = useSelector(selectAllAccountsWithRelations)
-  const transactions = useSelector(selectAllTransactions)
+
+  const { data: transactions, isLoading, error } = useGetTransactions({})
+  const saveMutation = useSaveTransactions()
+  const deleteMutation = useDeleteTransaction()
+
   const tags = useSelector(selectAllTags)
   const categoryGroups = useSelector(selectAllCategoryGroups)
 
@@ -94,33 +100,33 @@ export default function Accounts() {
   /**
    * Callback to save a Transaction to the Database
    */
-  const onSaveTransactions = React.useCallback(
-    async (transactions: ITransactionUpdate[]) => {
-      dispatch(saveTransactions({ transactions }))
-    },
-    [dispatch],
-  )
+  const onSaveTransactions = React.useCallback(async (transactions: ITransactionUpdate[]) => {
+    dispatch(saveTransactions({ transactions }))
+    saveMutation.mutate({ transactions })
+    // console.log('save transactions', transactions)
+  }, [])
 
   /**
    * Delete a Transaction from the Database
    */
-  const onDeleteTransaction = React.useCallback(
-    async (id: number) => {
-      dispatch(deleteTransaction({ id }))
-    },
-    [dispatch],
-  )
+  const onDeleteTransaction = async (id: number) => {
+    deleteMutation.mutate(id)
+    // console.log('delete transaction', id)
+  }
 
   /**
    * Callback to save new Category (Account) to the Database
    */
-  const onSaveCategory = React.useCallback(
-    async (category: IAccount) => {
-      setShowCreateCategoryDrawer(false)
-      dispatch(saveAccount({ account: category }))
-    },
-    [dispatch],
-  )
+  const onSaveCategory = async (category: IAccount) => {
+    setShowCreateCategoryDrawer(false)
+    dispatch(saveAccount({ account: category }))
+  }
+
+  // console.log(transactions, isLoading, error, 'test data')
+
+  if (isLoading) return <div>Loading .... </div>
+
+  if (error) return <div>There is an Error</div>
 
   return (
     <Box
@@ -199,7 +205,7 @@ export default function Accounts() {
 
         <AccountsView
           account={selectedAccount}
-          transactions={transactions}
+          transactions={transactions as ITransaction[]}
           accountsWithRelations={accounts}
           tags={tags}
           onCreateCategory={(name?) => {

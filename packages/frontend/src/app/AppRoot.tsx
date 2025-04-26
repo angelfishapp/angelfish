@@ -26,17 +26,17 @@ export default function AppRoot() {
         {/* CSS Reset: Provides basic style normalizations. */}
         <CssBaseline />
         <GlobalStyles styles={AppRootStyles} />
+        {/** react-query provider */}
 
-        {/* Redux provider */}
-        <Provider store={reduxStore}>
-          {/** react-query provider */}
-          <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          {/* Redux provider */}
+          <Provider store={reduxStore}>
             <HashRouter>
               {/* App */}
               <AppContainer />
             </HashRouter>
-          </QueryClientProvider>
-        </Provider>
+          </Provider>
+        </QueryClientProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   )
