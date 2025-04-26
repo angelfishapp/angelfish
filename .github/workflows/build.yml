@@ -60,12 +60,12 @@ jobs:
           # Install Required Trusted Signing Packages
           Install-Package Microsoft.Windows.SDK.BuildTools -RequiredVersion 10.0.22621.3233 -Source https://www.nuget.org/api/v2/ -Destination $PWD -Force
           $signToolPath = Join-Path $PWD "Microsoft.Windows.SDK.BuildTools.10.0.22621.3233\bin\10.0.22621.0\x64\signtool.exe"
-          Write-Host "signtool_path=$signToolPath"
+          Write-Host "signtool_path=$signToolPath exists=$(Test-Path $signToolPath)"
           echo "signtool_path=$signToolPath" >> $env:GITHUB_OUTPUT
 
           Install-Package Microsoft.Trusted.Signing.Client -RequiredVersion 1.0.53 -Source https://www.nuget.org/api/v2/ -Destination $PWD -Force
-          $packagePath = Join-Path $PWD "Microsoft.Trusted.Signing.Client.1.0.53"
-          Write-Host "package_path=$packagePath"
+          $packagePath = Join-Path $PWD "Microsoft.Trusted.Signing.Client.1.0.53\bin\x64\Azure.CodeSigning.Dlib.dll"
+          Write-Host "package_path=$packagePath exists=$(Test-Path $packagePath)"
           echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT          
 
           # Write metadata.json
