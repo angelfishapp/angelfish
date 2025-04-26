@@ -73,8 +73,6 @@ jobs:
           # Make sure we have correct version of Windows SDK
           nuget install Microsoft.Windows.SDK.BuildTools -Version 10.0.22621.3233 -x
 
-          dotnet --version
-
           # Install the NuGet package (without versioned folder)
           nuget install Microsoft.Trusted.Signing.Client -Version 1.0.53 -ExcludeVersion
           # Resolve the full path to the package directory
@@ -113,4 +111,6 @@ jobs:
           AZURE_CODE_SIGNING_DLIB: ${{ steps.setup_windows.outputs.package_path }}
           SIGNTOOL_PATH: ${{ steps.setup_windows.outputs.signtool_path }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEBUG: "electron-forge:*,electron-windows-sign:*,electron-winstaller:*,*"
+          # Optionally enable debug logging for builds, DO NOT enable for electron-windows-sign or
+          # or sign executable will interpret existence of messages in stderr as signing failure
+          DEBUG: 'electron-forge:*,electron-winstaller:*'
