@@ -79,8 +79,6 @@ jobs:
           $metadata | Out-File -FilePath $metadataPath -Encoding utf8
           Get-Content $metadataPath -Raw
           echo "metadata_path=$metadataPath" >> $env:GITHUB_OUTPUT
-
-          throw "Something went wrong! ❌"
         env:
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
           AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
