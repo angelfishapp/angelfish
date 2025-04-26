@@ -47,12 +47,6 @@ jobs:
           CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
 
-      - name: Setup .NET 8
-        if: matrix.os == 'windows-latest'
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
       - name: Setup Windows Tusted Signing Service
         if: matrix.os == 'windows-latest'
         id: setup_windows
@@ -63,18 +57,19 @@ jobs:
           corepack prepare yarn@4.9.1 --activate
           yarn --version
 
-          # Install Trusted Signing Packages
-          Install-Package Microsoft.Windows.SDK.BuildTools -RequiredVersion 10.0.22621.3233 -Source https://www.nuget.org/api/v2/ -Force
-          Install-Package Microsoft.Trusted.Signing.Client -RequiredVersion 1.0.53 -Source https://www.nuget.org/api/v2/ -Force
-          $packagePath = Get-Package -Name Microsoft.Trusted.Signing.Client | Select-Object -ExpandProperty Source
-          Get-ChildItem -Path $packagePath
-          # Export the path for the next GitHub Actions step
-          echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT
+          # Install Required Trusted Signing Packages
+          Install-Package Microsoft.Windows.SDK.BuildTools -RequiredVersion 10.0.22621.3233 -Source https://www.nuget.org/api/v2/ -Destination $PWD -Force
+          $signToolPath = Join-Path $PWD "Microsoft.Windows.SDK.BuildTools.10.0.22621.3233\bin\10.0.22621.0\x64\signtool.exe"
+          Write-Host "signtool_path=$signToolPath"
+          echo "signtool_path=$signToolPath" >> $env:GITHUB_OUTPUT
 
+          Install-Package Microsoft.Trusted.Signing.Client -RequiredVersion 1.0.53 -Source https://www.nuget.org/api/v2/ -Destination $PWD -Force
+          $packagePath = Join-Path $PWD "Microsoft.Trusted.Signing.Client.1.0.53"
+          Write-Host "package_path=$packagePath"
+          echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT          
 
           # Write metadata.json
           $metadataPath = Join-Path $PWD "metadata.json"
-
           $metadata = @{
             Endpoint = "$env:AZURE_ENDPOINT"
             CodeSigningAccountName = "$env:AZURE_CODE_SIGNING_NAME"
@@ -85,16 +80,7 @@ jobs:
           Get-Content $metadataPath -Raw
           echo "metadata_path=$metadataPath" >> $env:GITHUB_OUTPUT
 
-          # Get the path to the latest local signtool on runner
-          $signtools = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse -Filter signtool.exe |
-            Where-Object { $_.FullName -like '*x64*' }
-          if ($signtools.Count -eq 0) {
-            Write-Error "❌ signtool.exe not found in Windows Kits folder."
-            exit 1
-          }
-          # Grab the newest one based on folder version
-          $latestSigntool = $signtools | Sort-Object FullName -Descending | Select-Object -First 1
-          echo "signtool_path=$latestSigntool" >> $env:GITHUB_OUTPUT
+          throw "Something went wrong! ❌"
         env:
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
           AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
