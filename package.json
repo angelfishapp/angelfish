@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.7",
+    "@tanstack/eslint-plugin-query": "^5.73.3",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "@vitest/ui": "^3.0.9",

@@ -1,6 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
@@ -15,6 +16,8 @@ import { AppContainer } from '@/containers/AppContainer'
  * Initalises app wide providers like themes, Redux, Date picker etc.
  */
 
+const queryClient = new QueryClient()
+
 export default function AppRoot() {
   // Render
   return (
@@ -26,10 +29,13 @@ export default function AppRoot() {
 
         {/* Redux provider */}
         <Provider store={reduxStore}>
-          <HashRouter>
-            {/* App */}
-            <AppContainer />
-          </HashRouter>
+          {/** react-query provider */}
+          <QueryClientProvider client={queryClient}>
+            <HashRouter>
+              {/* App */}
+              <AppContainer />
+            </HashRouter>
+          </QueryClientProvider>
         </Provider>
       </ThemeProvider>
     </StyledEngineProvider>
