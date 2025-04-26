@@ -70,13 +70,11 @@ jobs:
           Get-Content $metadataPath -Raw
           echo "metadata_path=$metadataPath" >> $env:GITHUB_OUTPUT
 
-          # Make sure we have correct version of Windows SDK
-          nuget install Microsoft.Windows.SDK.BuildTools -Version 10.0.22621.3233 -x
-
           # Install the NuGet package (without versioned folder)
-          nuget install Microsoft.Trusted.Signing.Client -Version 1.0.53 -ExcludeVersion
+          nuget install Microsoft.Trusted.Signing.Client -Version 1.0.53 -x
           # Resolve the full path to the package directory
           $packagePath = Join-Path $PWD 'Microsoft.Trusted.Signing.Client'
+          Get-ChildItem -Path $packagePath
           # Export the path for the next GitHub Actions step
           echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT
 
@@ -113,4 +111,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Optionally enable debug logging for builds, DO NOT enable for electron-windows-sign or
           # or sign executable will interpret existence of messages in stderr as signing failure
-          DEBUG: 'electron-forge:*,electron-winstaller:*'
+          DEBUG: 'electron-forge:*,electron-windows-installer:*'
