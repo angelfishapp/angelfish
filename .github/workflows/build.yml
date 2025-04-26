@@ -47,6 +47,12 @@ jobs:
           CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
 
+      - name: Setup .NET 8
+        if: matrix.os == 'windows-latest'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
       - name: Setup Windows Tusted Signing Service
         if: matrix.os == 'windows-latest'
         id: setup_windows
@@ -56,6 +62,12 @@ jobs:
           corepack enable
           corepack prepare yarn@4.9.1 --activate
           yarn --version
+
+          # Install Windows 10 SDK 10.0.2261.755 or later
+          nuget install Microsoft.Windows.SDK.BuildTools -Version 10.0.22621.3233 -x
+
+          # Make sure .NET 8 is installed and active
+          dotnet --info
 
           # Write metadata.json
           $metadataPath = Join-Path $PWD "metadata.json"
