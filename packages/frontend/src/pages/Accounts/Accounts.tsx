@@ -7,7 +7,7 @@ import { saveAccount } from '@/redux/accounts/actions'
 import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
 import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
 import { selectAllTags } from '@/redux/tags/selectors'
-import { listTransactions, saveTransactions } from '@/redux/transactions/actions'
+import { listTransactions } from '@/redux/transactions/actions'
 import type { IAccount, ITransaction, ITransactionUpdate } from '@angelfish/core'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
@@ -30,15 +30,14 @@ export default function Accounts() {
   // Redux Store Data
   const accounts = useSelector(selectAllAccountsWithRelations)
 
-  const { data: transactions, isLoading, error } = useGetTransactions({})
-  const saveMutation = useSaveTransactions()
-  const deleteMutation = useDeleteTransaction()
-
   const tags = useSelector(selectAllTags)
   const categoryGroups = useSelector(selectAllCategoryGroups)
 
   // Bank Account Menu State
   const [selectedAccount, setSelectedAccount] = React.useState<IAccount>()
+  const { data: transactions, isLoading, error } = useGetTransactions(selectedAccount?.id)
+  const saveMutation = useSaveTransactions()
+  const deleteMutation = useDeleteTransaction()
 
   // Create Category State
   const [showCreateCategoryDrawer, setShowCreateCategoryDrawer] = React.useState<boolean>(false)
@@ -101,9 +100,7 @@ export default function Accounts() {
    * Callback to save a Transaction to the Database
    */
   const onSaveTransactions = React.useCallback(async (transactions: ITransactionUpdate[]) => {
-    dispatch(saveTransactions({ transactions }))
-    saveMutation.mutate({ transactions })
-    // console.log('save transactions', transactions)
+    saveMutation.mutate(transactions)
   }, [])
 
   /**
@@ -111,7 +108,6 @@ export default function Accounts() {
    */
   const onDeleteTransaction = async (id: number) => {
     deleteMutation.mutate(id)
-    // console.log('delete transaction', id)
   }
 
   /**
