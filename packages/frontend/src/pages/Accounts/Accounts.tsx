@@ -15,7 +15,7 @@ import { CategoryDrawer } from '@/components/drawers'
 import { ImportTransactionsContainer } from '@/containers/ImportTransactionsContainer'
 
 import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction'
-import { useGetTransactions } from '@/hooks/transactions/useGetTransactions'
+import { useListTransactions } from '@/hooks/transactions/useListTransactions'
 import { useSaveTransactions } from '@/hooks/transactions/useSaveTransactions'
 import { AccountsMenu } from './components/AccountsMenu'
 import { AccountsView } from './views/AccountsView'
@@ -35,7 +35,11 @@ export default function Accounts() {
 
   // Bank Account Menu State
   const [selectedAccount, setSelectedAccount] = React.useState<IAccount>()
-  const { data: transactions, isLoading, error } = useGetTransactions(selectedAccount?.id)
+  const {
+    data: transactions,
+    isLoading,
+    error,
+  } = useListTransactions({ account_id: selectedAccount?.id })
   const saveMutation = useSaveTransactions()
   const deleteMutation = useDeleteTransaction()
 
