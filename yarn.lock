@@ -126,6 +126,7 @@ __metadata:
     "@storybook/react": "npm:^8.6.4"
     "@storybook/react-webpack5": "npm:^8.6.4"
     "@storybook/test": "npm:^8.6.4"
+    "@tanstack/react-query": "npm:^5.74.7"
     "@tanstack/react-table": "npm:^8.21.2"
     "@tanstack/react-virtual": "npm:^3.13.5"
     "@testing-library/dom": "npm:^10.4.0"
@@ -3259,6 +3260,24 @@ __metadata:
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
   checksum: 10/8e23e6a5e7cd91b0ff7ad0c3f0cca7ac4f616f07640020d5912969bc4704c1b38cf1144103368ee74116fbcee998323884a31f9ae087baa414b37234c66f572a
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:5.74.7":
+  version: 5.74.7
+  resolution: "@tanstack/query-core@npm:5.74.7"
+  checksum: 10/8e2bef45c8c34a164b9c8cea61f7dbca9256646413957d16cf9de0267f1e5c181281097a09a3b80a020ab496707044c2384a3736fc42697514525adabb73273d
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.74.7":
+  version: 5.74.7
+  resolution: "@tanstack/react-query@npm:5.74.7"
+  dependencies:
+    "@tanstack/query-core": "npm:5.74.7"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10/db8b267883641a45221f218716ea5aa0bc37ee2f6629c3d1bcd17d3cfd64362f327667f1fc82d5e31f21fa7740260ca405930adc3e22d8debddc990f49275035
   languageName: node
   linkType: hard
 

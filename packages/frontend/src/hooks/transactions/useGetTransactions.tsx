@@ -1,7 +1,12 @@
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
-import { ITransaction } from '@angelfish/core/src/types'
 import { useQuery } from '@tanstack/react-query'
 
+import type { ITransaction } from '@angelfish/core'
+import { AppCommandIds, CommandsClient } from '@angelfish/core'
+
+/**
+ * TODO - Add a description
+ * @returns
+ */
 export const useGetTransactions = (query: any) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['transactions', query],
@@ -13,5 +18,5 @@ export const useGetTransactions = (query: any) => {
     },
   })
 
-  return { data  , isLoading, error }as {data:ITransaction[], isLoading: boolean, error: any} 
+  return { data, isLoading, error } as { data: ITransaction[]; isLoading: boolean; error: any }
 }

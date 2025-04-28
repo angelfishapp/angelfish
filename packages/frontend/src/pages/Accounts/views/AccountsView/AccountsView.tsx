@@ -13,14 +13,29 @@ import type { AccountsViewProps } from './AccountsView.interface'
 
 const AccountsView: FC<AccountsViewProps> = ({
   account,
-  transactions,
   accountsWithRelations,
+  error,
+  isLoading = false,
+  transactions,
   tags,
   onCreateCategory,
   onDeleteTransaction,
   onSaveTransaction,
   onImportTransactions,
 }) => {
+  // Show a loading indicator while the Account/Transactions are being loaded
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  // Handle any error that occurred while loading the Account/Transactions
+  // and display it to the user
+  if (error) {
+    return <div>Error: {error.message}</div>
+  }
+
+  // Render the correct Account View based on the Account Type
+  // and pass the relevant props to it
   if (account) {
     switch (account.acc_type) {
       case 'depository':

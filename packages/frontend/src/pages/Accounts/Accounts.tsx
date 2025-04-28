@@ -99,9 +99,12 @@ export default function Accounts() {
   /**
    * Callback to save a Transaction to the Database
    */
-  const onSaveTransactions = React.useCallback(async (transactions: ITransactionUpdate[]) => {
-    saveMutation.mutate(transactions)
-  }, [])
+  const onSaveTransactions = React.useCallback(
+    async (transactions: ITransactionUpdate[]) => {
+      saveMutation.mutate(transactions)
+    },
+    [saveMutation],
+  )
 
   /**
    * Delete a Transaction from the Database
@@ -117,12 +120,6 @@ export default function Accounts() {
     setShowCreateCategoryDrawer(false)
     dispatch(saveAccount({ account: category }))
   }
-
-  // console.log(transactions, isLoading, error, 'test data')
-
-  if (isLoading) return <div>Loading .... </div>
-
-  if (error) return <div>There is an Error</div>
 
   return (
     <Box
@@ -201,8 +198,10 @@ export default function Accounts() {
 
         <AccountsView
           account={selectedAccount}
-          transactions={transactions as ITransaction[]}
           accountsWithRelations={accounts}
+          error={error}
+          isLoading={isLoading}
+          transactions={transactions as ITransaction[]}
           tags={tags}
           onCreateCategory={(name?) => {
             setShowCreateCategoryDrawer(true)
