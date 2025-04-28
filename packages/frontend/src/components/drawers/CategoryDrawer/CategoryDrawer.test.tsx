@@ -7,7 +7,7 @@ import * as stories from './CategoryDrawer.stories'
 const { UpdateCategoryGroup, AddNewCategoryGroup } = composeStories(stories)
 
 describe('CategoryDrawer  stories', () => {
-  it('renders the UpdateCategoryGroup drawer', async() => {
+  it('renders the UpdateCategoryGroup drawer', async () => {
     render(
       <ThemeProvider theme={theme}>
         <UpdateCategoryGroup />
@@ -42,7 +42,7 @@ describe('CategoryDrawer  stories', () => {
     })
   })
 
-  it('renders the AddNewCategoryGroup drawer', async() => {
+  it('renders the AddNewCategoryGroup drawer', async () => {
     render(
       <ThemeProvider theme={theme}>
         <AddNewCategoryGroup />

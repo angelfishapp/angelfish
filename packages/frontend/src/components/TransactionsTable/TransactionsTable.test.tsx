@@ -8,7 +8,7 @@ import type { ReactElement } from 'react'
 import * as TableStories from './TransactionsTable.stories'
 
 const emotionCache = createCache({ key: 'css', prepend: true })
-console.error = (...args) => {
+console.error = () => {
   return
 }
 
