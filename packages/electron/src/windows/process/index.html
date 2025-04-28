@@ -1,27 +1,25 @@
 <!doctype html>
 <html>
+  <head> </head>
 
-<head> </head>
+  <body></body>
+  <script>
+    // Global Error Handling
+    window.onerror = (message, source, lineno, colno, error) => {
+      window.log.error('ProcessWindow', '💥 Uncaught error', {
+        message,
+        source,
+        lineno,
+        colno,
+        stack: error?.stack,
+      })
+    }
 
-<body></body>
-<script>
-  // Global Error Handling
-  window.onerror = (message, source, lineno, colno, error) => {
-    window.log.error('ProcessWindow', '💥 Uncaught error', {
-      message,
-      source,
-      lineno,
-      colno,
-      stack: error?.stack,
-    })
-  }
-
-  window.onunhandledrejection = (event) => {
-    window.log.error('ProcessWindow', '💥 Unhandled promise rejection', {
-      reason: event.reason,
-      stack: event.reason?.stack,
-    })
-  }
-</script>
-
+    window.onunhandledrejection = (event) => {
+      window.log.error('ProcessWindow', '💥 Unhandled promise rejection', {
+        reason: event.reason,
+        stack: event.reason?.stack,
+      })
+    }
+  </script>
 </html>
