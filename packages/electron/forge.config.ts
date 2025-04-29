@@ -38,7 +38,7 @@ const config: ForgeConfig = {
       packageJson.name = forgeConfig.packagerConfig.executableName
       return packageJson
     },
-    packageAfterPrune: async (_forgeConfig, buildPath) => {
+    packageAfterPrune: async (_forgeConfig, buildPath, _electronVersion, platform) => {
       // This hook runs after the app is built but before it is packaged
       // We need to install extneral dependencies before the asar is created
       // using yarn install, but to only install the dependencies we first modify
@@ -46,12 +46,19 @@ const config: ForgeConfig = {
       const externalDeps = Object.keys(rendererConfig.externals ?? {})
       // TypeORM requires reflect-metadata to be installed as a dependency
       externalDeps.push('reflect-metadata')
-      filterPackageJsonForExternals(buildPath, externalDeps)
+      await filterPackageJsonForExternals(buildPath, externalDeps)
 
       await new Promise<void>((resolve, reject) => {
-        const child = spawn('yarn', ['install'], {
+        const child = spawn('yarn', ['install', '--no-immutable'], {
           cwd: buildPath,
           stdio: 'inherit',
+          shell: platform == 'win32' ? true : false,
+          env:
+            platform == 'win32'
+              ? {
+                  YARN_NODE_LINKER: 'node-modules',
+                }
+              : undefined,
         })
 
         child.on('exit', (code) => {
