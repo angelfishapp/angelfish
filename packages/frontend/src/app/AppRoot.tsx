@@ -1,7 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {  QueryClientProvider } from '@tanstack/react-query'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
@@ -10,13 +10,13 @@ import { AppRootStyles } from './AppRoot.styles'
 import theme from './theme'
 
 import { AppContainer } from '@/containers/AppContainer'
+import queryClient from '@/providers/ReactQueryClient'
 
 /**
  * Root Component
  * Initalises app wide providers like themes, Redux, Date picker etc.
  */
 
-const queryClient = new QueryClient()
 
 export default function AppRoot() {
   // Render
