@@ -196,9 +196,14 @@ export default class InitDatabase1624237602767 implements MigrationInterface {
                             FOREIGN KEY(tag_id) REFERENCES tags(id) ON DELETE CASCADE
                         );`
     await queryRunner.query(initSql)
+
+    // Create indexes
     initSql = `
                         CREATE INDEX IDX_line_items_tags ON line_item_tags (
                             "line_item_id"
+                        );
+                        CREATE INDEX IDX_transaction_line_items ON line_items (
+                            "transaction_id"
                         );`
     await queryRunner.query(initSql)
 
