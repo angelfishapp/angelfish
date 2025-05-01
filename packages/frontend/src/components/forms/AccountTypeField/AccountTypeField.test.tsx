@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './AccountTypeField.stories'
 
 const { Default } = composeStories(stories)
@@ -20,9 +20,7 @@ describe('renders Search Story', () => {
     expect(input).toBeInTheDocument()
     const arrow = screen.getByTestId('ArrowDropDownIcon')
     expect(arrow).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(arrow)
-    })
+    fireEvent.click(arrow)
 
     const cashAccounts = await screen.findByText(/Cash Accounts/i)
     expect(cashAccounts).toBeInTheDocument()
@@ -30,15 +28,11 @@ describe('renders Search Story', () => {
     expect(creditCards).toBeInTheDocument()
     const HSACashAccount = await screen.findByText(/HSA Cash Account/i)
     expect(HSACashAccount).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(HSACashAccount)
-    })
+    fireEvent.click(HSACashAccount)
     expect(input.value).toBe('HSA Cash Account')
     const closeIcon = screen.getByTestId('CloseIcon')
     expect(closeIcon).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(closeIcon)
-    })
+    fireEvent.click(closeIcon)
     expect(input.value).toBe('')
   })
 })

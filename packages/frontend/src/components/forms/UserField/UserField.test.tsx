@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import type React from 'react'
 import { describe, expect, it } from 'vitest'
 import * as stories from './UserField.stories'
@@ -24,10 +24,8 @@ describe('UserField tests', () => {
     const handleChange = vi.fn()
     renderWithTheme(<Default onChange={handleChange} />)
     const inputField = screen.getByRole('combobox')
-    act(() => {
-      fireEvent.change(inputField, { target: { value: 'John Smith' } })
-      fireEvent.keyDown(inputField, { key: 'Enter', code: 'Enter' })
-    })
+    fireEvent.change(inputField, { target: { value: 'John Smith' } })
+    fireEvent.keyDown(inputField, { key: 'Enter', code: 'Enter' })
 
     const addedTag = screen.getByText('John Smith')
     expect(addedTag).toBeInTheDocument()

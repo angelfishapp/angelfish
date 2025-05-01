@@ -15,9 +15,7 @@ describe('Context Menu', () => {
     render(<composed.Default />)
 
     const elementToRightClick = screen.getByText(/Right Click On Me/i)
-    act(() => {
-      fireEvent.contextMenu(elementToRightClick)
-    })
+    fireEvent.contextMenu(elementToRightClick)
     const contextMenu = screen.getByRole('menu')
     expect(contextMenu).toBeInTheDocument()
     const title = screen.getByText(/My context Menu/i)

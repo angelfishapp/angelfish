@@ -2,7 +2,7 @@ import theme from '@/app/theme'
 import { institutions as INSTITUTIONS } from '@angelfish/tests/fixtures'
 import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import type React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import * as stories from './InstitutionField.stories'
@@ -21,10 +21,8 @@ describe('InstitutionField', () => {
   it('displays options when typing', () => {
     renderWithTheme(<EmptyValue {...EmptyValue.args} />)
     const input = screen.getByPlaceholderText('Search Institutions...')
-    act(() => {
-      fireEvent.focus(input)
-      fireEvent.change(input, { target: { value: 'Bank' } })
-    })
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: 'Bank' } })
 
     INSTITUTIONS.forEach((institution) => {
       if (institution.name.includes('Bank')) {
@@ -38,11 +36,9 @@ describe('InstitutionField', () => {
     renderWithTheme(<EmptyValue onChange={handleChange} />)
 
     const input = screen.getByPlaceholderText('Search Institutions...')
-    act(() => {
-      fireEvent.focus(input)
-      fireEvent.change(input, { target: { value: INSTITUTIONS[0].name } })
-      fireEvent.click(screen.getByText(INSTITUTIONS[0].name))
-    })
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: INSTITUTIONS[0].name } })
+    fireEvent.click(screen.getByText(INSTITUTIONS[0].name))
 
     expect(handleChange).toHaveBeenCalledWith(INSTITUTIONS[0])
   })

@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './AvatarField.stories'
 
 const { Default, NoAvatar, Logo } = composeStories(stories)
@@ -23,9 +23,7 @@ describe('renders Search Story', () => {
 
     const arrow = screen.getByTestId('CameraAltOutlinedIcon')
     expect(arrow).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(arrow)
-    })
+    fireEvent.click(arrow)
 
     const [PickAvatarTitle] = await screen.findAllByText(/Pick Your Avatar/i)
     expect(PickAvatarTitle).toBeInTheDocument()
@@ -48,9 +46,7 @@ describe('renders Search Story', () => {
 
     const arrow = screen.getByTestId('CameraAltOutlinedIcon')
     expect(arrow).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(arrow)
-    })
+    fireEvent.click(arrow)
 
     const [PickAvatarTitle] = await screen.findAllByText(/Pick Your Avatar/i)
     expect(PickAvatarTitle).toBeInTheDocument()
@@ -74,9 +70,7 @@ describe('renders Search Story', () => {
 
     const arrow = screen.getByTestId('CameraAltOutlinedIcon')
     expect(arrow).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(arrow)
-    })
+    fireEvent.click(arrow)
 
     const [PickAvatarTitle] = await screen.findAllByText(/Pick Your Household Logo/i)
     expect(PickAvatarTitle).toBeInTheDocument()

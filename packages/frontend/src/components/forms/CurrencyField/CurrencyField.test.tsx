@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './CurrencyField.stories'
 
 const { Default } = composeStories(stories)
@@ -22,11 +22,8 @@ describe('renders CurrencyField Story', () => {
 
     const helperText = screen.getByText(/Select a Currency from the list/i)
     expect(helperText).toBeInTheDocument()
-
-    act(() => {
-      fireEvent.change(input, { target: { value: 'GBP' } })
-      fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
-    })
+    fireEvent.change(input, { target: { value: 'GBP' } })
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
 
     expect(input.value).toBe('British Pound Sterling (GBP)')
   })

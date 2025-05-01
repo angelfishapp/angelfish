@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './AutocompleteField.stories'
 
 const { SingleSelect, CustomValueDisplay, MultiSelect } = composeStories(stories)
@@ -97,9 +97,7 @@ describe('renders Search Story', () => {
 
     const arrow = screen.getByTestId('ArrowDropDownIcon')
     expect(arrow).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(arrow)
-    })
+    fireEvent.click(arrow)
 
     const [tag1] = await screen.findAllByText(/Tag 1/i)
     expect(tag1).toBeInTheDocument()
@@ -109,16 +107,12 @@ describe('renders Search Story', () => {
 
     const [tag3] = await screen.findAllByText(/Tag 3/i)
     expect(tag3).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(tag3)
-    })
+    fireEvent.click(tag3)
     expect(input.value).toBe('Tag 3')
 
     const closeIcon = screen.getByTestId('CloseIcon')
     expect(closeIcon).toBeInTheDocument()
-    act(() => {
-      fireEvent.click(closeIcon)
-    })
+    fireEvent.click(closeIcon)
     expect(input.value).toBe('')
   })
 })

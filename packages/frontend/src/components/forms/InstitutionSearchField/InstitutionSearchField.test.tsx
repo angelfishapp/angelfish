@@ -1,7 +1,7 @@
 import theme from '@/app/theme'
 import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import type React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import * as stories from './InstitutionSearchField.stories'
@@ -21,10 +21,8 @@ describe('InstitutionField', () => {
   it('displays options when typing', () => {
     renderWithTheme(<EmptyValue {...EmptyValue.args} />)
     const input = screen.getByPlaceholderText('Type in Institution Name...') as HTMLInputElement
-    act(() => {
-      fireEvent.focus(input)
-      fireEvent.change(input, { target: { value: 'Chase' } })
-    })
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: 'Chase' } })
 
     expect(input.value).toBe('Chase')
   })
@@ -34,11 +32,9 @@ describe('InstitutionField', () => {
     renderWithTheme(<EmptyValue onChange={handleChange} />)
 
     const input = screen.getByPlaceholderText('Type in Institution Name...') as HTMLInputElement
-    act(() => {
-      fireEvent.focus(input)
-      fireEvent.change(input, { target: { value: 'Chase' } })
-      fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
-    })
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: 'Chase' } })
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
 
     expect(input.value).toBe('Chase')
   })
