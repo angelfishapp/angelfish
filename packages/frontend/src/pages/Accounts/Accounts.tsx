@@ -3,17 +3,18 @@ import Typography from '@mui/material/Typography'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { saveAccount } from '@/redux/accounts/actions'
-import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
 import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
 import { selectAllTags } from '@/redux/tags/selectors'
 import { listTransactions } from '@/redux/transactions/actions'
-import type { IAccount, ITransaction, ITransactionUpdate } from '@angelfish/core'
+import type { IAccount, ITransactionUpdate } from '@angelfish/core'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { CategoryDrawer } from '@/components/drawers'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ImportTransactionsContainer } from '@/containers/ImportTransactionsContainer'
 
+import { useListAccounts } from '@/hooks/accountes/useListAccounts'
+import { useSaveAccount } from '@/hooks/accountes/useSaveAcount'
 import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction'
 import { useListTransactions } from '@/hooks/transactions/useListTransactions'
 import { useSaveTransactions } from '@/hooks/transactions/useSaveTransactions'
@@ -27,8 +28,9 @@ import { AccountsView } from './views/AccountsView'
 export default function Accounts() {
   const dispatch = useDispatch()
 
-  // Redux Store Data
-  const accounts = useSelector(selectAllAccountsWithRelations)
+  //  Get All Acounts from dataBase
+  const { data: accounts, isLoading: isAccountLoading } = useListAccounts({})
+  const accountSaveMutation = useSaveAccount()
 
   const tags = useSelector(selectAllTags)
   const categoryGroups = useSelector(selectAllCategoryGroups)
@@ -40,8 +42,8 @@ export default function Accounts() {
     isLoading,
     error,
   } = useListTransactions({ account_id: selectedAccount?.id })
-  const saveMutation = useSaveTransactions()
-  const deleteMutation = useDeleteTransaction()
+  const transactionSaveMutation = useSaveTransactions()
+  const transactionDeleteMutation = useDeleteTransaction()
 
   // Create Category State
   const [showCreateCategoryDrawer, setShowCreateCategoryDrawer] = React.useState<boolean>(false)
@@ -66,7 +68,7 @@ export default function Accounts() {
    */
   React.useEffect(() => {
     if (selectedAccount) {
-      const filteredAccounts = accounts.filter((account) => account.id == selectedAccount.id)
+      const filteredAccounts = accounts?.filter((account) => account.id == selectedAccount.id)
       if (filteredAccounts.length > 0) {
         const currentAccount = filteredAccounts[0]
         if (currentAccount !== selectedAccount) {
@@ -85,8 +87,8 @@ export default function Accounts() {
   const onSelectAccount = React.useCallback(
     (account?: IAccount) => {
       if (account) {
-        const filteredAccounts = accounts.filter((a) => a.id == account.id)
-        if (filteredAccounts.length > 0) {
+        const filteredAccounts = accounts?.filter((a) => a.id == account.id)
+        if (filteredAccounts?.length > 0) {
           const currentAccount = filteredAccounts[0]
           if (currentAccount !== selectedAccount) {
             setSelectedAccount(currentAccount)
@@ -105,16 +107,16 @@ export default function Accounts() {
    */
   const onSaveTransactions = React.useCallback(
     async (transactions: ITransactionUpdate[]) => {
-      saveMutation.mutate(transactions)
+      transactionSaveMutation.mutate(transactions)
     },
-    [saveMutation],
+    [transactionSaveMutation],
   )
 
   /**
    * Delete a Transaction from the Database
    */
   const onDeleteTransaction = async (id: number) => {
-    deleteMutation.mutate(id)
+    transactionDeleteMutation.mutate(id)
   }
 
   /**
@@ -122,8 +124,10 @@ export default function Accounts() {
    */
   const onSaveCategory = async (category: IAccount) => {
     setShowCreateCategoryDrawer(false)
-    dispatch(saveAccount({ account: category }))
+    accountSaveMutation.mutate(category)
   }
+
+  if (isAccountLoading) return <LoadingSpinner />
 
   return (
     <Box
@@ -205,7 +209,7 @@ export default function Accounts() {
           accountsWithRelations={accounts}
           error={error}
           isLoading={isLoading}
-          transactions={transactions as ITransaction[]}
+          transactions={transactions}
           tags={tags}
           onCreateCategory={(name?) => {
             setShowCreateCategoryDrawer(true)

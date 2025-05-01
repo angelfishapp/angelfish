@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { CreditAccount } from '../CreditAccount'
 import { DepositoryAccount } from '../DepositoryAccount'
 import { InvestmentAccount } from '../InvestmentAccount'
@@ -25,7 +26,7 @@ const AccountsView: FC<AccountsViewProps> = ({
 }) => {
   // Show a loading indicator while the Account/Transactions are being loaded
   if (isLoading) {
-    return <div>Loading...</div>
+    return <LoadingSpinner />
   }
 
   // Handle any error that occurred while loading the Account/Transactions

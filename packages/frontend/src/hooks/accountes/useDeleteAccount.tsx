@@ -1,13 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import type { ITransactionUpdate } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
-
 /**
- * Custom React Query hook to save a transaction.
+ * Custom React Query hook to delete an account.
  *
- * This hook uses `useMutation` to perform the `SAVE_TRANSACTIONS` command through the Angelfish `CommandsClient`.
+ * This hook uses `useMutation` to perform the `DELETE_TRANSACTION` command through the Angelfish `CommandsClient`.
  * On success, it invalidates the cached `'accounts'` query to ensure fresh data is fetched.
  *
  * @returns {object} - Mutation object from React Query containing:
@@ -16,14 +14,21 @@ import { AppCommandIds, CommandsClient } from '@angelfish/core'
  *   - `isLoading`: boolean indicating if the mutation is in progress
  *   - `error`: error object if the mutation fails
  */
-export const useSaveTransactions = () => {
+
+// Delete Account Action
+export type DeleteAccountQueryProps = {
+  id: number
+  reassignId: number | null
+}
+
+export const useDeleteTransaction = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (transactions: ITransactionUpdate[]) =>
-      CommandsClient.executeAppCommand(AppCommandIds.SAVE_TRANSACTIONS, transactions),
+    mutationFn: ({ id, reassignId }: DeleteAccountQueryProps) =>
+      CommandsClient.executeAppCommand(AppCommandIds.DELETE_ACCOUNT, { id, reassignId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
     },
   })
 }
