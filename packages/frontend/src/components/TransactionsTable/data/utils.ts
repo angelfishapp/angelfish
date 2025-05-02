@@ -2,7 +2,8 @@
  * Helper Functions to process data for the Transactions Table
  */
 
-import type { IAccount, ITransaction, SplitLineItem } from '@angelfish/core'
+import type { IAccount, ILineItemUpdate, ITransaction } from '@angelfish/core'
+import { isSplitTransaction, roundNumber } from '@angelfish/core'
 import type { FormData, TransactionRow } from './types'
 
 /**
@@ -32,10 +33,10 @@ export function buildTransactionRows(
 
   // Build TransactionRows
   sortedTransactions.forEach((transaction) => {
-    const amount = parseFloat((transaction.amount * -1.0).toFixed(2))
-    balance -= amount
+    const amount = roundNumber(transaction.amount)
+    balance += amount
     if (balance < 0.01 && balance > -0.01) balance = 0
-    balance = parseFloat(balance.toFixed(2))
+    balance = roundNumber(balance)
     const transactionRow = buildTransactionRow(normalizedAccounts, transaction, balance)
     transactionRows.push(transactionRow as TransactionRow)
   })
@@ -56,12 +57,8 @@ export function buildTransactionRow(
   transaction: ITransaction,
   balance?: number,
 ): TransactionRow {
-  // Don't create rows for the account line items
-  // or you'll get 2 rows per transaction
-  const lineItems = transaction.line_items.filter(
-    (lineItem) => lineItem.account_id !== transaction.account_id,
-  )
-  const isSplit = lineItems.length >= 2
+  const lineItems = transaction.line_items
+  const isSplit = isSplitTransaction(transaction)
 
   const account = normalizedAccounts.find((account) => account.id == transaction.account_id)!
 
@@ -94,7 +91,7 @@ export function buildTransactionRow(
       line_item_id: lineItem.id,
 
       category: normalizedAccounts.find((account) => account.id == lineItem.account_id)!,
-      amount: Math.round((lineItem.amount * -1 + Number.EPSILON) * 100) / 100,
+      amount: roundNumber(lineItem.amount),
       tags: lineItem.tags,
       note: lineItem.note,
     } as TransactionRow
@@ -143,12 +140,11 @@ export function getRecentCategories(transactionRows: TransactionRow[], limit = 5
  */
 export function getTransactionFormData(transactionRow?: TransactionRow): FormData {
   if (transactionRow) {
-    const lineItems: SplitLineItem[] = []
+    const lineItems: ILineItemUpdate[] = []
     for (const lineItem of transactionRow.rows ?? []) {
-      // Only add line items not from the bank account transaction is associated with
       lineItems.push({
         id: lineItem.line_item_id,
-        category_id: lineItem.category?.id ?? null,
+        account_id: lineItem.category?.id,
         tags: [...(lineItem.tags ?? [])],
         note: lineItem.note ? lineItem.note : '',
         amount: lineItem.amount,

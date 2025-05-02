@@ -66,11 +66,12 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
      * Callback to handle saving Form
      */
     const onSubmit = (formData: FormData) => {
-      table.options.meta?.transactionsTable?.updateSplitRow(row, formData.lineItems, {
+      table.options.meta?.transactionsTable?.updateRows([row.original], {
         date: formData.date,
         title: formData.title,
         amount: formData.amount,
         is_reviewed: formData.is_reviewed,
+        splits: formData.lineItems,
       })
       table.options.meta?.transactionsTable?.toggleEditMode(row.id, false)
     }
@@ -144,7 +145,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                         }}
                       >
                         {cell.column.columnDef.meta?.transactionsTable?.editCell(
-                          `lineItems.${index}.category_id`,
+                          `lineItems.${index}.account_id`,
                           control,
                           table,
                         )}
@@ -267,7 +268,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                       variant="text"
                       onClick={() =>
                         append({
-                          category_id: 0,
+                          account_id: undefined,
                           amount: 0,
                           note: '',
                           tags: [],

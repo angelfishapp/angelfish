@@ -21,20 +21,11 @@ export const transactions: ITransaction[] = [
     is_reviewed: false,
     line_items: [
       {
-        id: 1,
-        transaction_id: 1,
-        account_id: 122,
-        amount: -105.22,
-        local_amount: -105.22,
-        note: undefined,
-        tags: [],
-      },
-      {
         id: 2,
         transaction_id: 1,
         account_id: 42,
-        amount: 105.22,
-        local_amount: 105.22,
+        amount: -105.22,
+        local_amount: -105.22,
         note: undefined,
         tags: [],
       },
@@ -54,20 +45,11 @@ export const transactions: ITransaction[] = [
     is_reviewed: false,
     line_items: [
       {
-        id: 3,
-        transaction_id: 2,
-        account_id: 122,
-        amount: -22.34,
-        local_amount: -22.34,
-        note: undefined,
-        tags: [],
-      },
-      {
         id: 4,
         transaction_id: 2,
         account_id: 69,
-        amount: 22.34,
-        local_amount: 22.34,
+        amount: -22.34,
+        local_amount: -22.34,
         note: undefined,
         tags: [],
       },
@@ -87,20 +69,11 @@ export const transactions: ITransaction[] = [
     is_reviewed: false,
     line_items: [
       {
-        id: 5,
-        transaction_id: 3,
-        account_id: 122,
-        amount: -100,
-        local_amount: -100,
-        note: undefined,
-        tags: [],
-      },
-      {
         id: 6,
         transaction_id: 3,
         account_id: 24,
-        amount: 50,
-        local_amount: 50,
+        amount: -50,
+        local_amount: -50,
         note: undefined,
         tags: [],
       },
@@ -108,8 +81,8 @@ export const transactions: ITransaction[] = [
         id: 7,
         transaction_id: 3,
         account_id: 54,
-        amount: 50,
-        local_amount: 50,
+        amount: -50,
+        local_amount: -50,
         note: undefined,
         tags: [],
       },
@@ -129,20 +102,11 @@ export const transactions: ITransaction[] = [
     is_reviewed: false,
     line_items: [
       {
-        id: 8,
-        transaction_id: 4,
-        account_id: 122,
-        amount: -10000,
-        local_amount: -10000,
-        note: undefined,
-        tags: [],
-      },
-      {
         id: 9,
         transaction_id: 4,
         account_id: 123,
-        amount: 10000,
-        local_amount: 10000,
+        amount: -10000,
+        local_amount: -10000,
         note: 'Transfer to Savings Account',
         tags: [],
       },
@@ -162,20 +126,11 @@ export const transactions: ITransaction[] = [
     is_reviewed: false,
     line_items: [
       {
-        id: 10,
-        transaction_id: 5,
-        account_id: 122,
-        amount: 15000,
-        local_amount: 15000,
-        note: undefined,
-        tags: [],
-      },
-      {
         id: 11,
         transaction_id: 5,
         account_id: 120,
-        amount: -15000,
-        local_amount: -15000,
+        amount: 15000,
+        local_amount: 15000,
         note: undefined,
         tags: [],
       },
@@ -195,20 +150,11 @@ export const transactions: ITransaction[] = [
     is_reviewed: false,
     line_items: [
       {
-        id: 10,
-        transaction_id: 6,
-        account_id: 122,
-        amount: 1234.5,
-        local_amount: 1234.5,
-        note: undefined,
-        tags: [],
-      },
-      {
         id: 11,
         transaction_id: 6,
         account_id: undefined,
-        amount: -1234.5,
-        local_amount: -1234.5,
+        amount: 1234.5,
+        local_amount: 1234.5,
         note: undefined,
         tags: [],
       },
@@ -220,34 +166,36 @@ export const transactions: ITransaction[] = [
 export function getLongTransactions(): ITransaction[] {
   const transactions: ITransaction[] = []
   let lineItemId = 1
+  let tId = 1
   const today = new Date()
-  for (let i = 0; i < 728; i++) {
+
+  longTransactionDetails.forEach((transactionDetails) => {
     const currentDate = new Date(today)
-    const details = longTransactionDetails[i]
-    currentDate.setDate(currentDate.getDate() - i + 40)
+    currentDate.setDate(currentDate.getDate() - tId + 40)
     const transaction = createNewTransaction({
       account_id: 125,
       date: currentDate,
-      title: details.title,
+      title: transactionDetails.title,
       currency_code: 'USD',
-      amount: details.amount,
-      category_id: details.category_id,
+      amount: transactionDetails.amount,
+      category_id: transactionDetails.category_id,
       requires_sync: false,
       pending: false,
       is_reviewed: false,
-      import_id: details.import_id ? details.import_id : crypto.randomUUID(),
+      import_id: transactionDetails.import_id ? transactionDetails.import_id : crypto.randomUUID(),
     })
 
-    transaction.id = i + 1
+    transaction.id = tId++
     transaction.created_on = new Date()
     transaction.modified_on = new Date()
-    transaction.line_items[0].id = lineItemId++
-    transaction.line_items[0].transaction_id = transaction.id
-    transaction.line_items[1].id = lineItemId++
-    transaction.line_items[1].transaction_id = transaction.id
+    // Add IDs to line items
+    transaction.line_items.forEach((lineItem) => {
+      lineItem.id = lineItemId++
+      lineItem.transaction_id = transaction.id
+    })
 
     transactions.push(transaction as ITransaction)
-  }
+  })
 
   return transactions
 }
