@@ -233,16 +233,11 @@ class TransactionServiceClass {
   private async _sanitizeAndValidate(transaction: TransactionEntity): Promise<TransactionEntity> {
     if (!transaction.id && !transaction.line_items) {
       // Creating new transaction
-      // Create 2 line items, 1 for account
-      // and 1 unclassified line item
-      const accountLineItem = new LineItemEntity()
-      accountLineItem.account_id = transaction.account_id
-      accountLineItem.amount = transaction.amount
-      accountLineItem.local_amount = transaction.amount
+      // Create a new unclassified line item
       const unclassifiedLineItem = new LineItemEntity()
-      unclassifiedLineItem.amount = transaction.amount * -1
-      unclassifiedLineItem.local_amount = transaction.amount * -1
-      transaction.line_items = [accountLineItem, unclassifiedLineItem]
+      unclassifiedLineItem.amount = transaction.amount
+      unclassifiedLineItem.local_amount = transaction.amount
+      transaction.line_items = [unclassifiedLineItem]
       // Set transaction to requires_sync = true to ensure local_amounts are correctly set
       transaction.requires_sync = true
     }

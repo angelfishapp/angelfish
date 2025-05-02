@@ -106,7 +106,7 @@ export class TransactionEntity implements ITransaction {
     cascade: true,
   })
   @IsDefined()
-  @ArrayMinSize(2, { message: 'Transactions must have at least 2 Line Items' })
+  @ArrayMinSize(1, { message: 'Transactions must have at least 1 Line Item' })
   @IsLineItemsValid()
   line_items!: LineItemEntity[]
 
