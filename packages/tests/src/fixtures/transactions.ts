@@ -225,7 +225,8 @@ export function getLongTransactions(): ITransaction[] {
     const currentDate = new Date(today)
     const details = longTransactionDetails[i]
     currentDate.setDate(currentDate.getDate() - i + 40)
-    const transaction = createNewTransaction(125, {
+    const transaction = createNewTransaction({
+      account_id: 125,
       date: currentDate,
       title: details.title,
       currency_code: 'USD',
