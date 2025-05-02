@@ -1,11 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
-import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
-import { selectAllTags } from '@/redux/tags/selectors'
-import { listTransactions } from '@/redux/transactions/actions'
 import type { IAccount, ITransactionUpdate } from '@angelfish/core'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
@@ -15,6 +11,8 @@ import { ImportTransactionsContainer } from '@/containers/ImportTransactionsCont
 
 import { useListAccounts } from '@/hooks/accountes/useListAccounts'
 import { useSaveAccount } from '@/hooks/accountes/useSaveAcount'
+import { useListCategoryGroups } from '@/hooks/categoryGroups/useListCategoryGroups'
+import { useListTags } from '@/hooks/tags/useListTags'
 import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction'
 import { useListTransactions } from '@/hooks/transactions/useListTransactions'
 import { useSaveTransactions } from '@/hooks/transactions/useSaveTransactions'
@@ -26,17 +24,17 @@ import { AccountsView } from './views/AccountsView'
  */
 
 export default function Accounts() {
-  const dispatch = useDispatch()
-
-  //  Get All Acounts from dataBase
+  // Accounts custom hooks to handle Transactions
   const { data: accounts, isLoading: isAccountLoading } = useListAccounts({})
   const accountSaveMutation = useSaveAccount()
 
-  const tags = useSelector(selectAllTags)
-  const categoryGroups = useSelector(selectAllCategoryGroups)
+  const { data: tags } = useListTags()
+  const { data: categoryGroups } = useListCategoryGroups()
 
   // Bank Account Menu State
   const [selectedAccount, setSelectedAccount] = React.useState<IAccount>()
+
+  // Transactions custom hooks to handle Transactions
   const {
     data: transactions,
     isLoading,
@@ -52,15 +50,6 @@ export default function Accounts() {
   // Import Transactions Modal State
   const [showImportTransactionsModal, setShowImportTransactionsModal] =
     React.useState<boolean>(false)
-
-  /**
-   * Load Account Transactions whenever selected Account changed
-   */
-  React.useEffect(() => {
-    if (selectedAccount) {
-      dispatch(listTransactions({ account_id: selectedAccount.id }))
-    }
-  }, [selectedAccount, dispatch])
 
   /**
    * Make sure selected Account is updated if Redux Accounts are updated in case user
@@ -127,6 +116,9 @@ export default function Accounts() {
     accountSaveMutation.mutate(category)
   }
 
+  /**
+   * Return Loading Spinner if Accounts are still loading
+   */
   if (isAccountLoading) return <LoadingSpinner />
 
   return (

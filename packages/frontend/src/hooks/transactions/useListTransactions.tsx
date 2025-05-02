@@ -22,6 +22,7 @@ export const useListTransactions = (query: AppCommandRequest<AppCommandIds.LIST_
       const result = await CommandsClient.executeAppCommand(AppCommandIds.LIST_TRANSACTIONS, query)
       return result
     },
+    enabled: !!query.account_id,
   })
 
   return { data, isLoading, error } as { data: ITransaction[]; isLoading: boolean; error: any }
