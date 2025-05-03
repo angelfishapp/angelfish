@@ -3,6 +3,7 @@ import React from 'react'
 import { Drawer } from '@/components/Drawer'
 import { TransactionsTable } from '@/components/TransactionsTable'
 import type { PeriodDetailDrawerProps } from './PeriodDetailDrawer.interface'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 
 /**
  * Opens bottom Drawer with TransactionTable showing all the transactions
@@ -19,9 +20,11 @@ export default function PeriodDetailDrawer({
   tags,
   title,
   transactions,
+  isLoading=false
 }: PeriodDetailDrawerProps) {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 
+  if(isLoading) return <LoadingSpinner />
   // Render
   return (
     <Drawer title={title} position="bottom" onClose={onClose} open={open} hideBackdrop={true}>

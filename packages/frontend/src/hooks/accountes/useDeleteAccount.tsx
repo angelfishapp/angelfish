@@ -21,7 +21,7 @@ export type DeleteAccountQueryProps = {
   reassignId: number | null
 }
 
-export const useDeleteTransaction = () => {
+export const useDeleteAccount = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
