@@ -202,6 +202,7 @@ class TransactionServiceClass {
     }
 
     // No errors, insert array
+    logger.silly('Saving Transactions:', sanitizedTransactions)
     const transactionRepo = DatabaseManager.getConnection().getRepository(TransactionEntity)
     const savedTransactions = await transactionRepo.save(sanitizedTransactions)
 

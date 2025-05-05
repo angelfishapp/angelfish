@@ -32,7 +32,14 @@ export class TransactionEntity implements ITransaction {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'date',
+    default: () => "(date('now'))",
+    transformer: {
+      to: (value: Date) => value.toISOString().slice(0, 10),
+      from: (value: string) => new Date(value),
+    },
+  })
   @IsOptional()
   @IsDate()
   date!: Date

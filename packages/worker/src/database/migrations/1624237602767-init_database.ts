@@ -137,7 +137,7 @@ export default class InitDatabase1624237602767 implements MigrationInterface {
     initSql = `
                         CREATE TABLE IF NOT EXISTS transactions (
                             id INTEGER,
-                            date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            date DATE DEFAULT (date('now')),
                             created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                             modified_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                             account_id INTEGER NOT NULL,
