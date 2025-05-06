@@ -1,6 +1,6 @@
 import type { ICategoryGroup } from '@angelfish/core'
 import { composeStories } from '@storybook/react'
-import {  fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './CategoryGroupBubble.stories'
 
 const { Default } = composeStories(stories)
@@ -19,7 +19,7 @@ describe('CategoryGroupBubble', () => {
     const onClickMock = vi.fn()
     render(<Default onClick={onClickMock} />)
     fireEvent.click(screen.getByRole('button'))
-    
+
     expect(onClickMock).toHaveBeenCalledTimes(1)
   })
 })

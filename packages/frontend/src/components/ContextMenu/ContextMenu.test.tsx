@@ -1,5 +1,5 @@
 import { composeStories } from '@storybook/react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as stories from './ContextMenu.stories' // Ensure correct path
 

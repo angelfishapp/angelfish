@@ -51,7 +51,7 @@ describe('OOBField Component (with Storybook)', () => {
     expect(input6).toBeInTheDocument()
     fireEvent.change(input6, { target: { value: '1' } })
     fireEvent.keyDown(input6, { key: 'Enter', code: 'Enter' })
-    
+
     const code = `${input1.value}${input2.value}${input3.value}${input4.value}${input5.value}${input6.value}`
     mockOnSubmit(code)
     expect(mockOnSubmit).toHaveBeenCalledWith('121111')
