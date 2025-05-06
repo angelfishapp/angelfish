@@ -1,16 +1,17 @@
+import type { CircularProgressProps } from '@mui/material/CircularProgress'
+
 /**
  * LoadingSpinner Component Properties
  */
-export interface LoadingSPinnerProps {
+export interface LoadingSpinnerProps {
   /**
-   * Component Color. 
+   * Component Color.
    * @default 'primary'
    */
-  color?: 'secondary' | 'success' | 'inherit'
+  color?: CircularProgressProps['color']
   /**
    * Component size.
-   * @default '30px'
+   * @default '40px'
    */
-  size?: string | number
-
+  size?: CircularProgressProps['size']
 }

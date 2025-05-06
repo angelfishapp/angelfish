@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import LoadingSpinner from './LoadingSpinner'
+
+import { LoadingSpinner } from '.'
 
 /**
  * Story Metadata
@@ -9,7 +10,15 @@ const meta = {
   title: 'Components/LoadingSpinner',
   component: LoadingSpinner,
   args: {},
-  render: () => <LoadingSpinner />,
+  argTypes: {
+    color: {
+      options: ['primary', 'secondary', 'error', 'info', 'success', 'warning', 'inherit'],
+      control: {
+        type: 'select',
+      },
+    },
+  },
+  render: (args) => <LoadingSpinner {...args} />,
 } satisfies Meta<typeof LoadingSpinner>
 export default meta
 type Story = StoryObj<typeof meta>
@@ -19,5 +28,8 @@ type Story = StoryObj<typeof meta>
  */
 
 export const Default: Story = {
-  args: {},
+  args: {
+    color: 'primary',
+    size: 100,
+  },
 }
