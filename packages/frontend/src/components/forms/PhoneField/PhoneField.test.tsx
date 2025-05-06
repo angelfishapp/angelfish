@@ -19,6 +19,7 @@ describe('Phone Field', () => {
     expect(input).toBeInTheDocument()
     fireEvent.focus(input)
     fireEvent.change(input, { target: { value: '970' } })
+
     expect(input).toHaveValue('+970                ')
     const flag = document.querySelector('[title="Palestine, State of"]')
     expect(flag).toBeInTheDocument()
