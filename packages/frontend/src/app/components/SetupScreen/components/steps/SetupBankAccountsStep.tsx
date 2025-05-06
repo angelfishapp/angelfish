@@ -1,10 +1,12 @@
-import { Step } from '@/components/Stepper'
-import { Grid, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import React from 'react'
 
+import type { AccountTableMethods } from '@/components/AccountTable'
 import { AccountTableUIContainer } from '@/components/AccountTable'
+import { Step } from '@/components/Stepper'
 import type { IAccount, IBook, IInstitution, IInstitutionUpdate, IUser } from '@angelfish/core'
-import { SetupBankDetailsSection } from '../subComponents'
 
 /**
  * Component Properties
@@ -77,6 +79,7 @@ export default function SetupBankAccountsStep({
 }: SetupBankAccountsStepProps) {
   // Component State
   const [isReady, setIsReady] = React.useState<boolean>(false)
+  const accountTableMethodsRef = React.useRef<AccountTableMethods>(null)
 
   // Enable Button When Form Is Ready
   React.useEffect(() => {
@@ -115,10 +118,16 @@ export default function SetupBankAccountsStep({
         <Grid
           size={12}
           border={(theme) => `1px solid ${theme.palette.grey[300]}`}
-          sx={{ padding: '0px !important', maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}
+          sx={{
+            padding: '0px !important',
+            maxHeight: 'calc(100vh - 300px)',
+            overflowY: 'auto',
+            height: 350,
+          }}
         >
           {book && (
             <AccountTableUIContainer
+              ref={accountTableMethodsRef}
               accountsWithRelations={accountsWithRelations}
               book_default_currency={book.default_currency}
               disableContextMenu={true}
@@ -136,13 +145,36 @@ export default function SetupBankAccountsStep({
           )}
         </Grid>
       </Grid>
-      <SetupBankDetailsSection
-        onSearchInstitutions={onSearchInstitutions}
-        onSaveInstitution={onSaveInstitution}
-        onSaveAccount={onSaveAccount}
-        institutions={institutions}
-        users={users}
-      />
+      <Grid
+        size={12}
+        container
+        spacing={3}
+        sx={{
+          paddingLeft: '0px !important',
+          paddingBottom: 1,
+          paddingTop: 1,
+        }}
+      >
+        <Grid size={6}>
+          <Button
+            onClick={() => accountTableMethodsRef.current?.addInstitution()}
+            fullWidth
+            variant="outlined"
+          >
+            Add Institution
+          </Button>
+        </Grid>
+        <Grid size={6}>
+          <Button
+            onClick={() => accountTableMethodsRef.current?.addBankAccount()}
+            disabled={!institutions || institutions.length === 0}
+            fullWidth
+            variant="outlined"
+          >
+            Add Account
+          </Button>
+        </Grid>
+      </Grid>
     </Step>
   )
 }

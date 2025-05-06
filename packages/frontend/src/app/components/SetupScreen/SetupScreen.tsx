@@ -120,8 +120,8 @@ export default function SetupScreen({
           onNext={() => setIsOpen(false)}
         >
           <VideoContainer
-            src="https://www.youtube.com/embed/qU9mHegkTc4"
-            title="505 by Arctic Monkeys"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=jp1QWglFMyKASaDO"
+            title="Rick Astley - Never Gonna Give You Up"
           />
         </Step>
       </Stepper>
