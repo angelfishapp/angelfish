@@ -91,12 +91,6 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
       (count, column) => count - (transactionFields.includes(column) && column != 'title' ? 1 : 0),
       allVisibleFields.length,
     )
-    // Calculate colspans for line item rows
-    const lineItemNotesFieldColSpan = allVisibleFields.includes('currency') ? 2 : 1
-    const lineItemPayeeFieldColspan = allVisibleFields.reduce(
-      (count, column) => count + (['user', 'account'].includes(column) ? 1 : 0),
-      2,
-    )
 
     // Render row in Edit Mode
     return (
@@ -144,10 +138,40 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                           width: cell.column.getSize(),
                         }}
                       >
-                        {cell.column.columnDef.meta?.transactionsTable?.editCell(
-                          `lineItems.${index}.account_id`,
-                          control,
-                          table,
+                        {isSplit ? (
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              width: '100%',
+                            }}
+                          >
+                            <CloseButton
+                              onClick={() => {
+                                if (fields.length == 2) {
+                                  // If we're undoing a split, make sure total amount is copied to first line item
+                                  // to avoid wierd behaviour of total amount changing if you delete the last line item
+                                  setValue('lineItems.0.amount', getValues('amount'))
+                                }
+                                remove(index)
+                              }}
+                              small={true}
+                            />
+                            <div style={{ flex: 1 }}>
+                              {cell.column.columnDef.meta?.transactionsTable?.editCell?.(
+                                `lineItems.${index}.account_id`,
+                                control,
+                                table,
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          cell.column.columnDef.meta?.transactionsTable?.editCell(
+                            `lineItems.${index}.account_id`,
+                            control,
+                            table,
+                          )
                         )}
                       </TableCell>
                     )
@@ -168,11 +192,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                     )
                   case 'notes':
                     return (
-                      <TableCell
-                        key={`${index}-${cell.id}`}
-                        style={{}}
-                        colSpan={lineItemNotesFieldColSpan}
-                      >
+                      <TableCell key={`${index}-${cell.id}`} style={{}}>
                         {cell.column.columnDef.meta?.transactionsTable?.editCell(
                           `lineItems.${index}.note`,
                           control,
@@ -195,32 +215,6 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                         )}
                       </TableCell>
                     )
-                  case 'title':
-                    // Render empty filler cell
-                    return (
-                      <TableCell
-                        key={`${index}-${cell.id}`}
-                        colSpan={lineItemPayeeFieldColspan}
-                        style={{
-                          textAlign: 'right',
-                          verticalAlign: 'middle',
-                        }}
-                      >
-                        {isSplit && (
-                          <CloseButton
-                            onClick={() => {
-                              if (fields.length == 2) {
-                                // If we're undoing a split, make sure total amount is copied to first line item
-                                // to avoid wierd behaviour of total amount changing if you delete the last line item
-                                setValue('lineItems.0.amount', getValues('amount'))
-                              }
-                              remove(index)
-                            }}
-                            small={true}
-                          />
-                        )}
-                      </TableCell>
-                    )
                   case 'balance':
                     return (
                       <TableCell
@@ -230,6 +224,8 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                         }}
                       />
                     )
+                  case 'title':
+                  case 'date':
                   case 'is_reviewed':
                   case 'owner':
                   case 'account':
