@@ -84,7 +84,8 @@ export default function Reports() {
     AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>
   >({})
   // transaction custom hooks to handle Transactions
-  const {data:transactions,isLoading:isLoadingTransactions} = useListTransactions(transactionQuery)
+  const { data: transactions, isLoading: isLoadingTransactions } =
+    useListTransactions(transactionQuery)
   const transactionSaveMutation = useSaveTransactions()
   const transactionDeleteMutation = useDeleteTransaction()
   // Accounts custom hooks to handle accounts

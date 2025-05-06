@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ITransactionUpdate } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
-
 /**
  * Custom React Query hook to save a transaction.
  *
