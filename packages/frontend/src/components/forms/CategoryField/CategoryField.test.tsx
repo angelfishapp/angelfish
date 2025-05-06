@@ -19,9 +19,7 @@ describe('renders Search Story', () => {
 
     const textBox = screen.getByPlaceholderText(/Search Categories/i)
     expect(textBox).toBeInTheDocument()
-
     fireEvent.change(textBox, { target: { value: 'cleaning' } })
-
     fireEvent.keyDown(textBox, { key: 'Enter', code: 'Enter', charCode: 13 })
 
     const textBoxWithValue = container.querySelector('span[style*="sheet_apple_64.png"]')
@@ -32,9 +30,9 @@ describe('renders Search Story', () => {
     const closeIcon = screen.getByTestId('CloseIcon')
     expect(closeIcon).toBeInTheDocument()
     fireEvent.click(closeIcon)
-
     expect(textBox).toBeInTheDocument()
   })
+
   test('render of WithValue Story', async () => {
     const { container } = render(
       <ThemeProvider theme={theme}>
@@ -71,7 +69,6 @@ describe('renders Search Story', () => {
 
     const textBox = screen.getByPlaceholderText(/Search Categories/i)
     expect(textBox).toBeInTheDocument()
-
     fireEvent.change(textBox, { target: { value: 'cleaning' } })
     fireEvent.keyDown(textBox, { key: 'Enter', code: 'Enter', charCode: 13 })
 
@@ -98,7 +95,6 @@ describe('renders Search Story', () => {
     expect(textBox).toBeInTheDocument()
 
     fireEvent.change(textBox, { target: { value: 'Checking Account' } })
-
     fireEvent.keyDown(textBox, { key: 'Enter', code: 'Enter', charCode: 13 })
 
     expect(textBox).toHaveAttribute('value', 'Checking Account')

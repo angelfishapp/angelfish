@@ -23,6 +23,7 @@ describe('InstitutionField', () => {
     const input = screen.getByPlaceholderText('Type in Institution Name...') as HTMLInputElement
     fireEvent.focus(input)
     fireEvent.change(input, { target: { value: 'Chase' } })
+
     expect(input.value).toBe('Chase')
   })
 
@@ -34,6 +35,7 @@ describe('InstitutionField', () => {
     fireEvent.focus(input)
     fireEvent.change(input, { target: { value: 'Chase' } })
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
+
     expect(input.value).toBe('Chase')
   })
 

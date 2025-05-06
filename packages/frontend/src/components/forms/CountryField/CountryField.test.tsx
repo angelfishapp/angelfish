@@ -25,6 +25,7 @@ describe('renders CountryFIeld Story', () => {
 
     fireEvent.change(input, { target: { value: 'canada' } })
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
+
     expect(input.value).toBe('Canada')
   })
 })

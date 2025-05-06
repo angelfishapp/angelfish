@@ -56,6 +56,7 @@ describe('renders Search Story', () => {
 
     const arrow = screen.getByTestId('ArrowDropDownIcon')
     expect(arrow).toBeInTheDocument()
+
     fireEvent.click(arrow)
 
     const [tag1] = await screen.findAllByText(/Tag 1/i)
@@ -63,11 +64,12 @@ describe('renders Search Story', () => {
 
     const [tag2] = await screen.findAllByText(/Tag 2/i)
     expect(tag2).toBeInTheDocument()
-
     fireEvent.click(tag1)
+
     fireEvent.change(input, { target: { value: 'Tag 1' } })
 
     fireEvent.click(tag2)
+
     fireEvent.change(input, { target: { value: 'Tag 1,Tag 2' } })
 
     expect(input.value).toBe('Tag 1,Tag 2')
@@ -76,6 +78,7 @@ describe('renders Search Story', () => {
     expect(closeIcon).toBeInTheDocument()
 
     fireEvent.click(closeIcon)
+
     expect(input.value).toBe('')
   })
 
