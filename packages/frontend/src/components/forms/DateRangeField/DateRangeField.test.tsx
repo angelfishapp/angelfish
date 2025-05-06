@@ -20,7 +20,6 @@ describe('renders Date Field Story', () => {
 
     const input = screen.getByPlaceholderText('Select Date Range...') as HTMLInputElement
     expect(input).toBeInTheDocument()
-
     fireEvent.click(input)
     const todayButton = screen.getByText(/Last 24 Hours/i)
     expect(todayButton).toBeInTheDocument()
@@ -43,8 +42,8 @@ describe('renders Date Field Story', () => {
 
     const input = screen.getByPlaceholderText('Select Date Range...') as HTMLInputElement
     expect(input).toBeInTheDocument()
-
     fireEvent.click(input)
+
     const todayButton = screen.getByText(/Last 24 Hours/i)
     expect(todayButton).toBeInTheDocument()
     fireEvent.click(todayButton)

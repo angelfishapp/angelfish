@@ -16,7 +16,7 @@ import {
   subQuarters,
   subYears,
 } from 'date-fns'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
@@ -160,6 +160,32 @@ export default function Reports() {
       reportsQuery.end_date,
     ],
   )
+  // calculating the width for first col in the table and make it the same for range Date section so it would
+  // be aligned with the table header in chart case of resizing the window
+
+  const [dateRangeSectionWidth, setDateRangeSectionWidth] = useState('332px')
+
+  const cols = Array.from(
+    document.getElementsByClassName(' MuiTableCell-head'),
+  ) as Array<HTMLElement>
+
+  const chartWidth = cols.filter(
+    (item) =>
+      item.className.includes('col-id-') &&
+      !item.className.includes('col-id-name') &&
+      !item.className.includes('col-id-total'),
+  )[0]?.offsetWidth
+
+  const headingCol = document.getElementsByClassName('isPinned')[1] as HTMLElement
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDateRangeSectionWidth(headingCol?.offsetWidth.toString() + 'px')
+    }
+    window.addEventListener('resize', handleResize)
+    handleResize()
+    return () => window.removeEventListener('resize', handleResize)
+  }, [headingCol?.offsetWidth, reportsQuery, reportData])
 
   // Render
   return (
@@ -191,7 +217,7 @@ export default function Reports() {
               minWidth={`${reportData.periods.length * 150 + 300}px`}
             >
               <Box
-                width="300px"
+                width={dateRangeSectionWidth}
                 flex="none"
                 borderRight="1px solid transparent"
                 bgcolor="white"
@@ -268,7 +294,7 @@ export default function Reports() {
                     </Box>
                   </Box>
                 </Box>
-                <ReportsChart data={reportData} />
+                <ReportsChart data={reportData} chartWidth={chartWidth} />
               </Box>
             </Box>
 

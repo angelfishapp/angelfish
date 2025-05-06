@@ -13,7 +13,6 @@ describe('renders TextButton DropdownMenu', () => {
 
     const moreIconButton = screen.getByTestId('MoreHorizIcon')
     expect(moreIconButton).toBeInTheDocument()
-
     userEvent.click(moreIconButton)
 
     const title = await screen.findByText(/Sub Menu Header 1/i)

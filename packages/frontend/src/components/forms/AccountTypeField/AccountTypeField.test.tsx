@@ -21,6 +21,7 @@ describe('renders Search Story', () => {
     const arrow = screen.getByTestId('ArrowDropDownIcon')
     expect(arrow).toBeInTheDocument()
     fireEvent.click(arrow)
+
     const cashAccounts = await screen.findByText(/Cash Accounts/i)
     expect(cashAccounts).toBeInTheDocument()
     const creditCards = await screen.findByText(/credit Cards/i)

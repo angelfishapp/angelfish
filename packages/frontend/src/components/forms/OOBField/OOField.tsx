@@ -91,11 +91,15 @@ export default React.forwardRef<HTMLDivElement, OOBFieldProps>(function OOBField
               type="tel"
               autoFocus={index === 0}
               id={`oob-digit-${index}`}
-              inputProps={{
-                maxLength: 1,
-                inputMode: 'numeric',
-                pattern: '[0-9]*',
-                style: { textAlign: 'center' },
+              slotProps={{
+                input: {
+                  inputProps: {
+                    maxLength: 1,
+                    inputMode: 'numeric',
+                    pattern: '[0-9]*',
+                    style: { textAlign: 'center' },
+                  },
+                },
               }}
               sx={{ width: '3rem', height: '3rem' }}
               value={digit}

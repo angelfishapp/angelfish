@@ -19,9 +19,7 @@ describe('renders categoryGroupField Story', () => {
 
     const textBox = screen.getByPlaceholderText(/Search Category Groups.../i)
     expect(textBox).toBeInTheDocument()
-
     fireEvent.change(textBox, { target: { value: 'investment Income' } })
-
     fireEvent.keyDown(textBox, { key: 'Enter', code: 'Enter', charCode: 13 })
 
     expect(textBox).toHaveAttribute('value', 'Investment Income')

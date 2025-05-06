@@ -14,24 +14,6 @@ import { UserService } from './services/user'
 
 const logger = getWorkerLogger('WorkerProcess')
 
-// Global Error Handling
-window.onerror = (message, source, lineno, colno, error) => {
-  logger.error('💥 Uncaught error', {
-    message,
-    source,
-    lineno,
-    colno,
-    stack: error?.stack,
-  })
-}
-
-window.onunhandledrejection = (event) => {
-  logger.error('💥 Unhandled promise rejection', {
-    reason: event.reason,
-    stack: event.reason?.stack,
-  })
-}
-
 // Entry point for the worker process
 window.onload = async () => {
   await CommandsClient.isReady([AppProcessIDs.MAIN])

@@ -26,6 +26,7 @@ describe('TagField tests', () => {
     const inputField = screen.getByRole('combobox')
     fireEvent.change(inputField, { target: { value: 'Tag 1' } })
     fireEvent.keyDown(inputField, { key: 'Enter', code: 'Enter' })
+
     const addedTag = screen.getByText('Tag 1')
     expect(addedTag).toBeInTheDocument()
   })

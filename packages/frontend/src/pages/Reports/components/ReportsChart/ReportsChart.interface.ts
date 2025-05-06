@@ -9,4 +9,5 @@ export interface ReportsChartProps {
    * IPC API
    */
   data: ReportsData
+  chartWidth: number
 }
