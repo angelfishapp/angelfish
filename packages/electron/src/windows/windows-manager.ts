@@ -6,6 +6,7 @@ import { CommandsRegistryMain } from '../commands/commands-registry-main'
 import { LogManager } from '../logging/log-manager'
 import { LogEvents } from '../logging/logging-events'
 import { settings } from '../settings'
+import { generateCSPHeader } from '../utils/csp'
 import { Environment } from '../utils/environment'
 import type {
   ProcessWindowOptions,
@@ -76,7 +77,14 @@ class WindowManagerClass {
       callback({
         responseHeaders: {
           ...details.responseHeaders,
-          'Content-Security-Policy': [this._getCSPHeader(allowedDomains)],
+          'Content-Security-Policy': [
+            generateCSPHeader(
+              Environment.nodeEnvironment === Environment.DEVELOPMENT
+                ? 'development'
+                : 'production',
+              { 'connect-src': allowedDomains },
+            ),
+          ],
         },
       })
     })
@@ -98,6 +106,7 @@ class WindowManagerClass {
    * @param title     The title of the window
    * @param width     The width of the window
    * @param height    The height of the window
+   * @param csp       (Optional) The Content Security Policy to apply to the window
    * @returns         The new {BrowserWindow}
    */
   public createRendererWindow({
@@ -106,6 +115,7 @@ class WindowManagerClass {
     title,
     height,
     width,
+    csp,
   }: RendererWindowOptions): BrowserWindow {
     // Create the browser window
     const rendererSession = session.fromPartition(`persist:${id}`)
@@ -122,6 +132,25 @@ class WindowManagerClass {
         preload: CLIENT_PRELOAD_PRELOAD_WEBPACK_ENTRY,
       },
     })
+
+    // Set up CSP header to allow external domain calls if CSP is provided
+    if (csp) {
+      rendererSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+          responseHeaders: {
+            ...details.responseHeaders,
+            'Content-Security-Policy': [
+              generateCSPHeader(
+                Environment.nodeEnvironment === Environment.DEVELOPMENT
+                  ? 'development'
+                  : 'production',
+                csp,
+              ),
+            ],
+          },
+        })
+      })
+    }
 
     // Override file:// protocol for serving static assets in distribution
     if (!rendererSession.protocol.isProtocolHandled('file')) {
@@ -254,18 +283,6 @@ class WindowManagerClass {
       this._windows = this._windows.filter((w) => w.id !== id)
       this._hasClosedWindow = true
     })
-  }
-
-  /**
-   *
-   * @param allowedDomains  The list of allowed domains the process can access externally
-   * @returns               The Content Security Policy header
-   */
-  private _getCSPHeader(allowedDomains: string[]): string {
-    if (Environment.nodeEnvironment === Environment.DEVELOPMENT) {
-      return `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self'${allowedDomains.length > 0 ? ` ${allowedDomains.join(' ')};` : ';'}`
-    }
-    return `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-inline'; connect-src 'self'${allowedDomains.length > 0 ? ` ${allowedDomains.join(' ')};` : ';'}`
   }
 
   /**

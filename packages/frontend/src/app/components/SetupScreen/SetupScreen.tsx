@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import React from 'react'
 
 import { Step, Stepper } from '@/components/Stepper'
+import { VideoContainer } from '@/components/VideoContainer'
 import {
   SetupBankAccountsStep,
   SetupBookStep,
@@ -118,7 +119,10 @@ export default function SetupScreen({
           isReady={true}
           onNext={() => setIsOpen(false)}
         >
-          <p>Coming Soon - an amazing video intro to onboard new users!</p>
+          <VideoContainer
+            src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?si=jp1QWglFMyKASaDO"
+            title="Rick Astley - Never Gonna Give You Up"
+          />
         </Step>
       </Stepper>
     </Box>

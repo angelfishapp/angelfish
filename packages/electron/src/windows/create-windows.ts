@@ -55,6 +55,14 @@ function createMainAppWindow(): BrowserWindow {
     title: 'Angelfish',
     width: windowSize.width,
     height: windowSize.height,
+    // Allow embedded YouTube videos to play
+    csp: {
+      'frame-src': ['https://www.youtube-nocookie.com'],
+      'font-src': ['https://fonts.gstatic.com'],
+      'img-src': ['https://i.ytimg.com'],
+      'connect-src': ['https://*.googlevideo.com'],
+      'media-src': ['https://www.youtube-nocookie.com', 'blob:'],
+    },
   })
   appWindow.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
   appWindow.setIcon(path.join(__dirname, 'assets', '1024.png'))
