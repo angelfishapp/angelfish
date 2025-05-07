@@ -79,7 +79,14 @@ export class TransactionEntity implements ITransaction {
   @IsNumber()
   amount!: number
 
-  @Column({ type: 'text', nullable: true })
+  @Column({
+    type: 'text',
+    nullable: true,
+    transformer: {
+      to: (value: string) => value.toUpperCase(),
+      from: (value) => value,
+    },
+  })
   @IsDefined()
   @IsCurrencyCode()
   currency_code!: string
