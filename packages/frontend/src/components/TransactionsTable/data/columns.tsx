@@ -142,6 +142,7 @@ export function buildColumns(
               day: 'numeric',
               month: 'short',
               year: 'numeric',
+              timeZone: 'UTC',
             })
           },
           aggregatedCell: ({ row }) => {
@@ -149,6 +150,7 @@ export function buildColumns(
               day: 'numeric',
               month: 'short',
               year: 'numeric',
+              timeZone: 'UTC',
             })
           },
           meta: {

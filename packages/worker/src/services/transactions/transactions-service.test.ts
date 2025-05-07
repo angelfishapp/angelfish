@@ -90,7 +90,7 @@ describe('TransactionService', () => {
     TestLogger.debug('Saved Transaction', response)
     expect(response.length).toEqual(1)
     expect(response[0].id).toBeDefined()
-    expect(response[0].line_items.length).toEqual(2)
+    expect(response[0].line_items.length).toEqual(1)
 
     // Update Transaction
     TestLogger.log('Updating Transaction...')
@@ -98,7 +98,7 @@ describe('TransactionService', () => {
     const updatedTransaction = await TransactionService.saveTransactions(response)
     expect(response.length).toEqual(1)
     expect(response[0].id).toBeDefined()
-    expect(updatedTransaction[0].line_items.length).toEqual(2)
+    expect(updatedTransaction[0].line_items.length).toEqual(1)
     expect(updatedTransaction[0].title).toBe('Updated Test Transaction')
 
     // Get Transaction
@@ -118,7 +118,6 @@ describe('TransactionService', () => {
       requires_sync: false,
       line_items: [
         {
-          account_id: newAccount?.id,
           amount: -9, // Invalid amount, should be -10 like Transaction
           local_amount: -9,
         },
@@ -130,16 +129,6 @@ describe('TransactionService', () => {
     } as ITransactionUpdate
 
     // Test Bank Account Line Item amount is invalid
-    await expect(TransactionService.saveTransactions([errorTransaction])).rejects.toThrow(
-      'Cannot save TransactionEntity as it failed validation',
-    )
-
-    // Test Bank Account Line Item is account_id invalid (fix amount error first)
-    errorTransaction.line_items[1].amount = 10
-    errorTransaction.line_items[1].local_amount = 10
-    errorTransaction.line_items[0].amount = -10
-    errorTransaction.line_items[0].local_amount = -10
-    errorTransaction.line_items[0].account_id = 1 // Incorrect account_id, should be newAccount.id
     await expect(TransactionService.saveTransactions([errorTransaction])).rejects.toThrow(
       'Cannot save TransactionEntity as it failed validation',
     )
@@ -158,33 +147,30 @@ describe('TransactionService', () => {
     // Get Transaction
     const transaction = (await TransactionService.getTransaction({ id: 1 })) as TransactionEntity
     expect(transaction).toBeDefined()
+    expect(transaction.amount).toEqual(-10.01)
 
     // Check only 2 line items in Database
     let lineItems = await getAllLineItems()
     TestLogger.log('line_items before SPLIT:', lineItems)
-    expect(lineItems.length).toEqual(2)
+    expect(lineItems.length).toEqual(1)
 
-    const accountLineItem = new LineItemEntity()
-    accountLineItem.account_id = transaction?.account_id
-    accountLineItem.amount = transaction?.amount as number
-    accountLineItem.local_amount = transaction?.amount as number
     const splitLineItem1 = new LineItemEntity()
     splitLineItem1.account_id = 3
-    splitLineItem1.amount = 5.0
-    splitLineItem1.local_amount = 5.0
+    splitLineItem1.amount = -5.0
+    splitLineItem1.local_amount = -5.0
     const splitLineItem2 = new LineItemEntity()
     splitLineItem2.account_id = 4
-    splitLineItem2.amount = 5.01
-    splitLineItem2.local_amount = 5.01
+    splitLineItem2.amount = -5.01
+    splitLineItem2.local_amount = -5.01
 
     transaction.line_items = []
-    transaction.line_items = [accountLineItem, splitLineItem1, splitLineItem2]
+    transaction.line_items = [splitLineItem1, splitLineItem2]
     await TransactionService.saveTransactions([transaction])
 
     // Check only 3 line items in Database
     lineItems = await getAllLineItems()
     TestLogger.log('line_items after SPLIT:', lineItems)
-    expect(lineItems.length).toEqual(3)
+    expect(lineItems.length).toEqual(2)
   })
 
   test('test save-array', async () => {
@@ -203,7 +189,7 @@ describe('TransactionService', () => {
     const list = await TransactionService.listTransactions({ account_id: newAccount?.id })
     expect(list.length).toEqual(11)
     const lineItems = await getAllLineItems()
-    expect(lineItems.length).toEqual(23)
+    expect(lineItems.length).toEqual(12)
   })
 
   test('test list-transactions', async () => {
@@ -215,7 +201,7 @@ describe('TransactionService', () => {
     const categoryResponse = await TransactionService.listTransactions({ cat_id: 3 })
     expect(categoryResponse.length).toEqual(1)
     // Make sure all line items are returned for transaction
-    expect(categoryResponse[0].line_items.length).toEqual(3)
+    expect(categoryResponse[0].line_items.length).toEqual(2)
 
     // TODO - Add more tests for dates and category group
   })
@@ -241,7 +227,7 @@ describe('TransactionService', () => {
     const list = await TransactionService.listTransactions({ account_id: newAccount?.id })
     expect(list.length).toEqual(10)
     const lineItems = await getAllLineItems()
-    expect(lineItems.length).toEqual(20)
+    expect(lineItems.length).toEqual(10)
   })
 
   test('test line_item_tags relations', async () => {
@@ -261,21 +247,21 @@ describe('TransactionService', () => {
     const tag = {
       name: 'Test',
     } as ITag
-    transactions[0].line_items[1].tags = [tag]
+    transactions[0].line_items[0].tags = [tag]
     const taggedTransactions = await TransactionService.saveTransactions(transactions)
     // Make sure join table has 1 row
     let count = await DatabaseManager.getConnection().query('SELECT COUNT(*) FROM line_item_tags')
     expect(count[0]['COUNT(*)']).toEqual(1)
 
     // Remove the new Tag from line item
-    taggedTransactions[0].line_items[1].tags = []
+    taggedTransactions[0].line_items[0].tags = []
     const updatedTaggedTransactions = await TransactionService.saveTransactions(taggedTransactions)
     // Make sure join table has no rows
     count = await DatabaseManager.getConnection().query('SELECT COUNT(*) FROM line_item_tags')
     expect(count[0]['COUNT(*)']).toEqual(0)
 
     // Add another tag
-    updatedTaggedTransactions[0].line_items[1].tags = [tag]
+    updatedTaggedTransactions[0].line_items[0].tags = [tag]
     await TransactionService.saveTransactions(updatedTaggedTransactions)
     // Make sure join table has 1 row
     count = await DatabaseManager.getConnection().query('SELECT COUNT(*) FROM line_item_tags')

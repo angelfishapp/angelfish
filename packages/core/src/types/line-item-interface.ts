@@ -41,6 +41,10 @@ export interface ILineItem {
 /**
  * Interface for Line Item Update Model.
  */
-export interface ILineItemUpdate extends Partial<Omit<ILineItem, 'tags'>> {
+export interface ILineItemUpdate extends Partial<Omit<ILineItem, 'amount' | 'tags'>> {
+  /* Signed Amount for Line Item:
+       + = credit, - = debit */
+  amount: number
+  /* Array of Tags Associated with Line Item */
   tags?: Partial<ITag>[]
 }

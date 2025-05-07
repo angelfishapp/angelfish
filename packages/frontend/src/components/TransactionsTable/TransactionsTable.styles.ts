@@ -22,17 +22,17 @@ export const StyledTransactionTable = styled(UnstyledTable, {
   // Make table corners rounded and add shadow if variant is raised
   borderRadius: tableVarient === 'raised' ? theme.spacing(1) : undefined,
   boxShadow: tableVarient === 'raised' ? theme.shadows[8] : undefined,
-  '& thead:first-child th:first-child': {
+  '& thead:first-of-type th:first-of-type': {
     borderTopLeftRadius: tableVarient === 'raised' ? theme.spacing(1) : undefined,
   },
-  '& thead:first-child th:last-child': {
+  '& thead:first-of-type th:last-of-type': {
     borderTopRightRadius: tableVarient === 'raised' ? theme.spacing(1) : undefined,
   },
-  '& tfoot tr:last-child, table:not(:has(tfoot)) tbody:last-of-type tr:last-child': {
-    '& td:first-child': {
+  '& tfoot tr:last-of-type, table:not(:has(tfoot)) tbody:last-of-type tr:last-of-type': {
+    '& td:first-of-type': {
       borderBottomLeftRadius: tableVarient === 'raised' ? theme.spacing(1) : undefined,
     },
-    '& td:last-child': {
+    '& td:last-of-type': {
       borderBottomRightRadius: tableVarient === 'raised' ? theme.spacing(1) : undefined,
     },
   },
@@ -68,11 +68,11 @@ export const StyledTransactionTable = styled(UnstyledTable, {
 
   // Sub-table for expanded rows styles
   // Remove rounded boarders
-  '& table.subTable tbody:last-of-type tr:last-child': {
-    '& td:first-child': {
+  '& table.subTable tbody:last-of-type tr:last-of-type': {
+    '& td:first-of-type': {
       borderBottomLeftRadius: '0px !important',
     },
-    '& td:last-child': {
+    '& td:last-of-type': {
       borderBottomRightRadius: '0px !important',
     },
   },
@@ -91,7 +91,7 @@ export const StyledTransactionTable = styled(UnstyledTable, {
       verticalAlign: 'top',
       padding: '5px 3px 0px',
     },
-    '& td:first-child': {
+    '& td:first-of-type': {
       borderLeft: `5px solid ${theme.palette.primary.main}`,
     },
     '&:hover': {

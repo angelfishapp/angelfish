@@ -1,4 +1,11 @@
-import type { IAccount, ILineItem, ITag, ITransaction, IUser, SplitLineItem } from '@angelfish/core'
+import type {
+  IAccount,
+  ILineItem,
+  ILineItemUpdate,
+  ITag,
+  ITransaction,
+  IUser,
+} from '@angelfish/core'
 
 /**
  * Type for Transaction Row
@@ -42,5 +49,5 @@ export type FormData = {
   amount: number
   date: Date
   is_reviewed: boolean
-  lineItems: SplitLineItem[]
+  lineItems: ILineItemUpdate[]
 }

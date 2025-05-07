@@ -152,177 +152,197 @@ class SyncServiceClass {
     const accountCurrencies = await CommandsClient.executeAppCommand(
       AppCommandIds.LIST_ACCOUNT_CURRENCIES,
     )
-
-    if (accountCurrencies.foreign_currencies.length === 0) {
-      logger.info('No Foreign Currencies to Sync')
-      return
-    }
-
-    /**
-     * Latest (Spot) Currency Rates
-     */
-
-    const latestRates = await executeLocalCommand(LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES, {
-      base: accountCurrencies.default_currency as CurrencyCodes,
-      currencies: accountCurrencies.foreign_currencies as CurrencyCodes[],
-    })
     logger.debug(
-      `Received ${Object.keys(latestRates.rates).length} spot rates for ${accountCurrencies.foreign_currencies}`,
-    )
-    const latestData = Object.entries(latestRates.rates).map(([currency, rate]) => ({
-      date: 'LATEST',
-      currency,
-      rate,
-    }))
-    await CommandsClient.executeAppCommand(AppCommandIds.INSERT_DATASET_ROWS, {
-      datasetName: 'currencies',
-      rows: latestData,
-    })
-
-    /**
-     * Historical Currency Rates
-     */
-
-    // Get date 1 year ago
-    const oneYearAgo = new Date()
-    oneYearAgo.setFullYear(new Date().getFullYear() - 1)
-
-    // Determine the earliest transaction in database, if none exists or its less than 1 year old,
-    // set start date to 1 year ago from today, otherwise set to the earliest transaction date
-    const transactionDateRange = await CommandsClient.executeAppCommand(
-      AppCommandIds.GET_TRANSACTIONS_DATE_RANGE,
+      `Default Currency: ${accountCurrencies.default_currency}, Foreign Currencies: ${accountCurrencies.foreign_currencies}`,
     )
 
-    // Determine the max date range based on Transaction dates or today - 1 year ago
-    const maxDateRange = findMissingDateRanges(
-      [
-        transactionDateRange.start_date ? parseDate(transactionDateRange.start_date) : null,
-        transactionDateRange.end_date ? parseDate(transactionDateRange.end_date) : null,
-        oneYearAgo,
-        new Date(),
-      ],
-      null,
-      null,
-    )[0]
-
-    logger.debug(
-      `Earliest Transaction Date: ${
-        transactionDateRange.start_date
-          ? formatDateString(parseDate(transactionDateRange.start_date))
-          : 'None'
-      }`,
-      `Latest Transaction Date: ${
-        transactionDateRange.end_date
-          ? formatDateString(parseDate(transactionDateRange.end_date))
-          : 'None'
-      }`,
-      `Today: ${formatDateString(new Date())}`,
-      `One Year Ago: ${formatDateString(oneYearAgo)}`,
-      `Min: ${maxDateRange.start}`,
-      `Max: ${maxDateRange.end}`,
-    )
-
-    // Get the latest currency rates from Cloud
-    for (const currency of accountCurrencies.foreign_currencies) {
-      // Get the first and last date of any currency rates already stored in dataset
-      const datasetResults = await CommandsClient.executeAppCommand(
-        AppCommandIds.RUN_DATASET_QUERY,
-        {
-          datasetName: 'currencies',
-          queryName: 'datasetDateRange',
-          params: [currency],
-        },
+    if (accountCurrencies.foreign_currencies.length > 0) {
+      /**
+       * Sync Latest (Spot) Currency Rates
+       */
+      logger.info(
+        `Syncing Latest (Spot) Currency Rates for ${accountCurrencies.foreign_currencies} with ${accountCurrencies.default_currency}`,
       )
 
-      // Determine the missing date ranges for the currency
-      const missingDateRanges = findMissingDateRanges(
-        [maxDateRange.start, maxDateRange.end],
-        datasetResults[0]?.start ? parseDate(datasetResults[0].start) : null,
-        datasetResults[0]?.end ? parseDate(datasetResults[0].end) : null,
+      const latestRates = await executeLocalCommand(LocalCommandIds.CLOUD_GET_SPOT_CURRENCY_RATES, {
+        base: accountCurrencies.default_currency as CurrencyCodes,
+        currencies: accountCurrencies.foreign_currencies as CurrencyCodes[],
+      })
+      logger.debug(
+        `Received ${Object.keys(latestRates.rates).length} spot rates for ${accountCurrencies.foreign_currencies}`,
+      )
+      const latestData = Object.entries(latestRates.rates).map(([currency, rate]) => ({
+        date: 'LATEST',
+        currency,
+        rate,
+      }))
+      await CommandsClient.executeAppCommand(AppCommandIds.INSERT_DATASET_ROWS, {
+        datasetName: 'currencies',
+        rows: latestData,
+      })
+
+      /**
+       * Sync Historical Currency Rates
+       */
+
+      logger.info('Syncing Historical Foreign Currency Rates')
+
+      // Get date 1 year ago
+      const oneYearAgo = new Date()
+      oneYearAgo.setFullYear(new Date().getFullYear() - 1)
+
+      // Determine the earliest transaction in database, if none exists or its less than 1 year old,
+      // set start date to 1 year ago from today, otherwise set to the earliest transaction date
+      const transactionDateRange = await CommandsClient.executeAppCommand(
+        AppCommandIds.GET_TRANSACTIONS_DATE_RANGE,
       )
 
-      for (const dateRange of missingDateRanges) {
-        logger.info(
-          `Syncing Foreign Currency Rates for ${currency} between ${dateRange.start} and ${dateRange.end}`,
-        )
-        const rates = await executeLocalCommand(
-          LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES,
+      // Determine the max date range based on Transaction dates or today - 1 year ago
+      const maxDateRange = findMissingDateRanges(
+        [
+          transactionDateRange.start_date ? parseDate(transactionDateRange.start_date) : null,
+          transactionDateRange.end_date ? parseDate(transactionDateRange.end_date) : null,
+          oneYearAgo,
+          new Date(),
+        ],
+        null,
+        null,
+      )[0]
+
+      logger.debug(
+        `Earliest Transaction Date: ${
+          transactionDateRange.start_date
+            ? formatDateString(parseDate(transactionDateRange.start_date))
+            : 'None'
+        }`,
+        `Latest Transaction Date: ${
+          transactionDateRange.end_date
+            ? formatDateString(parseDate(transactionDateRange.end_date))
+            : 'None'
+        }`,
+        `Today: ${formatDateString(new Date())}`,
+        `One Year Ago: ${formatDateString(oneYearAgo)}`,
+        `Min: ${maxDateRange.start}`,
+        `Max: ${maxDateRange.end}`,
+      )
+
+      for (const foreignCurrency of accountCurrencies.foreign_currencies) {
+        // Get the first and last date of any currency rates already stored in dataset
+        const datasetResults = await CommandsClient.executeAppCommand(
+          AppCommandIds.RUN_DATASET_QUERY,
           {
-            base: accountCurrencies.default_currency as CurrencyCodes,
-            currency: currency as CurrencyCodes,
-            startDate: formatDateString(dateRange.start),
-            endDate: formatDateString(dateRange.end),
+            datasetName: 'currencies',
+            queryName: 'datasetDateRange',
+            params: [foreignCurrency],
           },
         )
-        logger.debug(`Received ${Object.keys(rates.rates).length} rates for ${currency}`)
-        logger.silly(`API Rates for ${currency}`, rates.rates)
 
-        // Convert each rate into a dataset row and insert into database with formate { date, currency, rate }
-        const data = Object.entries(rates.rates).map(([dateStr, rate]) => ({
-          date: dateStr,
-          currency,
-          rate,
-        }))
-        await CommandsClient.executeAppCommand(AppCommandIds.INSERT_DATASET_ROWS, {
-          datasetName: 'currencies',
-          rows: data,
-        })
+        // Determine the missing date ranges for the currency
+        const missingDateRanges = findMissingDateRanges(
+          [maxDateRange.start, maxDateRange.end],
+          datasetResults[0]?.start ? parseDate(datasetResults[0].start) : null,
+          datasetResults[0]?.end ? parseDate(datasetResults[0].end) : null,
+        )
+
+        for (const dateRange of missingDateRanges) {
+          logger.info(
+            `Syncing Foreign Currency Rates for ${foreignCurrency} between ${dateRange.start} and ${dateRange.end}`,
+          )
+          const rates = await executeLocalCommand(
+            LocalCommandIds.CLOUD_GET_HISTORICAL_CURRENCY_RATES,
+            {
+              base: accountCurrencies.default_currency as CurrencyCodes,
+              currency: foreignCurrency as CurrencyCodes,
+              startDate: formatDateString(dateRange.start),
+              endDate: formatDateString(dateRange.end),
+            },
+          )
+          logger.debug(`Received ${Object.keys(rates.rates).length} rates for ${foreignCurrency}`)
+          logger.silly(`API Rates for ${foreignCurrency}`, rates.rates)
+
+          // Convert each rate into a dataset row and insert into database with formate { date, currency, rate }
+          const data = Object.entries(rates.rates).map(([dateStr, rate]) => ({
+            date: dateStr,
+            currency: foreignCurrency,
+            rate,
+          }))
+          await CommandsClient.executeAppCommand(AppCommandIds.INSERT_DATASET_ROWS, {
+            datasetName: 'currencies',
+            rows: data,
+          })
+        }
       }
+    } else {
+      logger.info('No Foreign Currencies to Sync')
     }
 
     /**
-     * Update Transactions with require_sync = true and base_currency != default_currency
+     * Sync Transactions with require_sync === true
      */
 
-    const reviewTransactions = await CommandsClient.executeAppCommand(
-      AppCommandIds.LIST_TRANSACTIONS,
-      {
-        requires_sync: true,
-      },
-    )
+    logger.info('Updating Transactions with require_sync=true')
+    // Use batch size of 100 to update transactions
+    // to avoid hitting the database transaction limit
+    const batchSize = 100
 
-    logger.debug(`Updating ${reviewTransactions.length} transactions with require_sync=true`)
+    const allCurrencies = [
+      ...accountCurrencies.foreign_currencies,
+      accountCurrencies.default_currency,
+    ]
+    for (const currency of allCurrencies) {
+      const reviewTransactions = await CommandsClient.executeAppCommand(
+        AppCommandIds.LIST_TRANSACTIONS,
+        {
+          requires_sync: true,
+          currency_code: currency,
+        },
+      )
+      logger.debug(
+        `Updating ${reviewTransactions.length} transactions with require_sync=true and currency_code=${currency}`,
+      )
 
-    // Cache Exchange Rates for each foreign currency
-    const exchangeRates = new Map<string, any[]>()
-    for (const foreignCurrency of accountCurrencies.foreign_currencies) {
-      const rates = await CommandsClient.executeAppCommand(AppCommandIds.RUN_DATASET_QUERY, {
-        datasetName: 'currencies',
-        queryName: 'getAllRates',
-        params: [foreignCurrency],
-      })
-      exchangeRates.set(foreignCurrency, rates)
-    }
+      let rates
+      if (currency !== accountCurrencies.default_currency) {
+        // Get exchange rates cached earlier in dataset service
+        rates = await CommandsClient.executeAppCommand(AppCommandIds.RUN_DATASET_QUERY, {
+          datasetName: 'currencies',
+          queryName: 'getAllRates',
+          params: [currency],
+        })
+      }
 
-    // Update Transactions
-    const updatedTransactions: ITransactionUpdate[] = []
-    for (const transaction of reviewTransactions) {
-      if (transaction.currency_code.toUpperCase() === accountCurrencies.default_currency) {
-        // Update transaction to not require sync
-        transaction.requires_sync = false
-        updatedTransactions.push(transaction)
-      } else {
-        // Get the exchange rate for the same day as the transaction
-        const date = formatDateString(transaction.date)
-        const rate = exchangeRates
-          .get(transaction.currency_code.toUpperCase())
-          ?.find((entry) => entry.date === date)
-        if (rate) {
+      for (let i = 0; i < reviewTransactions.length; i += batchSize) {
+        const batch = reviewTransactions.slice(i, i + batchSize)
+        const updatedTransactions: ITransactionUpdate[] = []
+        for (const transaction of batch) {
+          // Get the exchange rate for the same day as the transaction
+          let exchange_rate = 1
+          if (currency !== accountCurrencies.default_currency) {
+            const date = formatDateString(transaction.date)
+            const rate = rates?.find((entry) => entry.date === date)
+            if (rate) {
+              exchange_rate = rate.rate as number
+            } else {
+              logger.warn(`No exchange rate found for ${transaction.currency_code} on ${date}`)
+              continue
+            }
+          }
+
+          // Update transaction to not require sync
           const updatedTransaction = updateTransaction(transaction, {
-            currency_exchange_rate: rate.rate as number,
+            currency_exchange_rate: exchange_rate,
             requires_sync: false,
           })
           updatedTransactions.push(updatedTransaction)
-        } else {
-          logger.warn(`No exchange rate found for ${transaction.currency_code} on ${date}`)
-          continue
+        }
+        if (updatedTransactions.length > 0) {
+          logger.debug(`Saving ${updatedTransactions.length} Transactions...`)
+          await CommandsClient.executeAppCommand(
+            AppCommandIds.SAVE_TRANSACTIONS,
+            updatedTransactions,
+          )
         }
       }
-    }
-
-    // Update Transactions in database
-    if (updatedTransactions.length > 0) {
-      await CommandsClient.executeAppCommand(AppCommandIds.SAVE_TRANSACTIONS, updatedTransactions)
     }
   }
 }

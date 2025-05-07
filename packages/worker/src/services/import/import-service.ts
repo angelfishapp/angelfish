@@ -4,17 +4,17 @@ import type {
   AppCommandRequest,
   AppCommandResponse,
   IAccount,
+  ILineItemUpdate,
   ITransaction,
   ParsedAccount,
   ReconciledTransaction,
-  SplitLineItem,
 } from '@angelfish/core'
 import {
   AppCommandIds,
   Command,
   CommandsClient,
   createNewTransaction,
-  splitTransaction,
+  updateTransaction,
 } from '@angelfish/core'
 import type {
   Account as ImportAccount,
@@ -118,7 +118,8 @@ class ImportServiceClass {
     const importTransactions = transactionData.map((t) => {
       const account = importAccounts[t.account_id as string] || importAccounts['default']
 
-      const transaction = createNewTransaction(account.id, {
+      const transaction = createNewTransaction({
+        account_id: account.id,
         date: t.date,
         title: t.name,
         amount: t.amount,
@@ -137,18 +138,18 @@ class ImportServiceClass {
 
       // Split Transaction if it has multiple line items
       if (t.lineItems && t.lineItems.length > 1) {
-        const splitTransactions: SplitLineItem[] = t.lineItems.map((lineItem) => {
+        const splitTransactions: ILineItemUpdate[] = t.lineItems.map((lineItem) => {
           return {
             amount: lineItem.amount,
-            category_id:
+            account_id:
               mapper.categoriesMapper &&
               Object.prototype.hasOwnProperty.call(mapper.categoriesMapper, lineItem.category)
                 ? mapper.categoriesMapper[lineItem.category]
-                : null,
+                : undefined,
             note: lineItem.memo,
           }
         })
-        return splitTransaction(transaction, splitTransactions)
+        return updateTransaction(transaction, { splits: splitTransactions })
       }
 
       return transaction

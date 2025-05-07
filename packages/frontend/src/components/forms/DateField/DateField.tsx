@@ -50,7 +50,7 @@ export default React.forwardRef<HTMLDivElement, DateFieldProps>(function DateFie
             },
           },
         }}
-        value={value ? moment(value) : null}
+        value={value ? moment(value).utc() : null}
         onChange={(date) => {
           onChange?.(date.toDate())
         }}

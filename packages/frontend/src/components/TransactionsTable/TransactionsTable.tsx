@@ -1,11 +1,11 @@
-import { type Table as ReactTable, type Row, type RowData } from '@tanstack/react-table'
+import { type Table as ReactTable, type RowData } from '@tanstack/react-table'
 import React from 'react'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
-import type { ITransaction, SplitLineItem, TransactionProperties } from '@angelfish/core'
-import { createNewTransaction, splitTransaction, updateTransactions } from '@angelfish/core'
+import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
+import { createNewTransaction, updateTransactions } from '@angelfish/core'
 import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
 import TableRow from './components/TableRow/TableRow'
@@ -72,19 +72,7 @@ declare module '@tanstack/react-table' {
        * @param rows        Array of rows to update
        * @param properties  Properties to update on rows
        */
-      updateRows: (rows: TData[], properties: Partial<TransactionProperties>) => void
-      /**
-       * Update a transaction row with new properties and splits
-       *
-       * @param row         Row to update
-       * @param splits      New splits to update row with EXCLUDING bank account line item
-       * @param properties  Transaction properties to update row with (date, title, amount)
-       */
-      updateSplitRow: (
-        row: Row<TData>,
-        splits: SplitLineItem[],
-        properties?: Pick<TransactionProperties, 'date' | 'title' | 'amount' | 'is_reviewed'>,
-      ) => void
+      updateRows: (rows: TData[], properties: UpdateTransactionProperties) => void
       /**
        * Delete an array of rows
        *
@@ -134,7 +122,7 @@ export default function TransactionsTable({
   // Keep track of rows which are in edit state when double clicked
   const [editRows, setEditRows] = React.useState<Record<string, boolean>>({})
   // Hold new row if creating new transaction so we can merge it into transactionRows
-  // This also ensure only one new row can be created at a time
+  // This also ensures only one new row can be created at a time
   const [newRow, setNewRow] = React.useState<TransactionRow | undefined>(undefined)
 
   // Setup columns and normalise table data
@@ -273,7 +261,8 @@ export default function TransactionsTable({
             // we will only allow one new row at a time and reset any rows that are
             // currently open for editing
             if (account) {
-              const newTransaction = createNewTransaction(account.id, {
+              const newTransaction = createNewTransaction({
+                account_id: account.id,
                 title: '',
                 date,
                 currency_code: account.acc_iso_currency as string,
@@ -297,15 +286,7 @@ export default function TransactionsTable({
             const originalTransactions = rows.map((row) => row.transaction)
             const updatedTransactions = updateTransactions(originalTransactions, properties)
             onSaveTransactions(updatedTransactions)
-          },
-          updateSplitRow: (row, splits, properties) => {
-            const updatedTransaction = splitTransaction(
-              row.original.transaction,
-              splits,
-              properties,
-            )
-            onSaveTransactions([updatedTransaction])
-            if (row.original.isNew) {
+            if (rows.length === 1 && rows[0].isNew) {
               // Close new row form
               table?.options.meta?.transactionsTable?.removeNewRow()
             }

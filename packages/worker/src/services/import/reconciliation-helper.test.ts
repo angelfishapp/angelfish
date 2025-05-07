@@ -25,7 +25,8 @@ describe('ReconciliationHelper', () => {
   describe('test match()', () => {
     it('test import_id match', async () => {
       const match = service.match(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           date: new Date('2022-03-20'),
           title: 'Spotify #122121',
           import_id: '83DXMgpp3bTb6ZQwN9kKuXLAVOJ6gDHJEE7Xy',
@@ -43,7 +44,8 @@ describe('ReconciliationHelper', () => {
       date.setDate(date.getDate() + 4)
 
       const match = service.match(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           date,
           title: 'REI Store#1234455',
           amount: -216.89,
@@ -60,7 +62,8 @@ describe('ReconciliationHelper', () => {
       date.setDate(date.getDate() + 4)
 
       const matches = service.match(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           date,
           title: 'ACME AIRLINES',
           amount: -158.2,
@@ -77,7 +80,8 @@ describe('ReconciliationHelper', () => {
   describe('test predictCategory()', () => {
     it('safeway', () => {
       const category = service.predictCategory(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           title: 'SAFEWAY #12231',
           amount: 100,
           currency_code: 'USD',
@@ -88,7 +92,8 @@ describe('ReconciliationHelper', () => {
 
     it('starbucks', () => {
       const category = service.predictCategory(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           title: 'STARBUCKS STORE 55555',
           amount: 100,
           currency_code: 'USD',
@@ -99,7 +104,8 @@ describe('ReconciliationHelper', () => {
 
     it('exxon', () => {
       const category = service.predictCategory(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           title: 'EXXON MOBIL',
           amount: 100,
           currency_code: 'USD',
@@ -110,7 +116,8 @@ describe('ReconciliationHelper', () => {
 
     it('lyft', () => {
       const category = service.predictCategory(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           title: 'LYFT   *2 RIDES 01-13',
           amount: 100,
           currency_code: 'USD',
@@ -121,7 +128,8 @@ describe('ReconciliationHelper', () => {
 
     it('bonito tacos', () => {
       const category = service.predictCategory(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           title: 'BONITO TACOS',
           amount: 100,
           currency_code: 'USD',
@@ -132,7 +140,8 @@ describe('ReconciliationHelper', () => {
 
     it('bogus payee', () => {
       const category = service.predictCategory(
-        createNewTransaction(125, {
+        createNewTransaction({
+          account_id: 125,
           title: 'BOGUS PAYEE',
           amount: 100,
           currency_code: 'USD',

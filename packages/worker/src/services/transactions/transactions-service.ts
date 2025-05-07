@@ -37,6 +37,7 @@ class TransactionServiceClass {
     start_date,
     end_date,
     requires_sync,
+    currency_code,
   }: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>): AppCommandResponse<AppCommandIds.LIST_TRANSACTIONS> {
     logger.debug('List Transactions Query', {
       account_id,
@@ -45,6 +46,7 @@ class TransactionServiceClass {
       start_date,
       end_date,
       requires_sync,
+      currency_code,
     })
 
     // If query is empty, return empty array
@@ -69,11 +71,12 @@ class TransactionServiceClass {
     // If start_date is specified, filter on that
     if (start_date) {
       if (!end_date) {
+        // Set end_date to today if not specified
         end_date = new Date().toISOString().split('T')[0]
       }
       query.andWhere('(transaction.date BETWEEN :start_date AND :end_date)', {
-        start_date: `${start_date} 00:00:00`,
-        end_date: `${end_date} 23:59:59`,
+        start_date,
+        end_date,
       })
     }
 
@@ -134,11 +137,18 @@ class TransactionServiceClass {
       query.andWhere('transaction.requires_sync = :requires_sync', { requires_sync })
     }
 
+    // If currency is specified, filter on that
+    if (currency_code) {
+      query.andWhere('transaction.currency_code = :currency_code', {
+        currency_code: currency_code.toUpperCase(),
+      })
+    }
+
     logger.silly('Query:', query.getSql())
 
     const results = await query.getMany()
     logger.debug(`Found ${results.length} Transactions`)
-    logger.debug('Results:', results)
+    logger.silly('Results:', results)
     return results
   }
 
@@ -202,6 +212,7 @@ class TransactionServiceClass {
     }
 
     // No errors, insert array
+    logger.silly('Saving Transactions:', sanitizedTransactions)
     const transactionRepo = DatabaseManager.getConnection().getRepository(TransactionEntity)
     const savedTransactions = await transactionRepo.save(sanitizedTransactions)
 
@@ -233,18 +244,28 @@ class TransactionServiceClass {
   private async _sanitizeAndValidate(transaction: TransactionEntity): Promise<TransactionEntity> {
     if (!transaction.id && !transaction.line_items) {
       // Creating new transaction
-      // Create 2 line items, 1 for account
-      // and 1 unclassified line item
-      const accountLineItem = new LineItemEntity()
-      accountLineItem.account_id = transaction.account_id
-      accountLineItem.amount = transaction.amount
-      accountLineItem.local_amount = transaction.amount
+      // Create a new unclassified line item
       const unclassifiedLineItem = new LineItemEntity()
-      unclassifiedLineItem.amount = transaction.amount * -1
-      unclassifiedLineItem.local_amount = transaction.amount * -1
-      transaction.line_items = [accountLineItem, unclassifiedLineItem]
+      unclassifiedLineItem.amount = transaction.amount
+      unclassifiedLineItem.local_amount = transaction.amount
+      transaction.line_items = [unclassifiedLineItem]
       // Set transaction to requires_sync = true to ensure local_amounts are correctly set
+      // during next sync
       transaction.requires_sync = true
+    }
+
+    // Make sure local_amount is set to amount if undefined
+    for (let i = 0; i < transaction.line_items.length; i++) {
+      if (transaction.line_items[i].local_amount === undefined) {
+        logger.debug(
+          `LineItem ${transaction.line_items[i].id} for Transaction ${transaction.id} has undefined local_amount`,
+        )
+        // Update line item local_amount to match amount
+        transaction.line_items[i].local_amount = transaction.line_items[i].amount
+        // Set transaction to requires_sync = true to ensure local_amounts are correctly set
+        // during next sync
+        transaction.requires_sync = true
+      }
     }
 
     // Validate Transaction
