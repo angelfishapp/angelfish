@@ -148,7 +148,7 @@ class ReportsServiceClass {
           reportTable.cat_name,
           reportTable.cat_icon,
           reportTable.cat_type,
-          COALESCE(ROUND(SUM(lineItems.amount) * -1, 2), 0) as 'total'
+          COALESCE(ROUND(SUM(lineItems.amount), 2), 0) as 'total'
         FROM reportTable
         LEFT JOIN lineItems ON lineItems.cat_id == reportTable.cat_id AND reportTable.day == lineItems.date
         GROUP BY month, reportTable.cat_group_id, reportTable.cat_id
@@ -184,7 +184,7 @@ class ReportsServiceClass {
               strftime("%Y-%m-%d", transactions.date) as 'date',
               line_items.local_amount as 'amount',
               CASE 
-                WHEN  line_items.amount < 0 THEN 'Income'
+                WHEN  line_items.amount > 0 THEN 'Income'
                 ELSE 'Expense'
               END 'cat_group_type'		
             FROM line_items
@@ -204,7 +204,7 @@ class ReportsServiceClass {
           reportTable.cat_name,
           reportTable.cat_icon,
           reportTable.cat_type,
-          COALESCE(ROUND(SUM(lineItems.amount) * -1, 2), 0) as 'total'
+          COALESCE(ROUND(SUM(lineItems.amount), 2), 0) as 'total'
         FROM reportTable
         LEFT JOIN lineItems ON lineItems.cat_group_type == reportTable.cat_group_type AND reportTable.day == lineItems.date
         GROUP BY month, reportTable.cat_group_type

@@ -33,8 +33,7 @@ export default function PeriodDetailDrawer({
           height: 468,
           margin: -15,
           overflow: 'auto',
-          marginLeft: 15,
-          width: 'calc(100% - 15px)',
+          marginLeft: 0,
         }}
       >
         {scrollContainerRef.current && (

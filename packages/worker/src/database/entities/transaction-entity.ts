@@ -32,7 +32,14 @@ export class TransactionEntity implements ITransaction {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'date',
+    default: () => "(date('now'))",
+    transformer: {
+      to: (value: Date) => (value ? value.toISOString().slice(0, 10) : undefined),
+      from: (value: string) => new Date(value),
+    },
+  })
   @IsOptional()
   @IsDate()
   date!: Date
@@ -72,7 +79,14 @@ export class TransactionEntity implements ITransaction {
   @IsNumber()
   amount!: number
 
-  @Column({ type: 'text', nullable: true })
+  @Column({
+    type: 'text',
+    nullable: true,
+    transformer: {
+      to: (value: string) => value.toUpperCase(),
+      from: (value) => value,
+    },
+  })
   @IsDefined()
   @IsCurrencyCode()
   currency_code!: string
@@ -106,7 +120,7 @@ export class TransactionEntity implements ITransaction {
     cascade: true,
   })
   @IsDefined()
-  @ArrayMinSize(2, { message: 'Transactions must have at least 2 Line Items' })
+  @ArrayMinSize(1, { message: 'Transactions must have at least 1 Line Item' })
   @IsLineItemsValid()
   line_items!: LineItemEntity[]
 
