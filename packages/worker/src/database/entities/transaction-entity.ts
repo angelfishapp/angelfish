@@ -36,7 +36,7 @@ export class TransactionEntity implements ITransaction {
     type: 'date',
     default: () => "(date('now'))",
     transformer: {
-      to: (value: Date) => value.toISOString().slice(0, 10),
+      to: (value: Date) => (value ? value.toISOString().slice(0, 10) : undefined),
       from: (value: string) => new Date(value),
     },
   })

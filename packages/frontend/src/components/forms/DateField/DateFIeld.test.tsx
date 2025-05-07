@@ -21,7 +21,7 @@ describe('renders Date Field Story', () => {
     const input = document.getElementById('data-picker-field') as HTMLInputElement
     expect(input).toBeInTheDocument()
 
-    const todayFormatted = moment().format('MM/DD/YYYY')
+    const todayFormatted = moment().utc().format('MM/DD/YYYY')
     expect(input.value).toBe(todayFormatted)
   })
 })
