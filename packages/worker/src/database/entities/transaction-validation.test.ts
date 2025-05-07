@@ -25,17 +25,14 @@ describe('TestValidation', () => {
     expect(errors.length).toEqual(1)
 
     // Add line invalid items
-    const accountLineItem = new LineItemEntity()
-    accountLineItem.account_id = 1 // Invalid Account ID
-    accountLineItem.amount = transaction.amount
     const unclassifiedLineItem = new LineItemEntity()
-    unclassifiedLineItem.amount = transaction.amount // Should be negative
-    transaction.line_items = [accountLineItem, unclassifiedLineItem]
+    unclassifiedLineItem.amount = -20.02
+    transaction.line_items = [unclassifiedLineItem]
 
     errors = await validate(transaction)
     expect(errors.length).toEqual(1)
     expect(errors[0]?.constraints?.isLineItemTotalValid).toEqual(
-      'line_items does not include valid LineItemEntities; line_items array must sum to 0. Sum=-20.02',
+      'line_items Split amounts must add up to transaction amount: -10.01 !== -20.02',
     )
 
     // Fix Account ID error
@@ -44,17 +41,17 @@ describe('TestValidation', () => {
     errors = await validate(transaction)
     expect(errors.length).toEqual(1)
     expect(errors[0]?.constraints?.isLineItemTotalValid).toEqual(
-      'line_items array must sum to 0. Sum=-20.02',
+      'line_items Split amounts must add up to transaction amount: -10.01 !== -20.02',
     )
 
     // Fix amount error
-    transaction.line_items[1].amount = transaction.amount * -1
+    transaction.line_items[0].amount = transaction.amount
 
     errors = await validate(transaction)
-    expect(errors.length).toEqual(0)
     if (errors.length) {
       TestLogger.error('Unexpected Validation Errors', errors)
     }
+    expect(errors.length).toEqual(0)
   })
 
   test('test getClassInstance', async () => {

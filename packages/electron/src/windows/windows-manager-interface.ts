@@ -1,4 +1,5 @@
 import type { BrowserWindow } from 'electron'
+import type { CspDirectives } from '../utils/csp'
 
 /**
  * Holds information about a window process.
@@ -83,4 +84,10 @@ export interface RendererWindowOptions {
    * The height of the window.
    */
   height: number
+  /**
+   * Optionally set a custom Content Security Policy (CSP) header for the window.
+   * Use this if you want to import scripts/content from external sources.
+   * @default undefined
+   */
+  csp?: CspDirectives
 }

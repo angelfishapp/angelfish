@@ -22,9 +22,9 @@ describe('renders CurrencyField Story', () => {
 
     const helperText = screen.getByText(/Select a Currency from the list/i)
     expect(helperText).toBeInTheDocument()
-
     fireEvent.change(input, { target: { value: 'GBP' } })
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
+
     expect(input.value).toBe('British Pound Sterling (GBP)')
   })
 })

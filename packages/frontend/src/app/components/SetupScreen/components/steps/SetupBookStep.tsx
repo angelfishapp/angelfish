@@ -1,4 +1,5 @@
-import { Grid, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import { Controller, useForm } from 'react-hook-form'
 
 import { AvatarField } from '@/components/forms/AvatarField'

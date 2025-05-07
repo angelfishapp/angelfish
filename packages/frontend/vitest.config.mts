@@ -14,5 +14,6 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'lcov'],
     },
+    testTimeout: 10000,
   },
 })

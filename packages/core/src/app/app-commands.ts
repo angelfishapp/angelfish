@@ -472,6 +472,7 @@ export interface AppCommandDefinitions {
       start_date?: string
       end_date?: string
       requires_sync?: boolean
+      currency_code?: string
     }
     response: ITransaction[]
   }

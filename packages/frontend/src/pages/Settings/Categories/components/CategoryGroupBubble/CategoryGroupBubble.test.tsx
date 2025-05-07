@@ -18,8 +18,8 @@ describe('CategoryGroupBubble', () => {
   it('calls onClick when the category group bubble is clicked', () => {
     const onClickMock = vi.fn()
     render(<Default onClick={onClickMock} />)
-
     fireEvent.click(screen.getByRole('button'))
+
     expect(onClickMock).toHaveBeenCalledTimes(1)
   })
 })
