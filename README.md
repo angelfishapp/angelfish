@@ -96,7 +96,7 @@ yarn compile
 yarn make
 
 # compile and publish app to different repositories with notorised builds
-yarn release
+yarn publish
 
 # run script to generate a new Cloud API TypeScript Client under the packages/cloudapiclient/src directory from the OpenAPI Spec
 yarn generate-api-cli
