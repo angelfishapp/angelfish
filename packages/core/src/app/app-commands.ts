@@ -300,10 +300,11 @@ export interface AppCommandDefinitions {
     request: void
     response: {
       deviceId: string
-      platform: string
+      os_platform: string
+      os_release: string
       arch: string
-      release: string
       locale: string
+      app_version: string
     }
   }
   [AppCommandIds.SHOW_OPEN_FILE_DIALOG]: {

@@ -181,10 +181,11 @@ export function setupMainCommands() {
     async (
       _r: AppCommandRequest<AppCommandIds.GET_SYSTEM_INFO>,
     ): AppCommandResponse<AppCommandIds.GET_SYSTEM_INFO> => {
-      const platform = Environment.platform
+      const os_platform = Environment.platform
       const arch = os.arch()
       const locale = app.getSystemLocale()
-      let release = os.release()
+      const app_version = app.getVersion()
+      let os_release = os.release()
 
       if (!settings.get('deviceId')) {
         // Generate a unique device ID if it doesn't exist
@@ -194,7 +195,7 @@ export function setupMainCommands() {
 
       // Get MacOS specific information
       if (Environment.isMacOS) {
-        const darwinRelease = Number(release.split('.')[0])
+        const darwinRelease = Number(os_release.split('.')[0])
         const nameMap = new Map([
           [24, ['Sequoia', '15']],
           [23, ['Sonoma', '14']],
@@ -218,15 +219,16 @@ export function setupMainCommands() {
           [5, ['Puma', '10.1']],
         ])
         const [name, version] = nameMap.get(darwinRelease) || ['Unknown', `${darwinRelease}`]
-        release = `${name} (${version})`
+        os_release = `${name} (${version})`
       }
 
       return {
         deviceId: settings.get('deviceId') as string,
-        platform,
+        os_platform,
+        os_release,
         arch,
-        release,
         locale,
+        app_version,
       }
     },
   )
