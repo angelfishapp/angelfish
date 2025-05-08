@@ -1,4 +1,5 @@
 import { app, dialog, Menu, Notification, safeStorage, shell } from 'electron'
+import os from 'os'
 
 import type { AppCommandRequest, AppCommandResponse, IBook } from '@angelfish/core'
 import { AppCommandIds, AppEventIds } from '@angelfish/core'
@@ -170,6 +171,63 @@ export function setupMainCommands() {
   })
 
   // Register Main Commands
+
+  /**
+   * Get System Information for current device. Will generate a unique fingerprint ID for device if not
+   * already set and collect basic system information.
+   */
+  CommandsRegistryMain.registerCommand(
+    AppCommandIds.GET_SYSTEM_INFO,
+    async (
+      _r: AppCommandRequest<AppCommandIds.GET_SYSTEM_INFO>,
+    ): AppCommandResponse<AppCommandIds.GET_SYSTEM_INFO> => {
+      const platform = Environment.platform
+      const arch = os.arch()
+      let release = os.release()
+
+      if (!settings.get('deviceId')) {
+        // Generate a unique device ID if it doesn't exist
+        const deviceId = crypto.randomUUID()
+        settings.set('deviceId', deviceId)
+      }
+
+      // Get MacOS specific information
+      if (Environment.isMacOS) {
+        const darwinRelease = Number(release.split('.')[0])
+        const nameMap = new Map([
+          [24, ['Sequoia', '15']],
+          [23, ['Sonoma', '14']],
+          [22, ['Ventura', '13']],
+          [21, ['Monterey', '12']],
+          [20, ['Big Sur', '11']],
+          [19, ['Catalina', '10.15']],
+          [18, ['Mojave', '10.14']],
+          [17, ['High Sierra', '10.13']],
+          [16, ['Sierra', '10.12']],
+          [15, ['El Capitan', '10.11']],
+          [14, ['Yosemite', '10.10']],
+          [13, ['Mavericks', '10.9']],
+          [12, ['Mountain Lion', '10.8']],
+          [11, ['Lion', '10.7']],
+          [10, ['Snow Leopard', '10.6']],
+          [9, ['Leopard', '10.5']],
+          [8, ['Tiger', '10.4']],
+          [7, ['Panther', '10.3']],
+          [6, ['Jaguar', '10.2']],
+          [5, ['Puma', '10.1']],
+        ])
+        const [name, version] = nameMap.get(darwinRelease) || ['Unknown', `${darwinRelease}`]
+        release = `${name} (${version})`
+      }
+
+      return {
+        deviceId: settings.get('deviceId') as string,
+        platform,
+        arch,
+        release,
+      }
+    },
+  )
 
   /**
    * Show File Open Dialog. Returns array of open files, empty if user cancelled dialog without

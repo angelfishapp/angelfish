@@ -59,6 +59,10 @@ import type {
  */
 export enum AppCommandIds {
   /**
+   * Get system information for current device
+   */
+  GET_SYSTEM_INFO = 'get.system.info',
+  /**
    * Open an Electron file open dialog
    */
   SHOW_OPEN_FILE_DIALOG = 'show.open.dialog',
@@ -292,6 +296,15 @@ export enum AppCommandIds {
 
 // Define request/response types for each command
 export interface AppCommandDefinitions {
+  [AppCommandIds.GET_SYSTEM_INFO]: {
+    request: void
+    response: {
+      deviceId: string
+      platform: string
+      arch: string
+      release: string
+    }
+  }
   [AppCommandIds.SHOW_OPEN_FILE_DIALOG]: {
     request: IOpenFileDialogOptions
     response: string[]
