@@ -303,6 +303,7 @@ export interface AppCommandDefinitions {
       platform: string
       arch: string
       release: string
+      locale: string
     }
   }
   [AppCommandIds.SHOW_OPEN_FILE_DIALOG]: {

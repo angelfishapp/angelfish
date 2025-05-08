@@ -183,6 +183,7 @@ export function setupMainCommands() {
     ): AppCommandResponse<AppCommandIds.GET_SYSTEM_INFO> => {
       const platform = Environment.platform
       const arch = os.arch()
+      const locale = app.getSystemLocale()
       let release = os.release()
 
       if (!settings.get('deviceId')) {
@@ -225,6 +226,7 @@ export function setupMainCommands() {
         platform,
         arch,
         release,
+        locale,
       }
     },
   )
