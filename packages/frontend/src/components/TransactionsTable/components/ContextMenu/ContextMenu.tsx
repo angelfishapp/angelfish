@@ -56,7 +56,8 @@ export default function TransactionTableContextMenu({
         },
       }
     })
-  }, [table])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [table, table.options.meta?.transactionsTable?.recentCategories])
 
   // Render
   return (
