@@ -29,6 +29,7 @@ const commandBridge = {
 }
 
 // Initialise Environment Variables
+let logLevel: LevelOption = 'debug'
 const environmentBridge = {
   // The environment the app is running in
   environment: getArgumentValue('environment'),
@@ -41,7 +42,9 @@ const environmentBridge = {
   // Location of the user data directory for app
   userDataDir: getArgumentValue('user-data-dir'),
   // Log level for the current process
-  logLevel: 'debug' as LevelOption,
+  logLevel: (): LevelOption => {
+    return logLevel
+  },
 }
 
 // Expose Bridges to window object
@@ -66,10 +69,11 @@ ipcRenderer.on(CommandRegistryEvents.REGISTER_NEW_CHANNEL, (event, id: string) =
 
 // Handle log level changes between refreshes
 ipcRenderer.on(LogEvents.ON_LOGGING_SET_LEVEL, (_event, level: LevelOption) => {
+  logLevel = level
   // As we're only logging to console in development, check if we're in development
-  if (environmentBridge.platform === 'development') {
-    log.transports.console.level = level
+  if (environmentBridge.environment === 'development') {
     log.scope('Preload').info(`Log level set to ${level}`)
+    log.transports.console.level = level
   }
 })
 
@@ -77,11 +81,11 @@ ipcRenderer.on(LogEvents.ON_LOGGING_SET_LEVEL, (_event, level: LevelOption) => {
 commandRegistry.addEventListener(
   LogEvents.ON_LOGGING_LEVEL_CHANGED,
   (change: { level: LevelOption }) => {
+    logLevel = change.level
     // As we're only logging to console in development, check if we're in development
     if (environmentBridge.environment === 'development') {
-      log.transports.console.level = change.level
-      environmentBridge.logLevel = change.level
       log.scope('Preload').info(`Log level changed to ${change.level}`)
+      log.transports.console.level = change.level
     }
   },
 )

@@ -93,6 +93,10 @@ const schema: ElectronStore.Schema<IAppSettings> = {
       },
     },
   },
+  deviceId: {
+    type: ['string', 'null'],
+    default: null,
+  },
 }
 
 /**

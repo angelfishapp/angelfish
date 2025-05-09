@@ -6,6 +6,7 @@ import { AppCommandsRegistryMain, CommandsRegistryMain } from './commands/comman
 import { LogManager } from './logging/log-manager'
 import { settings } from './settings'
 import { Environment } from './utils/environment'
+import { getSystemInfo } from './utils/user-agent'
 
 const logger = LogManager.getMainLogger('MainCommands')
 
@@ -170,6 +171,19 @@ export function setupMainCommands() {
   })
 
   // Register Main Commands
+
+  /**
+   * Get System Information for current device. Will generate a unique fingerprint ID for device if not
+   * already set and collect basic system information.
+   */
+  CommandsRegistryMain.registerCommand(
+    AppCommandIds.GET_SYSTEM_INFO,
+    async (
+      _r: AppCommandRequest<AppCommandIds.GET_SYSTEM_INFO>,
+    ): AppCommandResponse<AppCommandIds.GET_SYSTEM_INFO> => {
+      return getSystemInfo()
+    },
+  )
 
   /**
    * Show File Open Dialog. Returns array of open files, empty if user cancelled dialog without

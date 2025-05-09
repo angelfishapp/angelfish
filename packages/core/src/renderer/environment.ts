@@ -68,7 +68,7 @@ export const Environment = new (class {
    * Get the current log level for the current process
    */
   public get logLevel(): 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly' | false {
-    return window.environment.logLevel
+    return window.environment.logLevel()
   }
 
   /**

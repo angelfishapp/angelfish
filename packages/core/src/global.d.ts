@@ -37,7 +37,7 @@ declare global {
       /**
        * Log level for the current process
        */
-      logLevel: 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly' | false
+      logLevel: () => 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly' | false
     }
     /**
      * Log API for logging messages to the console and main process to write to file

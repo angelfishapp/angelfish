@@ -110,20 +110,21 @@ export function buildTransactionRow(
 export function getRecentCategories(transactionRows: TransactionRow[], limit = 5): IAccount[] {
   const recentCategories: IAccount[] = []
 
-  // Sort by most recently modified
-  const sortedTransactions = [...transactionRows].sort(
-    (rowA, rowB) => rowB.transaction.modified_on.getTime() - rowA.transaction.modified_on.getTime(),
-  )
+  // Step 1: Sort transactions by modified_on descending, fallback to transaction.id
+  const sortedTransactions = [...transactionRows].sort((rowA, rowB) => {
+    const timeDiff = rowB.transaction.modified_on.getTime() - rowA.transaction.modified_on.getTime()
+    return timeDiff !== 0 ? timeDiff : rowB.transaction.id - rowA.transaction.id
+  })
 
-  // Loop through transactions and get first N distinct Categories
+  // Step 2: Collect distinct categories in order of most recent usage
   for (const row of sortedTransactions) {
-    if (row.category) {
-      if (recentCategories.indexOf(row.category) == -1) {
+    if (!row.isSplit && row.category) {
+      const alreadyIncluded = recentCategories.some((cat) => cat.id === row.category?.id)
+      if (!alreadyIncluded) {
         recentCategories.push(row.category)
       }
       if (recentCategories.length >= limit) {
-        // Return if already at limit
-        return recentCategories
+        break
       }
     }
   }

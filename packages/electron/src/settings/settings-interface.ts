@@ -42,4 +42,9 @@ export interface IAppSettings {
    * current Desktop they're running on
    */
   userSettings: IUserSettings
+  /**
+   * Unique device ID for the current machine. This is used to
+   * identify the machine for analytics and other purposes.
+   */
+  deviceId: string | null
 }

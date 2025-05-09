@@ -65,19 +65,19 @@ __metadata:
     "@electron-forge/plugin-webpack": "npm:7.8.0"
     "@electron-forge/publisher-github": "npm:7.8.0"
     "@electron/fuses": "npm:^1.8.0"
-    "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.15"
+    "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.0"
     "@types/node": "npm:^22.13.5"
     "@vercel/webpack-asset-relocator-loader": "npm:1.7.3"
     copy-webpack-plugin: "npm:13.0.0"
     css-loader: "npm:^7.1.2"
     dotenv: "npm:*"
-    electron: "npm:35.0.0"
+    electron: "npm:36.2.0"
     electron-log: "npm:*"
     electron-squirrel-startup: "npm:^1.0.1"
     electron-store: "npm:8.2.0"
     fork-ts-checker-webpack-plugin: "npm:^9.0.2"
     node-loader: "npm:^2.1.0"
-    react-refresh: "npm:^0.16.0"
+    react-refresh: "npm:^0.17.0"
     style-loader: "npm:^4.0.0"
     ts-loader: "npm:^9.5.2"
     ts-node: "npm:^10.9.2"
@@ -2373,26 +2373,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.15":
-  version: 0.5.15
-  resolution: "@pmmmwh/react-refresh-webpack-plugin@npm:0.5.15"
+"@pmmmwh/react-refresh-webpack-plugin@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@pmmmwh/react-refresh-webpack-plugin@npm:0.6.0"
   dependencies:
-    ansi-html: "npm:^0.0.9"
+    anser: "npm:^2.1.1"
     core-js-pure: "npm:^3.23.3"
     error-stack-parser: "npm:^2.0.6"
     html-entities: "npm:^2.1.0"
-    loader-utils: "npm:^2.0.4"
     schema-utils: "npm:^4.2.0"
     source-map: "npm:^0.7.3"
   peerDependencies:
-    "@types/webpack": 4.x || 5.x
+    "@types/webpack": 5.x
     react-refresh: ">=0.10.0 <1.0.0"
     sockjs-client: ^1.4.0
     type-fest: ">=0.17.0 <5.0.0"
-    webpack: ">=4.43.0 <6.0.0"
-    webpack-dev-server: 3.x || 4.x || 5.x
+    webpack: ^5.0.0
+    webpack-dev-server: ^4.8.0 || 5.x
     webpack-hot-middleware: 2.x
-    webpack-plugin-serve: 0.x || 1.x
+    webpack-plugin-serve: 1.x
   peerDependenciesMeta:
     "@types/webpack":
       optional: true
@@ -2406,7 +2405,7 @@ __metadata:
       optional: true
     webpack-plugin-serve:
       optional: true
-  checksum: 10/d8c978654c4c6873edc3336bca87d359d3a7f32571e8404af8a3defd0e515aa34d9dc8324a9157d0220d72fb8a6a350660301c2757df964f845422a898714bc7
+  checksum: 10/df8fa5a0242d75dfafcc1e81bd7522f203e6781216f676689ab49c9c126b5c70a93bc45416b3cd7d5b45836189da174f3b65f9f79f0dacfae797d2ce17e2bb39
   languageName: node
   linkType: hard
 
@@ -4843,6 +4842,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"anser@npm:^2.1.1":
+  version: 2.3.2
+  resolution: "anser@npm:2.3.2"
+  checksum: 10/2bfb5fc96533919060bd2f2c199d22011f58e3d0ca48156cec7508ca5f741ea08e38fe634ae3d6902ae44b445148438f2ebcaf09f08ff3b2be20687c19cf4419
+  languageName: node
+  linkType: hard
+
 "ansi-escapes@npm:^5.0.0":
   version: 5.0.0
   resolution: "ansi-escapes@npm:5.0.0"
@@ -4858,15 +4864,6 @@ __metadata:
   bin:
     ansi-html: bin/ansi-html
   checksum: 10/08df3696720edacd001a8d53b197bb5728242c55484680117dab9f7633a6320e961a939bddd88ee5c71d4a64f3ddb49444d1c694bd0668adbb3f95ba114f2386
-  languageName: node
-  linkType: hard
-
-"ansi-html@npm:^0.0.9":
-  version: 0.0.9
-  resolution: "ansi-html@npm:0.0.9"
-  bin:
-    ansi-html: bin/ansi-html
-  checksum: 10/3e83fae364d323d9c453f74a21aa29da68ae152e996c66de45a49a445ea362c4e2e9abce0069558239ff23e3d6ae73b5d27993d631382aa83d85f44b687e0aa1
   languageName: node
   linkType: hard
 
@@ -7322,16 +7319,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:35.0.0":
-  version: 35.0.0
-  resolution: "electron@npm:35.0.0"
+"electron@npm:36.2.0":
+  version: 36.2.0
+  resolution: "electron@npm:36.2.0"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^22.7.7"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/dc0b19ea5df5de17aaeb3fc522044d47f627afec9778d913c24e9cea9d98d8d8889ff39759861407b98a210163967af32abfad19bee2462276d2256da3bd54c8
+  checksum: 10/c855d963e509caa723ce86868b60d761386fac7d3724ba472ad141e6264d397470da70a8a8d0a9cd6159785a56993fdd2ae1236dfb573be8cd6b0823c9810b67
   languageName: node
   linkType: hard
 
@@ -10290,7 +10287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.3, loader-utils@npm:^2.0.4":
+"loader-utils@npm:^2.0.3":
   version: 2.0.4
   resolution: "loader-utils@npm:2.0.4"
   dependencies:
@@ -12408,10 +12405,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-refresh@npm:^0.16.0":
-  version: 0.16.0
-  resolution: "react-refresh@npm:0.16.0"
-  checksum: 10/725019d21cede4cea57c20b85fa3a7fe5b0969c99d62ac37dc7b2d3505ea9a33f14f003034ed214d41bacf74c48ab174464c236e5815dff31e23f519c21d8752
+"react-refresh@npm:^0.17.0":
+  version: 0.17.0
+  resolution: "react-refresh@npm:0.17.0"
+  checksum: 10/5e94f07d43bb1cfdc9b0c6e0c8c73e754005489950dcff1edb53aa8451d1d69a47b740b195c7c80fb4eb511c56a3585dc55eddd83f0097fb5e015116a1460467
   languageName: node
   linkType: hard
 

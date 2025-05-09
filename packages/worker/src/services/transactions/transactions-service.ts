@@ -268,6 +268,10 @@ class TransactionServiceClass {
       }
     }
 
+    // Manually update modified_on date to now as this will not automatically be set
+    // if only update line_items properties
+    transaction.modified_on = new Date()
+
     // Validate Transaction
     const errors = await validate(TransactionEntity.getClassInstance(transaction), {
       forbidUnknownValues: true,
