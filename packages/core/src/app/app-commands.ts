@@ -303,6 +303,10 @@ export interface AppCommandDefinitions {
       os_platform: string
       os_release: string
       arch: string
+      display: {
+        width: number
+        height: number
+      }
       locale: string
       app_version: string
     }

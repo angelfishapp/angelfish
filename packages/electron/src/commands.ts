@@ -1,4 +1,4 @@
-import { app, dialog, Menu, Notification, safeStorage, shell } from 'electron'
+import { app, dialog, Menu, Notification, safeStorage, screen, shell } from 'electron'
 import os from 'os'
 
 import type { AppCommandRequest, AppCommandResponse, IBook } from '@angelfish/core'
@@ -187,6 +187,9 @@ export function setupMainCommands() {
       const app_version = app.getVersion()
       let os_release = os.release()
 
+      // Get the screen size
+      const { width, height } = screen.getPrimaryDisplay().size
+
       if (!settings.get('deviceId')) {
         // Generate a unique device ID if it doesn't exist
         const deviceId = crypto.randomUUID()
@@ -227,6 +230,10 @@ export function setupMainCommands() {
         os_platform,
         os_release,
         arch,
+        display: {
+          width,
+          height,
+        },
         locale,
         app_version,
       }
