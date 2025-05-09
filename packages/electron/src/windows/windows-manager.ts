@@ -8,6 +8,7 @@ import { LogEvents } from '../logging/logging-events'
 import { settings } from '../settings'
 import { generateCSPHeader } from '../utils/csp'
 import { Environment } from '../utils/environment'
+import { getUserAgent } from '../utils/user-agent'
 import type {
   ProcessWindowOptions,
   RendererWindowOptions,
@@ -43,6 +44,7 @@ class WindowManagerClass {
    * @param allowedDomains      The list of allowed domains the process can access externally
    * @param nodeIntegration     Whether to enable Node.js integration
    * @param directIPCChannel    Whether to enable direct IPC channel for all other windows to connect directly to this process
+   * @param overrideUserAgent   Whether to override the User-Agent header for the process requests
    * @returns                   The new {BrowserWindow}
    */
   public createProcessWindow({
@@ -51,6 +53,7 @@ class WindowManagerClass {
     allowedDomains = [],
     nodeIntegration = false,
     directIPCChannel = false,
+    overrideUserAgent = false,
   }: ProcessWindowOptions): BrowserWindow {
     const processSession = session.fromPartition(`persist:${id}`)
     const processWindow = new BrowserWindow({
@@ -88,6 +91,13 @@ class WindowManagerClass {
         },
       })
     })
+
+    if (overrideUserAgent) {
+      processSession.webRequest.onBeforeSendHeaders((details, callback) => {
+        details.requestHeaders['User-Agent'] = getUserAgent()
+        callback({ requestHeaders: details.requestHeaders })
+      })
+    }
 
     // Initialise new process window
     this._initialiseWindow(id, processWindow, directIPCChannel)

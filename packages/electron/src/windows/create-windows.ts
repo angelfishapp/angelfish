@@ -32,6 +32,7 @@ export function createWindows() {
     WindowManager.createProcessWindow({
       id: AppProcessIDs.SYNC,
       url: SYNC_WORKER_WEBPACK_ENTRY,
+      overrideUserAgent: true,
       allowedDomains: ['https://api.angelfish.app', 'https://auth.angelfish.app'],
     })
   }
