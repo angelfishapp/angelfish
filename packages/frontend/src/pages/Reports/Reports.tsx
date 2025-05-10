@@ -17,15 +17,15 @@ import {
   subYears,
 } from 'date-fns'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { DateRangeField } from '@/components/forms/DateRangeField'
 import { RollingContainer } from '@/components/RollingContainer'
-import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
-import { selectAllTags } from '@/redux/tags/selectors'
-import { deleteTransaction, listTransactions, saveTransactions } from '@/redux/transactions/actions'
-import { selectAllTransactions } from '@/redux/transactions/selectors'
+import { useListAccounts } from '@/hooks/accounts/useListAccounts'
+import { useListTags } from '@/hooks/tags/useListTags'
+import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction'
+import { useListTransactions } from '@/hooks/transactions/useListTransactions'
+import { useSaveTransactions } from '@/hooks/transactions/useSaveTransactions'
 import type {
   AppCommandRequest,
   ITransactionUpdate,
@@ -44,8 +44,6 @@ import { renderPeriodHeader } from './Reports.utils'
  */
 
 export default function Reports() {
-  const dispatch = useDispatch()
-
   /**
    * Default Date Ranges for Date Range Selector
    */
@@ -85,9 +83,14 @@ export default function Reports() {
   const [transactionQuery, setTransactionQuery] = React.useState<
     AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>
   >({})
-  const transactions = useSelector(selectAllTransactions)
-  const accounts = useSelector(selectAllAccountsWithRelations)
-  const tags = useSelector(selectAllTags)
+  // transaction custom hooks to handle Transactions
+  const { data: transactions, isLoading: isLoadingTransactions } =
+    useListTransactions(transactionQuery)
+  const transactionSaveMutation = useSaveTransactions()
+  const transactionDeleteMutation = useDeleteTransaction()
+  // Accounts custom hooks to handle accounts
+  const { data: accounts } = useListAccounts({})
+  const { data: tags } = useListTags()
 
   // Get Reports Data when date ranges changed
   React.useEffect(() => {
@@ -103,30 +106,22 @@ export default function Reports() {
     setReportData,
   ])
 
-  // Get Transactions when transaction query changed
-  React.useEffect(() => {
-    dispatch(listTransactions(transactionQuery))
-  }, [transactionQuery, dispatch])
-
   /**
    * Callback to save Transactions to the Database
    */
   const onSaveTransactions = React.useCallback(
     async (transactions: ITransactionUpdate[]) => {
-      dispatch(saveTransactions({ transactions }))
+      transactionSaveMutation.mutate(transactions)
     },
-    [dispatch],
+    [transactionSaveMutation],
   )
 
   /**
    * Delete a Transaction from the Database
    */
-  const onDeleteTransaction = React.useCallback(
-    async (id: number) => {
-      dispatch(deleteTransaction({ id }))
-    },
-    [dispatch],
-  )
+  const onDeleteTransaction = async (id: number) => {
+    transactionDeleteMutation.mutate(id)
+  }
 
   /**
    * Click hanlder for when user clicks on a cell value on the table
@@ -308,6 +303,7 @@ export default function Reports() {
         tags={tags}
         title={periodDetailDrawerTitle}
         transactions={transactions}
+        isLoading={isLoadingTransactions}
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}

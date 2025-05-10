@@ -1,6 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
@@ -9,6 +10,7 @@ import { AppRootStyles } from './AppRoot.styles'
 import theme from './theme'
 
 import { AppContainer } from '@/containers/AppContainer'
+import queryClient from '@/providers/ReactQueryClient'
 
 /**
  * Root Component
@@ -23,14 +25,17 @@ export default function AppRoot() {
         {/* CSS Reset: Provides basic style normalizations. */}
         <CssBaseline />
         <GlobalStyles styles={AppRootStyles} />
+        {/** react-query provider */}
 
-        {/* Redux provider */}
-        <Provider store={reduxStore}>
-          <HashRouter>
-            {/* App */}
-            <AppContainer />
-          </HashRouter>
-        </Provider>
+        <QueryClientProvider client={queryClient}>
+          {/* Redux provider */}
+          <Provider store={reduxStore}>
+            <HashRouter>
+              {/* App */}
+              <AppContainer />
+            </HashRouter>
+          </Provider>
+        </QueryClientProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   )

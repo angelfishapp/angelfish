@@ -1,20 +1,21 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
-import { saveAccount } from '@/redux/accounts/actions'
-import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
-import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
-import { selectAllTags } from '@/redux/tags/selectors'
-import { deleteTransaction, listTransactions, saveTransactions } from '@/redux/transactions/actions'
-import { selectAllTransactions } from '@/redux/transactions/selectors'
 import type { IAccount, ITransactionUpdate } from '@angelfish/core'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { CategoryDrawer } from '@/components/drawers'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ImportTransactionsContainer } from '@/containers/ImportTransactionsContainer'
 
+import { useListAccounts } from '@/hooks/accounts/useListAccounts'
+import { useSaveAccount } from '@/hooks/accounts/useSaveAcount'
+import { useListCategoryGroups } from '@/hooks/categoryGroups/useListCategoryGroups'
+import { useListTags } from '@/hooks/tags/useListTags'
+import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction'
+import { useListTransactions } from '@/hooks/transactions/useListTransactions'
+import { useSaveTransactions } from '@/hooks/transactions/useSaveTransactions'
 import { AccountsMenu } from './components/AccountsMenu'
 import { AccountsView } from './views/AccountsView'
 
@@ -23,16 +24,24 @@ import { AccountsView } from './views/AccountsView'
  */
 
 export default function Accounts() {
-  const dispatch = useDispatch()
+  // Accounts custom hooks to handle Transactions
+  const { data: accounts, isLoading: isAccountLoading } = useListAccounts({})
+  const accountSaveMutation = useSaveAccount()
 
-  // Redux Store Data
-  const accounts = useSelector(selectAllAccountsWithRelations)
-  const transactions = useSelector(selectAllTransactions)
-  const tags = useSelector(selectAllTags)
-  const categoryGroups = useSelector(selectAllCategoryGroups)
+  const { data: tags } = useListTags()
+  const { data: categoryGroups } = useListCategoryGroups()
 
   // Bank Account Menu State
   const [selectedAccount, setSelectedAccount] = React.useState<IAccount>()
+
+  // Transactions custom hooks to handle Transactions
+  const {
+    data: transactions,
+    isLoading,
+    error,
+  } = useListTransactions({ account_id: selectedAccount?.id })
+  const transactionSaveMutation = useSaveTransactions()
+  const transactionDeleteMutation = useDeleteTransaction()
 
   // Create Category State
   const [showCreateCategoryDrawer, setShowCreateCategoryDrawer] = React.useState<boolean>(false)
@@ -43,21 +52,12 @@ export default function Accounts() {
     React.useState<boolean>(false)
 
   /**
-   * Load Account Transactions whenever selected Account changed
-   */
-  React.useEffect(() => {
-    if (selectedAccount) {
-      dispatch(listTransactions({ account_id: selectedAccount.id }))
-    }
-  }, [selectedAccount, dispatch])
-
-  /**
    * Make sure selected Account is updated if Redux Accounts are updated in case user
    * edited the Account details
    */
   React.useEffect(() => {
     if (selectedAccount) {
-      const filteredAccounts = accounts.filter((account) => account.id == selectedAccount.id)
+      const filteredAccounts = accounts?.filter((account) => account.id == selectedAccount.id)
       if (filteredAccounts.length > 0) {
         const currentAccount = filteredAccounts[0]
         if (currentAccount !== selectedAccount) {
@@ -76,8 +76,8 @@ export default function Accounts() {
   const onSelectAccount = React.useCallback(
     (account?: IAccount) => {
       if (account) {
-        const filteredAccounts = accounts.filter((a) => a.id == account.id)
-        if (filteredAccounts.length > 0) {
+        const filteredAccounts = accounts?.filter((a) => a.id == account.id)
+        if (filteredAccounts?.length > 0) {
           const currentAccount = filteredAccounts[0]
           if (currentAccount !== selectedAccount) {
             setSelectedAccount(currentAccount)
@@ -96,31 +96,30 @@ export default function Accounts() {
    */
   const onSaveTransactions = React.useCallback(
     async (transactions: ITransactionUpdate[]) => {
-      dispatch(saveTransactions({ transactions }))
+      transactionSaveMutation.mutate(transactions)
     },
-    [dispatch],
+    [transactionSaveMutation],
   )
 
   /**
    * Delete a Transaction from the Database
    */
-  const onDeleteTransaction = React.useCallback(
-    async (id: number) => {
-      dispatch(deleteTransaction({ id }))
-    },
-    [dispatch],
-  )
+  const onDeleteTransaction = async (id: number) => {
+    transactionDeleteMutation.mutate(id)
+  }
 
   /**
    * Callback to save new Category (Account) to the Database
    */
-  const onSaveCategory = React.useCallback(
-    async (category: IAccount) => {
-      setShowCreateCategoryDrawer(false)
-      dispatch(saveAccount({ account: category }))
-    },
-    [dispatch],
-  )
+  const onSaveCategory = async (category: IAccount) => {
+    setShowCreateCategoryDrawer(false)
+    accountSaveMutation.mutate(category)
+  }
+
+  /**
+   * Return Loading Spinner if Accounts are still loading
+   */
+  if (isAccountLoading) return <LoadingSpinner />
 
   return (
     <Box
@@ -199,8 +198,10 @@ export default function Accounts() {
 
         <AccountsView
           account={selectedAccount}
-          transactions={transactions}
           accountsWithRelations={accounts}
+          error={error}
+          isLoading={isLoading}
+          transactions={transactions}
           tags={tags}
           onCreateCategory={(name?) => {
             setShowCreateCategoryDrawer(true)
