@@ -1,0 +1,31 @@
+{
+  "name": "@angelfish/tests",
+  "version": "1.0.0",
+  "description": "Common test fixtures and helpers for Angelfish.",
+  "author": {
+    "name": "Angelfish Software LLC",
+    "email": "support@angelfish.app"
+  },
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./fixtures": "./dist/fixtures/index.js",
+    "./mocks": "./dist/mocks/index.js",
+    "./utils": "./dist/utils/index.js"
+  },
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "yarn run clean & tsc --build --force",
+    "ts-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@angelfish/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "*"
+  }
+}

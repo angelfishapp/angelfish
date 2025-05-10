@@ -1,0 +1,21 @@
+name: 'Setup Environment'
+description: 'Sets up Node.js, Yarn, and installs dependencies'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+
+    - name: Install Latest Yarn 4.9.1
+      run: |
+        corepack enable
+        corepack prepare yarn@4.9.1 --activate
+        yarn --version
+      shell: bash
+
+    - name: Install Dependencies
+      run: yarn install --immutable --network-timeout 1000000 # Ensures lockfile consistency
+      shell: bash

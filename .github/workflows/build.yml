@@ -1,0 +1,102 @@
+# Main workflow to package and release a new build of the Angelfish
+# Electron.js application using Electron Forge
+
+name: Package and Release
+
+# Trigger action if commit contains a v* tag
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        # macos-13 is last intel macos version
+        os: [macos-latest, ubuntu-latest, macos-13, windows-latest]
+      fail-fast: false
+
+    # Set GITHUB_TOKEN permissions to allow release creation during publish step
+    permissions:
+      contents: write
+
+    steps:
+      # Setup Environment
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+
+      - name: Build Workspace Dependency packages
+        run: yarn build:packages
+
+      - name: Add MacOS Certificates
+        if: matrix.os == 'macos-latest' || matrix.os == 'macos-13'
+        run: chmod +x ./packages/electron/resources/build/macos/add-osx-cert.sh && ./packages/electron/resources/build/macos/add-osx-cert.sh
+        env:
+          CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
+          CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
+
+      - name: Setup Windows Tusted Signing Service
+        if: matrix.os == 'windows-latest'
+        id: setup_windows
+        shell: pwsh
+        run: |
+          # Ensure yarn 4.9.1 is enabled by default
+          corepack enable
+          corepack prepare yarn@4.9.1 --activate
+          yarn --version
+
+          # Install Required Trusted Signing Packages
+          Install-Package Microsoft.Windows.SDK.BuildTools -RequiredVersion 10.0.22621.3233 -Source https://www.nuget.org/api/v2/ -Destination $PWD -Force
+          $signToolPath = Join-Path $PWD "Microsoft.Windows.SDK.BuildTools.10.0.22621.3233\bin\10.0.22621.0\x64\signtool.exe"
+          Write-Host "signtool_path=$signToolPath exists=$(Test-Path $signToolPath)"
+          echo "signtool_path=$signToolPath" >> $env:GITHUB_OUTPUT
+
+          Install-Package Microsoft.Trusted.Signing.Client -RequiredVersion 1.0.53 -Source https://www.nuget.org/api/v2/ -Destination $PWD -Force
+          $packagePath = Join-Path $PWD "Microsoft.Trusted.Signing.Client.1.0.53\bin\x64\Azure.CodeSigning.Dlib.dll"
+          Write-Host "package_path=$packagePath exists=$(Test-Path $packagePath)"
+          echo "package_path=$packagePath" >> $env:GITHUB_OUTPUT          
+
+          # Write metadata.json
+          $metadataPath = Join-Path $PWD "metadata.json"
+          $metadata = @{
+            Endpoint = "$env:AZURE_ENDPOINT"
+            CodeSigningAccountName = "$env:AZURE_CODE_SIGNING_NAME"
+            CertificateProfileName = "$env:AZURE_CERT_PROFILE_NAME"
+          } | ConvertTo-Json -Depth 10
+
+          $metadata | Out-File -FilePath $metadataPath -Encoding utf8
+          Get-Content $metadataPath -Raw
+          echo "metadata_path=$metadataPath" >> $env:GITHUB_OUTPUT
+        env:
+          AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
+          AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
+          AZURE_CERT_PROFILE_NAME: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
+
+      # Create New Release for App
+
+      - name: Build & Publish
+        run: yarn publish
+        env:
+          OSX_SIGN_IDENTITY: ${{ secrets.OSX_SIGN_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_METADATA_JSON: ${{ steps.setup_windows.outputs.metadata_path }}
+          AZURE_CODE_SIGNING_DLIB: ${{ steps.setup_windows.outputs.package_path }}
+          SIGNTOOL_PATH: ${{ steps.setup_windows.outputs.signtool_path }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YARN_NODE_LINKER: 'node-modules'
+          # Optionally enable debug logging for builds, DO NOT enable for electron-windows-sign
+          # or sign executable will interpret existence of messages in stderr as signing failure
+          # DEBUG: 'electron-forge:*,electron-windows-installer:*'

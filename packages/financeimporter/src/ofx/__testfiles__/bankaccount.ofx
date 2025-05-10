@@ -1,0 +1,144 @@
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:NONE
+
+<OFX>
+    <SIGNONMSGSRSV1>
+        <SONRS>
+            <STATUS>
+                <CODE>0</CODE>
+                <SEVERITY>INFO</SEVERITY>
+            </STATUS>
+            <DTSERVER>20240713225104</DTSERVER>
+            <LANGUAGE>ENG</LANGUAGE>
+            <INTU.BID>01267</INTU.BID>
+        </SONRS>
+    </SIGNONMSGSRSV1>
+    <BANKMSGSRSV1>
+        <STMTTRNRS>
+            <TRNUID>1</TRNUID>
+            <STATUS>
+                <CODE>0</CODE>
+                <SEVERITY>INFO</SEVERITY>
+            </STATUS>
+            <STMTRS>
+                <CURDEF>USD</CURDEF>
+                <BANKACCTFROM>
+                    <BANKID>999999</BANKID>
+                    <ACCTID>123456789012</ACCTID>
+                    <ACCTTYPE>CHECKING</ACCTTYPE>
+                </BANKACCTFROM>
+                <BANKTRANLIST>
+                    <DTSTART>20240413000000</DTSTART>
+                    <DTEND>20240713000000</DTEND>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240710000000</DTPOSTED>
+                        <TRNAMT>-175.00</TRNAMT>
+                        <FITID>2024071032024192050322319200000</FITID>
+                        <NAME>Something &amp; Something</NAME>
+ 						<MEMO>BP</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240708000000</DTPOSTED>
+                        <TRNAMT>-3000.00</TRNAMT>
+                        <FITID>2024070832024190125739599170000</FITID>
+                        <NAME>WITHDRAWN</NAME>
+ 						<MEMO>DR</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240701000000</DTPOSTED>
+                        <TRNAMT>-1229.26</TRNAMT>
+                        <FITID>2024070122024180025028480090000</FITID>
+                        <NAME>MTG 9999999999999</NAME>
+ 						<MEMO>DD</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240701000000</DTPOSTED>
+                        <TRNAMT>-369.38</TRNAMT>
+                        <FITID>2024070122024180025028480080000</FITID>
+                        <NAME>ESTATE RESTAURANTS</NAME>
+ 						<MEMO>DD</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240624000000</DTPOSTED>
+                        <TRNAMT>1428.80</TRNAMT>
+                        <FITID>2024062412024173025011520100000</FITID>
+                        <NAME>ACME INC.</NAME>
+ 						<MEMO>CR</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240603000000</DTPOSTED>
+                        <TRNAMT>-1229.26</TRNAMT>
+                        <FITID>2024060322024152025015980020000</FITID>
+                        <NAME>ESTATE RESTAURANTS</NAME>
+ 						<MEMO>DD</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240603000000</DTPOSTED>
+                        <TRNAMT>-121.84</TRNAMT>
+                        <FITID>2024060322024152025015980010000</FITID>
+                        <NAME>ESTATE RESTAURANTS</NAME>
+ 						<MEMO>DD</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240528000000</DTPOSTED>
+                        <TRNAMT>-12.00</TRNAMT>
+                        <FITID>2024052832024149213141159690000</FITID>
+                        <NAME>HELLO WORLD PLC</NAME>
+ 						<MEMO>ENQ00269322 BP</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240524000000</DTPOSTED>
+                        <TRNAMT>1428.80</TRNAMT>
+                        <FITID>2024052412024144025136140080000</FITID>
+                        <NAME>RESTAURANT</NAME>
+ 						<MEMO>CR</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240501000000</DTPOSTED>
+                        <TRNAMT>-1229.26</TRNAMT>
+                        <FITID>2024050122024121025702820050000</FITID>
+                        <NAME>ESTATE RESTAURANTS</NAME>
+ 						<MEMO>DD</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240501000000</DTPOSTED>
+                        <TRNAMT>-323.64</TRNAMT>
+                        <FITID>2024050122024121025702820040000</FITID>
+                        <NAME>HELLO WORLD PLC</NAME>
+ 						<MEMO>DD</MEMO> 
+                    </STMTTRN>
+                    <STMTTRN>
+                    	<TRNTYPE>OTHER</TRNTYPE>
+                        <DTPOSTED>20240422000000</DTPOSTED>
+                        <TRNAMT>1049.60</TRNAMT>
+                        <FITID>2024042212024110025012000120000</FITID>
+                        <NAME>HELLO WORLD PLC</NAME>
+ 						<MEMO>CR</MEMO> 
+                    </STMTTRN>
+                </BANKTRANLIST>
+                <LEDGERBAL>
+                    <BALAMT>1579.82</BALAMT>
+                    <DTASOF>20240713225104</DTASOF>
+                </LEDGERBAL>
+            </STMTRS>
+        </STMTTRNRS>
+    </BANKMSGSRSV1>
+</OFX>

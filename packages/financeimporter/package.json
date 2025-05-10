@@ -1,0 +1,32 @@
+{
+  "name": "@angelfish/financeimporter",
+  "version": "1.0.0",
+  "description": "Parser library for common financial file formats such as QIF, OFX, CSV, and more.",
+  "keywords": [],
+  "author": {
+    "name": "Angelfish Software LLC",
+    "email": "support@angelfish.app"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "watch": "yarn build -w --preserveWatchOutput",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "yarn run clean & tsc --build --force",
+    "test": "vitest --run",
+    "ts-check": "tsc --noEmit",
+    "obfuscate": "ts-node ./scripts/obfuscate.ts"
+  },
+  "dependencies": {
+    "entities": "^5.0.0",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "@types/xml2js": "^0.4.11",
+    "ts-node": "*",
+    "typescript": "*",
+    "vitest": "*"
+  }
+}

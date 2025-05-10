@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    // For Material-UI
+    "lib": ["es6", "dom"],
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      // Also add aliases to webpack/webpack.renderer.config.ts
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*", "src/**/*.json"]
+}

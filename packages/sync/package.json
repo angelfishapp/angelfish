@@ -1,0 +1,27 @@
+{
+  "name": "@angelfish/sync",
+  "version": "1.0.0",
+  "description": "Sync process for the Electron Angelfish app.",
+  "author": {
+    "name": "Angelfish Software LLC",
+    "email": "support@angelfish.app"
+  },
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "ts-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@angelfish/cloudapiclient": "workspace:*",
+    "@angelfish/core": "workspace:*",
+    "axios": "*"
+  },
+  "devDependencies": {
+    "@angelfish/tests": "workspace:*",
+    "dotenv": "*",
+    "typescript": "*",
+    "vitest": "*"
+  }
+}

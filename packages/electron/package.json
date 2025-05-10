@@ -1,0 +1,67 @@
+{
+  "name": "@angelfish/electron",
+  "productName": "Angelfish",
+  "version": "0.0.1",
+  "description": "A local-first personal finance app for people to track, manage and plan their finances to acheive financial freedom!",
+  "author": {
+    "name": "Angelfish Software LLC",
+    "email": "support@angelfish.app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angelfishapp/angelfish",
+    "directory": "packages/electron"
+  },
+  "homepage": "https://angelfish.app",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "main": ".webpack/main",
+  "scripts": {
+    "start": "electron-forge start",
+    "start:prod": "electron-forge start -- -- -environment production",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "ts-check": "tsc --noEmit",
+    "test": "vitest --run"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
+  "dependencies": {
+    "@angelfish/core": "workspace:*",
+    "electron-log": "*",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "8.2.0",
+    "update-electron-app": "3.1.1"
+  },
+  "devDependencies": {
+    "@angelfish/tests": "workspace:*",
+    "@electron-forge/cli": "7.8.0",
+    "@electron-forge/maker-deb": "7.8.0",
+    "@electron-forge/maker-dmg": "7.8.0",
+    "@electron-forge/maker-squirrel": "7.8.0",
+    "@electron-forge/maker-zip": "7.8.0",
+    "@electron-forge/plugin-auto-unpack-natives": "7.8.0",
+    "@electron-forge/plugin-fuses": "7.8.0",
+    "@electron-forge/plugin-webpack": "7.8.0",
+    "@electron-forge/publisher-github": "7.8.0",
+    "@electron/fuses": "^1.8.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.0",
+    "@types/node": "^22.13.5",
+    "@vercel/webpack-asset-relocator-loader": "1.7.3",
+    "copy-webpack-plugin": "13.0.0",
+    "css-loader": "^7.1.2",
+    "dotenv": "*",
+    "electron": "36.2.0",
+    "fork-ts-checker-webpack-plugin": "^9.0.2",
+    "node-loader": "^2.1.0",
+    "react-refresh": "^0.17.0",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "typescript": "*",
+    "vitest": "*",
+    "webpack": "*"
+  }
+}

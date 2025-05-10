@@ -1,0 +1,1722 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`deserializeQIF() > test files > should parse banktivity_export.qif correctly 1`] = `
+{
+  "accounts": [
+    {
+      "balances": {
+        "current": 1500,
+      },
+      "id": "1",
+      "name": "Checking Account",
+    },
+    {
+      "balances": {
+        "current": 0,
+      },
+      "id": "2",
+      "name": "Savings Account",
+    },
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Bank Charges:Service Charges",
+      "type": "expense",
+    },
+    {
+      "description": "Car Expenses",
+      "id": 2,
+      "name": "Car",
+      "type": "expense",
+    },
+    {
+      "description": "Car Accessories",
+      "id": 3,
+      "name": "Car:Accessories",
+      "type": "expense",
+    },
+    {
+      "description": "Fueling up the car",
+      "id": 4,
+      "name": "Car:Gas/Petrol",
+      "type": "expense",
+    },
+    {
+      "description": "Car Insurance",
+      "id": 5,
+      "name": "Car:Insurance",
+      "type": "expense",
+    },
+    {
+      "description": "Car Lease Payments",
+      "id": 6,
+      "name": "Car:Lease",
+      "type": "expense",
+    },
+    {
+      "description": "Cash Paid Towards Car Purchase",
+      "id": 7,
+      "name": "Car:Purchase",
+      "type": "expense",
+    },
+    {
+      "description": "Car Registration Fees",
+      "id": 8,
+      "name": "Car:Registration Fees",
+      "type": "expense",
+    },
+    {
+      "id": 9,
+      "name": "Car:Servicing/Maintenance",
+      "type": "expense",
+    },
+    {
+      "id": 10,
+      "name": "Food",
+      "type": "expense",
+    },
+    {
+      "id": 11,
+      "name": "Food:Dining Out",
+      "type": "expense",
+    },
+    {
+      "id": 12,
+      "name": "Food:Groceries",
+      "type": "expense",
+    },
+    {
+      "id": 13,
+      "name": "Food:Take-out",
+      "type": "expense",
+    },
+    {
+      "id": 14,
+      "name": "Home",
+      "type": "expense",
+    },
+    {
+      "id": 15,
+      "name": "Home:Rent",
+      "type": "expense",
+    },
+    {
+      "id": 16,
+      "name": "Investment Income",
+      "type": "income",
+    },
+    {
+      "description": "Schedule B: Interest income",
+      "id": 17,
+      "name": "Investment Income:Interest",
+      "type": "income",
+    },
+    {
+      "id": 18,
+      "name": "Leisure & Entertainment",
+      "type": "expense",
+    },
+    {
+      "id": 19,
+      "name": "Leisure & Entertainment:Books & Magazines",
+      "type": "expense",
+    },
+    {
+      "description": "Renting movies to watch at home",
+      "id": 20,
+      "name": "Leisure & Entertainment:Movie Rentals",
+      "type": "expense",
+    },
+    {
+      "id": 21,
+      "name": "Taxes",
+      "type": "expense",
+    },
+    {
+      "id": 22,
+      "name": "Taxes:Income Tax",
+      "type": "expense",
+    },
+    {
+      "id": 23,
+      "name": "Taxes:Penalties & Fines",
+      "type": "expense",
+    },
+    {
+      "id": 24,
+      "name": "Taxes:Social Security/National Insurance",
+      "type": "expense",
+    },
+    {
+      "description": "W-2: Salary or wages",
+      "id": 25,
+      "name": "Wages & Salary",
+      "type": "income",
+    },
+    {
+      "description": "Gross Pay Before Taxes & Other Items Taken Out",
+      "id": 26,
+      "name": "Wages & Salary:Gross Pay",
+      "type": "income",
+    },
+  ],
+  "transactions": [
+    {
+      "account_id": "1",
+      "amount": 1355.72,
+      "date": 2019-10-18T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 1355.72,
+          "category": "Wages & Salary:Gross Pay",
+        },
+      ],
+      "memo": "Paycheck from Acme INC. & co.",
+      "name": "Counter Credit",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 6339.92,
+      "check_number": "153",
+      "date": 2019-10-24T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 6339.92,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "name": "CHECK",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -6578.71,
+      "date": 2019-11-20T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -6578.71,
+          "category": "Car:Purchase",
+        },
+      ],
+      "name": "WIRE TYPE:INTL OUT DATE:191120 TIME:0800 ET TRN:343434343137025 SERVI",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -45,
+      "date": 2019-11-20T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -45,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "Wire Transfer Fee",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -12,
+      "date": 2020-01-07T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -12,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "Monthly Maintenance Fee",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 500,
+      "check_number": "137",
+      "date": 2020-01-09T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 500,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "name": "CHECK",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -12,
+      "date": 2020-02-04T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -12,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "Monthly Maintenance Fee",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "check_number": "208",
+      "date": 2020-07-06T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "name": "CHECK",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -4900,
+      "date": 2020-07-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -4900,
+          "category": "Home:Rent",
+        },
+      ],
+      "name": "TRANSFER RENT",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2020-07-29T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "External transfer fee - 3 Day -",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "date": 2020-08-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "memo": "RECURRING TRANSFER XXXXXX4444 J.SMITH #FP08L77777 RENT",
+      "name": "ACME BANK, NA CHK",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -4900,
+      "date": 2020-08-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -4900,
+          "category": "Home:Rent",
+        },
+      ],
+      "name": "TRANSFER RENT",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2020-08-31T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "External transfer fee - 3 Day -",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "date": 2020-09-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "memo": "RECURRING TRANSFER XXXXXX4444 J.SMITH #FP08L77777 RENT",
+      "name": "ACME BANK, N.A. CH",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -4900,
+      "date": 2020-09-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -4900,
+          "category": "Home:Rent",
+        },
+      ],
+      "name": "TRANSFER RENT",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2020-09-29T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "External transfer fee - 3 Day -",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "date": 2020-10-05T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "name": "ACME BANK. CH",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -14.14,
+      "date": 2020-10-05T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -14.14,
+          "category": "Leisure & Entertainment:Movie Rentals",
+        },
+      ],
+      "name": "Amazon Prime*MK6NS3C80 10/02 PUR",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -4900,
+      "date": 2020-10-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -4900,
+          "category": "Home:Rent",
+        },
+      ],
+      "name": "TRANSFER RENT",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2020-10-29T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "External transfer fee - 3 Day -",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "date": 2020-11-02T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "memo": "RECURRING TRANSFER XXXXXX4444 J.SMITH #FP08L77777 RENT",
+      "name": "ACME BANK. CH",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -14.14,
+      "date": 2020-11-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -14.14,
+          "category": "Leisure & Entertainment:Movie Rentals",
+        },
+      ],
+      "name": "Amazon Prime*2824Q53S2 11/02 PUR",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -4900,
+      "date": 2020-11-27T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -4900,
+          "category": "Home:Rent",
+        },
+      ],
+      "name": "TRANSFER RENT",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2020-11-30T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "External transfer fee - 3 Day -",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "date": 2020-12-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "memo": "RECURRING TRANSFER XXXXXX4444 J.SMITH #FP08L77777 RENT",
+      "name": "ACME BANK, N.A. CHt",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 14.14,
+      "date": 2020-12-02T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 14.14,
+          "category": "Leisure & Entertainment:Movie Rentals",
+        },
+      ],
+      "name": "Temporary Credit Adjustment on 1",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 14.14,
+      "date": 2020-12-02T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 14.14,
+          "category": "Leisure & Entertainment:Movie Rentals",
+        },
+      ],
+      "name": "Temporary Credit Adjustment on 1",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -14.14,
+      "date": 2020-12-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -14.14,
+          "category": "Leisure & Entertainment:Movie Rentals",
+        },
+      ],
+      "name": "Amazon Prime*A56TL6ZY3 12/02 PUR",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 14.14,
+      "date": 2020-12-07T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 14.14,
+          "category": "Leisure & Entertainment:Movie Rentals",
+        },
+      ],
+      "name": "Temporary Credit Adjustment on 1",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 15000,
+      "date": 2020-12-15T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 15000,
+          "category": "[Acme Joint Savings]",
+        },
+      ],
+      "memo": "ONLINE TRANSFER K XXXXXX4444 J.SMITH #F209FXXXXX ON 12/14/20",
+      "name": "ACME BANK, N.A. CH",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 200000,
+      "check_number": "107",
+      "date": 2020-12-23T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 200000,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "name": "CHECK",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 42000,
+      "date": 2020-12-24T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 42000,
+          "category": "Car:Purchase",
+        },
+      ],
+      "memo": "Memo with exclamation marks! ??!",
+      "name": "Mercury DES:CREDIT ID: INDN:Davi",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -45,
+      "date": 2020-12-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -45,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "memo": "Wire fee",
+      "name": "Wire Transfer Fee",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -1000,
+      "date": 2020-12-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -1000,
+          "category": "Food:Dining Out",
+        },
+      ],
+      "memo": "International Transfer",
+      "name": "WIRE TYPE:INTL OUT DATE:201228 T",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -4900,
+      "date": 2020-12-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -4900,
+          "category": "Home:Rent",
+        },
+      ],
+      "name": "TRANSFER RENT",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2020-12-29T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -1.5,
+          "category": "Bank Charges:Service Charges",
+        },
+        {
+          "amount": -1.5,
+          "category": "Bank Charges:Interest Paid",
+        },
+      ],
+      "memo": "Split Test Transaction",
+      "name": "Split Transaction",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -45,
+      "date": 2020-12-31T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -45,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "Wire Transfer Fee",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -134000,
+      "date": 2020-12-31T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -134000,
+          "category": "Food:Dining Out",
+        },
+      ],
+      "memo": "Buying groceries abroad",
+      "name": "WIRE TYPE:INTL OUT DATE:210104 T",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -120000,
+      "date": 2020-12-31T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -120000,
+          "category": "[Savings Account]",
+        },
+      ],
+      "name": "Online Banking transfer to SAV 4",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3457.93,
+      "date": 2021-01-04T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3457.93,
+          "category": "[Savings Account]",
+        },
+      ],
+      "name": "Online Banking transfer to SAV 4",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "date": 2021-01-04T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "memo": "RECURRING TRANSFER K XXXXXX4444 J. SMITH REF #FP09XH34333 RENT",
+      "name": "ACME BANK, N.A. CHt",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -4900,
+      "date": 2021-01-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -4900,
+          "category": "Home:Rent",
+        },
+      ],
+      "name": "TRANSFER RENT",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2021-01-29T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "External transfer fee - 3 Day -",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "date": 2021-02-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "memo": "RECURRING TRANSFER K XXXXXX4444 J. SMITH REF #FP09XH34333 RENT",
+      "name": "ACME BANK, N.A. CHt",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -4900,
+      "date": 2021-02-26T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -4900,
+          "category": "Home:Rent",
+        },
+      ],
+      "name": "TRANSFER RENT",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2021-03-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "External transfer fee - 3 Day -",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4903,
+      "date": 2021-03-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4903,
+          "category": "[Acme Bank Checking]",
+        },
+      ],
+      "memo": "RECURRING TRANSFER K XXXXXX4444 J. SMITH REF #FP09XH34333 RENT",
+      "name": "ACME BANK, N.A. CH",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 108221.8,
+      "date": 2021-03-17T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 108221.8,
+          "category": "[Savings Account]",
+        },
+      ],
+      "name": "CA TLR transfer to CHK 4216 Bank",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -111624.8,
+      "date": 2021-03-17T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -111624.8,
+          "category": "[Acme Joint Savings]",
+        },
+      ],
+      "name": "DEPOSIT  ID NUMBER 252396",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 0.95,
+      "date": 2021-04-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.95,
+          "category": "Investment Income:Interest",
+        },
+      ],
+      "name": "Online Banking transfer from SAV 444 Confirmation# 32234343434",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 2587,
+      "date": 2021-10-22T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 2587,
+          "category": "Taxes:Income Tax",
+        },
+      ],
+      "name": "FRANCHISE TAX BD DES:CASTTAXRFD ID:XXXXX8888 INDN:SMITH, JOHN",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": 4520,
+      "date": 2021-10-26T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 4520,
+          "category": "Taxes:Income Tax",
+        },
+      ],
+      "name": "IRS TREAS 310 DES: TAX REF ID:XX",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -3,
+      "date": 2022-01-04T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -3,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "External transfer fee - 3 Day -",
+      "pending": false,
+    },
+    {
+      "account_id": "1",
+      "amount": -7104.95,
+      "date": 2022-01-06T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -7104.95,
+          "category": "[Acme Personal Checking]",
+        },
+      ],
+      "memo": "JOHN SMITH WEB ID: T941653434",
+      "name": "ACME BANK  P2P        JOHN",
+      "pending": false,
+    },
+    {
+      "account_id": "2",
+      "amount": 120000,
+      "date": 2020-12-31T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 120000,
+          "category": "[Checking Account]",
+        },
+      ],
+      "name": "Online Banking transfer to SAV 4",
+      "pending": false,
+    },
+    {
+      "account_id": "2",
+      "amount": 3457.93,
+      "date": 2021-01-04T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 3457.93,
+          "category": "[Checking Account]",
+        },
+      ],
+      "name": "Online Banking transfer to SAV 4",
+      "pending": false,
+    },
+    {
+      "account_id": "2",
+      "amount": 0.54,
+      "date": 2021-01-15T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.54,
+          "category": "Investment Income:Interest",
+        },
+      ],
+      "name": "Interest Earned",
+      "pending": false,
+    },
+    {
+      "account_id": "2",
+      "amount": -30,
+      "date": 2021-02-10T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -30,
+          "category": "Bank Charges:Service Charges",
+        },
+      ],
+      "name": "Wire Transfer Fee",
+      "pending": false,
+    },
+    {
+      "account_id": "2",
+      "amount": -15207.6,
+      "date": 2021-02-10T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -15207.6,
+          "category": "Car Expenses",
+        },
+      ],
+      "memo": "Wire",
+      "name": "WIRE TYPE:WIRE OUT DATE:210210 T",
+      "pending": false,
+    },
+    {
+      "account_id": "2",
+      "amount": 0.93,
+      "date": 2021-02-12T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.93,
+          "category": "Investment Income:Interest",
+        },
+      ],
+      "name": "Interest Earned",
+      "pending": false,
+    },
+    {
+      "account_id": "2",
+      "amount": -108221.8,
+      "date": 2021-03-17T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -108221.8,
+          "category": "[Checking Account]",
+        },
+      ],
+      "name": "CA TLR transfer to CHK 4444 Bank",
+      "pending": false,
+    },
+    {
+      "account_id": "2",
+      "amount": -237.73,
+      "date": 2021-04-13T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -115,
+          "category": "Food:Groceries",
+          "memo": "Groceries",
+        },
+        {
+          "amount": -122.73,
+          "category": "Child-Dependents:Parties",
+          "memo": "Kids Birthday BBQ",
+        },
+      ],
+      "memo": "PURCHASE Supermarket",
+      "name": "Split Transaction Out of Order",
+      "pending": false,
+    },
+  ],
+}
+`;
+
+exports[`deserializeQIF() > test files > should parse statement1_us.qif correctly 1`] = `
+{
+  "accounts": [],
+  "categories": [],
+  "transactions": [
+    {
+      "amount": -350,
+      "check_number": "N/A",
+      "date": 2021-08-10T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -350,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME      CRCARDPMT  XXXX",
+      "pending": false,
+    },
+    {
+      "amount": -322.33,
+      "check_number": "N/A",
+      "date": 2021-08-05T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -322.33,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME PMT        1234567890",
+      "pending": false,
+    },
+    {
+      "amount": -84.06,
+      "check_number": "N/A",
+      "date": 2021-08-04T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -84.06,
+          "category": undefined,
+        },
+      ],
+      "name": "COMPANY-E           WEB ONLINE 9999",
+      "pending": false,
+    },
+    {
+      "amount": -119.95,
+      "check_number": "N/A",
+      "date": 2021-08-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -119.95,
+          "category": undefined,
+        },
+      ],
+      "name": "XXCredit Card   AUTO PAY",
+      "pending": false,
+    },
+    {
+      "amount": 0.18,
+      "check_number": "N/A",
+      "date": 2021-07-30T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.18,
+          "category": undefined,
+        },
+      ],
+      "name": "INTEREST PAYMENT",
+      "pending": false,
+    },
+    {
+      "amount": -14.09,
+      "check_number": "N/A",
+      "date": 2021-07-23T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -14.09,
+          "category": undefined,
+        },
+      ],
+      "name": "INSURANCE       EDI PYMNTS",
+      "pending": false,
+    },
+    {
+      "amount": -20,
+      "check_number": "N/A",
+      "date": 2021-07-22T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -20,
+          "category": undefined,
+        },
+      ],
+      "name": "INTACME 9999999  9999999",
+      "pending": false,
+    },
+    {
+      "amount": -106.23,
+      "check_number": "N/A",
+      "date": 2021-07-21T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -106.23,
+          "category": undefined,
+        },
+      ],
+      "name": "INSURANCE       EDI PYMNTS",
+      "pending": false,
+    },
+    {
+      "amount": -236.48,
+      "check_number": "N/A",
+      "date": 2021-07-19T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -236.48,
+          "category": undefined,
+        },
+      ],
+      "name": "NON-BANK ATM WITHDRAW",
+      "pending": false,
+    },
+    {
+      "amount": -269.07,
+      "check_number": "N/A",
+      "date": 2021-07-19T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -269.07,
+          "category": undefined,
+        },
+      ],
+      "name": "BANK CREDIT CRD AUTOPAY",
+      "pending": false,
+    },
+    {
+      "amount": -133.06,
+      "check_number": "N/A",
+      "date": 2021-07-12T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -133.06,
+          "category": undefined,
+        },
+      ],
+      "name": "NON-BANK ATM WITHDRAW",
+      "pending": false,
+    },
+    {
+      "amount": -180,
+      "check_number": "N/A",
+      "date": 2021-07-12T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -180,
+          "category": undefined,
+        },
+      ],
+      "name": "CHECK 111",
+      "pending": false,
+    },
+    {
+      "amount": -350,
+      "check_number": "N/A",
+      "date": 2021-07-09T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -350,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME      CRCARDPMT  XXXX",
+      "pending": false,
+    },
+    {
+      "amount": -75,
+      "check_number": "N/A",
+      "date": 2021-07-07T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -75,
+          "category": undefined,
+        },
+      ],
+      "name": "VENMO            PAYMENT    2322",
+      "pending": false,
+    },
+    {
+      "amount": -551.36,
+      "check_number": "N/A",
+      "date": 2021-07-06T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -551.36,
+          "category": undefined,
+        },
+      ],
+      "name": "Credit Card   AUTO PAY",
+      "pending": false,
+    },
+    {
+      "amount": -324.9,
+      "check_number": "N/A",
+      "date": 2021-07-06T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -324.9,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME PMT        1234567890",
+      "pending": false,
+    },
+    {
+      "amount": -157.66,
+      "check_number": "N/A",
+      "date": 2021-07-02T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -157.66,
+          "category": undefined,
+        },
+      ],
+      "name": "COMPANY-E           WEB ONLINE 9999",
+      "pending": false,
+    },
+    {
+      "amount": 0.18,
+      "check_number": "N/A",
+      "date": 2021-06-30T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.18,
+          "category": undefined,
+        },
+      ],
+      "name": "INTEREST PAYMENT",
+      "pending": false,
+    },
+    {
+      "amount": -100,
+      "check_number": "N/A",
+      "date": 2021-06-29T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -100,
+          "category": undefined,
+        },
+      ],
+      "name": "VENMO            PAYMENT    2323",
+      "pending": false,
+    },
+    {
+      "amount": -14.09,
+      "check_number": "N/A",
+      "date": 2021-06-23T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -14.09,
+          "category": undefined,
+        },
+      ],
+      "name": "INSURANCE       EDI PYMNTS",
+      "pending": false,
+    },
+    {
+      "amount": -27.93,
+      "check_number": "N/A",
+      "date": 2021-06-22T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -27.93,
+          "category": undefined,
+        },
+      ],
+      "name": "INTACME 9999999  9999999",
+      "pending": false,
+    },
+    {
+      "amount": -106.24,
+      "check_number": "N/A",
+      "date": 2021-06-21T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -106.24,
+          "category": undefined,
+        },
+      ],
+      "name": "INSURANCE       EDI PYMNTS",
+      "pending": false,
+    },
+    {
+      "amount": -449.81,
+      "check_number": "N/A",
+      "date": 2021-06-18T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -449.81,
+          "category": undefined,
+        },
+      ],
+      "name": "Credit Card   AUTO PAY",
+      "pending": false,
+    },
+    {
+      "amount": -351.8,
+      "check_number": "N/A",
+      "date": 2021-06-09T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -351.8,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME      CRCARDPMT  XXXX",
+      "pending": false,
+    },
+    {
+      "amount": -321.96,
+      "check_number": "N/A",
+      "date": 2021-06-07T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -321.96,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME PMT        1234567890",
+      "pending": false,
+    },
+    {
+      "amount": 915,
+      "check_number": "N/A",
+      "date": 2021-06-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 915,
+          "category": undefined,
+        },
+      ],
+      "name": "Zelle payment from ACME INC",
+      "pending": false,
+    },
+    {
+      "amount": -197.5,
+      "check_number": "N/A",
+      "date": 2021-06-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -197.5,
+          "category": undefined,
+        },
+      ],
+      "name": "COMPANY-E           WEB ONLINE 9999",
+      "pending": false,
+    },
+    {
+      "amount": -219.16,
+      "check_number": "N/A",
+      "date": 2021-06-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -219.16,
+          "category": undefined,
+        },
+      ],
+      "name": "Credit Card   AUTO PAY",
+      "pending": false,
+    },
+    {
+      "amount": -1830,
+      "check_number": "N/A",
+      "date": 2021-06-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -1830,
+          "category": undefined,
+        },
+      ],
+      "name": "Zelle payment to Acme Inc",
+      "pending": false,
+    },
+    {
+      "amount": 0.14,
+      "check_number": "N/A",
+      "date": 2021-05-28T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.14,
+          "category": undefined,
+        },
+      ],
+      "name": "INTEREST PAYMENT",
+      "pending": false,
+    },
+    {
+      "amount": -14.09,
+      "check_number": "N/A",
+      "date": 2021-05-24T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -14.09,
+          "category": undefined,
+        },
+      ],
+      "name": "INSURANCE       EDI PYMNTS",
+      "pending": false,
+    },
+    {
+      "amount": -49.99,
+      "check_number": "N/A",
+      "date": 2021-05-24T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -49.99,
+          "category": undefined,
+        },
+      ],
+      "name": "INTACME 9999999  9999999",
+      "pending": false,
+    },
+    {
+      "amount": -106.24,
+      "check_number": "N/A",
+      "date": 2021-05-21T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -106.24,
+          "category": undefined,
+        },
+      ],
+      "name": "INSURANCE       EDI PYMNTS",
+      "pending": false,
+    },
+    {
+      "amount": 0.1,
+      "check_number": "N/A",
+      "date": 2021-05-20T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.1,
+          "category": undefined,
+        },
+      ],
+      "name": "REMOTE ONLINE DEPOSIT #",
+      "pending": false,
+    },
+    {
+      "amount": -50,
+      "check_number": "N/A",
+      "date": 2021-05-19T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -50,
+          "category": undefined,
+        },
+      ],
+      "name": "Online Transfer to CHK ...9999 t",
+      "pending": false,
+    },
+    {
+      "amount": -294.5,
+      "check_number": "N/A",
+      "date": 2021-05-19T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -294.5,
+          "category": undefined,
+        },
+      ],
+      "name": "BANK CREDIT CRD AUTOPAY",
+      "pending": false,
+    },
+    {
+      "amount": -350,
+      "check_number": "N/A",
+      "date": 2021-05-10T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -350,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME      CRCARDPMT  XXXX",
+      "pending": false,
+    },
+    {
+      "amount": -321.96,
+      "check_number": "N/A",
+      "date": 2021-05-05T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -321.96,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME PMT        1234567890",
+      "pending": false,
+    },
+    {
+      "amount": -222.73,
+      "check_number": "N/A",
+      "date": 2021-05-04T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -222.73,
+          "category": undefined,
+        },
+      ],
+      "name": "COMPANY-E           WEB ONLINE 9999",
+      "pending": false,
+    },
+    {
+      "amount": -1830,
+      "check_number": "N/A",
+      "date": 2021-05-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -1830,
+          "category": undefined,
+        },
+      ],
+      "name": "Zelle payment to Acme Inc",
+      "pending": false,
+    },
+    {
+      "amount": -419.12,
+      "check_number": "N/A",
+      "date": 2021-05-03T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -419.12,
+          "category": undefined,
+        },
+      ],
+      "name": "Credit Card   AUTO PAY",
+      "pending": false,
+    },
+    {
+      "amount": 0.17,
+      "check_number": "N/A",
+      "date": 2021-04-30T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.17,
+          "category": undefined,
+        },
+      ],
+      "name": "INTEREST PAYMENT",
+      "pending": false,
+    },
+    {
+      "amount": -13.09,
+      "check_number": "N/A",
+      "date": 2021-04-23T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -13.09,
+          "category": undefined,
+        },
+      ],
+      "name": "INSURANCE       EDI PYMNTS",
+      "pending": false,
+    },
+    {
+      "amount": -49.99,
+      "check_number": "N/A",
+      "date": 2021-04-22T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -49.99,
+          "category": undefined,
+        },
+      ],
+      "name": "INTACME 9999999  9999999",
+      "pending": false,
+    },
+    {
+      "amount": -105.24,
+      "check_number": "N/A",
+      "date": 2021-04-21T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -105.24,
+          "category": undefined,
+        },
+      ],
+      "name": "INSURANCE       EDI PYMNTS",
+      "pending": false,
+    },
+    {
+      "amount": 2.5,
+      "check_number": "N/A",
+      "date": 2021-04-12T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 2.5,
+          "category": undefined,
+        },
+      ],
+      "name": "GIORGIOS RESTAURANT 35",
+      "pending": false,
+    },
+    {
+      "amount": -42.5,
+      "check_number": "N/A",
+      "date": 2021-04-12T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -42.5,
+          "category": undefined,
+        },
+      ],
+      "name": "NON-BANK ATM WITHDRAW",
+      "pending": false,
+    },
+    {
+      "amount": -350,
+      "check_number": "N/A",
+      "date": 2021-04-09T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -350,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME      CRCARDPMT  XXXX",
+      "pending": false,
+    },
+    {
+      "amount": -1830,
+      "check_number": "N/A",
+      "date": 2021-04-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -1830,
+          "category": undefined,
+        },
+      ],
+      "name": "Zelle payment to Acme Inc",
+      "pending": false,
+    },
+    {
+      "amount": 0.09,
+      "check_number": "N/A",
+      "date": 2021-03-31T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 0.09,
+          "category": undefined,
+        },
+      ],
+      "name": "INTEREST PAYMENT",
+      "pending": false,
+    },
+    {
+      "amount": -2700,
+      "check_number": "N/A",
+      "date": 2021-03-25T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": -2700,
+          "category": undefined,
+        },
+      ],
+      "name": "ACME LLC        ACME LLC  9999",
+      "pending": false,
+    },
+    {
+      "amount": 500,
+      "check_number": "N/A",
+      "date": 2021-03-18T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 500,
+          "category": undefined,
+        },
+      ],
+      "name": "Transfer   Sent from",
+      "pending": false,
+    },
+  ],
+}
+`;
+
+exports[`deserializeQIF() > test files > should parse statement2_uk.qif correctly 1`] = `
+{
+  "accounts": [],
+  "categories": [],
+  "transactions": [
+    {
+      "amount": 694.44,
+      "date": 2020-11-02T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 694.44,
+          "category": undefined,
+        },
+      ],
+      "name": "RENT CR",
+      "pending": false,
+    },
+    {
+      "amount": 694.44,
+      "date": 2020-10-01T00:00:00.000Z,
+      "lineItems": [
+        {
+          "amount": 694.44,
+          "category": undefined,
+        },
+      ],
+      "name": "RENT CR",
+      "pending": false,
+    },
+  ],
+}
+`;
