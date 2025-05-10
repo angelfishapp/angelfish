@@ -16,6 +16,7 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses'
 import type { HASHES } from '@electron/windows-sign/dist/cjs/types'
 import { spawn } from 'child_process'
 import dotenv from 'dotenv'
+import fs from 'fs'
 import path from 'path'
 
 import { filterPackageJsonForExternals } from './scripts/forge.externals'
@@ -65,6 +66,14 @@ const config: ForgeConfig = {
           if (code !== 0) {
             return reject(new Error('yarn install failed'))
           }
+          // Check that modules were installed correctly under node_modules
+          for (const dep of externalDeps) {
+            if (!fs.existsSync(path.join(buildPath, 'node_modules', dep))) {
+              return reject(new Error(`Dependency ${dep} was not installed correctly`))
+            }
+          }
+          // eslint-disable-next-line no-console
+          console.log('✅ External Dependecies installed successfully')
           resolve()
         })
       })
