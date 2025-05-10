@@ -56,10 +56,15 @@ export interface CategoryFieldProps extends FormFieldProps {
   /**
    * Optionally set the current value for Field
    */
-  value?: IAccount | null
+  value?: any
   /**
    * Optionally set AutomComplete list to be Open
    * @default false
    */
   open?: boolean
+  /**
+   * requiered set the variant to be dropdown or multi-box
+   * @default false
+   */
+  variant?: 'dropdown' | 'multi-box'
 }

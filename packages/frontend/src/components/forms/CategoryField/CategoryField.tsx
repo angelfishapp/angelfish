@@ -1,5 +1,5 @@
 import InfoIcon from '@mui/icons-material/Info'
-import type { AutocompleteRenderGroupParams } from '@mui/material'
+import { type AutocompleteRenderGroupParams } from '@mui/material'
 import Box from '@mui/material/Box'
 import ListItem from '@mui/material/ListItem'
 import ListSubheader from '@mui/material/ListSubheader'
@@ -19,6 +19,7 @@ import type { CategoryFieldProps } from './CategoryField.interface'
 
 export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function CategoryField(
   {
+    variant,
     value,
     accountsWithRelations,
     disableTooltip = false,
@@ -75,7 +76,7 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
     <AutocompleteField
       id={id}
       formRef={ref}
-      multiple={false}
+      multiple={variant === 'multi-box'}
       freeSolo={onCreate ? true : false}
       disableClearable={false}
       options={sortedAccounts}
