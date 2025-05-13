@@ -1,18 +1,18 @@
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import InfoIcon from '@mui/icons-material/Info'
-import { type AutocompleteRenderGroupParams } from '@mui/material'
+import { Checkbox, Collapse } from '@mui/material'
 import Box from '@mui/material/Box'
 import ListItem from '@mui/material/ListItem'
-import ListSubheader from '@mui/material/ListSubheader'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import React from 'react'
+import React, { useState } from 'react'
 
 import BankIcon from '@/components/BankIcon/BankIcon'
 import { Emoji } from '@/components/Emoji'
 import AutocompleteField from '@/components/forms/AutocompleteField/AutocompleteField'
 import type { IAccount } from '@angelfish/core'
-import type { CategoryFieldProps } from './CategoryField.interface'
-import MultiCategoryField from './components/MultiCategoryField'
+import type { CategoryFieldProps } from '../CategoryField.interface'
 
 /**
  * Autocomplete Field for selecting a Category or Account
@@ -20,7 +20,6 @@ import MultiCategoryField from './components/MultiCategoryField'
 
 export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function CategoryField(
   {
-    variant,
     value,
     accountsWithRelations,
     disableTooltip = false,
@@ -36,6 +35,37 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
   }: CategoryFieldProps,
   ref,
 ) {
+  // handling item or group selecting and collapassed
+  const [selected, setSelected] = useState<IAccount[]>([])
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
+
+  const handleGroupToggle = (group: string) => {
+    setCollapsedGroups((prev) => ({ ...prev, [group]: !prev[group] }))
+  }
+
+  const handleGroupSelect = (groupName: string, checked: boolean) => {
+    const groupOptions: any = sortedAccounts.filter(
+      (o: IAccount) => o?.categoryGroup?.name === groupName,
+    )
+
+    if (checked) {
+      // Add all from group if not already selected
+      const toAdd = groupOptions.filter(
+        (item: IAccount) => !selected.some((s) => s.name === item.name),
+      )
+      setSelected([...selected, ...toAdd])
+    } else {
+      // Remove all from group
+      setSelected(selected.filter((item) => item.categoryGroup?.name !== groupName))
+    }
+  }
+
+  const isGroupChecked = (groupName: string) => {
+    const groupOptions = sortedAccounts?.filter(
+      (o: IAccount) => o?.categoryGroup?.name === groupName,
+    )
+    return groupOptions.every((item) => selected.some((s) => s.name === item.name))
+  }
   /**
    * Optionally filter then Sort Options By Category Group
    */
@@ -59,6 +89,7 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
    * Improve performance of filtering options by pre-calculating search
    * strings for each option
    */
+
   const searchOptions = React.useMemo(() => {
     const searchOptions: Record<string, string> = {}
     for (const account of sortedAccounts) {
@@ -72,46 +103,32 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
     return searchOptions
   }, [sortedAccounts])
 
-  if (variant === 'multi-box')
-    return (
-      <MultiCategoryField
-        fullWidth
-        renderAsValue={false}
-        margin="none"
-        accountsWithRelations={accountsWithRelations}
-        onChange={onChange}
-      />
-    )
   // Render
   return (
     <AutocompleteField
       id={id}
       formRef={ref}
-      multiple={false}
+      multiple={true}
       freeSolo={onCreate ? true : false}
       disableClearable={false}
       options={sortedAccounts}
-      value={value}
+      value={selected}
       placeholder={placeholder}
       autoHighlight
       selectOnFocus
       onChange={(_, newValue) => {
-        if (newValue) {
-          if (typeof newValue !== 'string') {
-            if (newValue.id == 0) {
-              onCreate?.(newValue.acc_type)
-            } else {
-              onChange(newValue)
-            }
-          } else {
-            onCreate?.(newValue)
-          }
-        } else {
-          // Unclassified
-          onChange(null)
+        setSelected(newValue as IAccount[])
+
+        if (typeof newValue === 'string') {
+          onCreate?.(newValue)
+        } else if (Array.isArray(newValue)) {
+          const accountsOnly = newValue.filter((item): item is IAccount => typeof item !== 'string')
+          onChange?.(accountsOnly)
         }
       }}
       getOptionLabel={(option) => {
+        if (!option) return ''
+
         if (typeof option === 'string') {
           return option
         }
@@ -142,17 +159,34 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
           : undefined
       }
       virtualize={false}
-      renderGroup={(params: AutocompleteRenderGroupParams) => {
-        if (!params.group) {
-          return [params.children]
-        }
-
-        return [
-          <ListSubheader key={params.key} component="div">
-            {params.group}
-          </ListSubheader>,
-          params.children,
-        ]
+      renderGroup={(params) => {
+        const isCollapsed = collapsedGroups[params.group] ?? false
+        return (
+          <Box key={params.key}>
+            <Box
+              display="flex"
+              alignItems="center"
+              px={2}
+              py={1}
+              sx={{ backgroundColor: '#f5f5f5', cursor: 'pointer' }}
+              onClick={() => handleGroupToggle(params.group)}
+            >
+              {isCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              <Box display="flex" alignItems="center">
+                <Checkbox
+                  size="small"
+                  checked={isGroupChecked(params.group)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleGroupSelect(params.group, !isGroupChecked(params.group))
+                  }}
+                />
+                <Typography variant="subtitle2">{params.group}</Typography>
+              </Box>
+            </Box>
+            <Collapse in={!isCollapsed}>{params.children}</Collapse>
+          </Box>
+        )
       }}
       renderOption={(props, option) => {
         // Remove the key from props to avoid React warning about
@@ -164,7 +198,7 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
           return (
             <ListItem key={option.id} {...rest}>
               <Box display="flex" alignItems="center" width="100%">
-                <Box marginRight={1}>
+                <Box marginRight={1} marginLeft={10}>
                   <Emoji size={24} emoji={option.cat_icon ?? ''} />
                 </Box>
                 <Box minWidth={200} flexGrow={1}>
@@ -214,10 +248,21 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
             </ListItem>
           )
         }
-
         // Render Category
         return (
           <ListItem key={option.id} {...rest}>
+            <Checkbox
+              checked={selected.some((s) => s.id === option.id)}
+              style={{ marginLeft: 40, marginRight: 8 }}
+              onClick={(e) => {
+                e.stopPropagation()
+                if (selected.some((s) => s.id === option.id)) {
+                  setSelected(selected.filter((s) => s.id !== option.id))
+                } else {
+                  setSelected([...selected, option])
+                }
+              }}
+            />
             <Box display="flex" alignItems="center" width="100%">
               <Box marginRight={1} width={30}>
                 <Emoji size={24} emoji={option.cat_icon ?? ''} />
@@ -292,34 +337,46 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
         // Return all options
         return options
       }}
-      getStartAdornment={(value) => {
-        if (value && value !== null && typeof value !== 'string' && renderAsValue) {
-          if (value.id == 0) {
-            // Render Create Category Icon
-            return (
-              <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-                <Emoji size={24} emoji={value.cat_icon ?? ''} />
-              </Box>
-            )
-          }
-          return (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {value.class == 'CATEGORY' ? (
-                <React.Fragment>
-                  <Emoji size={24} emoji={value.cat_icon ?? ''} style={{ marginRight: 8 }} />
-                  {value.categoryGroup?.name} &gt;
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <BankIcon logo={value.institution?.logo} size={24} style={{ marginRight: 8 }} />
-                  {value.institution?.name} &gt;
-                </React.Fragment>
-              )}
-            </Box>
-          )
-        }
-        return null
-      }}
+      // this is not suitable with the rendering of groups of items so commented
+      //   getStartAdornment={(value) => {
+      //     if (!Array.isArray(value)) return null
+
+      //     return (
+      //       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      //         {value.map((item, idx) => {
+      //           if (typeof item === 'string') return null
+
+      //           if (item.id === 0) {
+      //             return (
+      //               <Box key={idx} sx={{ display: 'flex', alignItems: 'center' }}>
+      //                 <Emoji size={24} emoji={item.cat_icon ?? ''} />
+      //               </Box>
+      //             )
+      //           }
+
+      //           return (
+      //             <Box key={idx} sx={{ display: 'flex', alignItems: 'center' }}>
+      //               {item.class === 'CATEGORY' ? (
+      //                 <>
+      //                   <Emoji size={24} emoji={item.cat_icon ?? ''} style={{ marginRight: 8 }} />
+      //                   {item.categoryGroup?.name} &gt;
+      //                 </>
+      //               ) : (
+      //                 <>
+      //                   <BankIcon
+      //                     logo={item.institution?.logo}
+      //                     size={24}
+      //                     style={{ marginRight: 8 }}
+      //                   />
+      //                   {item.institution?.name} &gt;
+      //                 </>
+      //               )}
+      //             </Box>
+      //           )
+      //         })}
+      //       </Box>
+      //     )
+      //   }}
       {...formFieldProps}
     />
   )

@@ -66,6 +66,7 @@ export const Filtered: Story = {
 }
 export const multiBox: Story = {
   args: {
+    
     label: 'Category',
     renderAsValue: false,
     onCreate: (name?) => action('onCreate')(name),

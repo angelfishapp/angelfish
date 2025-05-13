@@ -35,7 +35,7 @@ export interface CategoryFieldProps extends FormFieldProps {
   /**
    * Callback for when value is changed
    */
-  onChange: (account: IAccount | string | null) => void
+  onChange: (account:IAccount[]| IAccount | string | null) => void
   /**
    * Callback for when user creates a new category. Will
    * pass any existing value in search field if present to
