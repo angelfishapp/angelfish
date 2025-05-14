@@ -101,9 +101,9 @@ class TransactionServiceClass {
             .where('li.transaction_id = transaction.id')
 
           if (cat_id === UNCLASSIFIED_EXPENSES_ID) {
-            subQuery.andWhere('li.account_id IS NULL AND li.amount > 0')
-          } else if (cat_id === UNCLASSIFIED_INCOME_ID) {
             subQuery.andWhere('li.account_id IS NULL AND li.amount < 0')
+          } else if (cat_id === UNCLASSIFIED_INCOME_ID) {
+            subQuery.andWhere('li.account_id IS NULL AND li.amount > 0')
           } else {
             subQuery.andWhere('li.account_id = :cat_id')
           }
