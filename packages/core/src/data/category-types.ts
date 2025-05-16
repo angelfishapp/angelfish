@@ -19,6 +19,7 @@ export const allCategoryTypes: Array<CategoryTypeLookup> = [
   { groupType: 'Expense', type: 'Important' },
   { groupType: 'Expense', type: 'Optional' },
   { groupType: 'Expense', type: 'Investment' },
+  { groupType: 'Expense', type: 'Taxes' },
 ]
 
 /**

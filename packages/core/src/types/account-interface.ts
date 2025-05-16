@@ -13,6 +13,7 @@ export type CategoryType =
   | 'Important'
   | 'Optional'
   | 'Investment'
+  | 'Taxes'
 
 /**
  * Interface for Account model
@@ -52,7 +53,7 @@ export interface IAccount {
 
   /* Category Type, depends on whether part of Income or Expense Category Group:
       Income: Earned, Passive, Other
-      Expense: Critical, Important, Optional, Investment */
+      Expense: Critical, Important, Optional, Investment, Taxes */
   cat_type?: CategoryType
 
   /* Category Description */
