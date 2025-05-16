@@ -101,7 +101,7 @@ export function createNewTransaction({
  *                      Line Item Properties:
  *
  *                        - category_id               If provided, updates the transaction category to new category ID, null is Uncategorised
- *                        - note                      If provided, updates the transaction note to new note
+ *                        - note                      If provided, updates the transaction note to new note, null will remove the note
  *                        - add_tags                  If provided, will merge new tags with existing tags to add them
  *                        - remove_tags               If provided, will remove tags from existing tags if set
  *                        - overwrite_tags            If provided, sets tags or defaults to empty array
@@ -186,7 +186,7 @@ export function updateTransaction(
     amount ||
     currency_exchange_rate ||
     category_id !== undefined ||
-    note ||
+    note !== undefined ||
     add_tags ||
     remove_tags ||
     overwrite_tags
@@ -212,10 +212,10 @@ export function updateTransaction(
           category_id !== undefined
             ? category_id !== null
               ? category_id
-              : undefined
+              : null
             : lineItem.account_id,
         local_amount: roundNumber(lineItemAmount / exchangeRate),
-        note: note !== undefined ? note : lineItem.note,
+        note: note !== undefined ? (note !== null ? note.trim() : null) : lineItem.note,
         tags,
       }
     })
@@ -262,7 +262,7 @@ export function updateTransaction(
  *                                                    updating one Transaction
  *
  *                        - category_id               If provided, updates all transaction categories to new category ID, null is Uncategorised
- *                        - note                      If provided, updates all transaction notes to new note
+ *                        - note                      If provided, updates all transaction notes to new note, null will remove the note
  *                        - add_tags                  If provided, will merge new tags with existing tags to add them
  *                        - remove_tags               If provided, will remove tags from existing tags if set
  *                        - overwrite_tags            If provided, sets tags or defaults to empty array

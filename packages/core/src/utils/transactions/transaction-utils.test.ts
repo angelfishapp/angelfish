@@ -204,7 +204,7 @@ describe('test transactions.utils', () => {
       transaction = updateTransaction(transaction, {
         category_id: null,
       })
-      expect(transaction.line_items[0].account_id).toEqual(undefined)
+      expect(transaction.line_items[0].account_id).toBeNull()
     })
 
     it('should update ISO currency', () => {
@@ -223,6 +223,26 @@ describe('test transactions.utils', () => {
       })
       expect(transaction.currency_code).toEqual('CAD')
       expect(transaction.requires_sync).toEqual(true)
+    })
+
+    it('should update note', () => {
+      let transaction = createNewTransaction({
+        account_id: 1,
+        title: 'Test Transaction',
+        category_id: 2,
+        amount: 100,
+        currency_code: 'USD',
+        note: 'This is a note',
+      })
+      expect(transaction.line_items[0].note).toEqual('This is a note')
+      transaction = updateTransaction(transaction, {
+        note: 'Test Note',
+      })
+      expect(transaction.line_items[0].note).toEqual('Test Note')
+      transaction = updateTransaction(transaction, {
+        note: null,
+      })
+      expect(transaction.line_items[0].note).toBeNull()
     })
   })
 
