@@ -25,7 +25,7 @@ import { TagsField } from '@/components/forms/TagsField'
 import { TextField } from '@/components/forms/TextField'
 import type { IAccount, ITag, IUser } from '@angelfish/core'
 import { AmountFilter, CategoryFilter, DateFilter, PayeeFilter, TagsFilter } from './filters'
-import { AccountSort, TagsSort } from './sorting'
+import { AccountSort, DateSort, TagsSort } from './sorting'
 import type { FormData, TransactionRow } from './types'
 
 /*
@@ -136,6 +136,7 @@ export function buildColumns(
           enableColumnFilter: true,
           enableGlobalFilter: false,
           filterFn: DateFilter,
+          sortingFn: DateSort,
           cell: ({ row }) => {
             if (row.depth >= 1) return null
             return row.original.date?.toLocaleDateString('en-GB', {
