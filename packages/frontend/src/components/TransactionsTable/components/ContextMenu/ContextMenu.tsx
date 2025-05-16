@@ -1,6 +1,7 @@
 import AddIcon from '@mui/icons-material/Add'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import TagIcon from '@mui/icons-material/LocalOffer'
@@ -184,7 +185,6 @@ export default function TransactionTableContextMenu({
         {
           item: 'Insert New...',
           icon: AddIcon,
-          divider: true,
           onHover: () => {
             setShowSubMenu(null)
           },
@@ -205,6 +205,19 @@ export default function TransactionTableContextMenu({
           },
         },
         {
+          item: 'Duplicate',
+          icon: ContentCopyIcon,
+          divider: true,
+          onHover: () => {
+            setShowSubMenu(null)
+          },
+          onClick: () => {
+            table.options.meta?.transactionsTable?.duplicateRows(
+              selectedRows.map((row) => row.original),
+            )
+          },
+        },
+        {
           item: 'Remove',
           icon: DeleteIcon,
           className: 'menuItemRemove',
@@ -213,7 +226,7 @@ export default function TransactionTableContextMenu({
             setShowSubMenu(null)
           },
           onClick: () => {
-            const rows = table.getSelectedRowModel().rows.map((row) => row.original)
+            const rows = selectedRows.map((row) => row.original)
             table.options.meta?.transactionsTable?.deleteRows(rows)
             onClose()
           },

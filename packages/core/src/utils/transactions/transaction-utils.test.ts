@@ -1,6 +1,7 @@
 import type { ITag, ITransaction } from '../../types'
 import {
   createNewTransaction,
+  duplicateTransaction,
   getTransactionCategory,
   updateTransaction,
 } from './transaction-utils'
@@ -359,6 +360,37 @@ describe('test transactions.utils', () => {
       expect(transaction.line_items[0].local_amount).toEqual(-66.67)
       expect(transaction.line_items[1].amount).toEqual(-50)
       expect(transaction.line_items[1].local_amount).toEqual(-66.67)
+    })
+  })
+
+  /**
+   * Test Duplicating Transactions
+   */
+  describe('test duplicateTransaction()', () => {
+    it('should duplicate a transaction', () => {
+      const transaction = createNewTransaction({
+        account_id: 1,
+        title: 'Test Transaction',
+        category_id: 2,
+        amount: 100,
+        currency_code: 'USD',
+      })
+      // Set IDs to 1
+      transaction.id = 1
+      transaction.line_items[0].id = 1
+      const duplicated = duplicateTransaction(transaction as ITransaction)
+      expect(duplicated).toEqual({
+        ...transaction,
+        id: undefined,
+        created_on: undefined,
+        modified_on: undefined,
+        is_reviewed: false,
+        requires_sync: true,
+        line_items: transaction.line_items.map((item) => ({
+          ...item,
+          id: undefined,
+        })),
+      })
     })
   })
 

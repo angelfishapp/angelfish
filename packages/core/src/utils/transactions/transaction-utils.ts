@@ -280,6 +280,34 @@ export function updateTransactions(
 }
 
 /**
+ * Creates a duplicate of the transaction. Will remove:
+ *
+ *   - all IDs from the transaction and line items so it can be saved as a new transaction
+ *   - Any import_id from the transaction
+ *   - Sets requires_sync to true to ensure any currency exchange rates are updated in next sync
+ *   - Sets is_reviewed to false
+ *   - Removes any created_on and modified_on dates
+ *
+ * @param transaction The transaction to duplicate
+ * @returns           A new transaction object with no IDs
+ */
+export function duplicateTransaction(transaction: ITransaction): ITransactionUpdate {
+  return {
+    ...transaction,
+    id: undefined,
+    created_on: undefined,
+    modified_on: undefined,
+    import_id: undefined,
+    is_reviewed: false,
+    requires_sync: true,
+    line_items: transaction.line_items.map((lineItem) => ({
+      ...lineItem,
+      id: undefined,
+    })),
+  }
+}
+
+/**
  * Check if a transaction is a split transaction
  *
  * @param transaction   The transaction to check
