@@ -499,13 +499,13 @@ PCA TLR transfer to CHK 4444 Bank
 L[Checking Account]
 ^
 D4/13/21
-T-237.73
+T-1,237.73
 Cc
 PSplit Transaction Out of Order
 MPURCHASE Supermarket
 EGroceries
 SFood:Groceries
-$-115.00
+$-1,115.00
 EKids Birthday BBQ
 SChild-Dependents:Parties
 $-122.73
