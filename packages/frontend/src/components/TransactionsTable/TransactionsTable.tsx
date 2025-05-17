@@ -185,7 +185,6 @@ export default function TransactionsTable({
       enableHiding={true}
       enableExpanding={true}
       stickyHeader={true}
-      globalFilterFn="includesString"
       maxLeafRowFilterDepth={0}
       displayFooter={showFooter}
       size="small"
