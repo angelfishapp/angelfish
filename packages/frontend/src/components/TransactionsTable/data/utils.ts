@@ -74,10 +74,11 @@ export function buildTransactionRow(
     account,
     owners: account?.acc_owners,
     currency: transaction.currency_code,
+    // Note needs to be string in first row for global filter to be enabled
+    note: '',
     ...(!isSplit && {
       tags: lineItems.at(0)?.tags,
-      note: lineItems.at(0)?.note,
-
+      note: lineItems.at(0)?.note ?? '',
       category: normalizedAccounts.find((account) => account.id == lineItems.at(0)?.account_id)!,
     }),
     balance,

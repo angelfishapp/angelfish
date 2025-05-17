@@ -190,7 +190,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                         )}
                       </TableCell>
                     )
-                  case 'notes':
+                  case 'note':
                     return (
                       <TableCell key={`${index}-${cell.id}`} style={{}}>
                         {cell.column.columnDef.meta?.transactionsTable?.editCell(

@@ -5,7 +5,7 @@ import { AppCommandIds, CommandsClient, Logger } from '@angelfish/core'
 
 import { initStore } from '../common/actions'
 import type { DeleteUserPayload, SaveUserPayload, UpdateAuthenticatedUserPayload } from './actions'
-import { deleteUser, saveUser, updateAuthenticatedUser } from './actions'
+import { deleteUser, reloadUsers, saveUser, updateAuthenticatedUser } from './actions'
 import { removeUser, setUser, setUsers } from './reducers'
 
 const logger = Logger.scope('UserSagas')
@@ -68,6 +68,7 @@ export function* deleteUserFromDB({ payload: { userId } }: PayloadAction<DeleteU
 export default function* userSaga() {
   yield all([
     takeEvery(initStore, fetchUsers),
+    takeEvery(reloadUsers, fetchUsers),
     takeEvery(saveUser, saveUserToDB),
     takeEvery(updateAuthenticatedUser, updateAuthenticatedUserCall),
     takeEvery(deleteUser, deleteUserFromDB),

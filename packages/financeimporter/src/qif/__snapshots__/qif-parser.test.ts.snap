@@ -981,11 +981,11 @@ exports[`deserializeQIF() > test files > should parse banktivity_export.qif corr
     },
     {
       "account_id": "2",
-      "amount": -237.73,
+      "amount": -1237.73,
       "date": 2021-04-13T00:00:00.000Z,
       "lineItems": [
         {
-          "amount": -115,
+          "amount": -1115,
           "category": "Food:Groceries",
           "memo": "Groceries",
         },

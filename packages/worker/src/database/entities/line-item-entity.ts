@@ -41,7 +41,7 @@ export class LineItemEntity implements ILineItem {
   @Column({ type: 'real', precision: 10, scale: 2 })
   local_amount!: number
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   note!: string
 
   /**

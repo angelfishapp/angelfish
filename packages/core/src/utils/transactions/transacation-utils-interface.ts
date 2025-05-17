@@ -88,10 +88,10 @@ interface UpdateUnsplitTransactionProperties extends Partial<CommonTransactionPr
    */
   category_id?: number | null
   /**
-   * Optional note/memo for the Transaction
+   * Optional note/memo for the Transaction. Set as null to remove the note.
    * Will only update non-Split Transactions and throw error if provided for Split Transactions if set.
    */
-  note?: string
+  note?: string | null
   /**
    * Add additional tags to the Transaction if provided
    * Will only update non-Split Transactions and throw error if provided for Split Transactions if set.

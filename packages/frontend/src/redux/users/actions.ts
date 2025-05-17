@@ -25,3 +25,6 @@ export type DeleteUserPayload = {
   userId: number
 }
 export const deleteUser = createAction<DeleteUserPayload>('users/deleteUser')
+
+// Reload Users Action
+export const reloadUsers = createAction<Record<string, unknown>>('users/reload')

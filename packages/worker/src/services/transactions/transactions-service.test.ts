@@ -180,7 +180,7 @@ describe('TransactionService', () => {
       const transaction = new TransactionEntity()
       transaction.title = `Transaction ${i}`
       transaction.amount = 1 + i
-      transaction.account_id = 122
+      transaction.account_id = newAccount?.id as number
       transaction.currency_code = 'USD'
       transactions.push(transaction)
     }

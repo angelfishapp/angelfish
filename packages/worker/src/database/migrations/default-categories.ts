@@ -100,6 +100,11 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
         type: 'Optional',
         icon: 'bed',
       },
+      'HOA Fees': {
+        description: 'Homeowners association fees for your home',
+        type: 'Critical',
+        icon: 'house_with_garden',
+      },
       Landscaping: {
         description:
           'Purchasing of materials, plants, or professional landscapers for your home garden',
@@ -146,6 +151,11 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
           'Critical maintenance and repairs required to keep your home habitable including pest control',
         type: 'Critical',
         icon: 'hammer',
+      },
+      Security: {
+        description: 'Any security systems or services you use to protect your home',
+        type: 'Optional',
+        icon: 'lock',
       },
       'TV License': {
         description: 'TV license fees for countries that require it like the UK',
@@ -233,6 +243,11 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
         type: 'Critical',
         icon: 'car',
       },
+      Purchase: {
+        description: 'Cash deposit or payment to purchase a new car',
+        type: 'Optional',
+        icon: 'car',
+      },
       'Registration Fees': {
         description: 'Annual registration fees or taxes required to run your car(s)',
         type: 'Critical',
@@ -300,6 +315,11 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
         description: 'Any allowance, support, or pocket money payments you make to your dependents',
         type: 'Optional',
         icon: 'money_with_wings',
+      },
+      'Other Expenses': {
+        description: 'Any other miscellaneous expense for your dependents',
+        type: 'Optional',
+        icon: 'child',
       },
     },
   },
@@ -402,6 +422,12 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
         type: 'Optional',
         icon: 'ski',
       },
+      'Entertaining & Hosting': {
+        description:
+          'Hosting guests and entertaining them at your home such as dinners, BBQs and other entertainment',
+        type: 'Optional',
+        icon: 'house_with_garden',
+      },
     },
   },
   Healthcare: {
@@ -445,40 +471,45 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
         type: 'Critical',
         icon: 'eyeglasses',
       },
+      Tests: {
+        description: 'Any medical tests you have to take such as blood tests or scans',
+        type: 'Important',
+        icon: 'test_tube',
+      },
     },
   },
   Vacation: {
     icon: 'beach_with_umbrella',
-    description: 'Any expenses related to taking a vacation',
+    description: 'Any expenses related to taking a vacation/holiday and travelling',
     type: 'Expense',
     color: '#7ed321',
     categories: {
       Accommodation: {
         description:
-          'Any costs related to booking accommodation such as hotels, motels, Airbnbs for your Vacation',
+          'Any costs related to booking accommodation such as hotels, motels, Airbnbs for your Vacation/Holiday',
         type: 'Optional',
         icon: 'beach_with_umbrella',
       },
       'Dining Out': {
         description:
-          'Dining out while on your vacation at restaurants, coffee shops, and food stands',
+          'Dining out while on your vacation/holiday at restaurants, coffee shops, and food stands',
         type: 'Optional',
         icon: 'beach_with_umbrella',
       },
       'Activities & Entertainment': {
         description:
-          'Any activities, excursions, tours, shows, or other entertainment you book during your vacation',
+          'Any activities, excursions, tours, shows, or other entertainment you book during your vacation/holiday',
         type: 'Optional',
         icon: 'beach_with_umbrella',
       },
       Spending: {
-        description: 'Any general spending or cash withdrawals during your vacation',
+        description: 'Any general spending or cash withdrawals during your vacation/holiday',
         type: 'Optional',
         icon: 'beach_with_umbrella',
       },
       Transportation: {
         description:
-          'Any flights, trains, boats, taxis, ridesharing, car rental, or public transport you use during your vacation',
+          'Any flights, trains, boats, taxis, ridesharing, car rental, or public transport you use during your vacation/holiday',
         type: 'Optional',
         icon: 'airplane',
       },
@@ -588,6 +619,12 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
         type: 'Optional',
         icon: 'male-teacher',
       },
+      Networking: {
+        description:
+          'Any networking events, conferences, coffees/dinners or meetups you attend for professional development',
+        type: 'Optional',
+        icon: 'speaking_head_in_silhouette',
+      },
       Tuition: {
         description:
           'Any tuition you pay to a college/university to pursue further education such as Masters, MBA, or PhD',
@@ -635,6 +672,11 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
         type: 'Optional',
         icon: 'globe_with_meridians',
       },
+      'Health Supplements': {
+        description: 'Any vitamins, supplements, or other health products you purchase',
+        type: 'Optional',
+        icon: 'pill',
+      },
     },
   },
   'Investment Expenses': {
@@ -676,18 +718,18 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
       'Income Tax': {
         description:
           'Income tax for the current, previous, and next (estimated) tax years, both Federal and State',
-        type: 'Critical',
+        type: 'Taxes',
         icon: 'classical_building',
       },
       'Social Security': {
         description:
           'Social Security/National Insurance payments for the current, previous, and next (estimated) tax years, both Federal and State',
-        type: 'Critical',
+        type: 'Taxes',
         icon: 'classical_building',
       },
       Penalties: {
         description: 'Any penalties and fines you receive for late or incorrect tax payments',
-        type: 'Critical',
+        type: 'Taxes',
         icon: 'classical_building',
       },
     },
@@ -712,6 +754,11 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
         description: 'Getting your hair cut or styled',
         type: 'Optional',
         icon: 'haircut',
+      },
+      Cosmetics: {
+        description: 'Any cosmetics or beauty products you purchase to look good!',
+        type: 'Optional',
+        icon: 'lipstick',
       },
       Beautician: {
         description: 'Visit a beautician for a manicure, pedicure, and other beauty treatments',

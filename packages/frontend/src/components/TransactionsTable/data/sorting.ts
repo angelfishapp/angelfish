@@ -4,6 +4,27 @@ import type { IAccount, ITag } from '@angelfish/core'
 import type { TransactionRow } from './types'
 
 /**
+ * Sorts transactions by Date in same way as when calculating running balance
+ * to ensure the transactions are displayed in same order they were processed
+ *
+ * @param rowA        1st Row to compare
+ * @param rowB        2nd Row to compare
+ * @param columnId    Column ID being sorted
+ * @returns           -1 a < b; 0 a == b; 1 a > b
+ */
+export const DateSort: SortingFn<TransactionRow> = (
+  rowA: Row<TransactionRow>,
+  rowB: Row<TransactionRow>,
+  columnId: string,
+): number => {
+  const dateA = rowA.getValue<Date>(columnId)
+  const dateB = rowB.getValue<Date>(columnId)
+  if (dateA === undefined) return -1
+  if (dateB === undefined) return 1
+  return dateA.getTime() - dateB.getTime()
+}
+
+/**
  * Provides sorting for account objects to sort names alphabetically
  *
  * @param rowA          1st Row to compare
