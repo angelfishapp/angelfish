@@ -66,7 +66,7 @@ describe('AccountService', () => {
   test('test list-accounts', async () => {
     // Test Getting all accounts in DB
     const response = await AccountService.listAccounts({})
-    expect(response.length).toEqual(121)
+    expect(response.length).toEqual(130)
   })
 
   test('test list-account-currencies', async () => {

@@ -33,7 +33,7 @@ afterAll(async () => {
 test('test db initialised', async () => {
   // Check all category accounts were loaded correctly
   const accountsCount = await accountsRepository.count()
-  expect(accountsCount).toEqual(121)
+  expect(accountsCount).toEqual(130)
 
   // Check all category groups were loaded correctly
   const categoriesGroupCount = await categoriesGroupRepository.count()
