@@ -175,6 +175,20 @@ class AuthServiceClass {
       authenticatedUser: updatedUser,
     })
 
+    // Update DB user if exists
+    const dbUser = await CommandsClient.executeAppCommand(AppCommandIds.GET_USER, {
+      cloud_id: updatedUser.id,
+    })
+    if (dbUser) {
+      logger.debug('Updating Authenticated User in database', updatedUser)
+      dbUser.first_name = updatedUser.first_name
+      dbUser.last_name = updatedUser.last_name
+      dbUser.email = updatedUser.email
+      dbUser.phone = updatedUser.phone
+      dbUser.avatar = updatedUser.avatar
+      await CommandsClient.executeAppCommand(AppCommandIds.SAVE_USER, dbUser)
+    }
+
     // Emit event to notify app that user profile has been updated
     CommandsClient.emitAppEvent(AppEventIds.ON_UPDATE_AUTHENTICATED_USER, updatedUser)
 
