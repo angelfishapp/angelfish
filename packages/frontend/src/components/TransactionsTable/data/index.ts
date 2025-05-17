@@ -1,3 +1,5 @@
 export * from './columns'
+export * from './filters'
+export * from './sorting'
 export * from './types'
 export * from './utils'
