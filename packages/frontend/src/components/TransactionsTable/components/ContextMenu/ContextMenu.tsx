@@ -66,9 +66,21 @@ export default function TransactionTableContextMenu({
   }, [table, table.options.meta?.transactionsTable?.recentCategories])
 
   // Generate menu items based on visible columns
-  const showNote = table.getColumn('note')?.getIsVisible() || false
-  const showTags = table.getColumn('tags')?.getIsVisible() || false
-  const showIsReviewed = table.getColumn('is_reviewed')?.getIsVisible() || false
+  const showNote =
+    table
+      .getAllColumns()
+      .find((col) => col.id === 'note')
+      ?.getIsVisible() || false
+  const showTags =
+    table
+      .getAllColumns()
+      .find((col) => col.id === 'tags')
+      ?.getIsVisible() || false
+  const showIsReviewed =
+    table
+      .getAllColumns()
+      .find((col) => col.id === 'is_reviewed')
+      ?.getIsVisible() || false
   const menuItems: ContextMenuItem[] = React.useMemo(() => {
     const items: ContextMenuItem[] = [
       {
