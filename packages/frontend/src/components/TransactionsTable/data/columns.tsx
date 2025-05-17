@@ -187,7 +187,7 @@ export function buildColumns(
         break
       case 'notes':
         columns.push({
-          id: 'notes',
+          id: 'note',
           header: 'Notes',
           accessorKey: 'note',
           size: 235,
