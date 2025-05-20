@@ -34,6 +34,10 @@ beforeAll(async () => {
     TestLogger.info(AppCommandIds.GET_AUTHENTICATION_SETTINGS, authenticatedState)
     return authenticatedState
   })
+  mockRegisterTypedAppCommand(AppCommandIds.GET_USER, async (query) => {
+    TestLogger.info(AppCommandIds.GET_USER, query)
+    return null
+  })
   // Depends on CloudService Commands to make requests to Cloud API
   registerCommands([MockCloudService])
   // Register AuthService Event Listeners to handle authentication events

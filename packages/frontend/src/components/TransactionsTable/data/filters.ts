@@ -49,6 +49,9 @@ export const CategoryFilter: FilterFn<TransactionRow> = (
 
   const rowValue = row.getValue<IAccount | null>(columnId)
 
+  // Handle split transactions
+  if (row.original.isSplit) return false
+
   // Handle Uncategorized Transactions
   if (!rowValue) return filterValue.includes(0)
 
@@ -120,30 +123,6 @@ export const TagsFilter: FilterFn<TransactionRow> = (
   if (filterValue.length === 0) {
     return true
   }
-
-  const rowValue = row.getValue<ITag[]>(columnId)
+  const rowValue = row.getValue<ITag[]>(columnId) ?? []
   return rowValue.some((tag) => filterValue.includes(tag.id))
-}
-
-/**
- * Custom React-Table Global Filter Function to all rows with string
- * search value
- *
- * @param row               Table Row to evaluation
- * @param columnId          Table Column Id to filter on
- * @param filterValue       The current filter value as string[]
- * @returns                 True to include, False to filter
- */
-export const GlobalFilterFn: FilterFn<TransactionRow> = (
-  row: Row<TransactionRow>,
-  columnId: string,
-  filterValue: string,
-): boolean => {
-  const rowValue = row.getValue<string | number>(columnId)
-  if (typeof rowValue === 'string') {
-    return rowValue.toLowerCase().includes(filterValue.toLowerCase())
-  } else if (typeof rowValue === 'number') {
-    return rowValue.toString().includes(filterValue)
-  }
-  return false
 }

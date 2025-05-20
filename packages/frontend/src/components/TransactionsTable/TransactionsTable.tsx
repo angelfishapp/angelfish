@@ -5,7 +5,7 @@ import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
 import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
-import { createNewTransaction, updateTransactions } from '@angelfish/core'
+import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
 import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
 import TableRow from './components/TableRow/TableRow'
@@ -73,6 +73,12 @@ declare module '@tanstack/react-table' {
        * @param properties  Properties to update on rows
        */
       updateRows: (rows: TData[], properties: UpdateTransactionProperties) => void
+      /**
+       * Duplicate an array of rows in the table
+       *
+       * @param rows  The Table rows to duplicate
+       */
+      duplicateRows: (rows: TData[]) => void
       /**
        * Delete an array of rows
        *
@@ -179,6 +185,7 @@ export default function TransactionsTable({
       enableHiding={true}
       enableExpanding={true}
       stickyHeader={true}
+      maxLeafRowFilterDepth={0}
       displayFooter={showFooter}
       size="small"
       EmptyView={<>No Transaction Data</>}
@@ -290,6 +297,10 @@ export default function TransactionsTable({
               // Close new row form
               table?.options.meta?.transactionsTable?.removeNewRow()
             }
+          },
+          duplicateRows: (rows) => {
+            const duplicateTransactions = rows.map((row) => duplicateTransaction(row.transaction))
+            onSaveTransactions(duplicateTransactions)
           },
           deleteRows: (rows) => {
             for (const row of rows) {

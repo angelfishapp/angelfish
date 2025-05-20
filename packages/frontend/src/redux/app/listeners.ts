@@ -8,6 +8,7 @@ import { call, put, take } from 'redux-saga/effects'
 
 import { AppEventIds, CommandsClient, Logger } from '@angelfish/core'
 import { initStore } from '../common/actions'
+import { reloadUsers } from '../users/actions'
 import {
   setAuthenticatedUser,
   setBook,
@@ -181,6 +182,7 @@ export function* initialiseIPCChannel(): Generator<any, void, any> {
       case AppEventIds.ON_UPDATE_AUTHENTICATED_USER:
         logger.debug('ON_UPDATE_AUTHENTICATED_USER', message.payload)
         yield put(setAuthenticatedUser({ authenticatedUser: message.payload }))
+        yield put(reloadUsers({}))
         break
       case AppEventIds.ON_USER_SETTINGS_UPDATED:
         logger.debug('ON_UPDATE_USER_SETTINGS', message.payload)
