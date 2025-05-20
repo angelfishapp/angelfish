@@ -5,7 +5,7 @@ import ListItem from '@mui/material/ListItem'
 import ListSubheader from '@mui/material/ListSubheader'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import React from 'react'
+import React, { useState } from 'react'
 
 import BankIcon from '@/components/BankIcon/BankIcon'
 import { Emoji } from '@/components/Emoji'
@@ -13,6 +13,8 @@ import AutocompleteField from '@/components/forms/AutocompleteField/Autocomplete
 import type { IAccount } from '@angelfish/core'
 import type { CategoryFieldProps } from './CategoryField.interface'
 import MultiCategoryField from './components/MultiCategoryField'
+import MultiSelectGroupRender from './components/MultiSelectGroupRender'
+import { MutliSelectOption } from './components/MutliSelectOption'
 
 /**
  * Autocomplete Field for selecting a Category or Account
@@ -20,7 +22,7 @@ import MultiCategoryField from './components/MultiCategoryField'
 
 export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function CategoryField(
   {
-    variant,
+    variant = "dropdown",
     value,
     accountsWithRelations,
     disableTooltip = false,
@@ -36,6 +38,37 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
   }: CategoryFieldProps,
   ref,
 ) {
+
+  const [selected, setSelected] = useState<IAccount[]>([])
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
+
+  const handleGroupToggle = (group: string) => {
+    setCollapsedGroups((prev) => ({ ...prev, [group]: !prev[group] }))
+  }
+
+  const handleGroupSelect = (groupName: string, checked: boolean) => {
+    const groupOptions: any = sortedAccounts.filter(
+      (o: IAccount) => o?.categoryGroup?.name === groupName,
+    )
+
+    if (checked) {
+      // Add all from group if not already selected
+      const toAdd = groupOptions.filter(
+        (item: IAccount) => !selected.some((s) => s.name === item.name),
+      )
+      setSelected([...selected, ...toAdd])
+    } else {
+      // Remove all from group
+      setSelected(selected.filter((item) => item.categoryGroup?.name !== groupName))
+    }
+  }
+
+  const isGroupChecked = (groupName: string) => {
+    const groupOptions = sortedAccounts?.filter(
+      (o: IAccount) => o?.categoryGroup?.name === groupName,
+    )
+    return groupOptions.every((item) => selected.some((s) => s.name === item.name))
+  }
   /**
    * Optionally filter then Sort Options By Category Group
    */
@@ -72,26 +105,27 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
     return searchOptions
   }, [sortedAccounts])
 
-  if (variant === 'multi-box')
-    return (
-      <MultiCategoryField
-        fullWidth
-        renderAsValue={false}
-        margin="none"
-        accountsWithRelations={accountsWithRelations}
-        onChange={onChange}
-      />
-    )
+  // if (variant === 'multi-box')
+  //   return (
+  //     <MultiCategoryField
+  //       fullWidth
+  //       renderAsValue={false}
+  //       margin="none"
+  //       accountsWithRelations={accountsWithRelations}
+  //       onChange={onChange}
+  //     />
+  //   )
   // Render
   return (
     <AutocompleteField
       id={id}
       formRef={ref}
-      multiple={false}
+      open={variant === 'multi-box'}
+      multiple={variant === 'multi-box'}
       freeSolo={onCreate ? true : false}
       disableClearable={false}
       options={sortedAccounts}
-      value={value}
+      value={variant !== "multi-box" ? value : selected}
       placeholder={placeholder}
       autoHighlight
       selectOnFocus
@@ -131,22 +165,31 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
       groupBy={
         !disableGroupBy
           ? (option) => {
-              if (option.class == 'CATEGORY') {
-                if (option.id != 0) {
-                  return option.categoryGroup?.name ?? ''
-                }
-                return ''
+            if (option.class == 'CATEGORY') {
+              if (option.id != 0) {
+                return option.categoryGroup?.name ?? ''
               }
-              return 'Account Transfer'
+              return ''
             }
+            return 'Account Transfer'
+          }
           : undefined
       }
       virtualize={false}
       renderGroup={(params: AutocompleteRenderGroupParams) => {
+        if (variant === 'multi-box') {
+          const isCollapsed = collapsedGroups[params.group] ?? false
+          return (<MultiSelectGroupRender
+            params={params}
+            isCollapsed={isCollapsed}
+            handleGroupToggle={handleGroupToggle}
+            isGroupChecked={isGroupChecked}
+            handleGroupSelect={handleGroupSelect}
+          />)
+        }
         if (!params.group) {
           return [params.children]
         }
-
         return [
           <ListSubheader key={params.key} component="div">
             {params.group}
@@ -214,7 +257,10 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
             </ListItem>
           )
         }
-
+        if (variant === 'multi-box') {
+          // Render MultiSelect Option
+          return (<MutliSelectOption option={option} props={props} selected={selected} setSelected={setSelected} disableTooltip={disableTooltip} />)
+        }
         // Render Category
         return (
           <ListItem key={option.id} {...rest}>
@@ -252,7 +298,8 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
             </Box>
           </ListItem>
         )
-      }}
+      }
+      }
       filterOptions={(options, params) => {
         if (params.inputValue != '') {
           const searchTerm = params.inputValue.toLowerCase()

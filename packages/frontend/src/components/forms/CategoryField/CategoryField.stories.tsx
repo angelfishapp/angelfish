@@ -41,7 +41,7 @@ export const WithValue: Story = {
     label: 'Category',
     value: getAccountsWithRelations()[2],
     onCreate: (name?) => action('onCreate')(name),
-    variant: 'dropdown',
+      variant: 'dropdown',
   },
 }
 
@@ -50,7 +50,6 @@ export const ShowAsTextField: Story = {
     label: 'Category',
     renderAsValue: false,
     onCreate: (name?) => action('onCreate')(name),
-    variant: 'dropdown',
   },
 }
 
@@ -61,7 +60,6 @@ export const Filtered: Story = {
     disableGroupBy: true,
     disableTooltip: true,
     placeholder: 'Search Bank Accounts...',
-    variant: 'dropdown',
   },
 }
 export const multiBox: Story = {
