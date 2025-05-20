@@ -1,10 +1,5 @@
-import InfoIcon from '@mui/icons-material/Info'
 import { type AutocompleteRenderGroupParams } from '@mui/material'
 import Box from '@mui/material/Box'
-import ListItem from '@mui/material/ListItem'
-import ListSubheader from '@mui/material/ListSubheader'
-import Tooltip from '@mui/material/Tooltip'
-import Typography from '@mui/material/Typography'
 import React, { useState } from 'react'
 
 import BankIcon from '@/components/BankIcon/BankIcon'
@@ -12,9 +7,8 @@ import { Emoji } from '@/components/Emoji'
 import AutocompleteField from '@/components/forms/AutocompleteField/AutocompleteField'
 import type { IAccount } from '@angelfish/core'
 import type { CategoryFieldProps } from './CategoryField.interface'
-import MultiCategoryField from './components/MultiCategoryField'
-import MultiSelectGroupRender from './components/MultiSelectGroupRender'
-import { MutliSelectOption } from './components/MutliSelectOption'
+import { RenderGroup } from './components/RenderGroup'
+import { RenderOption } from './components/RenderOption'
 
 /**
  * Autocomplete Field for selecting a Category or Account
@@ -22,7 +16,7 @@ import { MutliSelectOption } from './components/MutliSelectOption'
 
 export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function CategoryField(
   {
-    variant = "dropdown",
+    variant = 'dropdown',
     value,
     accountsWithRelations,
     disableTooltip = false,
@@ -38,16 +32,20 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
   }: CategoryFieldProps,
   ref,
 ) {
-
+  // states to handle multi-select variant
   const [selected, setSelected] = useState<IAccount[]>([])
+  const [isOpen, setIsOpen] = useState(variant === 'multi-box' ? true : false)
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
 
+  // handling variant type
+  const isMultiBox = variant === 'multi-box'
+  // handling collapsing and expanding the group
   const handleGroupToggle = (group: string) => {
     setCollapsedGroups((prev) => ({ ...prev, [group]: !prev[group] }))
   }
-
+  // handling the case when the user selects/de-select a group checkbox
   const handleGroupSelect = (groupName: string, checked: boolean) => {
-    const groupOptions: any = sortedAccounts.filter(
+    const groupOptions: IAccount[] = sortedAccounts.filter(
       (o: IAccount) => o?.categoryGroup?.name === groupName,
     )
 
@@ -62,7 +60,7 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
       setSelected(selected.filter((item) => item.categoryGroup?.name !== groupName))
     }
   }
-
+  // handling the case when the user selects an option for group checkbox
   const isGroupChecked = (groupName: string) => {
     const groupOptions = sortedAccounts?.filter(
       (o: IAccount) => o?.categoryGroup?.name === groupName,
@@ -105,27 +103,19 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
     return searchOptions
   }, [sortedAccounts])
 
-  // if (variant === 'multi-box')
-  //   return (
-  //     <MultiCategoryField
-  //       fullWidth
-  //       renderAsValue={false}
-  //       margin="none"
-  //       accountsWithRelations={accountsWithRelations}
-  //       onChange={onChange}
-  //     />
-  //   )
   // Render
   return (
     <AutocompleteField
       id={id}
       formRef={ref}
-      open={variant === 'multi-box'}
-      multiple={variant === 'multi-box'}
+      open={isOpen}
+      onOpen={() => setIsOpen(true)}
+      onClose={() => setIsOpen(false)}
+      multiple={isMultiBox}
       freeSolo={onCreate ? true : false}
       disableClearable={false}
       options={sortedAccounts}
-      value={variant !== "multi-box" ? value : selected}
+      value={!isMultiBox ? value : selected}
       placeholder={placeholder}
       autoHighlight
       selectOnFocus
@@ -176,130 +166,26 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
           : undefined
       }
       virtualize={false}
-      renderGroup={(params: AutocompleteRenderGroupParams) => {
-        if (variant === 'multi-box') {
-          const isCollapsed = collapsedGroups[params.group] ?? false
-          return (<MultiSelectGroupRender
-            params={params}
-            isCollapsed={isCollapsed}
-            handleGroupToggle={handleGroupToggle}
-            isGroupChecked={isGroupChecked}
-            handleGroupSelect={handleGroupSelect}
-          />)
-        }
-        if (!params.group) {
-          return [params.children]
-        }
-        return [
-          <ListSubheader key={params.key} component="div">
-            {params.group}
-          </ListSubheader>,
-          params.children,
-        ]
-      }}
-      renderOption={(props, option) => {
-        // Remove the key from props to avoid React warning about
-        // spread JSX and duplicate keys
-        const { key: _key, ...rest } = props
-
-        if (option.id == 0) {
-          // Render Create Category Option if onCreate provided
-          return (
-            <ListItem key={option.id} {...rest}>
-              <Box display="flex" alignItems="center" width="100%">
-                <Box marginRight={1}>
-                  <Emoji size={24} emoji={option.cat_icon ?? ''} />
-                </Box>
-                <Box minWidth={200} flexGrow={1}>
-                  <Typography style={{ lineHeight: 1.1 }}>{option.name}</Typography>
-                </Box>
-                <Box></Box>
-              </Box>
-            </ListItem>
-          )
-        }
-        if (option.class == 'ACCOUNT') {
-          // Render Bank Account
-          return (
-            <ListItem key={option.id} {...rest}>
-              <Box display="flex" alignItems="center" width="100%">
-                <Box marginRight={1}>
-                  <BankIcon logo={option.institution?.logo} size={24} />
-                </Box>
-                <Box minWidth={200} flexGrow={1}>
-                  <Typography style={{ lineHeight: 1.1 }} noWrap>
-                    {option.name}
-                  </Typography>
-                  <Typography style={{ lineHeight: 1.1 }} color="textSecondary" noWrap>
-                    {option.institution?.name}
-                  </Typography>
-                </Box>
-                {!disableTooltip && (
-                  <Box>
-                    <Tooltip
-                      title="Account Transfer"
-                      placement="right"
-                      slotProps={{
-                        tooltip: {
-                          sx: {
-                            maxWidth: 200,
-                            backgroundColor: (theme) => theme.palette.grey[400],
-                            fontSize: '1em',
-                          },
-                        },
-                      }}
-                    >
-                      <InfoIcon fontSize="small" color="primary" />
-                    </Tooltip>
-                  </Box>
-                )}
-              </Box>
-            </ListItem>
-          )
-        }
-        if (variant === 'multi-box') {
-          // Render MultiSelect Option
-          return (<MutliSelectOption option={option} props={props} selected={selected} setSelected={setSelected} disableTooltip={disableTooltip} />)
-        }
-        // Render Category
-        return (
-          <ListItem key={option.id} {...rest}>
-            <Box display="flex" alignItems="center" width="100%">
-              <Box marginRight={1} width={30}>
-                <Emoji size={24} emoji={option.cat_icon ?? ''} />
-              </Box>
-              <Box minWidth={200} flexGrow={1}>
-                <Typography style={{ lineHeight: 1.1 }} noWrap>
-                  {option.name}
-                </Typography>
-                <Typography style={{ lineHeight: 1.1 }} color="textSecondary" noWrap>
-                  {`${option.categoryGroup?.type} - ${option.categoryGroup?.name}`}
-                </Typography>
-              </Box>
-              {!disableTooltip && (
-                <Box>
-                  <Tooltip
-                    title={option.cat_description}
-                    placement="right"
-                    slotProps={{
-                      tooltip: {
-                        sx: {
-                          maxWidth: 200,
-                          backgroundColor: (theme) => theme.palette.grey[400],
-                          fontSize: '1em',
-                        },
-                      },
-                    }}
-                  >
-                    <InfoIcon fontSize="small" color="primary" />
-                  </Tooltip>
-                </Box>
-              )}
-            </Box>
-          </ListItem>
-        )
-      }
-      }
+      renderGroup={(params: AutocompleteRenderGroupParams) => (
+        <RenderGroup
+          params={params}
+          collapsedGroups={collapsedGroups}
+          handleGroupToggle={handleGroupToggle}
+          isGroupChecked={isGroupChecked}
+          handleGroupSelect={handleGroupSelect}
+          variant={variant}
+        />
+      )}
+      renderOption={(props, option) => (
+        <RenderOption
+          props={props}
+          option={option}
+          selected={selected}
+          setSelected={setSelected}
+          disableTooltip={disableTooltip}
+          variant={variant}
+        />
+      )}
       filterOptions={(options, params) => {
         if (params.inputValue != '') {
           const searchTerm = params.inputValue.toLowerCase()
