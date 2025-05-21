@@ -1,6 +1,6 @@
-import { type AutocompleteRenderGroupParams } from '@mui/material'
+import { Button, type AutocompleteRenderGroupParams } from '@mui/material'
 import Box from '@mui/material/Box'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import BankIcon from '@/components/BankIcon/BankIcon'
 import { Emoji } from '@/components/Emoji'
@@ -9,6 +9,7 @@ import type { IAccount } from '@angelfish/core'
 import type { CategoryFieldProps } from './CategoryField.interface'
 import { RenderGroup } from './components/RenderGroup'
 import { RenderOption } from './components/RenderOption'
+import { CustomListbox, CustomPopper } from './components/AutoCompleteFooter'
 
 /**
  * Autocomplete Field for selecting a Category or Account
@@ -76,9 +77,21 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
     }
     return searchOptions
   }, [sortedAccounts])
+  const allSelected = useMemo(
+    () => sortedAccounts.length > 0 && sortedAccounts.every((o) => selected.some((s) => s.name === o.name)),
+    [selected, sortedAccounts]
+  );
 
+  const handleToggleAll = () => {
+    if (allSelected) {
+      setSelected([]);
+    } else {
+      setSelected([...sortedAccounts]);
+    }
+  };
   // Render
   return (
+
     <AutocompleteField
       id={id}
       formRef={ref}
@@ -108,6 +121,16 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
           // Unclassified
           onChange(null)
         }
+      }}
+      slots={{ popper: CustomPopper, listbox: CustomListbox }}
+      slotProps={{
+        listbox: {
+          button: (
+            <Button onClick={handleToggleAll} size="small" >
+              {!allSelected ? 'Toggle All' : 'Clear All'}
+            </Button>
+          ),
+        } as React.ComponentPropsWithRef<'ul'>,
       }}
       getOptionLabel={(option) => {
         if (typeof option === 'string') {
