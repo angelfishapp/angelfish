@@ -37,36 +37,10 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
   const [isOpen, setIsOpen] = useState(variant === 'multi-box' ? true : false)
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
 
+
   // handling variant type
   const isMultiBox = variant === 'multi-box'
-  // handling collapsing and expanding the group
-  const handleGroupToggle = (group: string) => {
-    setCollapsedGroups((prev) => ({ ...prev, [group]: !prev[group] }))
-  }
-  // handling the case when the user selects/de-select a group checkbox
-  const handleGroupSelect = (groupName: string, checked: boolean) => {
-    const groupOptions: IAccount[] = sortedAccounts.filter(
-      (o: IAccount) => o?.categoryGroup?.name === groupName,
-    )
 
-    if (checked) {
-      // Add all from group if not already selected
-      const toAdd = groupOptions.filter(
-        (item: IAccount) => !selected.some((s) => s.name === item.name),
-      )
-      setSelected([...selected, ...toAdd])
-    } else {
-      // Remove all from group
-      setSelected(selected.filter((item) => item.categoryGroup?.name !== groupName))
-    }
-  }
-  // handling the case when the user selects an option for group checkbox
-  const isGroupChecked = (groupName: string) => {
-    const groupOptions = sortedAccounts?.filter(
-      (o: IAccount) => o?.categoryGroup?.name === groupName,
-    )
-    return groupOptions.every((item) => selected.some((s) => s.name === item.name))
-  }
   /**
    * Optionally filter then Sort Options By Category Group
    */
@@ -170,9 +144,9 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
         <RenderGroup
           params={params}
           collapsedGroups={collapsedGroups}
-          handleGroupToggle={handleGroupToggle}
-          isGroupChecked={isGroupChecked}
-          handleGroupSelect={handleGroupSelect}
+          selected={selected}
+          setCollapsedGroups={setCollapsedGroups} setSelected={setSelected}
+          sortedAccounts={sortedAccounts}
           variant={variant}
         />
       )}
