@@ -3,54 +3,51 @@ import type { AutocompleteRenderGroupParams } from '@mui/material/Autocomplete'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-import React from 'react'
-import { IAccount } from '@angelfish/core'
-
+import type React from 'react'
+import type { IAccount } from '@angelfish/core'
 /**
  * Props used to render a grouped section in a multi-select Autocomplete component.
+ * Typically used when customizing the `renderGroup` method of MUI's Autocomplete.
  */
 type RenderGroupProps = {
     /**
-     * Parameters passed by the Autocomplete component for rendering a group.
-     * Includes group name, children, and other internal values.
+     * Parameters provided by the Autocomplete component for rendering a group.
+     * Includes the group name (`group`), the rendered options (`children`),
+     * and other internal metadata used for rendering.
      */
     params: AutocompleteRenderGroupParams;
 
     /**
-     * state for the group is currently collapsed or not (i.e., hidden from view).
+     * A record indicating whether each group is currently collapsed (hidden).
+     * Keys are group names, and values are booleans where `true` means the group is collapsed.
      */
     collapsedGroups: Record<string, boolean>;
 
-    // /**
-    //  * Toggles the collapsed/expanded state of the group.
-    //  *
-    //  * @param group - The name of the group to toggle.
-    //  */
-    // handleGroupToggle: (group: string) => void;
-
-    // /**
-    //  * Checks whether all items in the specified group are currently selected.
-    //  *
-    //  * @param groupName - The name of the group to check.
-    //  * @returns True if all items in the group are selected; false otherwise.
-    //  */
-    // isGroupChecked: (groupName: string) => void;
-
-    // /**
-    //  * Handles selecting or deselecting all items in a specific group.
-    //  *
-    //  * @param groupName - The name of the group.
-    //  * @param checked - Whether the group should be selected (true) or deselected (false).
-    //  */
-    // handleGroupSelect: (groupName: string, checked: boolean) => void;
     /**
-     * The current variant of selected account options.
+     * The visual style or mode of the Autocomplete (e.g., 'compact', 'default', etc.).
+     * Can be used to conditionally render UI based on design variants.
      */
     variant: string;
 
+    /**
+     * The currently selected accounts from the Autocomplete list.
+     */
     selected: IAccount[];
+
+    /**
+     * State setter for toggling collapsed state of each group.
+     */
     setCollapsedGroups: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+
+    /**
+     * State setter for updating the selected accounts.
+     */
     setSelected: React.Dispatch<React.SetStateAction<IAccount[]>>;
+
+    /**
+     * A sorted list of all accounts used for rendering the options in the group.
+     * Typically used to maintain a consistent order.
+     */
     sortedAccounts: IAccount[];
 };
 
@@ -106,6 +103,7 @@ export const RenderGroup: React.FC<RenderGroupProps> = ({ variant, params, colla
         )
         return groupOptions.every((item) => selected.some((s) => s.name === item.name))
     }
+    // handling the case when the user selects an option for sub-group checkbox
     const isSubGroupChecked = (groupName: string) => {
         if (groupName === 'Account Transfer') {
             const groupOptions = sortedAccounts?.filter(
@@ -133,6 +131,8 @@ export const RenderGroup: React.FC<RenderGroupProps> = ({ variant, params, colla
         return someSelected && !allSelected
     }
 
+    // Rendering the group
+    // If the variant is 'multi-box', we render a collapsible box with a checkbox
     if (variant === 'multi-box') {
         const isCollapsed = collapsedGroups[params.group] ?? false
         return (

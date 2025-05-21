@@ -4,7 +4,7 @@ import { Checkbox, ListItem, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 
 import type { IAccount } from '@angelfish/core'
-import React from 'react'
+import type React from 'react'
 import { BankIcon } from '@/components/BankIcon'
 
 /**
