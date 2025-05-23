@@ -70,6 +70,8 @@ ipcRenderer.on(CommandRegistryEvents.REGISTER_NEW_CHANNEL, (event, id: string) =
 // Handle log level changes between refreshes
 ipcRenderer.on(LogEvents.ON_LOGGING_SET_LEVEL, (_event, level: LevelOption) => {
   logLevel = level
+  // Pass event to the window process
+  window.postMessage({ event: LogEvents.ON_LOGGING_SET_LEVEL, level }, '*')
   // As we're only logging to console in development, check if we're in development
   if (environmentBridge.environment === 'development') {
     log.scope('Preload').info(`Log level set to ${level}`)
