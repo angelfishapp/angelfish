@@ -51,16 +51,17 @@ export default function AccountTableRow({
             primary={`${row.original.acc_institution?.name} ${
               !row.original.acc_institution?.is_open ? '(Closed)' : ''
             }`}
-            primaryTypographyProps={{
-              noWrap: true,
-              fontWeight: 'bold',
-              width: '98%',
-              sx: !row.original.acc_institution?.is_open ? { opacity: 0.6 } : undefined,
-            }}
-            secondary={row.original.acc_country?.name}
-            secondaryTypographyProps={{
-              noWrap: true,
-              sx: !row.original.acc_institution?.is_open ? { opacity: 0.6 } : undefined,
+            slotProps={{
+              primary: {
+                noWrap: true,
+                fontWeight: 'bold',
+                width: '98%',
+                sx: !row.original.acc_institution?.is_open ? { opacity: 0.6 } : undefined,
+              },
+              secondary: {
+                noWrap: true,
+                sx: !row.original.acc_institution?.is_open ? { opacity: 0.6 } : undefined,
+              },
             }}
           />
           {/* TODO - Institutions can have accounts with different currencies so need to convert to the institutions currency when summing balances */}
@@ -98,7 +99,13 @@ export default function AccountTableRow({
           </ListItemIcon>
           <ListItemText
             primary={row.original.acc_owners}
-            primaryTypographyProps={{ noWrap: true, fontWeight: 'bold', width: '98%' }}
+            slotProps={{
+              primary: {
+                noWrap: true,
+                fontWeight: 'bold',
+                width: '98%',
+              },
+            }}
           />
           <CurrencyLabel
             value={row.getValue('local_current_balance')}
@@ -135,7 +142,13 @@ export default function AccountTableRow({
           </ListItemIcon>
           <ListItemText
             primary={getAccountTypeLabel(row.original.acc_type.type)}
-            primaryTypographyProps={{ noWrap: true, fontWeight: 'bold', width: '98%' }}
+            slotProps={{
+              primary: {
+                noWrap: true,
+                fontWeight: 'bold',
+                width: '98%',
+              },
+            }}
           />
           <CurrencyLabel
             value={row.getValue('local_current_balance')}
@@ -162,7 +175,12 @@ export default function AccountTableRow({
           </ListItemIcon>
           <ListItemText
             primary={row.original.acc_country.name}
-            primaryTypographyProps={{ noWrap: true, fontWeight: 'bold' }}
+            slotProps={{
+              primary: {
+                noWrap: true,
+                fontWeight: 'bold',
+              },
+            }}
           />
           {/* TODO - Countries can have accounts with different currencies so need to convert to the country currency when summing balances */}
           <CurrencyLabel
@@ -186,7 +204,12 @@ export default function AccountTableRow({
           <ListItemIcon sx={{ fontSize: '2rem' }}>{currency?.symbol}</ListItemIcon>
           <ListItemText
             primary={currency?.name}
-            primaryTypographyProps={{ noWrap: true, fontWeight: 'bold' }}
+            slotProps={{
+              primary: {
+                noWrap: true,
+                fontWeight: 'bold',
+              },
+            }}
           />
           <CurrencyLabel
             value={row.getValue('current_balance')}
@@ -246,15 +269,17 @@ export default function AccountTableRow({
           )}
           <ListItemText
             primary={row.original.acc_is_open ? row.original.name : `${row.original.name} (Closed)`}
-            primaryTypographyProps={{
-              noWrap: true,
-              width: '98%',
-              sx: !row.original.acc_is_open ? { opacity: 0.6 } : undefined,
-            }}
             secondary={row.original.acc_type.name}
-            secondaryTypographyProps={{
-              noWrap: true,
-              sx: !row.original.acc_is_open ? { opacity: 0.6 } : undefined,
+            slotProps={{
+              primary: {
+                noWrap: true,
+                width: '98%',
+                sx: !row.original.acc_is_open ? { opacity: 0.6 } : undefined,
+              },
+              secondary: {
+                noWrap: true,
+                sx: !row.original.acc_is_open ? { opacity: 0.6 } : undefined,
+              },
             }}
           />
           <CurrencyLabel
