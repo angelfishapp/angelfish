@@ -9,7 +9,10 @@ import { AccountTableContainer } from '@/containers/AccountTableContainer'
 import type { IAccount } from '@angelfish/core'
 import type { AccountsMenuProps } from './AccountsMenu.interface'
 
-export default function AccountsMenu({ onSelectAccount }: AccountsMenuProps) {
+export default function AccountsMenu({
+  disableAddAccount = false,
+  onSelectAccount,
+}: AccountsMenuProps) {
   // Component State
   const [selectedAccount, setSelectedAccount] = React.useState<IAccount | undefined>()
   const [groupBy, setGroupBy] = React.useState<AccountTableProps['groupBy']>('acc_institution')
@@ -126,6 +129,7 @@ export default function AccountsMenu({ onSelectAccount }: AccountsMenuProps) {
               },
               {
                 label: 'Add Account',
+                disabled: disableAddAccount,
                 onClick: () => {
                   accountTableMethodsRef.current?.addBankAccount()
                 },
