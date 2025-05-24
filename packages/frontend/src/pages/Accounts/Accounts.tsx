@@ -9,37 +9,39 @@ import { CategoryDrawer } from '@/components/drawers'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ImportTransactionsContainer } from '@/containers/ImportTransactionsContainer'
 
-import { useListAccounts } from '@/hooks/accounts/useListAccounts'
-import { useSaveAccount } from '@/hooks/accounts/useSaveAcount'
-import { useListCategoryGroups } from '@/hooks/categoryGroups/useListCategoryGroups'
-import { useListTags } from '@/hooks/tags/useListTags'
-import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction'
-import { useListTransactions } from '@/hooks/transactions/useListTransactions'
-import { useSaveTransactions } from '@/hooks/transactions/useSaveTransactions'
+import {
+  useDeleteTransaction,
+  useListAllAccountsWithRelations,
+  useListCategoryGroups,
+  useListInstitutions,
+  useListTags,
+  useListTransactions,
+  useSaveAccount,
+  useSaveTransactions,
+} from '@/hooks'
 import { AccountsMenu } from './components/AccountsMenu'
 import { AccountsView } from './views/AccountsView'
 
 /**
  * Main Accounts page for viewing and editing Accounts and their associated Transactions
  */
-
 export default function Accounts() {
   // Accounts custom hooks to handle Transactions
-  const { data: accounts, isLoading: isAccountLoading } = useListAccounts({})
+  const { accounts, isLoading: isAccountLoading } = useListAllAccountsWithRelations()
   const accountSaveMutation = useSaveAccount()
 
-  const { data: tags } = useListTags()
-  const { data: categoryGroups } = useListCategoryGroups()
+  const { institutions } = useListInstitutions()
+
+  const { tags } = useListTags()
+  const { categoryGroups } = useListCategoryGroups()
 
   // Bank Account Menu State
   const [selectedAccount, setSelectedAccount] = React.useState<IAccount>()
 
   // Transactions custom hooks to handle Transactions
-  const {
-    data: transactions,
-    isLoading,
-    error,
-  } = useListTransactions({ account_id: selectedAccount?.id })
+  const { transactions, isLoading, error } = useListTransactions({
+    account_id: selectedAccount?.id,
+  })
   const transactionSaveMutation = useSaveTransactions()
   const transactionDeleteMutation = useDeleteTransaction()
 
@@ -105,7 +107,7 @@ export default function Accounts() {
    * Delete a Transaction from the Database
    */
   const onDeleteTransaction = async (id: number) => {
-    transactionDeleteMutation.mutate(id)
+    transactionDeleteMutation.mutate({ id })
   }
 
   /**

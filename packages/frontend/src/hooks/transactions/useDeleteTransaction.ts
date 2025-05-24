@@ -1,14 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import type { AppCommandRequest } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
 /**
- * Custom React Query hook to delete a transaction.
+ * React-Query Hook to delete a Transaction by its ID.
  *
- * This hook uses `useMutation` to perform the `DELETE_TRANSACTION` command through the Angelfish `CommandsClient`.
- * On success, it invalidates the cached `'accounts'` query to ensure fresh data is fetched.
- *
- * @returns {object} - Mutation object from React Query containing:
+ * @returns Mutation object from React Query containing:
  *   - `mutate`: function to trigger the mutation
  *   - `data`: response data (if available)
  *   - `isLoading`: boolean indicating if the mutation is in progress
@@ -18,8 +16,8 @@ export const useDeleteTransaction = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: number) =>
-      CommandsClient.executeAppCommand(AppCommandIds.DELETE_TRANSACTION, { id }),
+    mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_TRANSACTION>) =>
+      CommandsClient.executeAppCommand(AppCommandIds.DELETE_TRANSACTION, request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
     },

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import type { AppCommandRequest, ITransaction } from '@angelfish/core'
+import type { AppCommandRequest } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
 /**
@@ -13,7 +13,8 @@ import { AppCommandIds, CommandsClient } from '@angelfish/core'
  *                 - start_date: Start date to filter Transactions by
  *                 - end_date: End date to filter Transactions by
  *                 - requires_sync: Whether to only list Transactions that require sync
- * @returns       data (ITransaction[]), isLoading (booelan), error (Error or null)
+ *                 - currency_code: ISO 4217 currency code to filter Transactions by
+ * @returns       transactions (ITransaction[]), isLoading (booelan), error (Error or null)
  */
 export const useListTransactions = (query: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>) => {
   const { data, isLoading, error } = useQuery({
@@ -25,5 +26,5 @@ export const useListTransactions = (query: AppCommandRequest<AppCommandIds.LIST_
     enabled: !!query.account_id || !!query.start_date || !!query.end_date,
   })
 
-  return { data, isLoading, error } as { data: ITransaction[]; isLoading: boolean; error: any }
+  return { transactions: data ?? [], isLoading, error }
 }

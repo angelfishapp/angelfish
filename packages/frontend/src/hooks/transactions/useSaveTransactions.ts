@@ -1,15 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import type { ITransactionUpdate } from '@angelfish/core'
+import type { AppCommandRequest } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
 /**
- * Custom React Query hook to save a transaction.
+ * React-Query Hook to save an array of Transactions to the database.
  *
- * This hook uses `useMutation` to perform the `SAVE_TRANSACTIONS` command through the Angelfish `CommandsClient`.
- * On success, it invalidates the cached `'accounts'` query to ensure fresh data is fetched.
- *
- * @returns {object} - Mutation object from React Query containing:
+ * @returns Mutation object from React Query containing:
  *   - `mutate`: function to trigger the mutation
  *   - `data`: response data (if available)
  *   - `isLoading`: boolean indicating if the mutation is in progress
@@ -19,8 +16,8 @@ export const useSaveTransactions = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (transactions: ITransactionUpdate[]) =>
-      CommandsClient.executeAppCommand(AppCommandIds.SAVE_TRANSACTIONS, transactions),
+    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_TRANSACTIONS>) =>
+      CommandsClient.executeAppCommand(AppCommandIds.SAVE_TRANSACTIONS, request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
     },

@@ -432,7 +432,7 @@ export interface AppCommandDefinitions {
     response: IAccount
   }
   [AppCommandIds.DELETE_ACCOUNT]: {
-    request: { id: number; reassignId: number | null }
+    request: { id: number; reassignId?: number | null }
     response: void
   }
   [AppCommandIds.LIST_CATEGORY_GROUPS]: {
