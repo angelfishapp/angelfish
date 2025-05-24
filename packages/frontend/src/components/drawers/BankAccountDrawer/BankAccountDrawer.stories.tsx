@@ -38,3 +38,12 @@ export const AddNewBankAccount: Story = {
     open: true,
   },
 }
+
+export const AddNewBankAccountWithInstitution: Story = {
+  args: {
+    open: true,
+    initialValue: {
+      institution: INSTITUTIONS[0],
+    },
+  },
+}
