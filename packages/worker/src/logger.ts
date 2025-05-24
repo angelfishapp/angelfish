@@ -12,11 +12,13 @@ log.transports.file.resolvePathFn = () => {
 }
 
 // Listen for log level set events when window is started
-window.onmessage = (event) => {
-  if (event.data && event.data.event === 'logging.set.level') {
-    log.transports.console.level = event.data.level
-    log.transports.file.level = event.data.level
-    log.scope('WorkerLogger').info(`Log level set to ${event.data.level}`)
+if (typeof window !== 'undefined') {
+  window.onmessage = (event) => {
+    if (event.data && event.data.event === 'logging.set.level') {
+      log.transports.console.level = event.data.level
+      log.transports.file.level = event.data.level
+      log.scope('WorkerLogger').info(`Log level set to ${event.data.level}`)
+    }
   }
 }
 

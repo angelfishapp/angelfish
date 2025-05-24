@@ -69,9 +69,13 @@ export default React.forwardRef<EntropyGeneratorMethods, EntropyGeneratorProps>(
             fadeOut: true,
             fadeDuration: 0.5,
             loop: true,
-          }).then((audioPlayer) => {
-            audioPlayerRef.current = audioPlayer
           })
+            .then((audioPlayer) => {
+              audioPlayerRef.current = audioPlayer
+            })
+            .catch(() => {
+              // Ignore error if audio file is not found
+            })
         }
 
         const recordPositions = (e: PointerEvent) => {
