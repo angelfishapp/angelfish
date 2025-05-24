@@ -93,8 +93,12 @@ class WindowManagerClass {
     })
 
     if (overrideUserAgent) {
+      let userAgent = ''
+      getUserAgent().then((ua) => {
+        userAgent = ua
+      })
       processSession.webRequest.onBeforeSendHeaders((details, callback) => {
-        details.requestHeaders['User-Agent'] = getUserAgent()
+        details.requestHeaders['User-Agent'] = userAgent
         callback({ requestHeaders: details.requestHeaders })
       })
     }

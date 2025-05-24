@@ -33,6 +33,7 @@
     "electron-log": "*",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "8.2.0",
+    "systeminformation": "^5.26.2",
     "update-electron-app": "3.1.1"
   },
   "devDependencies": {
