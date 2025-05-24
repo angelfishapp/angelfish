@@ -47,12 +47,25 @@ export default function BankAccountDrawer({
     setValue,
     watch,
     handleSubmit,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid, isDirty, dirtyFields },
   } = useForm<BankAccountFormValues>({
     mode: 'onBlur',
   })
 
   const currency = watch('currency')
+  const owners = watch('owners')
+  const accountType = watch('type')
+  if (initialValue?.id === undefined && !dirtyFields?.name) {
+    // Set a default name for the account based on owner and account type
+    if (accountType && owners?.length > 0) {
+      setValue(
+        'name',
+        owners?.length == 1
+          ? `${owners[0].first_name}'s ${accountType?.subtype} Account`
+          : `Joint ${accountType?.subtype} Account`,
+      )
+    }
+  }
 
   /**
    * Handle updating or saving the User
@@ -89,11 +102,197 @@ export default function BankAccountDrawer({
         currency: initialValue?.acc_iso_currency,
         start_balance: initialValue?.acc_start_balance,
         account_limit: initialValue?.acc_limit,
-        is_open: initialValue?.acc_is_open,
+        is_open: initialValue?.acc_is_open ?? true,
       })
     }
   }, [initialValue, open, reset])
 
+  /**
+   * Form Fields
+   */
+
+  const institutionField = (
+    <Controller
+      name="institution"
+      control={control}
+      rules={{ required: true }}
+      render={({ field: { onChange, value, ...restField } }) => (
+        <InstitutionField
+          institutions={institutions}
+          label="Institution"
+          fullWidth
+          required
+          onChange={(institution) => {
+            onChange(institution)
+            const country = getCountryFromCode(institution.country)
+            setValue('currency', country?.currency as string)
+          }}
+          value={value ?? null}
+          error={errors?.institution ? true : false}
+          helperText={errors?.institution ? 'Institution is required' : undefined}
+          {...restField}
+        />
+      )}
+    />
+  )
+
+  const nameField = (
+    <Controller
+      name="name"
+      control={control}
+      rules={{ required: true }}
+      render={({ field }) => (
+        <TextField
+          id="name"
+          label="Name"
+          placeholder="E.g. HSBC Current Account"
+          fullWidth
+          required
+          error={errors?.name ? true : false}
+          helperText={
+            errors?.name
+              ? 'Name is required'
+              : "Put the ower's first name or 'Joint' at the beginning to determine the ownership of the account."
+          }
+          {...field}
+        />
+      )}
+    />
+  )
+
+  const accountTypeField = (
+    <Controller
+      name="type"
+      control={control}
+      rules={{ required: true }}
+      render={({ field }) => (
+        <AccountTypeField
+          label="Account Type"
+          required
+          fullWidth
+          value={field.value}
+          onChange={(accountType) => field.onChange(accountType || undefined)}
+          error={errors?.type ? true : false}
+          helperText={
+            errors?.type
+              ? 'Account Type is required'
+              : 'The type of Account (i.e. Checking Account).'
+          }
+        />
+      )}
+    />
+  )
+
+  const ownersField = (
+    <Controller
+      name="owners"
+      control={control}
+      rules={{ required: true }}
+      render={({ field }) => (
+        <UserField
+          label="Account Owners"
+          required
+          fullWidth
+          users={users}
+          value={field.value}
+          onChange={(users) => field.onChange(users || [])}
+          error={errors?.owners ? true : false}
+          helperText={
+            errors?.owners
+              ? 'At least 1 Account Owner is required'
+              : 'Who does this Account belong to? Can select multiple users if joint account.'
+          }
+        />
+      )}
+    />
+  )
+
+  const currencyField = (
+    <Controller
+      name="currency"
+      control={control}
+      rules={{ required: true }}
+      render={({ field }) => (
+        <CurrencyField
+          label="Currency"
+          required
+          fullWidth
+          value={field.value}
+          onChange={(currency) => field.onChange(currency?.code || '')}
+          error={errors?.currency ? true : false}
+          helperText={
+            errors?.currency
+              ? 'Currency is required'
+              : 'The currency the account is denominated in.'
+          }
+        />
+      )}
+    />
+  )
+
+  const startBalanceField = (
+    <Controller
+      name="start_balance"
+      control={control}
+      render={({ field: { onChange, value, ...restField } }) => (
+        <AmountField
+          label="Starting Balance"
+          fullWidth
+          value={value}
+          allowNegative={true}
+          currency={currency ? getCurrencyFromCode(currency)?.symbol : undefined}
+          error={errors?.start_balance ? true : false}
+          helperText={
+            errors?.start_balance
+              ? 'Start Balance must be a Valid Amount'
+              : 'Enter a starting balance for the account that matches the balance of the account for the first transaction.'
+          }
+          onChange={(value) => onChange(value)}
+          {...restField}
+        />
+      )}
+    />
+  )
+
+  const accountLimitField = (
+    <Controller
+      name="account_limit"
+      control={control}
+      render={({ field: { onChange, value, ...restField } }) => (
+        <AmountField
+          label="Account Limit"
+          fullWidth
+          value={value}
+          allowNegative={true}
+          currency={currency ? getCurrencyFromCode(currency)?.symbol : undefined}
+          error={errors?.account_limit ? true : false}
+          helperText={
+            errors?.account_limit
+              ? 'Account Limit must be a Valid Amount'
+              : 'The overdraft or credit limit for the Account if any.'
+          }
+          onChange={(value) => onChange(value)}
+          {...restField}
+        />
+      )}
+    />
+  )
+
+  const isOpenField = (
+    <Controller
+      name="is_open"
+      control={control}
+      render={({ field }) => (
+        <SwitchField
+          label="Is Account Open?"
+          helperText="Is the account currently open or closed?"
+          {...field}
+        />
+      )}
+    />
+  )
+
+  // Render the Drawer
   return (
     <Drawer
       title={initialValue?.id ? 'Edit Bank Account' : 'Add New Bank Account'}
@@ -101,172 +300,29 @@ export default function BankAccountDrawer({
       disableSaveButton={!isValid || !isDirty}
       onSave={() => handleSubmit(handleSave)()}
     >
-      <React.Fragment>
-        <Controller
-          name="institution"
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, value, ...restField } }) => (
-            <InstitutionField
-              institutions={institutions}
-              label="Institution"
-              fullWidth
-              required
-              onChange={(institution) => {
-                onChange(institution)
-                const country = getCountryFromCode(institution.country)
-                setValue('currency', country?.currency as string)
-              }}
-              value={value ?? null}
-              error={errors?.institution ? true : false}
-              helperText={errors?.institution ? 'Institution is required' : undefined}
-              {...restField}
-            />
-          )}
-        />
-
-        <Controller
-          name="name"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              id="name"
-              label="Name"
-              placeholder="E.g. HSBC Current Account"
-              fullWidth
-              required
-              error={errors?.name ? true : false}
-              helperText={
-                errors?.name
-                  ? 'Name is required'
-                  : "Put the ower's first name or 'Joint' at the beginning to determine the ownership of the account."
-              }
-              {...field}
-            />
-          )}
-        />
-
-        <Controller
-          name="type"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <AccountTypeField
-              label="Account Type"
-              required
-              fullWidth
-              value={field.value}
-              onChange={(accountType) => field.onChange(accountType || undefined)}
-              error={errors?.type ? true : false}
-              helperText={
-                errors?.type
-                  ? 'Account Type is required'
-                  : 'The type of Account (i.e. Checking Account).'
-              }
-            />
-          )}
-        />
-
-        <Controller
-          name="owners"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <UserField
-              label="Account Owners"
-              required
-              fullWidth
-              users={users}
-              value={field.value}
-              onChange={(users) => field.onChange(users || [])}
-              error={errors?.owners ? true : false}
-              helperText={
-                errors?.owners
-                  ? 'At least 1 Account Owner is required'
-                  : 'Who does this Account belong to? Can select multiple users if joint account.'
-              }
-            />
-          )}
-        />
-
-        <Controller
-          name="currency"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <CurrencyField
-              label="Currency"
-              required
-              fullWidth
-              value={field.value}
-              onChange={(currency) => field.onChange(currency?.code || '')}
-              error={errors?.currency ? true : false}
-              helperText={
-                errors?.currency
-                  ? 'Currency is required'
-                  : 'The currency the account is denominated in.'
-              }
-            />
-          )}
-        />
-
-        <Controller
-          name="start_balance"
-          control={control}
-          render={({ field: { onChange, value, ...restField } }) => (
-            <AmountField
-              label="Starting Balance"
-              fullWidth
-              value={value}
-              allowNegative={true}
-              currency={currency ? getCurrencyFromCode(currency)?.symbol : undefined}
-              error={errors?.start_balance ? true : false}
-              helperText={
-                errors?.start_balance
-                  ? 'Start Balance must be a Valid Amount'
-                  : 'Enter a starting balance for the account that matches the balance of the account for the first transaction.'
-              }
-              onChange={(value) => onChange(value)}
-              {...restField}
-            />
-          )}
-        />
-
-        <Controller
-          name="account_limit"
-          control={control}
-          render={({ field: { onChange, value, ...restField } }) => (
-            <AmountField
-              label="Account Limit"
-              fullWidth
-              value={value}
-              allowNegative={true}
-              currency={currency ? getCurrencyFromCode(currency)?.symbol : undefined}
-              error={errors?.account_limit ? true : false}
-              helperText={
-                errors?.account_limit
-                  ? 'Account Limit must be a Valid Amount'
-                  : 'The overdraft or credit limit for the Account if any.'
-              }
-              onChange={(value) => onChange(value)}
-              {...restField}
-            />
-          )}
-        />
-
-        <Controller
-          name="is_open"
-          control={control}
-          render={({ field }) => (
-            <SwitchField
-              label="Is Account Open?"
-              helperText="Is the account currently open or closed?"
-              {...field}
-            />
-          )}
-        />
-      </React.Fragment>
+      {initialValue?.id !== undefined ? (
+        <React.Fragment>
+          {nameField}
+          {institutionField}
+          {accountTypeField}
+          {ownersField}
+          {currencyField}
+          {startBalanceField}
+          {accountLimitField}
+          {isOpenField}
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          {institutionField}
+          {accountTypeField}
+          {ownersField}
+          {nameField}
+          {currencyField}
+          {startBalanceField}
+          {accountLimitField}
+          {isOpenField}
+        </React.Fragment>
+      )}
     </Drawer>
   )
 }
