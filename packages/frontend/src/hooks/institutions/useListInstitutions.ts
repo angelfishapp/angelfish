@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { listInstitutions } from '@/api'
+import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
  * React-Query Hook that lists Institutions
@@ -18,10 +18,7 @@ export const useListInstitutions = (
 ) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['institutions'],
-    queryFn: async () => {
-      const result = await CommandsClient.executeAppCommand(AppCommandIds.LIST_INSTITUTIONS)
-      return result
-    },
+    queryFn: async () => listInstitutions(),
   })
 
   return { institutions: data ?? [], isLoading, error }

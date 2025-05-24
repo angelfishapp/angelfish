@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { onSearchInstitutions } from '@/api'
 import type { AccountTableMethods } from '@/components/AccountTable'
 import { AccountTableUIContainer } from '@/components/AccountTable'
 import {
-  onSearchInstitutions,
   useDeleteAccount,
   useDeleteInstitution,
   useGetBook,
@@ -58,7 +58,7 @@ export default React.forwardRef<AccountTableMethods, AccountTableContainerProps>
         onDeleteInstitution={(institution) =>
           deleteInstitution.mutate({ id: institution.id as number })
         }
-        onSearchInstitutions={onSearchInstitutions}
+        onSearchInstitutions={(query) => onSearchInstitutions({ query })}
         groupBy={groupBy}
         sortBy={sortBy}
         showClosedAccounts={showClosedAccounts}

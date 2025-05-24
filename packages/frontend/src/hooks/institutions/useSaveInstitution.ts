@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { saveInstitution } from '@/api'
 
 /**
  * React-Query Hook to save an Institution.
@@ -16,8 +15,7 @@ export const useSaveInstitution = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_INSTITUTION>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.SAVE_INSTITUTION, request),
+    mutationFn: saveInstitution,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['institutions'] })
     },

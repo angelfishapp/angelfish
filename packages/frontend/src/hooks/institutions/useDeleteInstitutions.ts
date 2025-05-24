@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { deleteInstitution } from '@/api'
 
 /**
  * React-Query Hook that deletes an Institution with given ID.
@@ -16,8 +15,7 @@ export const useDeleteInstitution = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_INSTITUTION>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.DELETE_INSTITUTION, request),
+    mutationFn: deleteInstitution,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['institutions'] })
     },
