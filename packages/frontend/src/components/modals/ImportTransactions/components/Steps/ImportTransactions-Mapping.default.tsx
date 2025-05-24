@@ -75,11 +75,19 @@ export default function ImportDefaultTransactionsMapping({
   // Render CSV Mapper Form
   return (
     <React.Fragment>
-      <p>
-        {error && <span style={{ color: 'red', fontWeight: 'bold' }}>{error}</span>}
-        Map the {fileMappings.fileType.toUpperCase()} properties below to import your Transactions
-        correctly:
-      </p>
+      <Box sx={{ marginBottom: 2 }}>
+        {error && (
+          <p>
+            <span style={{ color: 'red', fontWeight: 'bold' }}>
+              There was an error parsing your file: {error}
+            </span>
+          </p>
+        )}
+        <p>
+          Map the {fileMappings.fileType.toUpperCase()} properties below to import your Transactions
+          correctly:
+        </p>
+      </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={openTabIndex}

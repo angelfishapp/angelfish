@@ -57,24 +57,20 @@ async function onGetFileMappings(file: string, delimiter?: string) {
  * @returns         Array of reconciled transactions
  */
 async function onReconcileTransactions(file: string, mapper: ImportTransactionsMapper) {
-  try {
-    const reconciledTransactions: ReconciledTransaction[] = await CommandsClient.executeAppCommand(
-      AppCommandIds.IMPORT_FILE,
-      {
-        filePath: file,
-        mapper,
-      },
-    )
-    // Ensure Dates are converted to Date objects
-    reconciledTransactions.forEach((t) => {
-      t.date = moment(t.date).toDate()
-      t.created_on = moment(t.created_on).toDate()
-      t.modified_on = moment(t.modified_on).toDate()
-    })
-    return reconciledTransactions
-  } catch (_error) {
-    return []
-  }
+  const reconciledTransactions: ReconciledTransaction[] = await CommandsClient.executeAppCommand(
+    AppCommandIds.IMPORT_FILE,
+    {
+      filePath: file,
+      mapper,
+    },
+  )
+  // Ensure Dates are converted to Date objects
+  reconciledTransactions.forEach((t) => {
+    t.date = moment(t.date).toDate()
+    t.created_on = moment(t.created_on).toDate()
+    t.modified_on = moment(t.modified_on).toDate()
+  })
+  return reconciledTransactions
 }
 
 /**
