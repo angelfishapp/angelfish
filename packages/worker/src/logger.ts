@@ -11,6 +11,17 @@ log.transports.file.resolvePathFn = () => {
   return path.join(Environment.logsDir, `${Environment.processId}.log`)
 }
 
+// Listen for log level set events when window is started
+if (typeof window !== 'undefined') {
+  window.onmessage = (event) => {
+    if (event.data && event.data.event === 'logging.set.level') {
+      log.transports.console.level = event.data.level
+      log.transports.file.level = event.data.level
+      log.scope('Logger').info(`Log level set to ${event.data.level}`)
+    }
+  }
+}
+
 /**
  * Returns a scopped logger. Scopes help identify which part of the
  * application generated the log

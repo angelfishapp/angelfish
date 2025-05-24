@@ -143,7 +143,10 @@ export default function Accounts() {
         }}
       >
         {/* Accounts Side Menu */}
-        <AccountsMenu onSelectAccount={onSelectAccount} />
+        <AccountsMenu
+          disableAddAccount={institutions && institutions.length === 0}
+          onSelectAccount={onSelectAccount}
+        />
         {/* END OF Accounts Side Menu */}
       </Box>
       <Box

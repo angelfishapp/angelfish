@@ -56,13 +56,14 @@ function createMainAppWindow(): BrowserWindow {
     title: 'Angelfish',
     width: windowSize.width,
     height: windowSize.height,
-    // Allow embedded YouTube videos to play
+    // Allow embedded Vimeo videos to play
     csp: {
-      'frame-src': ['https://www.youtube-nocookie.com'],
-      'font-src': ['https://fonts.gstatic.com'],
-      'img-src': ['https://i.ytimg.com'],
-      'connect-src': ['https://*.googlevideo.com'],
-      'media-src': ['https://www.youtube-nocookie.com', 'blob:'],
+      'script-src': ['https://*.vimeocdn.com'],
+      'img-src': ['https://*.vimeocdn.com'],
+      'style-src': ['https://*.vimeocdn.com', 'unsafe-inline'],
+      'frame-src': ['https://player.vimeo.com'],
+      'connect-src': ['https://arclight.vimeo.com', 'https://*.vimeocdn.com'],
+      'media-src': ['blob:'],
     },
   })
   appWindow.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)

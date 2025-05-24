@@ -198,7 +198,7 @@ export default function AccountTable({
                   item: `Add Account`,
                   icon: AddCircleIcon,
                   divider: true,
-                  onClick: () => onCreateAccount(),
+                  onClick: () => onCreateAccount(selectedInstitution as IInstitution),
                 },
                 {
                   item: `Remove`,

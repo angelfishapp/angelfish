@@ -3,6 +3,7 @@ import type { AnimationItem } from 'lottie-web'
 import lottie from 'lottie-web'
 import React from 'react'
 
+import { AudioPlayer } from '@/utils/audio.utils'
 import { default as animationData } from './animations/bubble.json'
 import type { BubbleStepProps } from './BubbleStep.interface'
 import { BubbleStepContainer } from './BubbleStep.styles'
@@ -56,8 +57,9 @@ export default function BubbleStep({
     // Play animation if complete
     if (animation && isComplete) {
       animation.play()
-      const audio = new Audio('assets/sounds/pop.mp3')
-      audio.play()
+      AudioPlayer.create('assets/sounds/pop.mp3').then((audioPlayer) => {
+        audioPlayer.play()
+      })
     } else if (animation && !isComplete) {
       // Reset animation if not complete
       animation.goToAndStop(0)

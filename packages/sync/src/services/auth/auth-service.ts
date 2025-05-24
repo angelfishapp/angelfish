@@ -175,6 +175,33 @@ class AuthServiceClass {
       authenticatedUser: updatedUser,
     })
 
+    // Update DB user if exists
+    try {
+      const dbUser = await CommandsClient.executeAppCommand(AppCommandIds.GET_USER, {
+        cloud_id: updatedUser.id,
+      })
+      if (dbUser) {
+        logger.debug('Updating Authenticated User in database', updatedUser)
+        dbUser.first_name = updatedUser.first_name
+        dbUser.last_name = updatedUser.last_name
+        dbUser.email = updatedUser.email
+        dbUser.phone = updatedUser.phone
+        dbUser.avatar = updatedUser.avatar
+
+        await CommandsClient.executeAppCommand(AppCommandIds.SAVE_USER, dbUser)
+      }
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        !error.message.includes('Database connection has not been initialized')
+      ) {
+        // Ignore error if DB connection is not initialized which will happen when user first logs in
+        // and the DB is not yet created, otherwise log the error and throw it
+        logger.error('Error updating Authenticated User in database', error)
+        throw error
+      }
+    }
+
     // Emit event to notify app that user profile has been updated
     CommandsClient.emitAppEvent(AppEventIds.ON_UPDATE_AUTHENTICATED_USER, updatedUser)
 

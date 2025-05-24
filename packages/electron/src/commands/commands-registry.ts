@@ -134,7 +134,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
    */
   public registerNewChannel(id: string, port: T) {
     // Add or replace the channel in the map
-    this._log('info', `🎙️ Registering new IPC Channel *${id}*`)
+    this._log('debug', `🎙️ Registering new IPC Channel *${id}*`)
     this._channels.set(id, port)
 
     // Create a bound handler to handle onmessage events
@@ -161,7 +161,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
             this._commands.delete(key)
           }
         })
-        this._log('info', `🎙️ IPC Channel *${id}* closed`)
+        this._log('debug', `🎙️ IPC Channel *${id}* closed`)
       })
       // Start the port to begin receiving messages
       port.start()
@@ -202,7 +202,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
       | ICommandListRequest
       | ICommandListResponse
 
-    this._log('debug', `Received message from ${id}:`, redactPayload(msg))
+    this._log('silly', `Received message from ${id}:`, redactPayload(msg))
 
     // Get channel port
     const channel = this._channels.get(id)
@@ -214,7 +214,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
     // Handle message based on type
     switch (msg.type) {
       case 'register':
-        this._log('info', `📞 Registering remote command ${msg.command} for process "${id}"`)
+        this._log('debug', `📞 Registering remote command ${msg.command} for process "${id}"`)
         // Register a new remote command handler for a remote process
         // If a process restarts and re-registers a command, ignore, but throw error
         // if another process tries to register the same command
@@ -286,7 +286,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
             } else {
               // If request is from another process command is remote,
               // forward the request to the remote process
-              this._log('debug', `Forwarding request to remote channel *${command.channelId}*`)
+              this._log('silly', `Forwarding request to remote channel *${command.channelId}*`)
               const remoteChannel = this._channels.get(command.channelId)
               if (remoteChannel) {
                 this._routeHandlers.set(msg.id, id)
@@ -321,7 +321,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
           } else if (this._routeHandlers.has(msg.id)) {
             // If no reply handler found, check if we need to route the response back to the original process
             const originId = this._routeHandlers.get(msg.id)
-            this._log('debug', `Forwarding response back to origin channel *${originId}*`)
+            this._log('silly', `Forwarding response back to origin channel *${originId}*`)
             const channel = this._channels.get(originId as string)
             if (channel) {
               channel.postMessage(msg)
@@ -369,7 +369,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
         return reject(new Error(`Command handler for "${command}" already registered`))
       }
 
-      this._log('debug', `Registering new command "${command}"`)
+      this._log('silly', `Registering new command "${command}"`)
       this._commands.set(command, {
         isLocal: true,
         isPrivate: command.startsWith('_'),
@@ -388,13 +388,13 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
 
         try {
           await Promise.all(channelPromises) // Wait for all channels to complete
-          this._log('info', `☎️ Registered new command "${command}"`)
+          this._log('debug', `☎️ Registered new command "${command}"`)
           return resolve()
         } catch (error) {
           return reject(new Error(`Failed to register command: ${error}`))
         }
       }
-      this._log('info', `☎️ Registered new command "${command}"`)
+      this._log('debug', `☎️ Registered new command "${command}"`)
       return resolve()
     })
   }
@@ -487,7 +487,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
    * @param origin    The process that originally emitted the event
    */
   public emitEvent(event: EventID, payload?: object, origin?: ChannelID) {
-    this._log('debug', `Emitting event *${event}* from origin ${origin}:`)
+    this._log('silly', `Emitting event *${event}* from origin ${origin}:`)
     // Send event to all local listeners
     const eventListeners = this._listeners.get(event) || []
     eventListeners.forEach((callback) => {
@@ -499,7 +499,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
         if (!origin) {
           // If router channel is set and current process is origin (origin === undefined),
           // forward event to router channel only to ensure each process only receives the event once
-          this._log('debug', `Forwarding event to router channel *${this._config.routerChannel}*`)
+          this._log('silly', `Forwarding event to router channel *${this._config.routerChannel}*`)
           const routerChannel = this._channels.get(this._config.routerChannel)
           if (routerChannel) {
             routerChannel.postMessage({
@@ -512,7 +512,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
         return
       }
       // If not (i.e. is a router), broadcast event to all connected process channels
-      this._log('debug', `Broadcasting event to all connected channels`)
+      this._log('silly', `Broadcasting event to all connected channels`)
       this._channels.forEach((channel, channelId) => {
         if (channelId !== origin) {
           channel.postMessage({
