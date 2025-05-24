@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
     if (event.data && event.data.event === 'logging.set.level') {
       log.transports.console.level = event.data.level
       log.transports.file.level = event.data.level
-      log.scope('WorkerLogger').info(`Log level set to ${event.data.level}`)
+      log.scope('Logger').info(`Log level set to ${event.data.level}`)
     }
   }
 }
