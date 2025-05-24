@@ -61,8 +61,8 @@ export default function BankAccountDrawer({
       setValue(
         'name',
         owners?.length == 1
-          ? `${owners[0].first_name}'s ${accountType?.subtype} Account`
-          : `Joint ${accountType?.subtype} Account`,
+          ? `${owners[0].first_name}'s ${accountType.name}`
+          : `Joint ${accountType.name}`,
       )
     }
   }
