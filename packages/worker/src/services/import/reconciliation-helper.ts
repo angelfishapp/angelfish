@@ -1,6 +1,6 @@
 import Fuse from 'fuse.js'
 
-import type { ITransaction, ReconciledTransaction } from '@angelfish/core'
+import type { ITransaction, ITransactionUpdate, ReconciledTransaction } from '@angelfish/core'
 import { getTransactionCategory, isSplitTransaction, updateTransaction } from '@angelfish/core'
 import { getWorkerLogger } from '../../logger'
 
@@ -130,10 +130,18 @@ export class ReconciliationHelper {
 
       // Othereise predict the category for the transaction
       const category_id = this.predictCategory(transaction)
+      let updatedTransaction = transaction as ITransactionUpdate
+      try {
+        updatedTransaction = updateTransaction(transaction, { category_id })
+      } catch (error) {
+        throw new Error(
+          `Failed to reconcile transaction "${transaction.title}": ${(error as Error).message}`,
+        )
+      }
       return {
         import: true,
         reconciliation: 'new',
-        ...updateTransaction(transaction, { category_id }),
+        ...updatedTransaction,
       }
     })
 

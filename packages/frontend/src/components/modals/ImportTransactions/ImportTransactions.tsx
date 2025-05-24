@@ -63,7 +63,7 @@ export default function ImportTransactions({
               setActiveStep(2)
             })
             .catch((e) => {
-              setError(e)
+              setError((e as Error).message || `${e}`)
             })
         }}
       />
@@ -80,7 +80,7 @@ export default function ImportTransactions({
               setActiveStep(3)
             })
             .catch((e) => {
-              setError(e)
+              setError((e as Error).message || `${e}`)
             })
         }}
       />
@@ -105,7 +105,7 @@ export default function ImportTransactions({
             setTransactions(undefined)
             onClose?.()
           } catch (e) {
-            setError(`${e}`)
+            setError((e as Error).message || `${e}`)
           }
         }}
       />

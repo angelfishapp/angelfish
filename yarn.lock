@@ -79,6 +79,7 @@ __metadata:
     node-loader: "npm:^2.1.0"
     react-refresh: "npm:^0.17.0"
     style-loader: "npm:^4.0.0"
+    systeminformation: "npm:^5.26.2"
     ts-loader: "npm:^9.5.2"
     ts-node: "npm:^10.9.2"
     typescript: "npm:*"
@@ -14101,6 +14102,16 @@ __metadata:
   version: 3.2.4
   resolution: "symbol-tree@npm:3.2.4"
   checksum: 10/c09a00aadf279d47d0c5c46ca3b6b2fbaeb45f0a184976d599637d412d3a70bbdc043ff33effe1206dea0e36e0ad226cb957112e7ce9a4bf2daedf7fa4f85c53
+  languageName: node
+  linkType: hard
+
+"systeminformation@npm:^5.26.2":
+  version: 5.26.2
+  resolution: "systeminformation@npm:5.26.2"
+  bin:
+    systeminformation: lib/cli.js
+  checksum: 10/ab96e1a311b6809b1a606d30b65bfaedc13e78d4edd73fc9318e68c7e08b0d286010cb513b51700179f2d9e149abffef74ab7bae5c50c31b99c9a2b7b116dbb8
+  conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
 

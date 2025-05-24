@@ -140,6 +140,7 @@ function* createIPCChannel() {
  */
 export function* initialiseIPCChannel(): Generator<any, void, any> {
   const channel = yield call(createIPCChannel)
+  let bookOpen = false
   while (true) {
     const message = yield take(channel)
     switch (message.event) {
@@ -155,10 +156,12 @@ export function* initialiseIPCChannel(): Generator<any, void, any> {
         break
       case AppEventIds.ON_BOOK_OPEN:
         logger.debug('BOOK_OPEN', message.payload)
+        bookOpen = true
         yield put(setBook({ book: message.payload.book }))
         break
       case AppEventIds.ON_BOOK_CLOSE:
         logger.debug('BOOK_CLOSE', message.payload)
+        bookOpen = false
         yield put(setBook({ book: undefined }))
         break
       case AppEventIds.ON_SYNC_STARTED:
@@ -182,7 +185,9 @@ export function* initialiseIPCChannel(): Generator<any, void, any> {
       case AppEventIds.ON_UPDATE_AUTHENTICATED_USER:
         logger.debug('ON_UPDATE_AUTHENTICATED_USER', message.payload)
         yield put(setAuthenticatedUser({ authenticatedUser: message.payload }))
-        yield put(reloadUsers({}))
+        if (bookOpen) {
+          yield put(reloadUsers({}))
+        }
         break
       case AppEventIds.ON_USER_SETTINGS_UPDATED:
         logger.debug('ON_UPDATE_USER_SETTINGS', message.payload)

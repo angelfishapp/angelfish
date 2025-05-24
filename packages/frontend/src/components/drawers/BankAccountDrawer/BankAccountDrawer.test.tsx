@@ -97,7 +97,7 @@ describe('BankAccount Drawer stories', () => {
 
       const isAccountOpenField = screen.getByRole('checkbox')
       expect(isAccountOpenField).toBeInTheDocument()
-      expect(isAccountOpenField).not.toBeChecked()
+      expect(isAccountOpenField).toBeChecked()
     })
   })
 })

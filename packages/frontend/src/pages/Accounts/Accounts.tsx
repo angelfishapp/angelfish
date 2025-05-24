@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { saveAccount } from '@/redux/accounts/actions'
 import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
 import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
+import { selectAllInstitutions } from '@/redux/institutions/selectors'
 import { selectAllTags } from '@/redux/tags/selectors'
 import { deleteTransaction, listTransactions, saveTransactions } from '@/redux/transactions/actions'
 import { selectAllTransactions } from '@/redux/transactions/selectors'
@@ -30,6 +31,7 @@ export default function Accounts() {
   const transactions = useSelector(selectAllTransactions)
   const tags = useSelector(selectAllTags)
   const categoryGroups = useSelector(selectAllCategoryGroups)
+  const institutions = useSelector(selectAllInstitutions)
 
   // Bank Account Menu State
   const [selectedAccount, setSelectedAccount] = React.useState<IAccount>()
@@ -144,7 +146,10 @@ export default function Accounts() {
         }}
       >
         {/* Accounts Side Menu */}
-        <AccountsMenu onSelectAccount={onSelectAccount} />
+        <AccountsMenu
+          disableAddAccount={institutions && institutions.length === 0}
+          onSelectAccount={onSelectAccount}
+        />
         {/* END OF Accounts Side Menu */}
       </Box>
       <Box

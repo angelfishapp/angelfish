@@ -64,12 +64,18 @@ export default React.forwardRef<EntropyGeneratorMethods, EntropyGeneratorProps>(
         }) as CanvasRenderingContext2D
         // Create audio player for sound effects
         if (!audioPlayerRef.current) {
-          audioPlayerRef.current = new AudioPlayer('assets/sounds/Underwater.mp3', {
+          AudioPlayer.create('assets/sounds/Underwater.mp3', {
             fadeIn: true,
             fadeOut: true,
             fadeDuration: 0.5,
             loop: true,
           })
+            .then((audioPlayer) => {
+              audioPlayerRef.current = audioPlayer
+            })
+            .catch(() => {
+              // Ignore error if audio file is not found
+            })
         }
 
         const recordPositions = (e: PointerEvent) => {

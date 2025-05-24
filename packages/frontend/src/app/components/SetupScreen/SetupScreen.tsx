@@ -120,8 +120,8 @@ export default function SetupScreen({
           onNext={() => setIsOpen(false)}
         >
           <VideoContainer
-            src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?si=jp1QWglFMyKASaDO"
-            title="Rick Astley - Never Gonna Give You Up"
+            src="https://player.vimeo.com/video/827536470"
+            title="HANIA RANI — HELLO"
           />
         </Step>
       </Stepper>

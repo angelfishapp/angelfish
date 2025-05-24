@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import React from 'react'
 
 import { OOBField } from '@/components/forms/OOBField'
+import { AudioPlayer } from '@/utils/audio.utils'
 import LoginAnimation from '../../animations/login-animation'
 import { AuthContainer } from '../../AuthScreen.styles'
 import type { AuthFormProps } from './AuthForm.interface'
@@ -36,8 +37,10 @@ export default function AuthForm({
             waterTargetId: 'login-splash-target',
             onFishJump() {
               setShowAuthForm(false)
-              const audio = new Audio('assets/sounds/Chimes.mp3')
-              audio.play()
+              // Play the sound when the fish jumps
+              AudioPlayer.create('assets/sounds/Chimes.mp3').then((audioPlayer) => {
+                audioPlayer.play()
+              })
             },
             // This should be a callback function for when the fish hits the water.
             // Used to transition the background onto the next screen

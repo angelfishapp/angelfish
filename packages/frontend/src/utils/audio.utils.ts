@@ -44,7 +44,7 @@ export class AudioPlayer {
    * @param audioUrl    URL of the audio file to play
    * @param options     Options for the audio player @see AudioPlayerOptions
    */
-  constructor(
+  private constructor(
     audioUrl: string,
     { fadeIn = false, fadeOut = false, fadeDuration = 1, loop = false }: AudioPlayerOptions,
   ) {
@@ -66,6 +66,20 @@ export class AudioPlayer {
     const sourceNode = this.audioContext.createMediaElementSource(this.audioElement)
     sourceNode.connect(this.gainNode)
     this.gainNode.connect(this.audioContext.destination)
+  }
+
+  /**
+   * Create a new AudioPlayer instance with the given audio URL and options.
+   *
+   * @param audioUrl    URL of the audio file to play
+   * @param options     Options for the audio player @see AudioPlayerOptions
+   * @returns           A promise that resolves to the created AudioPlayer instance
+   */
+  static async create(audioUrl: string, options: AudioPlayerOptions = {}): Promise<AudioPlayer> {
+    const response = await fetch(audioUrl)
+    const blob = await response.blob()
+    const objectUrl = URL.createObjectURL(blob)
+    return new AudioPlayer(objectUrl, options)
   }
 
   // Play the audio with fade-in effect

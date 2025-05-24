@@ -1,5 +1,6 @@
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
 import { AvatarField } from '@/components/forms/AvatarField'
@@ -70,6 +71,11 @@ export default function SetupBookStep({
       currency: undefined,
     },
   })
+
+  // Make sure suggestedName is set in the form when it changes
+  React.useEffect(() => {
+    setValue('name', suggestedName ?? '')
+  }, [suggestedName, setValue])
 
   /**
    * Handle saving the Book
