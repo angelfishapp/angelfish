@@ -7,9 +7,9 @@ import { Emoji } from '@/components/Emoji'
 import AutocompleteField from '@/components/forms/AutocompleteField/AutocompleteField'
 import type { IAccount } from '@angelfish/core'
 import type { CategoryFieldProps } from './CategoryField.interface'
+import { CustomListbox, CustomPopper } from './components/AutoCompleteFooter'
 import { RenderGroup } from './components/RenderGroup'
 import { RenderOption } from './components/RenderOption'
-import { CustomListbox, CustomPopper } from './components/AutoCompleteFooter'
 
 /**
  * Autocomplete Field for selecting a Category or Account
@@ -37,7 +37,6 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
   const [selected, setSelected] = useState<IAccount[]>([])
   const [isOpen, setIsOpen] = useState(variant === 'multi-box' ? true : false)
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
-
 
   // handling variant type
   const isMultiBox = variant === 'multi-box'
@@ -78,20 +77,21 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
     return searchOptions
   }, [sortedAccounts])
   const allSelected = useMemo(
-    () => sortedAccounts.length > 0 && sortedAccounts.every((o) => selected.some((s) => s.name === o.name)),
-    [selected, sortedAccounts]
-  );
+    () =>
+      sortedAccounts.length > 0 &&
+      sortedAccounts.every((o) => selected.some((s) => s.name === o.name)),
+    [selected, sortedAccounts],
+  )
 
   const handleToggleAll = () => {
     if (allSelected) {
-      setSelected([]);
+      setSelected([])
     } else {
-      setSelected([...sortedAccounts]);
+      setSelected([...sortedAccounts])
     }
-  };
+  }
   // Render
   return (
-
     <AutocompleteField
       id={id}
       formRef={ref}
@@ -126,7 +126,7 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
       slotProps={{
         listbox: {
           button: (
-            <Button onClick={handleToggleAll} size="small" >
+            <Button onClick={handleToggleAll} size="small">
               {!allSelected ? 'Toggle All' : 'Clear All'}
             </Button>
           ),
@@ -152,14 +152,14 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
       groupBy={
         !disableGroupBy
           ? (option) => {
-            if (option.class == 'CATEGORY') {
-              if (option.id != 0) {
-                return option.categoryGroup?.name ?? ''
+              if (option.class == 'CATEGORY') {
+                if (option.id != 0) {
+                  return option.categoryGroup?.name ?? ''
+                }
+                return ''
               }
-              return ''
+              return 'Account Transfer'
             }
-            return 'Account Transfer'
-          }
           : undefined
       }
       virtualize={false}
@@ -168,7 +168,8 @@ export default React.forwardRef<HTMLDivElement, CategoryFieldProps>(function Cat
           params={params}
           collapsedGroups={collapsedGroups}
           selected={selected}
-          setCollapsedGroups={setCollapsedGroups} setSelected={setSelected}
+          setCollapsedGroups={setCollapsedGroups}
+          setSelected={setSelected}
           sortedAccounts={sortedAccounts}
           variant={variant}
         />

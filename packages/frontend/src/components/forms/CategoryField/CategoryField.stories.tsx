@@ -41,7 +41,7 @@ export const WithValue: Story = {
     label: 'Category',
     value: getAccountsWithRelations()[2],
     onCreate: (name?) => action('onCreate')(name),
-      variant: 'dropdown',
+    variant: 'dropdown',
   },
 }
 
@@ -64,7 +64,6 @@ export const Filtered: Story = {
 }
 export const multiBox: Story = {
   args: {
-    
     label: 'Category',
     renderAsValue: false,
     onCreate: (name?) => action('onCreate')(name),

@@ -7,16 +7,16 @@ import { Emoji } from '@/components/Emoji'
 import AutocompleteField from '@/components/forms/AutocompleteField/AutocompleteField'
 import type { IAccount } from '@angelfish/core'
 import type { MultiSelectFieldProps } from './MultiSelectField.interface'
-import { RenderGroup } from './components/RenderGroup'
-import { RenderOption } from './components/RenderOption'
 import { CustomListbox, CustomPopper } from './components/AutoCompleteFooter'
 import MultiSelectFieldHeader from './components/MultiSelectFieldHeader'
 import MultiSelectSelectionBox from './components/MultiSelectSelectionBox'
+import { RenderGroup } from './components/RenderGroup'
+import { RenderOption } from './components/RenderOption'
 
 /**
  * Autocomplete Field for selecting a Category or Account
  */
-type FilterMode = "all" | "include" | "exclude"
+type FilterMode = 'all' | 'include' | 'exclude'
 
 export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function CategoryField(
   {
@@ -40,11 +40,13 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
   const [selected, setSelected] = useState<IAccount[]>([])
   const [isOpen, setIsOpen] = useState(variant === 'multi-box' ? true : false)
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
-  const [filterMode, setFilterMode] = useState<FilterMode>("all")
-
+  const [filterMode, setFilterMode] = useState<FilterMode>('all')
 
   // Handle filter mode change
-  const handleFilterModeChange = (event: React.MouseEvent<HTMLElement>, newFilterMode: FilterMode | null) => {
+  const handleFilterModeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newFilterMode: FilterMode | null,
+  ) => {
     if (newFilterMode !== null) {
       setFilterMode(newFilterMode)
     }
@@ -64,21 +66,19 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
   const sortedAccounts: IAccount[] = React.useMemo(() => {
     if (accountsWithRelations?.length > 0) {
       // 1. Optional external filter
-      let filteredAccounts = filter
-        ? accountsWithRelations.filter(filter)
-        : accountsWithRelations
+      let filteredAccounts = filter ? accountsWithRelations.filter(filter) : accountsWithRelations
 
       // 2. Prepare selected IDs for easier comparison
-      const selectedIds = new Set(selected.map(acc => acc.id))
+      const selectedIds = new Set(selected.map((acc) => acc.id))
 
       // 3. Apply FilterMode logic
       filteredAccounts = filteredAccounts.filter((account) => {
         switch (filterMode) {
-          case "include":
+          case 'include':
             return selectedIds.has(account.id)
-          case "exclude":
+          case 'exclude':
             return !selectedIds.has(account.id)
-          case "all":
+          case 'all':
           default:
             return true
         }
@@ -94,7 +94,6 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
 
     return []
   }, [accountsWithRelations, filter, filterMode, selected])
-
 
   /**
    * Improve performance of filtering options by pre-calculating search
@@ -113,26 +112,33 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
     return searchOptions
   }, [sortedAccounts])
   const allSelected = useMemo(
-    () => sortedAccounts.length > 0 && sortedAccounts.every((o) => selected.some((s) => s.name === o.name)),
-    [selected, sortedAccounts]
-  );
+    () =>
+      sortedAccounts.length > 0 &&
+      sortedAccounts.every((o) => selected.some((s) => s.name === o.name)),
+    [selected, sortedAccounts],
+  )
 
   const handleToggleAll = () => {
     if (allSelected) {
-      setSelected([]);
+      setSelected([])
     } else {
-      setSelected([...sortedAccounts]);
+      setSelected([...sortedAccounts])
     }
-  };
+  }
   // Render
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Category Selection
       </Typography>
-      <Box sx={{ display: "flex", gap: 4, flexDirection: { xs: "column", md: "row" } }}>
+      <Box sx={{ display: 'flex', gap: 4, flexDirection: { xs: 'column', md: 'row' } }}>
         <Box sx={{ flex: 1 }}>
-          <MultiSelectFieldHeader selected={selected} filterMode={filterMode} handleClearAll={handleClearAll} handleFilterModeChange={handleFilterModeChange} />
+          <MultiSelectFieldHeader
+            selected={selected}
+            filterMode={filterMode}
+            handleClearAll={handleClearAll}
+            handleFilterModeChange={handleFilterModeChange}
+          />
           <AutocompleteField
             id={id}
             formRef={ref}
@@ -167,7 +173,7 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
             slotProps={{
               listbox: {
                 button: (
-                  <Button onClick={handleToggleAll} size="small" >
+                  <Button onClick={handleToggleAll} size="small">
                     {!allSelected ? 'Toggle All' : 'Clear All'}
                   </Button>
                 ),
@@ -193,14 +199,14 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
             groupBy={
               !disableGroupBy
                 ? (option) => {
-                  if (option.class == 'CATEGORY') {
-                    if (option.id != 0) {
-                      return option.categoryGroup?.name ?? ''
+                    if (option.class == 'CATEGORY') {
+                      if (option.id != 0) {
+                        return option.categoryGroup?.name ?? ''
+                      }
+                      return ''
                     }
-                    return ''
+                    return 'Account Transfer'
                   }
-                  return 'Account Transfer'
-                }
                 : undefined
             }
             virtualize={false}
@@ -209,7 +215,8 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
                 params={params}
                 collapsedGroups={collapsedGroups}
                 selected={selected}
-                setCollapsedGroups={setCollapsedGroups} setSelected={setSelected}
+                setCollapsedGroups={setCollapsedGroups}
+                setSelected={setSelected}
                 sortedAccounts={sortedAccounts}
                 variant={variant}
               />
@@ -282,7 +289,11 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
                       </React.Fragment>
                     ) : (
                       <React.Fragment>
-                        <BankIcon logo={value.institution?.logo} size={24} style={{ marginRight: 8 }} />
+                        <BankIcon
+                          logo={value.institution?.logo}
+                          size={24}
+                          style={{ marginRight: 8 }}
+                        />
                         {value.institution?.name} &gt;
                       </React.Fragment>
                     )}
