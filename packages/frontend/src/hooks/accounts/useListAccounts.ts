@@ -2,10 +2,11 @@ import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 
 import type { AppCommandRequest, IAccount, IUser } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import type { AppCommandIds } from '@angelfish/core'
 import { useListCategoryGroups } from '../categoryGroups'
 import { useListInstitutions } from '../institutions'
 import { useListUsers } from '../users'
+import { listAccounts } from '@/api'
 
 /**
  * React-Query Hook that lists Accounts for a given query
@@ -20,10 +21,7 @@ import { useListUsers } from '../users'
 export const useListAccounts = (query: AppCommandRequest<AppCommandIds.LIST_ACCOUNTS>) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['accounts', query],
-    queryFn: async () => {
-      const result = await CommandsClient.executeAppCommand(AppCommandIds.LIST_ACCOUNTS, query)
-      return result
-    },
+    queryFn: async () => listAccounts(query),
   })
 
   return { accounts: data ?? [], isLoading, error }
