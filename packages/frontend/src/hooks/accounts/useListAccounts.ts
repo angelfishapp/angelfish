@@ -87,3 +87,35 @@ export function useListAllAccountsWithRelations() {
     accounts: accountsWithRelations,
   }
 }
+
+/**
+ * Fetches all the Accounts with class 'CATEGORY' in the Store
+ * Use this to get all Categories
+ */
+export function useSelectAllCategories() {
+  const { accounts, isLoading: aLoading } = useListAccounts({})
+
+  const AllCategories = accounts.filter((account) => {
+    return account.class == 'CATEGORY'
+  })
+  return {
+    categories: AllCategories as IAccount[],
+    isLoading: aLoading,
+  }
+}
+
+/**
+ * Fetches all the Accounts with class 'ACCOUNT' in the Store
+ * Use this to get all Bank Accounts
+ */
+export function useSelectAllBankAccounts() {
+  const { accounts, isLoading: aLoading } = useListAccounts({})
+
+  const AllBankAccounts = accounts.filter((account) => {
+    return account.class == 'ACCOUNT'
+  }) as IAccount[]
+  return {
+    accounts: AllBankAccounts,
+    isLoading: aLoading,
+  }
+}

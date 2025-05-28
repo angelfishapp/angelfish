@@ -1,28 +1,31 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import {  useSelector } from 'react-redux'
 
 import { SetupScreen } from '@/app/components/SetupScreen'
-import { deleteAccount, saveAccount } from '@/redux/accounts/actions'
-import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
-import { selectAuthenticatedUser, selectBook } from '@/redux/app/selectors'
-import { deleteInstitution, saveInstitution } from '@/redux/institutions/actions'
-import { selectAllInstitutions } from '@/redux/institutions/selectors'
-import { deleteUser, saveUser, updateAuthenticatedUser } from '@/redux/users/actions'
-import { selectAllUsers } from '@/redux/users/selectors'
+import { selectAuthenticatedUser } from '@/redux/app/selectors'
 import { AppCommandIds, BOOK_AVATARS, CommandsClient, USER_AVATARS } from '@angelfish/core'
 import type { SetupScreenContainerProps } from './SetupScreenContainer.interface'
+import { useDeleteAccount, useDeleteInstitution, useDeleteUser, useGetBook, useListAllAccountsWithRelations, useListInstitutions, useListUsers, useSaveAccount, useSaveInstitution, useSaveUser, useUpdateUser } from '@/hooks'
 
 /**
  * Container for Setup Screen to handle all logic and data fetching
  */
 export default function SetupScreenContainer({ onComplete, onStart }: SetupScreenContainerProps) {
   // Redux Hooks
-  const dispatch = useDispatch()
+
   const authenticatedUser = useSelector(selectAuthenticatedUser)
-  const users = useSelector(selectAllUsers)
-  const accountsWithRelations = useSelector(selectAllAccountsWithRelations)
-  const institutions = useSelector(selectAllInstitutions)
-  const book = useSelector(selectBook)
+  const { users } = useListUsers()
+  const { accounts: accountsWithRelations } = useListAllAccountsWithRelations()
+  const { institutions } = useListInstitutions()
+  const { book } = useGetBook()
+
+  const userSaveMutation = useSaveUser()
+  const userDeleteMutation = useDeleteUser()
+  const userUpdateMutation = useUpdateUser()
+  const accountSaveMutation = useSaveAccount()
+  const accountDeleteMutation = useDeleteAccount()
+  const institutionSaveMutation = useSaveInstitution()
+  const institutionDeleteMutation = useDeleteInstitution()
 
   /**
    * Callback to search available Institutions via API/Database
@@ -80,17 +83,13 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
    */
   const onUpdateAuthenticatedUser = React.useCallback(
     (firstName: string, lastName: string, avatar?: string) => {
-      dispatch(
-        updateAuthenticatedUser({
-          user: {
-            first_name: firstName,
-            last_name: lastName,
-            avatar,
-          },
-        }),
-      )
+      userUpdateMutation.mutate({
+        first_name: firstName,
+        last_name: lastName,
+        avatar,
+      })
     },
-    [dispatch],
+    [],
   )
 
   // Render
@@ -112,12 +111,12 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
       onCreateEncryptionKey={(_seed) => {
         /* TODO */
       }}
-      onDeleteUser={(user) => dispatch(deleteUser({ userId: user.id }))}
-      onSaveUser={(user) => dispatch(saveUser({ user }))}
-      onSaveAccount={(account) => dispatch(saveAccount({ account }))}
-      onDeleteAccount={(account) => dispatch(deleteAccount({ id: account.id }))}
-      onSaveInstitution={(institution) => dispatch(saveInstitution({ institution }))}
-      onDeleteInstitution={(institution) => dispatch(deleteInstitution({ id: institution.id }))}
+      onDeleteUser={(user) => userDeleteMutation.mutate({ id: user.id })}
+      onSaveUser={(user) => userSaveMutation.mutate(user)}
+      onSaveAccount={(account) => accountSaveMutation.mutate(account)}
+      onDeleteAccount={(account) => accountDeleteMutation.mutate({ id: account.id, reassignId: null })}
+      onSaveInstitution={(institution) => institutionSaveMutation.mutate(institution)}
+      onDeleteInstitution={(institution) => institutionDeleteMutation.mutate({ id: institution.id })}
       onSearchInstitutions={onSearchInstitutions}
       onComplete={onComplete}
     />

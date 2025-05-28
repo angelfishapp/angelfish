@@ -7,24 +7,18 @@ import Card from '@mui/material/Card'
 import Collapse from '@mui/material/Collapse'
 import { chunk, groupBy } from 'lodash-es'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
 import { DropableComponent } from '@/components/DragAndDrop'
 import { CategoryDrawer, CategoryGroupDrawer } from '@/components/drawers'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { Emoji } from '@/components/Emoji'
-import { deleteAccount, saveAccount } from '@/redux/accounts/actions'
-import { selectAllAccountsWithRelations, selectAllCategories } from '@/redux/accounts/selectors'
-import { deleteCategoryGroup, saveCategoryGroup } from '@/redux/categoryGroups/actions'
-import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
-import { listTransactions } from '@/redux/transactions/actions'
-import { selectAllTransactions } from '@/redux/transactions/selectors'
 import type { AppCommandIds, AppCommandRequest, IAccount, ICategoryGroup } from '@angelfish/core'
 import { StyledCategoryGroupDivider, StyledCategoryGroupName } from './CategorySettings.styles'
 import { CategoriesTable } from './components/CategoriesTable'
 import { CategoryDeleteModal } from './components/CategoryDeleteModal'
 import { BUBBLE_SIZE, CategoryGroupBubble } from './components/CategoryGroupBubble'
 import { GroupDeleteModal } from './components/GroupDeleteModal'
+import { useDeleteAccount, useDeleteCategoryGroup, useListAllAccountsWithRelations, useListCategoryGroups, useListTransactions, useSaveAccount, useSaveCategoryGroup, useSelectAllCategories } from '@/hooks'
 
 const BUBBLEWIDTH = BUBBLE_SIZE + 16 + 8
 
@@ -33,7 +27,6 @@ const BUBBLEWIDTH = BUBBLE_SIZE + 16 + 8
  */
 
 export default function CategorySettings() {
-  const dispatch = useDispatch()
 
   // Component State
   const container = React.useRef<HTMLDivElement | null>(null)
@@ -41,12 +34,12 @@ export default function CategorySettings() {
   const [drawerType, setDrawerType] = React.useState<string>('')
   const [selectedGroup, setSelectedGroup] = React.useState<
     | {
-        group: ICategoryGroup
-        row?: number
-        col?: number
-        index?: number
-        type?: 'income' | 'expenses'
-      }
+      group: ICategoryGroup
+      row?: number
+      col?: number
+      index?: number
+      type?: 'income' | 'expenses'
+    }
     | undefined
   >(undefined)
   const [showTable, setShowTable] = React.useState(false)
@@ -60,27 +53,28 @@ export default function CategorySettings() {
   >(undefined)
 
   // Get Category Groups from Redux store and filter into Income/Expenses
-  const categoryGroups: ICategoryGroup[] = useSelector(selectAllCategoryGroups)
+  const { categoryGroups } = useListCategoryGroups();
   const { Income: categoryGroupsIncome, Expense: categoryGroupsExpense } = groupBy(
     categoryGroups,
     (group) => group.type,
   )
 
   // Get Categories from Redux store and filter for currect group
-  const categories: IAccount[] = useSelector(selectAllCategories)
-  const accountsWithRelations = useSelector(selectAllAccountsWithRelations)
+  const { categories } = useSelectAllCategories()
+  const { accounts: accountsWithRelations } = useListAllAccountsWithRelations()
   const groupedCategories = groupBy(categories, (category) => category.cat_group_id)
 
   // Get transactions in background when selected category is changed
-  const transactions = useSelector(selectAllTransactions)
-  React.useEffect(() => {
-    if (selectedCategory) {
-      const transactionQuery: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS> = {
-        cat_id: selectedCategory.id,
-      }
-      dispatch(listTransactions(transactionQuery))
-    }
-  }, [selectedCategory, dispatch])
+  const transactionQuery: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS> | undefined =
+    selectedCategory
+      ? { cat_id: selectedCategory.id }
+      : undefined
+
+  const { transactions, } = useListTransactions(transactionQuery ?? {})
+  const CategoryGroupSaveMutation = useSaveCategoryGroup()
+  const CategoryGroupDeleteMutation = useDeleteCategoryGroup()
+  const accountSaveMutation = useSaveAccount()
+  const accountDeleteMutation = useDeleteAccount()
 
   const updateItemsPerRow = React.useCallback(() => {
     if (!container.current) return
@@ -154,15 +148,16 @@ export default function CategorySettings() {
    * Handle Saving a Category Group
    */
   const onGroupSave = (categoryGroup: ICategoryGroup) => {
-    dispatch(saveCategoryGroup({ categoryGroup }))
+    CategoryGroupSaveMutation.mutate(categoryGroup)
   }
 
   /**
    * Handle Deleting a Category Group
    */
   const onGroupDelete = (group: ICategoryGroup, categories?: IAccount[]) => {
-    categories?.forEach((category) => dispatch(saveAccount({ account: category })))
-    setTimeout(() => dispatch(deleteCategoryGroup({ categoryGroupId: group.id })), 500)
+    categories?.forEach((category) => accountSaveMutation.mutate(category))
+    // check this on dev 
+    setTimeout(() => CategoryGroupDeleteMutation.mutate({ id: group.id }), 500)
     setDeleting(undefined)
 
     if (!categories?.length) {
@@ -185,14 +180,14 @@ export default function CategorySettings() {
    * Handle Saving a Category
    */
   const onCategorySave = (category: IAccount) => {
-    dispatch(saveAccount({ account: category }))
+    accountSaveMutation.mutate(category)
   }
 
   /**
    * Handle Deleting a Category
    */
   const onCategoryDelete = (id: IAccount['id'], reassignId?: IAccount['id']) => {
-    dispatch(deleteAccount({ id, reassignId }))
+    accountDeleteMutation.mutate({ id, reassignId: reassignId ?? null })
     setDeleting(undefined)
   }
 
@@ -421,10 +416,9 @@ export default function CategorySettings() {
                                   (data) => ({ ...data, type: 'income' }),
                                 )}
                                 onSelect={onCategorySelect}
-                                pointerPosition={`${
-                                  (100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
+                                pointerPosition={`${(100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
                                   100 / itemsPerRow / 2
-                                }%`}
+                                  }%`}
                               />
                             </Box>
                           </Collapse>
@@ -521,10 +515,9 @@ export default function CategorySettings() {
                                   (data) => ({ ...data, type: 'expense' }),
                                 )}
                                 onSelect={onCategorySelect}
-                                pointerPosition={`${
-                                  (100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
+                                pointerPosition={`${(100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
                                   100 / itemsPerRow / 2
-                                }%`}
+                                  }%`}
                               />
                             </Box>
                           </Collapse>
