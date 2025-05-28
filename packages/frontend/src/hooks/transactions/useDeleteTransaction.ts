@@ -20,6 +20,7 @@ export const useDeleteTransaction = () => {
       CommandsClient.executeAppCommand(AppCommandIds.DELETE_TRANSACTION, request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
     },
   })
 }

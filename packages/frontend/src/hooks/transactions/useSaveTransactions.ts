@@ -20,6 +20,8 @@ export const useSaveTransactions = () => {
       CommandsClient.executeAppCommand(AppCommandIds.SAVE_TRANSACTIONS, request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+
     },
   })
 }
