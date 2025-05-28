@@ -1,15 +1,14 @@
 import Box from '@mui/material/Box'
 import { endOfMonth, format, startOfMonth, subMonths } from 'date-fns'
 import React from 'react'
-import { useSelector } from 'react-redux'
 
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
-import { selectBook } from '@/redux/app/selectors'
 import type { ReportsData } from '@angelfish/core'
 import { getDataSetColors } from '../../utils/palette.utils'
 import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
 import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
+import { useGetBook } from '@/hooks'
 
 /**
  * Dashboard Page of Application
@@ -17,7 +16,7 @@ import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
 export default function Dashboard() {
   // Component State
   const [yearlyData, setYearlyData] = React.useState<ReportsData>()
-  const book = useSelector(selectBook)
+  const { book } = useGetBook()
 
   // Get Reports Data when date ranges changed
   React.useEffect(() => {
