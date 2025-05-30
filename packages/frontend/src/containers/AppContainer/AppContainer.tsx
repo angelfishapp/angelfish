@@ -1,15 +1,14 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
 import { AppLayout } from '@/app/components/AppLayout'
 import { AuthScreenContainer } from '@/containers/AuthScreenContainer'
 import { SetupScreenContainer } from '@/containers/SetupScreenContainer'
-import { getAppState } from '@/redux/app/actions'
-import { selectAuthenticatedUser, selectIsInitialised } from '@/redux/app/selectors'
-import { initStore, startIPCChannels } from '@/redux/common/actions'
+import { useGetBook } from '@/hooks'
+import { useGetAppState } from '@/hooks/app/useGetAppState'
+import { StartIPCChannel } from '@/hooks/app/useHandleAppState'
+import { useAppContext } from '@/providers/AppContext'
 import type { IAuthenticatedUser } from '@angelfish/core'
 import { AppCommandIds, AppProcessIDs, CommandsClient } from '@angelfish/core'
-import { useGetBook } from '@/hooks'
 
 /** ************************************************************************************************
  * IPC Callback Functions
@@ -29,23 +28,28 @@ export default function AppContainer() {
   // Component State
   const [showSetup, setShowSetup] = React.useState<boolean>(false)
   const [setupInProgress, setSetupInProgress] = React.useState<boolean>(false)
-
+  const data = useGetAppState()
   // Redux State
-  const dispatch = useDispatch()
-  const isInitialised = useSelector(selectIsInitialised)
-  const authenticatedUser = useSelector(selectAuthenticatedUser)
+  const appContext = useAppContext()
+  const isAuthenticated = data?.isAuthenticated ?? false
+  const authenticatedUser = data?.authenticatedUser
   const { book } = useGetBook()
-
+  const isInitialised = isAuthenticated
+  StartIPCChannel()
+  console.log('Log AppContainer: isAuthenticated', isAuthenticated)
+  console.log('Log AppContainer: authenticatedUser', authenticatedUser)
+  console.log('Log AppContainer: book', book)
+  console.log('Log AppContainer: isInitialised', isInitialised)
+  console.log('Log AppContainer: data', data)
   /**
    * Check the current App state on component mount and start IPC Channel
    * listeners for App state changes from Main process
    */
   React.useEffect(() => {
     CommandsClient.isReady([AppProcessIDs.MAIN, AppProcessIDs.WORKER]).then(() => {
-      dispatch(getAppState({}))
-      dispatch(startIPCChannels({}))
+      StartIPCChannel()
     })
-  }, [dispatch])
+  }, [])
 
   /**
    * Set App state once Redux Store is Initialised
@@ -63,11 +67,11 @@ export default function AppContainer() {
   /**
    * Reload Redux Store whenever book changes
    */
-  React.useEffect(() => {
-    if (book) {
-      dispatch(initStore({}))
-    }
-  }, [book, dispatch])
+  // React.useEffect(() => {
+  //   if (book) {
+  //     // dispatch(initStore({}))
+  //   }
+  // }, [book, dispatch])
 
   // Render
   // Will show loading until App is initialised

@@ -1,9 +1,7 @@
-import { useSelector } from 'react-redux'
-
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
 import { AuthScreen } from '@/app/components/AuthScreen'
-import { selectIsAuthenticated, selectUserSettings } from '@/redux/app/selectors'
+import { useAppContext } from '@/providers/AppContext'
 import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
 
 /** ************************************************************************************************
@@ -35,8 +33,9 @@ async function onAuthenticate(oob_code: string) {
  */
 export default function AuthScreenContainer({ children }: AuthScreenContainerProps) {
   // Redux State
-  const isAuthenticated = useSelector(selectIsAuthenticated)
-  const userSettings = useSelector(selectUserSettings)
+  const appContext = useAppContext()
+  const isAuthenticated = appContext?.isAuthenticated ?? false
+  const userSettings = appContext?.userSettings
 
   // Render
   return (

@@ -4,11 +4,11 @@ import React from 'react'
 
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
+import { useGetBook } from '@/hooks'
 import type { ReportsData } from '@angelfish/core'
 import { getDataSetColors } from '../../utils/palette.utils'
 import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
 import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
-import { useGetBook } from '@/hooks'
 
 /**
  * Dashboard Page of Application

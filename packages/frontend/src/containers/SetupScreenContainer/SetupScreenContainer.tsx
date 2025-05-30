@@ -1,19 +1,30 @@
 import React from 'react'
-import {  useSelector } from 'react-redux'
 
 import { SetupScreen } from '@/app/components/SetupScreen'
-import { selectAuthenticatedUser } from '@/redux/app/selectors'
+import {
+  useDeleteAccount,
+  useDeleteInstitution,
+  useDeleteUser,
+  useGetBook,
+  useListAllAccountsWithRelations,
+  useListInstitutions,
+  useListUsers,
+  useSaveAccount,
+  useSaveInstitution,
+  useSaveUser,
+  useUpdateUser,
+} from '@/hooks'
+import { useAppContext } from '@/providers/AppContext'
 import { AppCommandIds, BOOK_AVATARS, CommandsClient, USER_AVATARS } from '@angelfish/core'
 import type { SetupScreenContainerProps } from './SetupScreenContainer.interface'
-import { useDeleteAccount, useDeleteInstitution, useDeleteUser, useGetBook, useListAllAccountsWithRelations, useListInstitutions, useListUsers, useSaveAccount, useSaveInstitution, useSaveUser, useUpdateUser } from '@/hooks'
 
 /**
  * Container for Setup Screen to handle all logic and data fetching
  */
 export default function SetupScreenContainer({ onComplete, onStart }: SetupScreenContainerProps) {
   // Redux Hooks
-
-  const authenticatedUser = useSelector(selectAuthenticatedUser)
+  const appContext = useAppContext()
+  const authenticatedUser = appContext?.authenticatedUser
   const { users } = useListUsers()
   const { accounts: accountsWithRelations } = useListAllAccountsWithRelations()
   const { institutions } = useListInstitutions()
@@ -114,9 +125,13 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
       onDeleteUser={(user) => userDeleteMutation.mutate({ id: user.id })}
       onSaveUser={(user) => userSaveMutation.mutate(user)}
       onSaveAccount={(account) => accountSaveMutation.mutate(account)}
-      onDeleteAccount={(account) => accountDeleteMutation.mutate({ id: account.id, reassignId: null })}
+      onDeleteAccount={(account) =>
+        accountDeleteMutation.mutate({ id: account.id, reassignId: null })
+      }
       onSaveInstitution={(institution) => institutionSaveMutation.mutate(institution)}
-      onDeleteInstitution={(institution) => institutionDeleteMutation.mutate({ id: institution.id })}
+      onDeleteInstitution={(institution) =>
+        institutionDeleteMutation.mutate({ id: institution.id })
+      }
       onSearchInstitutions={onSearchInstitutions}
       onComplete={onComplete}
     />

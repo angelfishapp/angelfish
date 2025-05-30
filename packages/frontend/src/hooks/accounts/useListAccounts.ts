@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 
-import type { AppCommandRequest, IAccount, IUser } from '@angelfish/core'
-import type { AppCommandIds } from '@angelfish/core'
+import { listAccounts } from '@/api'
+import type { AppCommandIds, AppCommandRequest, IAccount, IUser } from '@angelfish/core'
 import { useListCategoryGroups } from '../categoryGroups'
 import { useListInstitutions } from '../institutions'
 import { useListUsers } from '../users'
-import { listAccounts } from '@/api'
 
 /**
  * React-Query Hook that lists Accounts for a given query

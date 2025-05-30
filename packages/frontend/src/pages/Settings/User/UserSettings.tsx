@@ -5,12 +5,12 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import { AvatarField } from '@/components/forms/AvatarField'
 import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
-import { selectAuthenticatedUser } from '@/redux/app/selectors'
+import { useAppContext } from '@/providers/AppContext'
 import { updateAuthenticatedUser } from '@/redux/users/actions'
 import { USER_AVATARS } from '@angelfish/core'
 
@@ -37,7 +37,8 @@ export default function UserSettings() {
   const dispatch = useDispatch()
 
   // Component State
-  const authenticatedUser = useSelector(selectAuthenticatedUser)
+  const appContext = useAppContext()
+  const authenticatedUser = appContext?.authenticatedUser
 
   // Setup Form
   const {

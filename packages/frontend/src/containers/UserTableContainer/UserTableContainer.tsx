@@ -1,10 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux'
-
 import { UserTableUIContainer } from '@/components/UserTable'
-import { selectAuthenticatedUser } from '@/redux/app/selectors'
-import type { IAuthenticatedUser } from '@angelfish/core'
-import { USER_AVATARS } from '@angelfish/core'
 import { useDeleteUser, useListUsers, useSaveUser } from '@/hooks'
+import { useAppContext } from '@/providers/AppContext'
+import { USER_AVATARS } from '@angelfish/core'
 
 /**
  * Container for UserTableUIContainer
@@ -15,8 +12,8 @@ export default function UserTableContainer() {
 
   const userSaveMutation = useSaveUser()
   const userDeleteMutation = useDeleteUser()
-
-  const authenticatedUser = useSelector(selectAuthenticatedUser) as IAuthenticatedUser
+  const appContext = useAppContext()
+  const authenticatedUser = appContext?.authenticatedUser
 
   // Render
   return (
