@@ -40,8 +40,6 @@ export default function AppRoot() {
 
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
-          {/* Redux provider */}
-          {/* <Provider store={reduxStore}> */}
           <AppProvider>
             <ContextBridge />
             {/* App Context Provider */}

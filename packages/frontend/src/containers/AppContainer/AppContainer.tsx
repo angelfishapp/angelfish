@@ -7,9 +7,9 @@ import { useGetBook } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
 import { setupIPCListeners } from '@/hooks/app/useHandleAppState'
 import { useAppContext } from '@/providers/AppContext'
+import queryClient from '@/providers/ReactQueryClient'
 import type { IAuthenticatedUser } from '@angelfish/core'
 import { AppCommandIds, AppProcessIDs, CommandsClient } from '@angelfish/core'
-import queryClient from '@/providers/ReactQueryClient'
 
 /** ************************************************************************************************
  * IPC Callback Functions
@@ -21,7 +21,6 @@ import queryClient from '@/providers/ReactQueryClient'
 async function onLogout() {
   await CommandsClient.executeAppCommand(AppCommandIds.AUTH_LOGOUT)
   queryClient.invalidateQueries({ queryKey: ['appState'] })
-
 }
 
 /**
@@ -31,11 +30,11 @@ export default function AppContainer() {
   // Component State
   const [showSetup, setShowSetup] = React.useState<boolean>(false)
   const [setupInProgress, setSetupInProgress] = React.useState<boolean>(false)
-  const data = useGetAppState() // this line will call and sett app State in context
+  const appState = useGetAppState() // this line will call and sett app State in context
   // Redux State
   const appContext = useAppContext()
   const { book } = useGetBook()
-  const authenticatedUser = appContext?.authenticatedUser
+  const authenticatedUser = appState?.authenticatedUser
   const isInitialised = appContext?.isInitialised ?? false
   /**
    * Check the current App state on component mount and start IPC Channel
@@ -64,16 +63,6 @@ export default function AppContainer() {
     }
   }, [isInitialised, book, setupInProgress])
 
-  /**
-   * Reload Redux Store whenever book changes
-   */
-  // React.useEffect(() => {
-  //   if (book) {
-  //     // dispatch(initStore({}))
-  //   }
-  // }, [book, dispatch])
-
-  // Render
   // Will show loading until App is initialised
   if (isInitialised) {
     // Render

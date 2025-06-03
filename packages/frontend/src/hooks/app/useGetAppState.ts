@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { useAppContext } from '@/providers/AppContext'
-import type { AppCommandRequest } from '@angelfish/core'
+import type { AppCommandRequest, IAuthenticatedUser } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import type { IBook } from '@angelfish/core/src/types'
 import { useEffect } from 'react'
 
 /**
@@ -29,13 +30,13 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
   })
   useEffect(() => {
     if (data) {
-      setBook(data?.book)
-      setIsAuthenticated(data?.authenticated)
-      setAuthenticatedUser(data?.authenticatedUser)
-      setUserSettings(data?.userSettings)
+      setBook(data?.book as IBook)
+      setIsAuthenticated(data.authenticated)
+      setAuthenticatedUser(data?.authenticatedUser as IAuthenticatedUser)
+      setUserSettings(data.userSettings)
       setIsInitialised(true)
     }
-  }, [data, setBook, setIsAuthenticated, setAuthenticatedUser, setUserSettings])
+  }, [data, setBook, setIsAuthenticated, setAuthenticatedUser, setUserSettings, setIsInitialised])
 
   return {
     book: data?.book,

@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { useAppContext } from '@/providers/AppContext'
 import type { AppCommandRequest } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 

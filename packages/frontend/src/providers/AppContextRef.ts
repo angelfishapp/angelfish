@@ -1,4 +1,3 @@
-// AppContextRef.ts
 let appContextRef: any = null
 
 export const setAppContextRef = (context: any) => {

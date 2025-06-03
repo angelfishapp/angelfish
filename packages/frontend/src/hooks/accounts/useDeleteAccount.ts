@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { deleteAccount } from '@/api'
-import type { AppCommandRequest } from '@angelfish/core'
-import type { AppCommandIds } from '@angelfish/core'
+import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
  * React-Query Hook that deletes an Account with given ID. If reassignId is provided,

@@ -1,7 +1,8 @@
 import { UserTableUIContainer } from '@/components/UserTable'
 import { useDeleteUser, useListUsers, useSaveUser } from '@/hooks'
-import { useAppContext } from '@/providers/AppContext'
+import { useGetAppState } from '@/hooks/app/useGetAppState'
 import { USER_AVATARS } from '@angelfish/core'
+import type { IAuthenticatedUser } from '@angelfish/core/src/types'
 
 /**
  * Container for UserTableUIContainer
@@ -12,8 +13,8 @@ export default function UserTableContainer() {
 
   const userSaveMutation = useSaveUser()
   const userDeleteMutation = useDeleteUser()
-  const appContext = useAppContext()
-  const authenticatedUser = appContext?.authenticatedUser
+  const appState = useGetAppState()
+  const authenticatedUser = appState.authenticatedUser as IAuthenticatedUser
 
   // Render
   return (

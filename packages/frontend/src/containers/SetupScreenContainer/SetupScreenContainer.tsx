@@ -14,7 +14,7 @@ import {
   useSaveUser,
   useUpdateUser,
 } from '@/hooks'
-import { useAppContext } from '@/providers/AppContext'
+import { useGetAppState } from '@/hooks/app/useGetAppState'
 import { AppCommandIds, BOOK_AVATARS, CommandsClient, USER_AVATARS } from '@angelfish/core'
 import type { SetupScreenContainerProps } from './SetupScreenContainer.interface'
 
@@ -23,8 +23,7 @@ import type { SetupScreenContainerProps } from './SetupScreenContainer.interface
  */
 export default function SetupScreenContainer({ onComplete, onStart }: SetupScreenContainerProps) {
   // Redux Hooks
-  const appContext = useAppContext()
-  const authenticatedUser = appContext?.authenticatedUser
+  const { authenticatedUser } = useGetAppState()
   const { users } = useListUsers()
   const { accounts: accountsWithRelations } = useListAllAccountsWithRelations()
   const { institutions } = useListInstitutions()
@@ -100,7 +99,7 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
         avatar,
       })
     },
-    [],
+    [userUpdateMutation],
   )
 
   // Render

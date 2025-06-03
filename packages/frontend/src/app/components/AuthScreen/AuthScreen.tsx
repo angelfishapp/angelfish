@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import React from 'react'
 
+import queryClient from '@/providers/ReactQueryClient'
 import { Background } from '../Background'
 import type { AuthScreenProps } from './AuthScreen.interface'
 import { AuthScreenContainer } from './AuthScreen.styles'
@@ -34,6 +35,7 @@ export default function AuthScreen({
    * Update screen state when isAuthenticated changes
    */
   React.useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['appState'] })
     if (!isLogin) {
       setBackgroundView(isAuthenticated ? 'underwater' : 'sky')
       setShowLogin(!isAuthenticated)

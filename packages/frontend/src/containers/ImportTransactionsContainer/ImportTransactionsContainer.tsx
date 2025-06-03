@@ -31,7 +31,7 @@ export default function ImportTransactionsContainer({
 
       onClose?.()
     },
-    [onClose],
+    [onClose, queryClient],
   )
 
   // Render

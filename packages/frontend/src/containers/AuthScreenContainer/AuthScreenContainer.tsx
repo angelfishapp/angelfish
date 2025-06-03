@@ -1,7 +1,9 @@
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
 import { AuthScreen } from '@/app/components/AuthScreen'
-import { useAppContext } from '@/providers/AppContext'
+import { useGetAppState } from '@/hooks/app/useGetAppState'
+import queryClient from '@/providers/ReactQueryClient'
+import type { IUserSettings } from '@angelfish/core/src/types'
 import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
 
 /** ************************************************************************************************
@@ -16,6 +18,7 @@ import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
  */
 async function onGetOOBCode(email: string) {
   await CommandsClient.executeAppCommand(AppCommandIds.AUTH_SEND_OOB_CODE, { email })
+  queryClient.invalidateQueries({ queryKey: ['appState'] })
 }
 
 /**
@@ -32,10 +35,10 @@ async function onAuthenticate(oob_code: string) {
  * Container for AuthScreen
  */
 export default function AuthScreenContainer({ children }: AuthScreenContainerProps) {
-  // Redux State
-  const appContext = useAppContext()
-  const isAuthenticated = appContext?.isAuthenticated ?? false
-  const userSettings = appContext?.userSettings
+  // State
+  const appState = useGetAppState()
+  const isAuthenticated = appState.isAuthenticated
+  const userSettings = appState.userSettings as IUserSettings
 
   // Render
   return (

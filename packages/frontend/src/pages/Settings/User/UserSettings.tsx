@@ -5,15 +5,13 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
 
 import { AvatarField } from '@/components/forms/AvatarField'
 import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
-import { useAppContext } from '@/providers/AppContext'
-import { USER_AVATARS } from '@angelfish/core'
 import { useUpdateUser } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
+import { USER_AVATARS } from '@angelfish/core'
 
 /**
  * Form Properties
@@ -35,7 +33,6 @@ type UserSettingsFormValues = {
  */
 
 export default function UserSettings() {
-
   // Component State
   const { authenticatedUser } = useGetAppState()
   const updateUserMutation = useUpdateUser()
