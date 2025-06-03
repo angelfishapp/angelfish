@@ -13,6 +13,7 @@ import { TextField } from '@/components/forms/TextField'
 import { useAppContext } from '@/providers/AppContext'
 import { USER_AVATARS } from '@angelfish/core'
 import { useUpdateUser } from '@/hooks'
+import { useGetAppState } from '@/hooks/app/useGetAppState'
 
 /**
  * Form Properties
@@ -34,11 +35,9 @@ type UserSettingsFormValues = {
  */
 
 export default function UserSettings() {
-  // const dispatch = useDispatch()
 
   // Component State
-  const context = useAppContext()
-  const authenticatedUser = context?.authenticatedUser
+  const { authenticatedUser } = useGetAppState()
   const updateUserMutation = useUpdateUser()
   // Setup Form
   const {
@@ -81,13 +80,11 @@ export default function UserSettings() {
     if (authenticatedUser) {
       // Copy and update user
       updateUserMutation.mutate({
-        user: {
-          ...authenticatedUser,
-          avatar: formData.avatar,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          phone: formData.phone.number ? `+${formData.phone.number}` : undefined,
-        },
+        ...authenticatedUser,
+        avatar: formData.avatar,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone: formData.phone.number ? `+${formData.phone.number}` : undefined,
       })
       reset(formData)
     }

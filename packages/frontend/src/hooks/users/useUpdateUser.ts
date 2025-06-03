@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { useAppContext } from '@/providers/AppContext'
 import type { AppCommandRequest } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
@@ -14,13 +15,11 @@ import { AppCommandIds, CommandsClient } from '@angelfish/core'
  */
 export const useUpdateUser = () => {
   const queryClient = useQueryClient()
-
   return useMutation({
     mutationFn: (request: AppCommandRequest<AppCommandIds.UPDATE_AUTHENTICATED_USER>) =>
       CommandsClient.executeAppCommand(AppCommandIds.UPDATE_AUTHENTICATED_USER, request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] })
-      queryClient.invalidateQueries({ queryKey: ['apppState'] })
+      queryClient.invalidateQueries({ queryKey: ['appState'] })
     },
   })
 }
