@@ -1,6 +1,7 @@
 import type {
   Dispatch,
-  SetStateAction} from 'react';
+  SetStateAction
+} from 'react';
 import {
   createContext,
   useContext,
@@ -19,6 +20,8 @@ type AppContextType = {
   setUserSettings: Dispatch<SetStateAction<any>>
   syncStatus: any
   setSyncStatus: Dispatch<SetStateAction<any>>
+  isInitialised: any
+  setIsInitialised: Dispatch<SetStateAction<any>>
 }
 
 export const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -29,12 +32,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [book, setBook] = useState(null)
   const [userSettings, setUserSettings] = useState({})
   const [syncStatus, setSyncStatus] = useState(null)
-  console.log('AppContextProvider initialized')
-  console.log('isAuthenticated:', isAuthenticated)
-  console.log('authenticatedUser:', authenticatedUser)
-  console.log('book:', book)
-  console.log('userSettings:', userSettings)
-  console.log('syncStatus:', syncStatus)
+  const [isInitialised, setIsInitialised] = useState(false);
+
+  // console.log('AppContextProvider initialized')
+  // console.log('isAuthenticated:', isAuthenticated)
+  // console.log('authenticatedUser:', authenticatedUser)
+  // console.log('book:', book)
+  // console.log('userSettings:', userSettings)
+  // console.log('syncStatus:', syncStatus)
 
   return (
     <AppContext.Provider
@@ -49,6 +54,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setUserSettings,
         syncStatus,
         setSyncStatus,
+        isInitialised, setIsInitialised
       }}
     >
       {children}

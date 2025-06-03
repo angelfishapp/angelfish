@@ -11,8 +11,8 @@ import { AvatarField } from '@/components/forms/AvatarField'
 import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
 import { useAppContext } from '@/providers/AppContext'
-import { updateAuthenticatedUser } from '@/redux/users/actions'
 import { USER_AVATARS } from '@angelfish/core'
+import { useUpdateUser } from '@/hooks'
 
 /**
  * Form Properties
@@ -34,12 +34,12 @@ type UserSettingsFormValues = {
  */
 
 export default function UserSettings() {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   // Component State
-  const appContext = useAppContext()
-  const authenticatedUser = appContext?.authenticatedUser
-
+  const context = useAppContext()
+  const authenticatedUser = context?.authenticatedUser
+  const updateUserMutation = useUpdateUser()
   // Setup Form
   const {
     control,
@@ -80,17 +80,15 @@ export default function UserSettings() {
   const handleUserSave = async (formData: UserSettingsFormValues) => {
     if (authenticatedUser) {
       // Copy and update user
-      dispatch(
-        updateAuthenticatedUser({
-          user: {
-            ...authenticatedUser,
-            avatar: formData.avatar,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            phone: formData.phone.number ? `+${formData.phone.number}` : undefined,
-          },
-        }),
-      )
+      updateUserMutation.mutate({
+        user: {
+          ...authenticatedUser,
+          avatar: formData.avatar,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          phone: formData.phone.number ? `+${formData.phone.number}` : undefined,
+        },
+      })
       reset(formData)
     }
   }

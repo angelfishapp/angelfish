@@ -19,7 +19,7 @@ export const useSaveUser = () => {
     mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_USER>) =>
       CommandsClient.executeAppCommand(AppCommandIds.SAVE_USER, request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categoryGroups'] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
     },
   })
 }

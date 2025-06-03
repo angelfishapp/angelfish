@@ -5,10 +5,11 @@ import { AuthScreenContainer } from '@/containers/AuthScreenContainer'
 import { SetupScreenContainer } from '@/containers/SetupScreenContainer'
 import { useGetBook } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
-import { StartIPCChannel } from '@/hooks/app/useHandleAppState'
+import { setupIPCListeners } from '@/hooks/app/useHandleAppState'
 import { useAppContext } from '@/providers/AppContext'
 import type { IAuthenticatedUser } from '@angelfish/core'
 import { AppCommandIds, AppProcessIDs, CommandsClient } from '@angelfish/core'
+import queryClient from '@/providers/ReactQueryClient'
 
 /** ************************************************************************************************
  * IPC Callback Functions
@@ -19,6 +20,8 @@ import { AppCommandIds, AppProcessIDs, CommandsClient } from '@angelfish/core'
  */
 async function onLogout() {
   await CommandsClient.executeAppCommand(AppCommandIds.AUTH_LOGOUT)
+  queryClient.invalidateQueries({ queryKey: ['appState'] })
+
 }
 
 /**
@@ -28,26 +31,23 @@ export default function AppContainer() {
   // Component State
   const [showSetup, setShowSetup] = React.useState<boolean>(false)
   const [setupInProgress, setSetupInProgress] = React.useState<boolean>(false)
-  const data = useGetAppState()
+  const data = useGetAppState() // this line will call and sett app State in context
   // Redux State
   const appContext = useAppContext()
-  const isAuthenticated = data?.isAuthenticated ?? false
-  const authenticatedUser = data?.authenticatedUser
   const { book } = useGetBook()
-  const isInitialised = isAuthenticated
-  StartIPCChannel()
-  console.log('Log AppContainer: isAuthenticated', isAuthenticated)
-  console.log('Log AppContainer: authenticatedUser', authenticatedUser)
-  console.log('Log AppContainer: book', book)
-  console.log('Log AppContainer: isInitialised', isInitialised)
-  console.log('Log AppContainer: data', data)
+  const authenticatedUser = appContext?.authenticatedUser
+  const isInitialised = appContext?.isInitialised ?? false
   /**
    * Check the current App state on component mount and start IPC Channel
    * listeners for App state changes from Main process
    */
+
   React.useEffect(() => {
     CommandsClient.isReady([AppProcessIDs.MAIN, AppProcessIDs.WORKER]).then(() => {
-      StartIPCChannel()
+      const removeListeners = setupIPCListeners()
+      return () => {
+        removeListeners()
+      }
     })
   }, [])
 

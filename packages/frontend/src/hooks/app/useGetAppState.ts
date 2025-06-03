@@ -17,9 +17,11 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
       'AppContext is undefined. Please ensure the component is wrapped in AppContextProvider.',
     )
   }
-  const { setBook, setIsAuthenticated, setAuthenticatedUser, setUserSettings } = appContext
+
+  const { setBook, setIsAuthenticated, setAuthenticatedUser, setUserSettings, setIsInitialised } =
+    appContext
   const { data, isLoading, error } = useQuery({
-    queryKey: ['book'],
+    queryKey: ['appState'],
     queryFn: async () => {
       const result = await CommandsClient.executeAppCommand(AppCommandIds.GET_APP_STATE)
       return result
@@ -27,10 +29,11 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
   })
   useEffect(() => {
     if (data) {
-      setBook(data.book)
-      setIsAuthenticated(data.authenticated)
-      setAuthenticatedUser(data.authenticatedUser)
-      setUserSettings(data.userSettings)
+      setBook(data?.book)
+      setIsAuthenticated(data?.authenticated)
+      setAuthenticatedUser(data?.authenticatedUser)
+      setUserSettings(data?.userSettings)
+      setIsInitialised(true)
     }
   }, [data, setBook, setIsAuthenticated, setAuthenticatedUser, setUserSettings])
 
