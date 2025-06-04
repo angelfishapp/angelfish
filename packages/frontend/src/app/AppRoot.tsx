@@ -25,7 +25,6 @@ export default function AppRoot() {
         <CssBaseline />
         <GlobalStyles styles={AppRootStyles} />
         {/** react-query provider */}
-
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
           {/* Main Application Router */}

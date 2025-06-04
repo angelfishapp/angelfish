@@ -53,7 +53,7 @@ export default React.forwardRef<AccountTableMethods, AccountTableContainerProps>
         selectedAccountId={selectedAccountId}
         onSelectAccount={onSelectAccount}
         onSaveAccount={(account) => saveAccount.mutate(account)}
-        onDeleteAccount={(account) => deleteAccount.mutate({ id: account.id as number })}
+        onDeleteAccount={(account) => deleteAccount.mutate({ id: account.id, reassignId: null })}
         onSaveInstitution={(institution) => saveInstitution.mutate(institution)}
         onDeleteInstitution={(institution) =>
           deleteInstitution.mutate({ id: institution.id as number })

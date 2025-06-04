@@ -6,9 +6,10 @@ import { SetupScreenContainer } from '@/containers/SetupScreenContainer'
 import { useGetBook } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
 import { setupIPCListeners } from '@/hooks/app/useHandleAppState'
-import queryClient from '@/providers/ReactQueryClient'
 import type { IAuthenticatedUser } from '@angelfish/core'
 import { AppCommandIds, AppProcessIDs, CommandsClient } from '@angelfish/core'
+import { queryClient } from '@/providers'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 
 /** ************************************************************************************************
  * IPC Callback Functions
@@ -60,7 +61,7 @@ export default function AppContainer() {
       }
     }
   }, [isInitialised, book, setupInProgress])
-
+  if (appState?.isLoading) return <LoadingSpinner />
   // Will show loading until App is initialised
   if (isInitialised) {
     // Render

@@ -38,6 +38,7 @@ import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
 import { ReportsTable } from './components/ReportsTable'
 import { renderPeriodHeader } from './Reports.utils'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 
 /**
  * Reports Page
@@ -84,13 +85,13 @@ export default function Reports() {
     AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>
   >({})
   // transaction custom hooks to handle Transactions
-  const { data: transactions, isLoading: isLoadingTransactions } =
+  const { transactions, isLoading: isLoadingTransactions } =
     useListTransactions(transactionQuery)
   const transactionSaveMutation = useSaveTransactions()
   const transactionDeleteMutation = useDeleteTransaction()
   // Accounts custom hooks to handle accounts
-  const { data: accounts } = useListAccounts({})
-  const { data: tags } = useListTags()
+  const { accounts } = useListAccounts({})
+  const { tags } = useListTags()
 
   // Get Reports Data when date ranges changed
   React.useEffect(() => {
@@ -119,9 +120,13 @@ export default function Reports() {
   /**
    * Delete a Transaction from the Database
    */
-  const onDeleteTransaction = async (id: number) => {
-    transactionDeleteMutation.mutate(id)
-  }
+  const onDeleteTransaction = React.useCallback(
+    async (id: number) => {
+      transactionDeleteMutation.mutate({ id })
+    },
+    [transactionDeleteMutation],
+  )
+
 
   /**
    * Click hanlder for when user clicks on a cell value on the table
@@ -181,7 +186,6 @@ export default function Reports() {
     handleResize()
     return () => window.removeEventListener('resize', handleResize)
   }, [headingCol?.offsetWidth, reportsQuery, reportData])
-
   // Render
   return (
     <Box padding={2}>
@@ -307,7 +311,7 @@ export default function Reports() {
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}
-        onCreateCategory={() => {}}
+        onCreateCategory={() => { }}
         onDeleteTransaction={onDeleteTransaction}
         onSaveTransactions={onSaveTransactions}
       />

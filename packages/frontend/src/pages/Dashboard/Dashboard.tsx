@@ -9,6 +9,7 @@ import type { ReportsData } from '@angelfish/core'
 import { getDataSetColors } from '../../utils/palette.utils'
 import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
 import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 
 /**
  * Dashboard Page of Application
@@ -16,7 +17,7 @@ import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
 export default function Dashboard() {
   // Component State
   const [yearlyData, setYearlyData] = React.useState<ReportsData>()
-  const { book } = useGetBook()
+  const { book , isLoading } = useGetBook()
 
   // Get Reports Data when date ranges changed
   React.useEffect(() => {
@@ -34,7 +35,7 @@ export default function Dashboard() {
       setYearlyData(data)
     })
   }, [])
-
+  if(isLoading) return <LoadingSpinner />
   return (
     <Box py={2} px={8}>
       {!!yearlyData && (
