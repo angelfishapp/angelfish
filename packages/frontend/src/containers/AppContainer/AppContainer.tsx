@@ -6,7 +6,6 @@ import { SetupScreenContainer } from '@/containers/SetupScreenContainer'
 import { useGetBook } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
 import { setupIPCListeners } from '@/hooks/app/useHandleAppState'
-import { useAppContext } from '@/providers/AppContext'
 import queryClient from '@/providers/ReactQueryClient'
 import type { IAuthenticatedUser } from '@angelfish/core'
 import { AppCommandIds, AppProcessIDs, CommandsClient } from '@angelfish/core'
@@ -32,10 +31,9 @@ export default function AppContainer() {
   const [setupInProgress, setSetupInProgress] = React.useState<boolean>(false)
   const appState = useGetAppState() // this line will call and sett app State in context
   // Redux State
-  const appContext = useAppContext()
   const { book } = useGetBook()
   const authenticatedUser = appState?.authenticatedUser
-  const isInitialised = appContext?.isInitialised ?? false
+  const isInitialised = appState?.isInitialised ?? false
   /**
    * Check the current App state on component mount and start IPC Channel
    * listeners for App state changes from Main process

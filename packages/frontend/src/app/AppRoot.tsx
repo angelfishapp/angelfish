@@ -9,10 +9,7 @@ import { AppRootStyles } from './AppRoot.styles'
 import theme from './theme'
 
 import { AppContainer } from '@/containers/AppContainer'
-import { AppProvider, useAppContext } from '@/providers/AppContext'
-import { setAppContextRef } from '@/providers/AppContextRef'
 import queryClient from '@/providers/ReactQueryClient'
-import { useEffect } from 'react'
 
 /**
  * Root Component
@@ -20,15 +17,6 @@ import { useEffect } from 'react'
  */
 
 export default function AppRoot() {
-  const ContextBridge = () => {
-    const context = useAppContext()
-
-    useEffect(() => {
-      setAppContextRef(context)
-    }, [context])
-
-    return null
-  }
   // Render
   return (
     <StyledEngineProvider injectFirst>
@@ -40,16 +28,11 @@ export default function AppRoot() {
 
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
-          <AppProvider>
-            <ContextBridge />
-            {/* App Context Provider */}
-            {/* <AppContextProvider> */}
-            {/* Main Application Router */}
-            <HashRouter>
-              {/* App */}
-              <AppContainer />
-            </HashRouter>
-          </AppProvider>
+          {/* Main Application Router */}
+          <HashRouter>
+            {/* App */}
+            <AppContainer />
+          </HashRouter>
         </QueryClientProvider>
       </ThemeProvider>
     </StyledEngineProvider>

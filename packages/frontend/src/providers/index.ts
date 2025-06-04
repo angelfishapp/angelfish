@@ -1,3 +1,1 @@
-export * from './AppContext'
-export * from './AppContextRef'
-export * from './ReactQueryClient'
+export { default as queryClient } from './ReactQueryClient'

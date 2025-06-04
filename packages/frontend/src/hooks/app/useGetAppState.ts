@@ -1,10 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { useAppContext } from '@/providers/AppContext'
-import type { AppCommandRequest, IAuthenticatedUser } from '@angelfish/core'
+import type { AppCommandRequest } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
-import type { IBook } from '@angelfish/core/src/types'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 /**
  * React-Query Hook to get Book from the database.
@@ -12,15 +10,8 @@ import { useEffect } from 'react'
  * @returns       book (IBook | null), isLoading (boolean), error (Error | null)
  */
 export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP_STATE>) => {
-  const appContext = useAppContext()
-  if (!appContext) {
-    throw new Error(
-      'AppContext is undefined. Please ensure the component is wrapped in AppContextProvider.',
-    )
-  }
+  const [isInitialised, setIsInitialised] = useState(false)
 
-  const { setBook, setIsAuthenticated, setAuthenticatedUser, setUserSettings, setIsInitialised } =
-    appContext
   const { data, isLoading, error } = useQuery({
     queryKey: ['appState'],
     queryFn: async () => {
@@ -30,19 +21,16 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
   })
   useEffect(() => {
     if (data) {
-      setBook(data?.book as IBook)
-      setIsAuthenticated(data.authenticated)
-      setAuthenticatedUser(data?.authenticatedUser as IAuthenticatedUser)
-      setUserSettings(data.userSettings)
       setIsInitialised(true)
     }
-  }, [data, setBook, setIsAuthenticated, setAuthenticatedUser, setUserSettings, setIsInitialised])
+  }, [data, setIsInitialised])
 
   return {
     book: data?.book,
     isAuthenticated: data?.authenticated,
     authenticatedUser: data?.authenticatedUser,
     userSettings: data?.userSettings,
+    isInitialised,
     isLoading,
     error,
   }
