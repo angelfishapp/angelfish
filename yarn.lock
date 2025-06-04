@@ -4130,7 +4130,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-redux@npm:^7.1.18":
+"@types/react-redux@npm:^7.1.18, @types/react-redux@npm:^7.1.20":
   version: 7.1.34
   resolution: "@types/react-redux@npm:7.1.34"
   dependencies:
