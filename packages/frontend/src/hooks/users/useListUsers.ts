@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 
+import { listusers } from '@/api'
 import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 
 /**
  * React-Query Hook that lists Users
@@ -16,10 +17,7 @@ import { AppCommandIds, CommandsClient } from '@angelfish/core'
 export const useListUsers = (_request: AppCommandRequest<AppCommandIds.LIST_USERS>) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['users'],
-    queryFn: async () => {
-      const result = await CommandsClient.executeAppCommand(AppCommandIds.LIST_USERS)
-      return result
-    },
+    queryFn: async () => listusers(),
   })
 
   return { users: data ?? [], isLoading, error }

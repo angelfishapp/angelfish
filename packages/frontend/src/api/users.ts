@@ -29,3 +29,13 @@ export async function saveUser(request: AppCommandRequest<AppCommandIds.SAVE_USE
 export async function deleteUser(request: AppCommandRequest<AppCommandIds.DELETE_USER>) {
   return await CommandsClient.executeAppCommand(AppCommandIds.DELETE_USER, request)
 }
+/**
+ * Delete an User to the database.
+ *
+ * @param request   The ID of the User to delete.
+ */
+export async function updateUser(
+  request: AppCommandRequest<AppCommandIds.UPDATE_AUTHENTICATED_USER>,
+) {
+  return await CommandsClient.executeAppCommand(AppCommandIds.UPDATE_AUTHENTICATED_USER, request)
+}

@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { saveBook } from '@/api/book'
 import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 
 /**
  * React-Query Hook to update the Book.
@@ -16,8 +17,7 @@ export const useSaveBook = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_BOOK>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.SAVE_BOOK, request),
+    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_BOOK>) => saveBook(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['book'] })
     },

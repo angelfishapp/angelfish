@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { saveTransaction } from '@/api'
 import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 
 /**
  * React-Query Hook to save an array of Transactions to the database.
@@ -17,7 +18,7 @@ export const useSaveTransactions = () => {
 
   return useMutation({
     mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_TRANSACTIONS>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.SAVE_TRANSACTIONS, request),
+      saveTransaction(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
       queryClient.invalidateQueries({ queryKey: ['accounts'] })

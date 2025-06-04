@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { saveTag } from '@/api'
+import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
  * React-Query Hook to save an array of Tag to the database.
@@ -16,8 +16,7 @@ export const useSaveTag = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_TAG>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.SAVE_TAG, request),
+    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_TAG>) => saveTag(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tags'] })
     },

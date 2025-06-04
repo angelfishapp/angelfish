@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { listCategoryGroups } from '@/api'
+import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
  * React-Query Hook that lists all CategoryGroups in the Database
@@ -13,10 +13,7 @@ export const useListCategoryGroups = (
 ) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['categoryGroups'],
-    queryFn: async () => {
-      const result = await CommandsClient.executeAppCommand(AppCommandIds.LIST_CATEGORY_GROUPS)
-      return result
-    },
+    queryFn: async () => listCategoryGroups(),
   })
 
   return { categoryGroups: data ?? [], isLoading, error }

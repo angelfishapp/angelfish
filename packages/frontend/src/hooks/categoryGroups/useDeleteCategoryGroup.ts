@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { deleteCategoryGroup } from '@/api'
+import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
  * React-Query Hook that deletes a categroyGroup with given ID. If reassignId is provided,
@@ -18,7 +18,7 @@ export const useDeleteCategoryGroup = () => {
 
   return useMutation({
     mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_CATEGORY_GROUP>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.DELETE_CATEGORY_GROUP, request),
+      deleteCategoryGroup(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categoryGroups'] })
     },

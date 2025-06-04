@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { deleteTag } from '@/api'
 import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 
 /**
  * React-Query Hook to delete a Tag by its ID.
@@ -16,8 +17,7 @@ export const useDeleteTag = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_TAG>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.DELETE_TAG, request),
+    mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_TAG>) => deleteTag(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tag'] })
     },

@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { deleteUser } from '@/api'
 import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 
 /**
  * React-Query Hook that deletes a user with the given ID.
@@ -16,8 +17,7 @@ export const useDeleteUser = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_USER>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.DELETE_USER, request),
+    mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_USER>) => deleteUser(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
     },

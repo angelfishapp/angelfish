@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { updateUser } from '@/api'
+import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
  * React-Query Hook to update a user.
@@ -16,7 +16,7 @@ export const useUpdateUser = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (request: AppCommandRequest<AppCommandIds.UPDATE_AUTHENTICATED_USER>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.UPDATE_AUTHENTICATED_USER, request),
+      updateUser(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appState'] })
     },

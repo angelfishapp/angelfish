@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { saveUser } from '@/api'
 import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 
 /**
  * React-Query Hook to save a user.
@@ -16,8 +17,7 @@ export const useSaveUser = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_USER>) =>
-      CommandsClient.executeAppCommand(AppCommandIds.SAVE_USER, request),
+    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_USER>) => saveUser(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
     },
