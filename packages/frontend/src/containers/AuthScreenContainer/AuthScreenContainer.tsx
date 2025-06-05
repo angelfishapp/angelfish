@@ -1,8 +1,7 @@
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
-
 import { AuthScreen } from '@/app/components/AuthScreen'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
 import queryClient from '@/providers/ReactQueryClient'
+import { AppCommandIds, CommandsClient } from '@angelfish/core'
 import type { IUserSettings } from '@angelfish/core/src/types'
 import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
 
@@ -36,9 +35,9 @@ async function onAuthenticate(oob_code: string) {
  */
 export default function AuthScreenContainer({ children }: AuthScreenContainerProps) {
   // State
-  const appState = useGetAppState()
-  const isAuthenticated = appState.isAuthenticated
-  const userSettings = appState.userSettings as IUserSettings
+  const { appState } = useGetAppState()
+  const isAuthenticated = appState?.authenticated as boolean
+  const userSettings = appState?.userSettings as IUserSettings
 
   // Render
   return (

@@ -6,7 +6,7 @@ import { AppCommandIds, CommandsClient } from '@angelfish/core'
  *
  * @returns         An array of book objects (IBook[]).
  */
-export async function getBooK(_request: AppCommandRequest<AppCommandIds.GET_BOOK>) {
+export async function getBook(_request: AppCommandRequest<AppCommandIds.GET_BOOK>) {
   return await CommandsClient.executeAppCommand(AppCommandIds.GET_BOOK)
 }
 

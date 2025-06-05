@@ -1,15 +1,10 @@
+import { useQueryClient } from '@tanstack/react-query'
 import React from 'react'
 
-import {
-  onGetFileMappings,
-  onImportTransactions,
-  onOpenFileDialog,
-  onReconcileTransactions,
-} from '@/api'
+import { getFileMappings, importTransactions, reconcileTransactions, showOpenDialog } from '@/api'
 import { ImportTransactions } from '@/components/modals/ImportTransactions'
 import { useListAllAccountsWithRelations } from '@/hooks'
 import type { ReconciledTransaction } from '@angelfish/core'
-import { useQueryClient } from '@tanstack/react-query'
 import type { ImportTransactionsContainerProps } from './ImportTransactionsContainer.interface'
 
 /**
@@ -20,15 +15,30 @@ export default function ImportTransactionsContainer({
   open,
   onClose,
 }: ImportTransactionsContainerProps) {
-  const queryClient = useQueryClient()
   // React-Query Store Data
+  const queryClient = useQueryClient()
   const { accounts } = useListAllAccountsWithRelations()
 
+  // Callback to open the file dialog
+  const onOpenFileDialog = React.useCallback(async (multiple: boolean, fileTypes?: string[]) => {
+    return await showOpenDialog({
+      title: 'Select File Location...',
+      properties: multiple ? ['openFile', 'multiSelections'] : ['openFile'],
+      filters: [
+        {
+          name: 'Financial Transactions File',
+          extensions: fileTypes ?? [],
+        },
+      ],
+    })
+  }, [])
+
+  // Calllback to complete the import process
   const onComplete = React.useCallback(
     async (transactions: ReconciledTransaction[]) => {
-      await onImportTransactions(transactions)
+      await importTransactions(transactions)
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
-
       onClose?.()
     },
     [onClose, queryClient],
@@ -42,8 +52,8 @@ export default function ImportTransactionsContainer({
       open={open}
       onClose={onClose}
       onOpenFileDialog={onOpenFileDialog}
-      onGetFileMappings={onGetFileMappings}
-      onReconcileTransactions={onReconcileTransactions}
+      onGetFileMappings={getFileMappings}
+      onReconcileTransactions={reconcileTransactions}
       onComplete={onComplete}
     />
   )

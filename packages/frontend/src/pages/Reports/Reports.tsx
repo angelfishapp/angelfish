@@ -38,7 +38,6 @@ import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
 import { ReportsTable } from './components/ReportsTable'
 import { renderPeriodHeader } from './Reports.utils'
-import { LoadingSpinner } from '@/components/LoadingSpinner'
 
 /**
  * Reports Page
@@ -85,8 +84,7 @@ export default function Reports() {
     AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>
   >({})
   // transaction custom hooks to handle Transactions
-  const { transactions, isLoading: isLoadingTransactions } =
-    useListTransactions(transactionQuery)
+  const { transactions, isLoading: isLoadingTransactions } = useListTransactions(transactionQuery)
   const transactionSaveMutation = useSaveTransactions()
   const transactionDeleteMutation = useDeleteTransaction()
   // Accounts custom hooks to handle accounts
@@ -126,7 +124,6 @@ export default function Reports() {
     },
     [transactionDeleteMutation],
   )
-
 
   /**
    * Click hanlder for when user clicks on a cell value on the table
@@ -311,7 +308,7 @@ export default function Reports() {
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}
-        onCreateCategory={() => { }}
+        onCreateCategory={() => {}}
         onDeleteTransaction={onDeleteTransaction}
         onSaveTransactions={onSaveTransactions}
       />

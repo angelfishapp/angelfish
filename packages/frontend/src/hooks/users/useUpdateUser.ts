@@ -18,7 +18,7 @@ export const useUpdateUser = () => {
     mutationFn: (request: AppCommandRequest<AppCommandIds.UPDATE_AUTHENTICATED_USER>) =>
       updateUser(request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appState'] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
     },
   })
 }

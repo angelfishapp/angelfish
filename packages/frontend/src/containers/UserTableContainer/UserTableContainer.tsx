@@ -13,8 +13,8 @@ export default function UserTableContainer() {
 
   const userSaveMutation = useSaveUser()
   const userDeleteMutation = useDeleteUser()
-  const appState = useGetAppState()
-  const authenticatedUser = appState.authenticatedUser as IAuthenticatedUser
+  const { appState } = useGetAppState()
+  const authenticatedUser = appState?.authenticatedUser as IAuthenticatedUser
 
   // Render
   return (

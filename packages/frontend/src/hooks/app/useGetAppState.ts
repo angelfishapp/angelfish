@@ -2,35 +2,45 @@ import { useQuery } from '@tanstack/react-query'
 
 import type { AppCommandRequest } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
-import { useEffect, useState } from 'react'
+import type { IFrontEndAppState } from './FrontEndAppState.interface'
 
 /**
- * React-Query Hook to get Book from the database.
+ * React-Query Hook to get current App Status from the main process.
  *
- * @returns       book (IBook | null), isLoading (boolean), error (Error | null)
+ * @returns  IFrontEndAppState
  */
 export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP_STATE>) => {
-  const [isInitialised, setIsInitialised] = useState(false)
-
-  const { data, isLoading, error } = useQuery({
+  const {
+    data: appState,
+    isLoading,
+    error,
+  } = useQuery<IFrontEndAppState>({
     queryKey: ['appState'],
-    queryFn: async () => {
+    queryFn: async (): Promise<IFrontEndAppState> => {
       const result = await CommandsClient.executeAppCommand(AppCommandIds.GET_APP_STATE)
-      return result
+      // Ensure result is an object and assign required properties for IFrontEndAppState
+      const appState: IFrontEndAppState = {
+        authenticated: result.authenticated,
+        authenticatedUser: result.authenticatedUser,
+        book: result.book,
+        bookFilePath: result.bookFilePath,
+        userSettings: result.userSettings,
+        isInitialised: true,
+        syncInfo: {
+          isSyncing: false,
+          success: false,
+          durationMs: 0,
+          startTime: undefined,
+          finishTime: undefined,
+          error: undefined,
+        },
+      }
+      return appState
     },
   })
-  useEffect(() => {
-    if (data) {
-      setIsInitialised(true)
-    }
-  }, [data, setIsInitialised])
 
   return {
-    book: data?.book,
-    isAuthenticated: data?.authenticated,
-    authenticatedUser: data?.authenticatedUser,
-    userSettings: data?.userSettings,
-    isInitialised,
+    appState,
     isLoading,
     error,
   }

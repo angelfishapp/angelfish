@@ -1,15 +1,15 @@
 import React from 'react'
 
 import { AppLayout } from '@/app/components/AppLayout'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { AuthScreenContainer } from '@/containers/AuthScreenContainer'
 import { SetupScreenContainer } from '@/containers/SetupScreenContainer'
 import { useGetBook } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
-import { setupIPCListeners } from '@/hooks/app/useHandleAppState'
-import type { IAuthenticatedUser } from '@angelfish/core'
-import { AppCommandIds, AppProcessIDs, CommandsClient } from '@angelfish/core'
+import { useHandleAppState } from '@/hooks/app/useHandleAppState'
 import { queryClient } from '@/providers'
-import { LoadingSpinner } from '@/components/LoadingSpinner'
+import type { IAuthenticatedUser } from '@angelfish/core'
+import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
 /** ************************************************************************************************
  * IPC Callback Functions
@@ -30,24 +30,15 @@ export default function AppContainer() {
   // Component State
   const [showSetup, setShowSetup] = React.useState<boolean>(false)
   const [setupInProgress, setSetupInProgress] = React.useState<boolean>(false)
-  const appState = useGetAppState() // this line will call and sett app State in context
-  // Redux State
+
+  // React-Query State
+  const { appState, isLoading } = useGetAppState() // this line will call and sett app State in context
   const { book } = useGetBook()
   const authenticatedUser = appState?.authenticatedUser
   const isInitialised = appState?.isInitialised ?? false
-  /**
-   * Check the current App state on component mount and start IPC Channel
-   * listeners for App state changes from Main process
-   */
 
-  React.useEffect(() => {
-    CommandsClient.isReady([AppProcessIDs.MAIN, AppProcessIDs.WORKER]).then(() => {
-      const removeListeners = setupIPCListeners()
-      return () => {
-        removeListeners()
-      }
-    })
-  }, [])
+  // Start listening to App events
+  useHandleAppState()
 
   /**
    * Set App state once Redux Store is Initialised
@@ -61,7 +52,10 @@ export default function AppContainer() {
       }
     }
   }, [isInitialised, book, setupInProgress])
-  if (appState?.isLoading) return <LoadingSpinner />
+
+  // Show loading spinner while app is loading
+  if (isLoading) return <LoadingSpinner size={400} />
+
   // Will show loading until App is initialised
   if (isInitialised) {
     // Render

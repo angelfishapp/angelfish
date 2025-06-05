@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { getBooK } from '@/api/book'
+import { getBook } from '@/api/book'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -11,7 +11,7 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 export const useGetBook = (_request: AppCommandRequest<AppCommandIds.GET_BOOK>) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['book'],
-    queryFn: async () => getBooK(),
+    queryFn: async () => getBook(),
   })
 
   return { book: data, isLoading, error }

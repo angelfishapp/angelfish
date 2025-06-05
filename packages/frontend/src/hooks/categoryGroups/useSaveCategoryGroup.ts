@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { saveCategoryGroup } from '@/api'
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds } from '@angelfish/core'
+import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
  * React-Query Hook to save a Category Group.

@@ -23,7 +23,7 @@ import type { SetupScreenContainerProps } from './SetupScreenContainer.interface
  */
 export default function SetupScreenContainer({ onComplete, onStart }: SetupScreenContainerProps) {
   // Redux Hooks
-  const { authenticatedUser } = useGetAppState()
+  const { appState } = useGetAppState()
   const { users } = useListUsers()
   const { accounts: accountsWithRelations } = useListAllAccountsWithRelations()
   const { institutions } = useListInstitutions()
@@ -103,13 +103,13 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
   )
 
   // Render
-  if (!authenticatedUser) {
+  if (!appState?.authenticatedUser) {
     return null
   }
 
   return (
     <SetupScreen
-      authenticatedUser={authenticatedUser}
+      authenticatedUser={appState.authenticatedUser}
       bookAvatars={BOOK_AVATARS}
       userAvatars={USER_AVATARS}
       users={users}

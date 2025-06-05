@@ -4,12 +4,12 @@ import React from 'react'
 
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { useGetBook } from '@/hooks'
 import type { ReportsData } from '@angelfish/core'
 import { getDataSetColors } from '../../utils/palette.utils'
 import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
 import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
-import { LoadingSpinner } from '@/components/LoadingSpinner'
 
 /**
  * Dashboard Page of Application
@@ -17,7 +17,7 @@ import { LoadingSpinner } from '@/components/LoadingSpinner'
 export default function Dashboard() {
   // Component State
   const [yearlyData, setYearlyData] = React.useState<ReportsData>()
-  const { book , isLoading } = useGetBook()
+  const { book, isLoading } = useGetBook()
 
   // Get Reports Data when date ranges changed
   React.useEffect(() => {
@@ -35,7 +35,7 @@ export default function Dashboard() {
       setYearlyData(data)
     })
   }, [])
-  if(isLoading) return <LoadingSpinner />
+  if (isLoading) return <LoadingSpinner />
   return (
     <Box py={2} px={8}>
       {!!yearlyData && (
