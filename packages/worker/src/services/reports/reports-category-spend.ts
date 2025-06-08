@@ -174,7 +174,7 @@ export async function runCategorySpendReport({
           )
           .leftJoin('tags', 'tags', 'tags.id = line_item_tags.tag_id')
           .where("(accounts.class IS NULL OR accounts.class != 'ACCOUNT')")
-          .orderBy('date'),
+          .groupBy('lid'),
       'reports_view',
     )
 
@@ -191,18 +191,20 @@ export async function runCategorySpendReport({
     .addSelect('reports_view.cat_group_type', 'cat_group_type')
     .addSelect('reports_view.cat_group_color', 'cat_group_color')
     .addSelect('COALESCE(ROUND(SUM(reports_view.amount), 2), 0)', 'total')
-    .where('date BETWEEN :start_date AND :end_date', { start_date, end_date })
+    .where('reports_view.date BETWEEN :start_date AND :end_date', { start_date, end_date })
     .groupBy('cat_id')
     .addGroupBy('period')
+    .orderBy('period', 'ASC')
 
   // Exclude unclassified line items if requested
-  if (!include_unclassified) {
-    reportsQuery.andWhere('cat_id NOT IN (:...excludedCats)', {
-      excludedCats: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID],
-    })
-  }
+  //   if (!include_unclassified) {
+  //     reportsQuery.andWhere('cat_id NOT IN (:...excludedCats)', {
+  //       excludedCats: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID],
+  //     })
+  //   }
 
-  const rawResults: ReportResultRow[] = await reportsQuery.getRawMany()
+  const rawResults: ReportResultRow[] = await reportsQuery.getRawMany<ReportResultRow>()
+  logger.debug('Reports Final Query: ', reportsQuery.getSql(), rawResults)
   const periods = generatePeriodRange(start_date, end_date)
 
   // Transform flat results into nested structure with dynamic period keys
