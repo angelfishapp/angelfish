@@ -201,7 +201,6 @@ describe('ReportsService', () => {
         } catch (_err) {
           TestLogger.info(
             `${'\x1b[31m'}Group ${groupRow.id} for period ${period} Failed: expected ${expectedGroupAmount}, got ${groupRow[period]} (Difference: ${Math.abs(Math.abs(expectedGroupAmount) - Math.abs(groupRow[period]))})${'\x1b[0m'}`,
-            periodGroupTransactions,
           )
           testFailed = true
         }
