@@ -194,16 +194,15 @@ export function setupMainCommands() {
     async (
       request: AppCommandRequest<AppCommandIds.SHOW_OPEN_FILE_DIALOG>,
     ): AppCommandResponse<AppCommandIds.SHOW_OPEN_FILE_DIALOG> => {
-      
       // Check that filters don't contain periods or wildcards or the filters won't work on Windows/Linux
       if (request?.filters) {
         for (const filter of request.filters) {
-          if (filter.extensions.some(ext => ext.includes('.') || ext.includes('*'))) {
+          if (filter.extensions.some((ext) => ext.includes('.') || ext.includes('*'))) {
             throw new Error('Filter Extension Cannot include periods or wildcard characters')
           }
         }
       }
-      
+
       const filePath = await dialog.showOpenDialog(request)
       if (!filePath.canceled) {
         return filePath.filePaths
@@ -221,11 +220,10 @@ export function setupMainCommands() {
     async (
       request: AppCommandRequest<AppCommandIds.SHOW_SAVE_FILE_DIALOG>,
     ): AppCommandResponse<AppCommandIds.SHOW_SAVE_FILE_DIALOG> => {
-
       // Check that filters don't contain periods or wildcards or the filters won't work on Windows/Linux
       if (request?.filters) {
         for (const filter of request.filters) {
-          if (filter.extensions.some(ext => ext.includes('.') || ext.includes('*'))) {
+          if (filter.extensions.some((ext) => ext.includes('.') || ext.includes('*'))) {
             throw new Error('Filter Extension Cannot include periods or wildcard characters')
           }
         }
