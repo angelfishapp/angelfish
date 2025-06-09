@@ -24,7 +24,8 @@ export interface FileFieldProps extends FormFieldProps {
   onOpenFileDialog: (multiple: boolean, fileTypes?: string[]) => Promise<string[] | string | null>
   /**
    * Optional set array of file extensions that can be selected (i.e. ['jpg', 'png']])
-   * If not provided any file type can be selected.
+   * If not provided any file type can be selected. DO NOT USE dots in file extensions or they
+   * won't appear on Windows/Linux (i.e. 'jpg' not '.jpg' or '*.jpg')
    */
   fileTypes?: string[]
   /**
