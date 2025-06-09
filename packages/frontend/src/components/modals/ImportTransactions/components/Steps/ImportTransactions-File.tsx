@@ -57,9 +57,9 @@ export default function ImportTransactionsFile({
   } = useForm<{ file: string; account: IAccount; csvDelimiter: string }>({
     defaultValues: { file: '', account: defaultAccount, csvDelimiter: ',' },
   })
-
-  const filePath = watch('file')
-  const isCVSFile = filePath ? filePath.toLowerCase().endsWith('.csv') : false
+  const filePathArray = watch('file')
+  const filePath = filePathArray[0]
+  const isCVSFile = filePath ? filePath?.toLowerCase().endsWith('.csv') : false
 
   return (
     <Step

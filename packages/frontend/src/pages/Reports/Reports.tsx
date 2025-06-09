@@ -32,7 +32,7 @@ import type {
   ReportsData,
   ReportsQuery,
 } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { type AppCommandIds } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
 import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
@@ -300,7 +300,7 @@ export default function Reports() {
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}
-        onCreateCategory={() => {}}
+        onCreateCategory={() => { }}
         onDeleteTransaction={onDeleteTransaction}
         onSaveTransactions={onSaveTransactions}
       />

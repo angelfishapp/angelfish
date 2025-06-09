@@ -27,7 +27,7 @@ export default function ImportTransactionsContainer({
       filters: [
         {
           name: 'Financial Transactions File',
-          extensions: fileTypes ?? [],
+          extensions: ['CSV', 'QFX', 'OFX', 'QIF', 'JSON'],
         },
       ],
     })
