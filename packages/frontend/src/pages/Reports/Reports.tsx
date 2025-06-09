@@ -38,6 +38,7 @@ import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
 import { ReportsTable } from './components/ReportsTable'
 import { renderPeriodHeader } from './Reports.utils'
+import { exportReports, getFilePath, runReports } from '@/api'
 
 /**
  * Reports Page
@@ -93,16 +94,11 @@ export default function Reports() {
 
   // Get Reports Data when date ranges changed
   React.useEffect(() => {
-    CommandsClient.executeAppCommand(AppCommandIds.RUN_REPORT, reportsQuery).then((response) => {
+    runReports(reportsQuery).then((response) => {
       setReportData(response)
     })
   }, [
     reportsQuery,
-    reportsQuery.start_date,
-    reportsQuery.end_date,
-    reportsQuery.include_unclassified,
-    transactions,
-    setReportData,
   ])
 
   /**
@@ -263,24 +259,20 @@ export default function Reports() {
                             label: 'Excel (XLSX)',
                             disabled: false,
                             onClick: async () => {
-                              const filePath = await CommandsClient.executeAppCommand(
-                                AppCommandIds.SHOW_SAVE_FILE_DIALOG,
+                              const filePath = await getFilePath(
                                 {
                                   title: 'Export Report to Excel (XLSX)',
                                   defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
                                   filters: [{ name: 'Excel', extensions: ['xlsx'] }],
-                                },
+                                }
                               )
 
                               if (filePath) {
-                                await CommandsClient.executeAppCommand(
-                                  AppCommandIds.EXPORT_REPORT,
-                                  {
-                                    filePath,
-                                    fileType: 'XLSX',
-                                    query: reportsQuery,
-                                  },
-                                )
+                                exportReports({
+                                  filePath,
+                                  fileType: 'XLSX',
+                                  query: reportsQuery,
+                                })
                               }
                             },
                           },

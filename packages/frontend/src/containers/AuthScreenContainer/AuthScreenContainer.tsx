@@ -1,34 +1,14 @@
 import { AuthScreen } from '@/app/components/AuthScreen'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
-import queryClient from '@/providers/ReactQueryClient'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
 import type { IUserSettings } from '@angelfish/core/src/types'
 import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
+import { onAuthenticate, onGetOOBCode } from '@/api'
 
 /** ************************************************************************************************
  * IPC Callback Functions
  *************************************************************************************************/
 
-/**
- * Send an OOB Code to user's email
- *
- * @param email     User's login email address
- * @throws          Error if unsuccessful
- */
-async function onGetOOBCode(email: string) {
-  await CommandsClient.executeAppCommand(AppCommandIds.AUTH_SEND_OOB_CODE, { email })
-  queryClient.invalidateQueries({ queryKey: ['appState'] })
-}
 
-/**
- * Authenticate a user using an OOB Code sent to their email
- *
- * @param oob_code  The OOB Code sent to the user's email
- * @throws          Error if unsuccessful authentication
- */
-async function onAuthenticate(oob_code: string) {
-  await CommandsClient.executeAppCommand(AppCommandIds.AUTH_AUTHENTICATE, { oob_code })
-}
 
 /**
  * Container for AuthScreen

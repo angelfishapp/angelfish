@@ -15,8 +15,10 @@ import {
   useUpdateUser,
 } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
-import { AppCommandIds, BOOK_AVATARS, CommandsClient, USER_AVATARS } from '@angelfish/core'
+import { BOOK_AVATARS, USER_AVATARS } from '@angelfish/core'
 import type { SetupScreenContainerProps } from './SetupScreenContainer.interface'
+import { createBook, onSearchInstitutions } from '@/api'
+import { getFilePath } from '@/api/files'
 
 /**
  * Container for Setup Screen to handle all logic and data fetching
@@ -37,13 +39,9 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
   const institutionSaveMutation = useSaveInstitution()
   const institutionDeleteMutation = useDeleteInstitution()
 
-  /**
-   * Callback to search available Institutions via API/Database
-   */
-  const onSearchInstitutions = React.useCallback(async (query: string) => {
-    return await CommandsClient.executeAppCommand(AppCommandIds.SEARCH_INSTITUTIONS, { query })
+  const onSearchInstitutionsHandler = React.useCallback(async (query: string) => {
+    return onSearchInstitutions({ query })
   }, [])
-
   /**
    * Create a new local Database with remote Cloud Account. Will return Book if successful
    * or undefined if didn't complete. Will open 'Save As' native dialog in Electron
@@ -57,7 +55,7 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
   const onCreateBook = React.useCallback(
     async (name: string, country: string, currency: string, logo?: string) => {
       // Open Save Dialog to select file location
-      const filePath = await CommandsClient.executeAppCommand(AppCommandIds.SHOW_SAVE_FILE_DIALOG, {
+      const filePath = await getFilePath({
         title: 'Select File Location...',
         defaultPath: `${name}.afish`,
         filters: [
@@ -67,20 +65,10 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
           },
         ],
       })
-
       // If filePath selected, create book file
       if (filePath) {
         onStart()
-        await CommandsClient.executeAppCommand(AppCommandIds.CREATE_BOOK, {
-          filePath,
-          book: {
-            name,
-            country,
-            default_currency: currency,
-            logo,
-            entity: 'HOUSEHOLD',
-          },
-        })
+        await createBook(country, currency, logo as string, filePath)
       } else {
         throw new Error('No File Path Selected')
       }
@@ -131,7 +119,7 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
       onDeleteInstitution={(institution) =>
         institutionDeleteMutation.mutate({ id: institution.id })
       }
-      onSearchInstitutions={onSearchInstitutions}
+      onSearchInstitutions={onSearchInstitutionsHandler}
       onComplete={onComplete}
     />
   )

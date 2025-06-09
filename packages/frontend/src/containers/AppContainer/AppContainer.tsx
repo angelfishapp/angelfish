@@ -7,21 +7,14 @@ import { SetupScreenContainer } from '@/containers/SetupScreenContainer'
 import { useGetBook } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
 import { useHandleAppState } from '@/hooks/app/useHandleAppState'
-import { queryClient } from '@/providers'
 import type { IAuthenticatedUser } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { onLogout } from '@/api'
 
 /** ************************************************************************************************
  * IPC Callback Functions
  *************************************************************************************************/
 
-/**
- * Log current user out of the App
- */
-async function onLogout() {
-  await CommandsClient.executeAppCommand(AppCommandIds.AUTH_LOGOUT)
-  queryClient.invalidateQueries({ queryKey: ['appState'] })
-}
+
 
 /**
  * Container for main Application

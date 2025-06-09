@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import type { AppCommandRequest } from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import { getAppState } from '@/api'
+import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 import type { IFrontEndAppState } from './FrontEndAppState.interface'
 
 /**
@@ -17,7 +17,7 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
   } = useQuery<IFrontEndAppState>({
     queryKey: ['appState'],
     queryFn: async (): Promise<IFrontEndAppState> => {
-      const result = await CommandsClient.executeAppCommand(AppCommandIds.GET_APP_STATE)
+      const result = await getAppState()
       // Ensure result is an object and assign required properties for IFrontEndAppState
       const appState: IFrontEndAppState = {
         authenticated: result.authenticated,

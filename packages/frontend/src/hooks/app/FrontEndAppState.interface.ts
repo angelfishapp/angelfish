@@ -1,4 +1,4 @@
-import type { IAppState } from '@angelfish/core'
+import type { IAppState } from '@angelfish/core/dist/app/app-command-types'
 
 /**
  * Sync Info for App

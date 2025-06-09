@@ -10,6 +10,7 @@ import type { ReportsData } from '@angelfish/core'
 import { getDataSetColors } from '../../utils/palette.utils'
 import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
 import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
+import { runReports } from '@/api'
 
 /**
  * Dashboard Page of Application
@@ -23,17 +24,18 @@ export default function Dashboard() {
   React.useEffect(() => {
     const today = new Date()
     const startOfToday = new Date(today.setHours(0, 0, 0, 0))
-    CommandsClient.executeAppCommand(AppCommandIds.RUN_REPORT, {
+    runReports({
       start_date: format(startOfMonth(subMonths(startOfToday, 12)), 'yyyy-MM-dd'),
       end_date: format(endOfMonth(subMonths(startOfToday, 1)), 'yyyy-MM-dd'),
-    }).then((data) => {
-      // Update row colors to ensure consistent colors across charts
-      const colors = getDataSetColors(data.rows)
-      for (const row of data.rows) {
-        if (!row.color) row.color = colors[row.name]
-      }
-      setYearlyData(data)
     })
+      .then((data) => {
+        // Update row colors to ensure consistent colors across charts
+        const colors = getDataSetColors(data.rows)
+        for (const row of data.rows) {
+          if (!row.color) row.color = colors[row.name]
+        }
+        setYearlyData(data)
+      })
   }, [])
   if (isLoading) return <LoadingSpinner />
   return (
