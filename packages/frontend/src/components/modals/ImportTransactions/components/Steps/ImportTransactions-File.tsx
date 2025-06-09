@@ -81,7 +81,7 @@ export default function ImportTransactionsFile({
                   label="File Path"
                   helperText="You can import from transactions from OFX, QFX, QIF or CSV files."
                   multiple={false}
-                  fileTypes={['.ofx', '.qfx', '.qif', '.csv']}
+                  fileTypes={['ofx', 'qfx', 'qif', '.csv']}
                   required
                   onChange={(file: string | string[] | null) =>
                     onChange(file ? (file as string) : '')
