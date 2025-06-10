@@ -8,6 +8,7 @@ import {
   TransactionEntity,
   UserEntity,
 } from '../../database/entities'
+import { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '../transactions'
 
 /**
  * Type for storing Flat list of Transactions for verifying
@@ -18,7 +19,7 @@ type FlatTransaction = {
   title: string
   period: string
   amount: number
-  account_id: number | null
+  account_id?: number
   cat_group_id?: number
   date: Date
 }
@@ -69,14 +70,22 @@ beforeAll(async () => {
     const txPeriod = `${txMonth}-${txYear}`
     return tx.line_items.map((li) => {
       const account = accounts.find((a) => a.id === li.account_id)
+      let cat_group_id = account?.cat_group_id
+      let account_id = li.account_id
+      if (!account) {
+        cat_group_id =
+          (li.local_amount ?? li.amount) > 0 ? UNCLASSIFIED_INCOME_ID : UNCLASSIFIED_EXPENSES_ID
+        account_id =
+          (li.local_amount ?? li.amount) > 0 ? UNCLASSIFIED_INCOME_ID : UNCLASSIFIED_EXPENSES_ID
+      }
       return {
         id: tx.id,
         title: tx.title,
         date: tx.date,
         period: txPeriod,
         amount: li.local_amount ?? li.amount,
-        account_id: li.account_id ?? null,
-        cat_group_id: account?.cat_group_id,
+        account_id,
+        cat_group_id,
       }
     })
   })
@@ -184,6 +193,7 @@ describe('ReportsService', () => {
     TestLogger.info(`Sorted periods: ${sortedPeriods.join(', ')}`)
 
     let testFailed = false
+    let totalErrors = 0
 
     for (const period of sortedPeriods) {
       // Check each top-level category group row
@@ -199,6 +209,7 @@ describe('ReportsService', () => {
             `${'\x1b[32m'}Group ${groupRow.id} for period ${period} Passed${'\x1b[0m'}`,
           )
         } catch (_err) {
+          totalErrors++
           TestLogger.info(
             `${'\x1b[31m'}Group ${groupRow.id} for period ${period} Failed: expected ${expectedGroupAmount}, got ${groupRow[period]} (Difference: ${Math.abs(Math.abs(expectedGroupAmount) - Math.abs(groupRow[period]))})${'\x1b[0m'}`,
           )
@@ -218,6 +229,7 @@ describe('ReportsService', () => {
               `\t${'\x1b[32m'}Category ${catRow.id} for period ${period} Passed${'\x1b[0m'}`,
             )
           } catch (_err) {
+            totalErrors++
             TestLogger.info(
               `\t${'\x1b[31m'}Category ${catRow.id} for period ${period} Failed: expected ${expectedCatAmount}, got ${catRow[period]} (Difference: ${Math.abs(Math.abs(expectedCatAmount) - Math.abs(catRow[period]))})${'\x1b[0m'}`,
               periodCatTransactions,
@@ -230,6 +242,7 @@ describe('ReportsService', () => {
         try {
           expect(sumCategoryAmounts).toBeCloseTo(groupRow[period] || 0, 2)
         } catch (_err) {
+          totalErrors++
           TestLogger.error(
             `Sum of categories mismatch for period=${period}, cat_group_id=${groupRow.id}: expected ${sumCategoryAmounts}, got ${groupRow[period]} (Difference: ${Math.abs(sumCategoryAmounts) - Math.abs(groupRow[period])})`,
           )
@@ -239,6 +252,6 @@ describe('ReportsService', () => {
     }
 
     // Finally test if test failed or not
-    expect(testFailed, 'Report Amounts Did Not Match').toBe(false)
+    expect(testFailed, `Report Amounts Did Not Match. Total Errors: ${totalErrors}`).toBe(false)
   })
 })

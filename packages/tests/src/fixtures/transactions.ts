@@ -170,8 +170,9 @@ export function getLongTransactions(): ITransaction[] {
   const today = new Date()
 
   longTransactionDetails.forEach((transactionDetails) => {
-    const currentDate = new Date(today)
-    currentDate.setDate(currentDate.getDate() - tId + 40)
+    const currentDate = new Date(
+      Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - tId + 40),
+    )
     const transaction = createNewTransaction({
       account_id: 125,
       date: currentDate,

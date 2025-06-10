@@ -1,4 +1,4 @@
-import type { CategoryType } from './account-interface'
+import type { CategoryType, IAccount } from './account-interface'
 import type { CategoryGroupType } from './category-group-interface'
 import type { IUser } from './user-interface'
 
@@ -113,8 +113,38 @@ export interface ReportsQuery {
    */
   include_unclassified?: boolean
   /**
+   * Optionally filter report to only show transactions from specific
+   * Categories. If not provided, all user Categories will be included
+   */
+  category_ids?: number[]
+  /**
+   * Optionally filter report to only show transactions from specific
+   * Category Types. If not provided, all user Category Types will be included
+   */
+  category_types?: CategoryType[]
+  /**
+   * Optionally filter report to only show transactions from specific
+   * Category Groups. If not provided, all user Category Groups will be included
+   */
+  category_group_ids?: number[]
+  /**
+   * Optionally filter report to only show transactions from specific
+   * Category Group Types. If not provided, all user Category Group Types will be included
+   */
+  category_group_types?: CategoryGroupType[]
+  /**
+   * Optionally filter report to only show transactions from specific
+   * Tags. If not provided, all user Tags will be included
+   */
+  tag_ids?: number[]
+  /**
+   * Optionally filter report to only show transaction from specific Bank Accounts.
+   * If not provided, all user Accounts will be included
+   */
+  account_ids?: IAccount['id'][]
+  /**
    * Optionally filter report to only show transactions from Accounts belonging
    * to a specific user. If not provided, all user Accounts will be included
    */
-  filterByUser?: IUser['id']
+  account_owner?: IUser['id']
 }

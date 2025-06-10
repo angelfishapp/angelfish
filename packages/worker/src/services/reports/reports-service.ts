@@ -71,11 +71,9 @@ class ReportsServiceClass {
    * @returns                     Object as described above
    */
   @Command(AppCommandIds.RUN_REPORT)
-  public async runReport({
-    start_date,
-    end_date,
-    include_unclassified = true,
-  }: AppCommandRequest<AppCommandIds.RUN_REPORT>): AppCommandResponse<AppCommandIds.RUN_REPORT> {
+  public async runReport(
+    request: AppCommandRequest<AppCommandIds.RUN_REPORT>,
+  ): AppCommandResponse<AppCommandIds.RUN_REPORT> {
     /* First get all the classified line items that aren't transfers between accounts
      * summed by month in mmm-YY format and category as it would be in rendered table
      *
@@ -90,7 +88,7 @@ class ReportsServiceClass {
      * 5. Finally join the lineItems to the report table, sum the amounts and group by month so we get the output we want
      */
 
-    const results = await runCategorySpendReport({ start_date, end_date, include_unclassified })
+    const results = await runCategorySpendReport(request)
     // Return results
     return results
   }

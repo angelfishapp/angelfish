@@ -73,6 +73,13 @@ export async function runCategorySpendReport({
   start_date,
   end_date,
   include_unclassified = true,
+  category_ids,
+  category_types,
+  category_group_ids,
+  category_group_types,
+  tag_ids,
+  account_ids,
+  account_owner,
 }: AppCommandRequest<AppCommandIds.RUN_REPORT>): Promise<ReportsData> {
   // Create a view with all the required joins and categorization logic for easier querying
   // This view will also filter out any line items that are transfers between accounts (CLASS = 'ACCOUNT') and return
@@ -85,11 +92,12 @@ export async function runCategorySpendReport({
           .select('line_items.id', 'lid')
           .addSelect('transactions.id', 'tid')
           .addSelect('transactions.date', 'date')
-          .addSelect("strftime('%m', transactions.date)", 'month')
-          .addSelect("strftime('%Y', transactions.date)", 'year')
+          .addSelect('substr(transactions.date, 6, 2)', 'month')
+          .addSelect('substr(transactions.date, 1, 4)', 'year')
           .addSelect('transactions.account_id', 'account')
           .addSelect('line_items.local_amount', 'amount')
-          .addSelect('tags.id', 'tag_id')
+          .addSelect('GROUP_CONCAT(DISTINCT tags.id)', 'tags')
+          .addSelect('GROUP_CONCAT(DISTINCT users.id)', 'owners')
           .addSelect(
             `CASE 
                   WHEN line_items.account_id IS NULL AND line_items.local_amount > 0 THEN ${UNCLASSIFIED_INCOME_ID}
@@ -173,10 +181,18 @@ export async function runCategorySpendReport({
             'line_item_tags.line_item_id = line_items.id',
           )
           .leftJoin('tags', 'tags', 'tags.id = line_item_tags.tag_id')
+          .leftJoin(
+            'account_owners',
+            'account_owners',
+            'account_owners.account_id = transactions.account_id',
+          )
+          .leftJoin('users', 'users', 'users.id = account_owners.user_id')
           .where("(accounts.class IS NULL OR accounts.class != 'ACCOUNT')")
           .groupBy('lid'),
       'reports_view',
     )
+
+  logger.silly('Reports View Query: ', reportsQuery.getSql())
 
   // Query against the view to get the final result
   reportsQuery
@@ -197,14 +213,50 @@ export async function runCategorySpendReport({
     .orderBy('period', 'ASC')
 
   // Exclude unclassified line items if requested
-  //   if (!include_unclassified) {
-  //     reportsQuery.andWhere('cat_id NOT IN (:...excludedCats)', {
-  //       excludedCats: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID],
-  //     })
-  //   }
+  if (!include_unclassified) {
+    reportsQuery.andWhere('cat_id NOT IN (:...excludedCats)', {
+      excludedCats: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID],
+    })
+  }
+  // Filter by category IDs if provided
+  if (category_ids && category_ids.length > 0) {
+    reportsQuery.andWhere('cat_id IN (:...category_ids)', { category_ids })
+  }
+  // Filter by category types if provided
+  if (category_types && category_types.length > 0) {
+    reportsQuery.andWhere('cat_type IN (:...category_types)', { category_types })
+  }
+  // Filter by category group IDs if provided
+  if (category_group_ids && category_group_ids.length > 0) {
+    reportsQuery.andWhere('cat_group_id IN (:...category_group_ids)', { category_group_ids })
+  }
+  // Filter by category group types if provided
+  if (category_group_types && category_group_types.length > 0) {
+    reportsQuery.andWhere('cat_group_type IN (:...category_group_types)', {
+      category_group_types,
+    })
+  }
+  // Filter by tag IDs if provided
+  if (tag_ids && tag_ids.length > 0) {
+    tag_ids.forEach((tagId) => {
+      reportsQuery.andWhere("',' || reports_view.tag_ids || ',' LIKE :tagMatch", {
+        tagMatch: `%,${tagId},%`,
+      })
+    })
+  }
+  // Filter by account IDs if provided
+  if (account_ids && account_ids.length > 0) {
+    reportsQuery.andWhere('reports_view.account IN (:...account_ids)', { account_ids })
+  }
+  // Filter by account owner if provided
+  if (account_owner) {
+    reportsQuery.andWhere("',' || reports_view.owners || ',' LIKE :ownerMatch", {
+      ownerMatch: `%,${account_owner},%`,
+    })
+  }
 
+  logger.silly('Reports Final Query: ', reportsQuery.getSql())
   const rawResults: ReportResultRow[] = await reportsQuery.getRawMany<ReportResultRow>()
-  logger.debug('Reports Final Query: ', reportsQuery.getSql(), rawResults)
   const periods = generatePeriodRange(start_date, end_date)
 
   // Transform flat results into nested structure with dynamic period keys
