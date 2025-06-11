@@ -61,7 +61,7 @@ export const RenderOption: React.FC<RenderOptionProps> = ({
     return (
       <ListItem key={option.id} {...rest}>
         <Box display="flex" alignItems="center" width="100%">
-          <Box marginRight={1}>
+          <Box >
             <Emoji size={24} emoji={option.cat_icon ?? ''} />
           </Box>
           <Box minWidth={200} flexGrow={1}>
@@ -80,7 +80,6 @@ export const RenderOption: React.FC<RenderOptionProps> = ({
           <Box display="flex" alignItems="center" width="100%">
             <Checkbox
               checked={selected.some((s) => s.id === option.id)}
-              style={{ marginLeft: 40, marginRight: 8 }}
               onClick={(e) => {
                 e.stopPropagation()
                 if (selected.some((s) => s.id === option.id)) {
@@ -129,7 +128,6 @@ export const RenderOption: React.FC<RenderOptionProps> = ({
       <ListItem key={option.id} {...rest}>
         <Checkbox
           checked={selected.some((s) => s.id === option.id)}
-          style={{ marginLeft: 40, marginRight: 8 }}
           onClick={(e) => {
             e.stopPropagation()
             if (selected.some((s) => s.id === option.id)) {
