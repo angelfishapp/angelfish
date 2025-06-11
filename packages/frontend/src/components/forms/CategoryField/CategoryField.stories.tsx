@@ -32,6 +32,7 @@ export const Default: Story = {
   args: {
     label: 'Category',
     onCreate: (name?) => action('onCreate')(name),
+    variant: 'dropdown',
   },
 }
 
@@ -40,6 +41,7 @@ export const WithValue: Story = {
     label: 'Category',
     value: getAccountsWithRelations()[2],
     onCreate: (name?) => action('onCreate')(name),
+    variant: 'dropdown',
   },
 }
 
@@ -58,5 +60,13 @@ export const Filtered: Story = {
     disableGroupBy: true,
     disableTooltip: true,
     placeholder: 'Search Bank Accounts...',
+  },
+}
+export const multiBox: Story = {
+  args: {
+    label: 'Category',
+    renderAsValue: false,
+    onCreate: (name?) => action('onCreate')(name),
+    variant: 'multi-box',
   },
 }

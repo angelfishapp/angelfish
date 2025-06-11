@@ -7,7 +7,7 @@ import type { FormFieldProps } from '../FormField'
  * CategoryField Component Properties
  */
 
-export interface CategoryFieldProps extends FormFieldProps {
+export interface MultiSelectFieldProps extends FormFieldProps {
   /**
    * Accounts that can be rendered with their related
    * CategoryGroup & Institution fields populated
