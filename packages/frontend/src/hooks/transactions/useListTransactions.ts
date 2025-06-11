@@ -21,7 +21,6 @@ export const useListTransactions = (query: AppCommandRequest<AppCommandIds.LIST_
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: APP_QUERY_KEYS.QUERY_TRANSACTIONS(query),
     queryFn: async () => listTransactions(query),
-    enabled: !!query.account_id || !!query.start_date || !!query.end_date,
   })
 
   return { transactions: data ?? [], isLoading, isFetching, error }

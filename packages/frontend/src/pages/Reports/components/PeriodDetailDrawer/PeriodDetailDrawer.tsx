@@ -26,7 +26,7 @@ export default function PeriodDetailDrawer({
 
   // Render
   return (
-    <Drawer title={title} position="bottom" onClose={onClose} open={open} hideBackdrop={true}>
+    <Drawer title={title} position="bottom" onClose={onClose} open={open} keepMounted={true}>
       <div
         ref={scrollContainerRef}
         style={{

@@ -22,6 +22,7 @@ export const useDeleteTransaction = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.TRANSACTIONS })
       queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.ACCOUNTS })
+      queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.REPORTS })
     },
   })
 }

@@ -418,7 +418,7 @@ export default function CategorySettings() {
                                     </Button>
                                   </Box>
                                 }
-                                categories={groupedCategories[selectedGroup?.group.id]?.map(
+                                categories={(groupedCategories[selectedGroup?.group.id] ?? []).map(
                                   (data) => ({ ...data, type: 'income' }),
                                 )}
                                 onSelect={onCategorySelect}
@@ -518,7 +518,7 @@ export default function CategorySettings() {
                                     </Button>
                                   </Box>
                                 }
-                                categories={groupedCategories[selectedGroup?.group.id].map(
+                                categories={(groupedCategories[selectedGroup?.group.id] ?? []).map(
                                   (data) => ({ ...data, type: 'expense' }),
                                 )}
                                 onSelect={onCategorySelect}

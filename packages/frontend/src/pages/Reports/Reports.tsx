@@ -24,7 +24,7 @@ import { DateRangeField } from '@/components/forms/DateRangeField'
 import { RollingContainer } from '@/components/RollingContainer'
 import {
   useDeleteTransaction,
-  useListAccounts,
+  useListAllAccountsWithRelations,
   useListTags,
   useListTransactions,
   useRunReport,
@@ -86,7 +86,7 @@ export default function Reports() {
   const { transactions, isFetching: isLoadingTransactions } = useListTransactions(transactionQuery)
   const transactionSaveMutation = useSaveTransactions()
   const transactionDeleteMutation = useDeleteTransaction()
-  const { accounts } = useListAccounts({})
+  const { accounts } = useListAllAccountsWithRelations()
   const { tags } = useListTags()
   const { reportData } = useRunReport(reportsQuery)
 

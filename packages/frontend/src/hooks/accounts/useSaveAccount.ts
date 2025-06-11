@@ -18,8 +18,11 @@ export const useSaveAccount = () => {
 
   return useMutation({
     mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_ACCOUNT>) => saveAccount(request),
-    onSuccess: () => {
+    onSuccess: (account) => {
       queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.ACCOUNTS })
+      if (account.class === 'CATEGORY') {
+        queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.REPORTS })
+      }
     },
   })
 }

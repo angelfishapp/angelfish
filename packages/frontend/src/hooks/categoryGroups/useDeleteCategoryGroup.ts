@@ -22,6 +22,7 @@ export const useDeleteCategoryGroup = () => {
       deleteCategoryGroup(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.CATEGORY_GROUPS })
+      queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.REPORTS })
     },
   })
 }

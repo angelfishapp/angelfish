@@ -16,7 +16,7 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
  */
 export const useRunReport = (query: AppCommandRequest<AppCommandIds.RUN_REPORT>) => {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: APP_QUERY_KEYS.REPORTS(query),
+    queryKey: APP_QUERY_KEYS.QUERY_REPORTS(query),
     queryFn: async () => runReport(query),
   })
 
