@@ -31,5 +31,5 @@ export async function saveTransaction(request: AppCommandRequest<AppCommandIds.S
 export async function deleteTransaction(
   request: AppCommandRequest<AppCommandIds.DELETE_TRANSACTION>,
 ) {
-  return await CommandsClient.executeAppCommand(AppCommandIds.DELETE_TRANSACTION, request)
+  await CommandsClient.executeAppCommand(AppCommandIds.DELETE_TRANSACTION, request)
 }

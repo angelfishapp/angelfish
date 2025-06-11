@@ -1,18 +1,32 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { getBook } from '@/api/book'
-import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
+import type { IFrontEndAppState } from '@/hooks/app'
 
 /**
  * React-Query Hook to get Book from the database.
  *
- * @returns       book (IBook | null), isLoading (boolean), error (Error | null)
+ * @returns       book (IBook), isLoading (boolean), isFetching (boolean), error (Error | null)
  */
-export const useGetBook = (_request: AppCommandRequest<AppCommandIds.GET_BOOK>) => {
-  const { data, isLoading, error } = useQuery({
+export const useGetBook = () => {
+  const queryClient = useQueryClient()
+  const {
+    data: book,
+    isLoading,
+    isFetching,
+    error,
+  } = useQuery({
     queryKey: ['book'],
-    queryFn: async () => getBook(),
+    queryFn: async () => {
+      const book = await getBook()
+      // Update 'appState' with the book
+      queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+        ...prevState,
+        book,
+      }))
+      return book
+    },
   })
 
-  return { book: data, isLoading, error }
+  return { book, isLoading, isFetching, error }
 }

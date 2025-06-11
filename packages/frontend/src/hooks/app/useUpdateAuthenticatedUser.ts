@@ -1,11 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { saveBook } from '@/api/book'
-import type { IFrontEndAppState } from '@/hooks/app'
-import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
+import { updateAuthenticatedUser } from '@/api'
+import type { IFrontEndAppState } from '@/hooks'
 
 /**
- * React-Query Hook to update the Book.
+ * React-Query Hook to update the current authenticated user.
  *
  * @returns Mutation object from React Query containing:
  *   - `mutate`: function to trigger the mutation
@@ -13,15 +12,14 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
  *   - `isLoading`: boolean indicating if the mutation is in progress
  *   - `error`: error object if the mutation fails
  */
-export const useSaveBook = () => {
+export const useUpdateAuthenticatedUser = () => {
   const queryClient = useQueryClient()
-
   return useMutation({
-    mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_BOOK>) => saveBook(request),
-    onSuccess: (book) => {
+    mutationFn: updateAuthenticatedUser,
+    onSuccess: (authenticatedUser) => {
       queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
         ...prevState,
-        book,
+        authenticatedUser,
       }))
     },
   })

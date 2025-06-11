@@ -27,5 +27,5 @@ export async function saveAccount(request: AppCommandRequest<AppCommandIds.SAVE_
  * @param request   The ID of the Account to delete.
  */
 export async function deleteAccount(request: AppCommandRequest<AppCommandIds.DELETE_ACCOUNT>) {
-  return await CommandsClient.executeAppCommand(AppCommandIds.DELETE_ACCOUNT, request)
+  await CommandsClient.executeAppCommand(AppCommandIds.DELETE_ACCOUNT, request)
 }

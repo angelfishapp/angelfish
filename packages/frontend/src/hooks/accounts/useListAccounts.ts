@@ -15,29 +15,30 @@ import { useListUsers } from '../users'
  *                - category_group_id: Only get Accounts in the specified Category Group
  *                - institution_id: Only get Accounts at the specified Institution
  *
- * @returns       accounts (IAccount[]), isLoading (boolean), error (Error or null)
+ * @returns       accounts (IAccount[]), isLoading (boolean), isFetching (boolean), error (Error | null)
  */
 export const useListAccounts = (query: AppCommandRequest<AppCommandIds.LIST_ACCOUNTS>) => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey: ['accounts', query],
     queryFn: async () => listAccounts(query),
   })
 
-  return { accounts: data ?? [], isLoading, error }
+  return { accounts: data ?? [], isLoading, isFetching, error }
 }
 
 /**
  * React-Query Hook to list all Accounts with their related entities loaded
  *
- * @returns    accounts (IAccount[]), isLoading (boolean)
+ * @returns    accounts (IAccount[]), isLoading (boolean), isFetching (boolean), error (Error | null)
  */
 export function useListAllAccountsWithRelations() {
-  const { accounts, isLoading: aLoading } = useListAccounts({})
-  const { categoryGroups, isLoading: cgLoading } = useListCategoryGroups()
-  const { institutions, isLoading: iLoading } = useListInstitutions()
-  const { users, isLoading: uLoading } = useListUsers()
+  const { accounts, isLoading: aLoading, isFetching: aFetching } = useListAccounts({})
+  const { categoryGroups, isLoading: cgLoading, isFetching: cgFetching } = useListCategoryGroups()
+  const { institutions, isLoading: iLoading, isFetching: iFetching } = useListInstitutions()
+  const { users, isLoading: uLoading, isFetching: uFetching } = useListUsers()
 
   const isLoading = aLoading || cgLoading || iLoading || uLoading
+  const isFetching = aFetching || cgFetching || iFetching || uFetching
 
   const accountsWithRelations = React.useMemo(() => {
     const finalAccounts: IAccount[] = []
@@ -81,6 +82,7 @@ export function useListAllAccountsWithRelations() {
 
   return {
     isLoading,
+    isFetching,
     accounts: accountsWithRelations,
   }
 }
@@ -90,14 +92,16 @@ export function useListAllAccountsWithRelations() {
  * Use this to get all Categories
  */
 export function useSelectAllCategories() {
-  const { accounts, isLoading: aLoading } = useListAccounts({})
+  const { accounts, isLoading, isFetching, error } = useListAccounts({})
 
   const AllCategories = accounts.filter((account) => {
     return account.class == 'CATEGORY'
   })
   return {
     categories: AllCategories as IAccount[],
-    isLoading: aLoading,
+    isLoading,
+    isFetching,
+    error,
   }
 }
 
@@ -106,13 +110,15 @@ export function useSelectAllCategories() {
  * Use this to get all Bank Accounts
  */
 export function useSelectAllBankAccounts() {
-  const { accounts, isLoading: aLoading } = useListAccounts({})
+  const { accounts, isLoading, isFetching, error } = useListAccounts({})
 
   const AllBankAccounts = accounts.filter((account) => {
     return account.class == 'ACCOUNT'
   }) as IAccount[]
   return {
     accounts: AllBankAccounts,
-    isLoading: aLoading,
+    isLoading,
+    isFetching,
+    error,
   }
 }

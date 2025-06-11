@@ -27,5 +27,5 @@ export async function saveTag(request: AppCommandRequest<AppCommandIds.SAVE_TAG>
  * @param request   The ID of the Tag to delete.
  */
 export async function deleteTag(request: AppCommandRequest<AppCommandIds.DELETE_TAG>) {
-  return await CommandsClient.executeAppCommand(AppCommandIds.DELETE_TAG, request)
+  await CommandsClient.executeAppCommand(AppCommandIds.DELETE_TAG, request)
 }

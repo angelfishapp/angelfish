@@ -20,7 +20,7 @@ export default function ImportTransactionsContainer({
   const { accounts } = useListAllAccountsWithRelations()
 
   // Callback to open the file dialog
-  const onOpenFileDialog = React.useCallback(async (multiple: boolean, fileTypes?: string[]) => {
+  const onOpenFileDialog = React.useCallback(async (multiple: boolean) => {
     return await showOpenDialog({
       title: 'Select File Location...',
       properties: multiple ? ['openFile', 'multiSelections'] : ['openFile'],

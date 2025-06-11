@@ -2,7 +2,7 @@ import type { AppCommandRequest } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
 /**
- * Open a file dialog to select a book file.
+ * Open a file dialog to select file(s).
  *
  * @param request   The request options for the open file dialog.
  *                      - `title`: Title of the dialog.
@@ -15,7 +15,7 @@ import { AppCommandIds, CommandsClient } from '@angelfish/core'
  *                          - `multiSelections`: Allows multiple selections.
  *                          - `showHiddenFiles`: Shows hidden files.
  *
- * @returns         The selected file path or null if cancelled.
+ * @returns         The selected file paths or null if cancelled.
  */
 export async function showOpenDialog(
   request: AppCommandRequest<AppCommandIds.SHOW_OPEN_FILE_DIALOG>,
@@ -48,9 +48,9 @@ export async function showSaveDialog(
 }
 
 /**
- * Show a dialog to select a directory.
+ * Show a desktop notification.
  *
- * @param request   The request options for the directory dialog.
+ * @param request   The request options for the notification.
  *                      - `title`: A title for the notification, which will be displayed at the top of the notification window when it is shown.
  *                      - `body`: The body text of the notification, which will be displayed below the title or subtitle.
  *                      - `silent`: Whether or not to suppress the OS notification noise when showing the notification.
@@ -59,5 +59,5 @@ export async function showSaveDialog(
 export async function showNotification(
   request: AppCommandRequest<AppCommandIds.SHOW_NOTIFICATION>,
 ) {
-  return await CommandsClient.executeAppCommand(AppCommandIds.SHOW_NOTIFICATION, request)
+  await CommandsClient.executeAppCommand(AppCommandIds.SHOW_NOTIFICATION, request)
 }

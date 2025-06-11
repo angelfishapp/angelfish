@@ -5,4 +5,4 @@ export {
   useSelectAllBankAccounts,
   useSelectAllCategories,
 } from './useListAccounts'
-export { useSaveAccount } from './useSaveAcount'
+export { useSaveAccount } from './useSaveAccount'

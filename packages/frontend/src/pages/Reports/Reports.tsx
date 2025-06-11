@@ -18,27 +18,25 @@ import {
 } from 'date-fns'
 import React, { useEffect, useState } from 'react'
 
+import { exportReport, showSaveDialog } from '@/api'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { DateRangeField } from '@/components/forms/DateRangeField'
 import { RollingContainer } from '@/components/RollingContainer'
-import { useListAccounts } from '@/hooks/accounts/useListAccounts'
-import { useListTags } from '@/hooks/tags/useListTags'
-import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction'
-import { useListTransactions } from '@/hooks/transactions/useListTransactions'
-import { useSaveTransactions } from '@/hooks/transactions/useSaveTransactions'
-import type {
-  AppCommandRequest,
-  ITransactionUpdate,
-  ReportsData,
-  ReportsQuery,
-} from '@angelfish/core'
+import {
+  useDeleteTransaction,
+  useListAccounts,
+  useListTags,
+  useListTransactions,
+  useRunReport,
+  useSaveTransactions,
+} from '@/hooks'
+import type { AppCommandRequest, ITransactionUpdate, ReportsQuery } from '@angelfish/core'
 import { type AppCommandIds } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
 import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
 import { ReportsTable } from './components/ReportsTable'
 import { renderPeriodHeader } from './Reports.utils'
-import { exportReports, getFilePath, runReports } from '@/api'
 
 /**
  * Reports Page
@@ -72,7 +70,6 @@ export default function Reports() {
   }
 
   // Component State
-  const [reportData, setReportData] = React.useState<ReportsData>({ periods: [], rows: [] })
   const [reportsQuery, setReportsQuery] = React.useState<ReportsQuery>({
     start_date: format(dateRanges['Last 12 Months'].start, 'yyyy-MM-dd'),
     end_date: format(dateRanges['Last 12 Months'].end, 'yyyy-MM-dd'),
@@ -84,22 +81,14 @@ export default function Reports() {
   const [transactionQuery, setTransactionQuery] = React.useState<
     AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>
   >({})
-  // transaction custom hooks to handle Transactions
+
+  // React Query Hooks
   const { transactions, isLoading: isLoadingTransactions } = useListTransactions(transactionQuery)
   const transactionSaveMutation = useSaveTransactions()
   const transactionDeleteMutation = useDeleteTransaction()
-  // Accounts custom hooks to handle accounts
   const { accounts } = useListAccounts({})
   const { tags } = useListTags()
-
-  // Get Reports Data when date ranges changed
-  React.useEffect(() => {
-    runReports(reportsQuery).then((response) => {
-      setReportData(response)
-    })
-  }, [
-    reportsQuery,
-  ])
+  const { reportData } = useRunReport(reportsQuery)
 
   /**
    * Callback to save Transactions to the Database
@@ -259,16 +248,14 @@ export default function Reports() {
                             label: 'Excel (XLSX)',
                             disabled: false,
                             onClick: async () => {
-                              const filePath = await getFilePath(
-                                {
-                                  title: 'Export Report to Excel (XLSX)',
-                                  defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
-                                  filters: [{ name: 'Excel', extensions: ['xlsx'] }],
-                                }
-                              )
+                              const filePath = await showSaveDialog({
+                                title: 'Export Report to Excel (XLSX)',
+                                defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
+                                filters: [{ name: 'Excel', extensions: ['xlsx'] }],
+                              })
 
                               if (filePath) {
-                                exportReports({
+                                exportReport({
                                   filePath,
                                   fileType: 'XLSX',
                                   query: reportsQuery,
@@ -300,7 +287,7 @@ export default function Reports() {
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}
-        onCreateCategory={() => { }}
+        onCreateCategory={() => {}}
         onDeleteTransaction={onDeleteTransaction}
         onSaveTransactions={onSaveTransactions}
       />

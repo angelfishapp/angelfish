@@ -9,8 +9,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { AvatarField } from '@/components/forms/AvatarField'
 import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
-import { useUpdateUser } from '@/hooks'
-import { useGetAppState } from '@/hooks/app/useGetAppState'
+import { useGetAuthenticatedUser, useUpdateAuthenticatedUser } from '@/hooks'
 import { USER_AVATARS } from '@angelfish/core'
 
 /**
@@ -34,8 +33,8 @@ type UserSettingsFormValues = {
 
 export default function UserSettings() {
   // Component State
-  const { appState } = useGetAppState()
-  const updateUserMutation = useUpdateUser()
+  const { authenticatedUser } = useGetAuthenticatedUser()
+  const updateAuthenticatedUserMutation = useUpdateAuthenticatedUser()
   // Setup Form
   const {
     control,
@@ -45,12 +44,12 @@ export default function UserSettings() {
   } = useForm<UserSettingsFormValues>({
     mode: 'onBlur',
     defaultValues: {
-      avatar: appState?.authenticatedUser?.avatar,
-      firstName: appState?.authenticatedUser?.first_name,
-      lastName: appState?.authenticatedUser?.last_name,
-      email: appState?.authenticatedUser?.email,
-      phone: appState?.authenticatedUser?.phone
-        ? { number: appState?.authenticatedUser?.phone.replace(/\+/g, ''), isValid: true }
+      avatar: authenticatedUser?.avatar,
+      firstName: authenticatedUser?.first_name,
+      lastName: authenticatedUser?.last_name,
+      email: authenticatedUser?.email,
+      phone: authenticatedUser?.phone
+        ? { number: authenticatedUser?.phone.replace(/\+/g, ''), isValid: true }
         : { number: '', isValid: true },
     },
   })
@@ -60,24 +59,24 @@ export default function UserSettings() {
    */
   React.useEffect(() => {
     reset({
-      avatar: appState?.authenticatedUser?.avatar,
-      firstName: appState?.authenticatedUser?.first_name,
-      lastName: appState?.authenticatedUser?.last_name,
-      email: appState?.authenticatedUser?.email,
-      phone: appState?.authenticatedUser?.phone
-        ? { number: appState?.authenticatedUser?.phone.replace(/\+/g, ''), isValid: true }
+      avatar: authenticatedUser?.avatar,
+      firstName: authenticatedUser?.first_name,
+      lastName: authenticatedUser?.last_name,
+      email: authenticatedUser?.email,
+      phone: authenticatedUser?.phone
+        ? { number: authenticatedUser?.phone.replace(/\+/g, ''), isValid: true }
         : { number: '', isValid: true },
     })
-  }, [appState, reset])
+  }, [authenticatedUser, reset])
 
   /**
    * Handle updating the Authenticated User
    */
   const handleUserSave = async (formData: UserSettingsFormValues) => {
-    if (appState?.authenticatedUser) {
+    if (authenticatedUser) {
       // Copy and update user
-      updateUserMutation.mutate({
-        ...appState?.authenticatedUser,
+      updateAuthenticatedUserMutation.mutate({
+        ...authenticatedUser,
         avatar: formData.avatar,
         first_name: formData.firstName,
         last_name: formData.lastName,

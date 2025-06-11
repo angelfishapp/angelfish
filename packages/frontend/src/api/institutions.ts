@@ -31,7 +31,7 @@ export async function saveInstitution(request: AppCommandRequest<AppCommandIds.S
 export async function deleteInstitution(
   request: AppCommandRequest<AppCommandIds.DELETE_INSTITUTION>,
 ) {
-  return await CommandsClient.executeAppCommand(AppCommandIds.DELETE_INSTITUTION, request)
+  await CommandsClient.executeAppCommand(AppCommandIds.DELETE_INSTITUTION, request)
 }
 
 /**
@@ -41,8 +41,8 @@ export async function deleteInstitution(
  * @param query   Search string to search Institutions by
  * @returns       Matching institutions (IInstitutionUpdate[])
  */
-export async function onSearchInstitutions({
-  query,
-}: AppCommandRequest<AppCommandIds.SEARCH_INSTITUTIONS>) {
-  return await CommandsClient.executeAppCommand(AppCommandIds.SEARCH_INSTITUTIONS, { query })
+export async function onSearchInstitutions(
+  request: AppCommandRequest<AppCommandIds.SEARCH_INSTITUTIONS>,
+) {
+  return await CommandsClient.executeAppCommand(AppCommandIds.SEARCH_INSTITUTIONS, request)
 }

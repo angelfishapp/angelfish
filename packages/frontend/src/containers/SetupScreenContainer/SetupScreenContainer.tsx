@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { createBook, onSearchInstitutions, showSaveDialog } from '@/api'
 import { SetupScreen } from '@/app/components/SetupScreen'
 import {
   useDeleteAccount,
@@ -12,19 +13,17 @@ import {
   useSaveAccount,
   useSaveInstitution,
   useSaveUser,
-  useUpdateUser,
+  useUpdateAuthenticatedUser,
 } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
 import { BOOK_AVATARS, USER_AVATARS } from '@angelfish/core'
 import type { SetupScreenContainerProps } from './SetupScreenContainer.interface'
-import { createBook, onSearchInstitutions } from '@/api'
-import { getFilePath } from '@/api/files'
 
 /**
  * Container for Setup Screen to handle all logic and data fetching
  */
 export default function SetupScreenContainer({ onComplete, onStart }: SetupScreenContainerProps) {
-  // Redux Hooks
+  // React Query Hooks
   const { appState } = useGetAppState()
   const { users } = useListUsers()
   const { accounts: accountsWithRelations } = useListAllAccountsWithRelations()
@@ -33,7 +32,7 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
 
   const userSaveMutation = useSaveUser()
   const userDeleteMutation = useDeleteUser()
-  const userUpdateMutation = useUpdateUser()
+  const authenticatedUserMutation = useUpdateAuthenticatedUser()
   const accountSaveMutation = useSaveAccount()
   const accountDeleteMutation = useDeleteAccount()
   const institutionSaveMutation = useSaveInstitution()
@@ -55,7 +54,7 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
   const onCreateBook = React.useCallback(
     async (name: string, country: string, currency: string, logo?: string) => {
       // Open Save Dialog to select file location
-      const filePath = await getFilePath({
+      const filePath = await showSaveDialog({
         title: 'Select File Location...',
         defaultPath: `${name}.afish`,
         filters: [
@@ -68,7 +67,10 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
       // If filePath selected, create book file
       if (filePath) {
         onStart()
-        await createBook(country, currency, logo as string, filePath)
+        await createBook({
+          book: { name, entity: 'HOUSEHOLD', country, default_currency: currency, logo },
+          filePath,
+        })
       } else {
         throw new Error('No File Path Selected')
       }
@@ -81,13 +83,13 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
    */
   const onUpdateAuthenticatedUser = React.useCallback(
     (firstName: string, lastName: string, avatar?: string) => {
-      userUpdateMutation.mutate({
+      authenticatedUserMutation.mutate({
         first_name: firstName,
         last_name: lastName,
         avatar,
       })
     },
-    [userUpdateMutation],
+    [authenticatedUserMutation],
   )
 
   // Render

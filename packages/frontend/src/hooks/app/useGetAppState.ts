@@ -7,12 +7,13 @@ import type { IFrontEndAppState } from './FrontEndAppState.interface'
 /**
  * React-Query Hook to get current App Status from the main process.
  *
- * @returns  IFrontEndAppState
+ * @returns  IFrontEndAppState, isLoading (boolean), isFetching (boolean), error (Error | null)
  */
 export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP_STATE>) => {
   const {
     data: appState,
     isLoading,
+    isFetching,
     error,
   } = useQuery<IFrontEndAppState>({
     queryKey: ['appState'],
@@ -42,6 +43,7 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
   return {
     appState,
     isLoading,
+    isFetching,
     error,
   }
 }

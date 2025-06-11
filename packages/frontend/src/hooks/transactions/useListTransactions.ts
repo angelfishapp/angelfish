@@ -14,14 +14,14 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
  *                 - end_date: End date to filter Transactions by
  *                 - requires_sync: Whether to only list Transactions that require sync
  *                 - currency_code: ISO 4217 currency code to filter Transactions by
- * @returns       transactions (ITransaction[]), isLoading (booelan), error (Error or null)
+ * @returns       transactions (ITransaction[]), isLoading (boolean), isFetching (boolean), error (Error | null)
  */
 export const useListTransactions = (query: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>) => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey: ['transactions', query],
     queryFn: async () => listTransactions(query),
     enabled: !!query.account_id || !!query.start_date || !!query.end_date,
   })
 
-  return { transactions: data ?? [], isLoading, error }
+  return { transactions: data ?? [], isLoading, isFetching, error }
 }

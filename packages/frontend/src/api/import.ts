@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 import type { ImportTransactionsMapper, ReconciledTransaction } from '@angelfish/core'
 import { AppCommandIds, CommandsClient } from '@angelfish/core'
 
@@ -25,29 +23,20 @@ export async function getFileMappings(file: string, delimiter?: string) {
  * @returns         Array of reconciled transactions
  */
 export async function reconcileTransactions(file: string, mapper: ImportTransactionsMapper) {
-  const reconciledTransactions: ReconciledTransaction[] = await CommandsClient.executeAppCommand(
-    AppCommandIds.IMPORT_FILE,
-    {
-      filePath: file,
-      mapper,
-    },
-  )
-  // Ensure Dates are converted to Date objects
-  reconciledTransactions.forEach((t) => {
-    t.date = moment(t.date).toDate()
-    t.created_on = moment(t.created_on).toDate()
-    t.modified_on = moment(t.modified_on).toDate()
+  return await CommandsClient.executeAppCommand(AppCommandIds.IMPORT_FILE, {
+    filePath: file,
+    mapper,
   })
-  return reconciledTransactions
 }
 
 /**
  * Import reviewed reconciled transactions into the database
  *
- * @param transactions The list of reconciled transactions to import
+ * @param transactions  The list of reconciled transactions to import
+ * @returns             An array of the imported transactions
  */
 export async function importTransactions(transactions: ReconciledTransaction[]) {
-  await CommandsClient.executeAppCommand(AppCommandIds.IMPORT_TRANSACTIONS, {
+  return await CommandsClient.executeAppCommand(AppCommandIds.IMPORT_TRANSACTIONS, {
     reconciledTransactions: transactions,
   })
 }

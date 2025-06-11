@@ -33,5 +33,5 @@ export async function saveCategoryGroup(
 export async function deleteCategoryGroup(
   request: AppCommandRequest<AppCommandIds.DELETE_CATEGORY_GROUP>,
 ) {
-  return await CommandsClient.executeAppCommand(AppCommandIds.DELETE_CATEGORY_GROUP, request)
+  await CommandsClient.executeAppCommand(AppCommandIds.DELETE_CATEGORY_GROUP, request)
 }
