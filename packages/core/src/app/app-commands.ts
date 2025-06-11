@@ -448,7 +448,7 @@ export interface AppCommandDefinitions {
     response: ICategoryGroup
   }
   [AppCommandIds.DELETE_CATEGORY_GROUP]: {
-    request: { id: number }
+    request: { id: number; reassignId?: number }
     response: void
   }
   [AppCommandIds.LIST_INSTITUTIONS]: {

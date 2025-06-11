@@ -160,18 +160,11 @@ export default function CategorySettings() {
   /**
    * Handle Deleting a Category Group
    */
-  const onGroupDelete = (group: ICategoryGroup, categories?: IAccount[]) => {
-    categories?.forEach((category) => accountSaveMutation.mutate(category))
-    // check this on dev
-    setTimeout(() => CategoryGroupDeleteMutation.mutate({ id: group.id }), 500)
-    setDeleting(undefined)
-
-    if (!categories?.length) {
-      return setSelectedGroup(undefined)
-    }
+  const onGroupDelete = async (reassignId?: number) => {
+    await CategoryGroupDeleteMutation.mutate({ id: deleting?.data.id as number, reassignId })
 
     const newCategoryGroupID = categories.at(0)?.cat_group_id
-    const type = group.type.toLowerCase() as 'income' | 'expenses'
+    const type = deleting?.type.toLowerCase() as 'income' | 'expenses'
     const index = (type === 'income' ? categoryGroupsIncome : categoryGroupsExpense).findIndex(
       (x) => x.id === newCategoryGroupID,
     )
@@ -553,7 +546,7 @@ export default function CategorySettings() {
           options={deleting.data.type === 'Income' ? categoryGroupsIncome : categoryGroupsExpense}
           categoryGroup={deleting.data}
           onClose={() => setDeleting(undefined)}
-          onConfirm={(categories) => onGroupDelete(deleting.data, categories)}
+          onConfirm={(reassignId) => onGroupDelete(reassignId)}
           accounts={groupedCategories[deleting.data.id]}
         />
       )}

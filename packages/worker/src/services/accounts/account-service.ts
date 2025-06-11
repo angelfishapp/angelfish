@@ -37,11 +37,11 @@ class AccountServiceClass {
     if (account_class) {
       query.where('account.class = :typeClass', { typeClass: account_class })
     } else if (category_group_id) {
-      query.where('account.categoryGroupID = :categoryGroupID', {
+      query.where('account.cat_group_id = :categoryGroupID', {
         categoryGroupID: category_group_id,
       })
     } else if (institution_id) {
-      query.where('account.institutionID = :institutionID', { institutionID: institution_id })
+      query.where('account.acc_institution_id = :institutionID', { institutionID: institution_id })
     }
 
     // Run query
