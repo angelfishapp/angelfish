@@ -1,6 +1,5 @@
 import { UserTableUIContainer } from '@/components/UserTable'
-import { useDeleteUser, useListUsers, useSaveUser } from '@/hooks'
-import { useGetAppState } from '@/hooks/app/useGetAppState'
+import { useDeleteUser, useGetAuthenticatedUser, useListUsers, useSaveUser } from '@/hooks'
 import { USER_AVATARS } from '@angelfish/core'
 import type { IAuthenticatedUser } from '@angelfish/core/src/types'
 
@@ -8,18 +7,16 @@ import type { IAuthenticatedUser } from '@angelfish/core/src/types'
  * Container for UserTableUIContainer
  */
 export default function UserTableContainer() {
-  // Redux State
+  // React-Query State
   const { users } = useListUsers()
-
+  const { authenticatedUser } = useGetAuthenticatedUser()
   const userSaveMutation = useSaveUser()
   const userDeleteMutation = useDeleteUser()
-  const { appState } = useGetAppState()
-  const authenticatedUser = appState?.authenticatedUser as IAuthenticatedUser
 
   // Render
   return (
     <UserTableUIContainer
-      authenticated_user_id={authenticatedUser.id}
+      authenticated_user_id={(authenticatedUser as IAuthenticatedUser).id}
       avatars={USER_AVATARS}
       users={users}
       onSave={(user) => {

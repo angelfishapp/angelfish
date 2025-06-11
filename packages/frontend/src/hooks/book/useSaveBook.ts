@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { saveBook } from '@/api/book'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { IFrontEndAppState } from '@/hooks/app'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
@@ -19,7 +20,8 @@ export const useSaveBook = () => {
   return useMutation({
     mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_BOOK>) => saveBook(request),
     onSuccess: (book) => {
-      queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+      queryClient.setQueryData(APP_QUERY_KEYS.BOOK, book)
+      queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
         ...prevState,
         book,
       }))

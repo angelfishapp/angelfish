@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { listCategoryGroups } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -12,7 +13,7 @@ export const useListCategoryGroups = (
   _request: AppCommandRequest<AppCommandIds.LIST_CATEGORY_GROUPS>,
 ) => {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ['categoryGroups'],
+    queryKey: APP_QUERY_KEYS.CATEGORY_GROUPS,
     queryFn: async () => listCategoryGroups(),
   })
 

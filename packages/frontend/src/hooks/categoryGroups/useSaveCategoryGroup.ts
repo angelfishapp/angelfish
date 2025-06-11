@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { saveCategoryGroup } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -19,7 +20,7 @@ export const useSaveCategoryGroup = () => {
     mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_CATEGORY_GROUP>) =>
       saveCategoryGroup(request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categoryGroups'] })
+      queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.CATEGORY_GROUPS })
     },
   })
 }

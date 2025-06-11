@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 
 import { listAccounts } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest, IAccount, IUser } from '@angelfish/core'
 import { useListCategoryGroups } from '../categoryGroups'
 import { useListInstitutions } from '../institutions'
@@ -19,7 +20,7 @@ import { useListUsers } from '../users'
  */
 export const useListAccounts = (query: AppCommandRequest<AppCommandIds.LIST_ACCOUNTS>) => {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ['accounts', query],
+    queryKey: APP_QUERY_KEYS.QUERY_ACCOUNTS(query),
     queryFn: async () => listAccounts(query),
   })
 

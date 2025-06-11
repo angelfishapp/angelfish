@@ -6,10 +6,10 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HashRouter } from 'react-router-dom'
 
 import { AppRootStyles } from './AppRoot.styles'
+import { AppReactQueryClient } from './ReactQuery'
 import theme from './theme'
 
 import { AppContainer } from '@/containers/AppContainer'
-import queryClient from '@/providers/ReactQueryClient'
 
 /**
  * Root Component
@@ -25,7 +25,7 @@ export default function AppRoot() {
         <CssBaseline />
         <GlobalStyles styles={AppRootStyles} />
         {/** react-query provider */}
-        <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={AppReactQueryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
           {/* Main Application Router */}
           <HashRouter>

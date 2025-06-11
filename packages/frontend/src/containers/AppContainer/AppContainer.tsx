@@ -1,12 +1,10 @@
-import { useQueryClient } from '@tanstack/react-query'
 import React from 'react'
 
-import { onLogout } from '@/api'
 import { AppLayout } from '@/app/components/AppLayout'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { AuthScreenContainer } from '@/containers/AuthScreenContainer'
 import { SetupScreenContainer } from '@/containers/SetupScreenContainer'
-import { useGetBook } from '@/hooks'
+import { useGetBook, useOnLogout } from '@/hooks'
 import { useGetAppState } from '@/hooks/app/useGetAppState'
 import { useHandleAppState } from '@/hooks/app/useHandleAppState'
 import type { IAuthenticatedUser } from '@angelfish/core'
@@ -20,7 +18,7 @@ export default function AppContainer() {
   const [setupInProgress, setSetupInProgress] = React.useState<boolean>(false)
 
   // React-Query State
-  const queryClient = useQueryClient()
+  const { onLogout } = useOnLogout()
   const { appState, isLoading } = useGetAppState()
   const { book } = useGetBook()
   const authenticatedUser = appState?.authenticatedUser
@@ -61,10 +59,7 @@ export default function AppContainer() {
         ) : (
           <AppLayout
             authenticatedUser={authenticatedUser as IAuthenticatedUser}
-            onLogout={async () => {
-              await onLogout()
-              queryClient.invalidateQueries({ queryKey: ['appState'] })
-            }}
+            onLogout={onLogout}
           />
         )}
       </AuthScreenContainer>

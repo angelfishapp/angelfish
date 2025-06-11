@@ -1,9 +1,6 @@
-import { useQueryClient } from '@tanstack/react-query'
-
-import { onAuthenticate, onGetOOBCode } from '@/api'
+import { onGetOOBCode } from '@/api'
 import { AuthScreen } from '@/app/components/AuthScreen'
-import type { IFrontEndAppState } from '@/hooks'
-import { useGetAppState } from '@/hooks'
+import { useGetAppState, useOnAuthenticate } from '@/hooks'
 import type { IUserSettings } from '@angelfish/core/src/types'
 import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
 
@@ -12,8 +9,8 @@ import type { AuthScreenContainerProps } from './AuthScreenContainer.interface'
  */
 export default function AuthScreenContainer({ children }: AuthScreenContainerProps) {
   // State
-  const queryClient = useQueryClient()
   const { appState } = useGetAppState()
+  const { onAuthenticate } = useOnAuthenticate()
   const isAuthenticated = appState?.authenticated ?? false
   const userSettings = appState?.userSettings as IUserSettings
 
@@ -23,14 +20,7 @@ export default function AuthScreenContainer({ children }: AuthScreenContainerPro
       onGetOOBCode={async (email) => {
         await onGetOOBCode({ email })
       }}
-      onAuthenticate={async (oob_code) => {
-        const authenticatedUser = await onAuthenticate({ oob_code })
-        queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
-          ...prevState,
-          authenticatedUser,
-          isAuthenticated: true,
-        }))
-      }}
+      onAuthenticate={onAuthenticate}
       isAuthenticated={isAuthenticated}
       disableBackgroundAnimation={!userSettings.enableBackgroundAnimations}
     >

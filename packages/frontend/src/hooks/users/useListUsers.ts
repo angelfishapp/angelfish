@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { listUsers } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -15,7 +16,7 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
  */
 export const useListUsers = (_request: AppCommandRequest<AppCommandIds.LIST_USERS>) => {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ['users'],
+    queryKey: APP_QUERY_KEYS.USERS,
     queryFn: async () => listUsers(),
   })
 

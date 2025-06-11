@@ -24,7 +24,6 @@ export default function PeriodDetailDrawer({
 }: PeriodDetailDrawerProps) {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 
-  if (isLoading) return <LoadingSpinner />
   // Render
   return (
     <Drawer title={title} position="bottom" onClose={onClose} open={open} hideBackdrop={true}>
@@ -39,19 +38,23 @@ export default function PeriodDetailDrawer({
           marginLeft: 0,
         }}
       >
-        {scrollContainerRef.current && (
-          <TransactionsTable
-            id="reports-detail-drawer"
-            columns={['date', 'title', 'category', 'notes', 'account', 'amount']}
-            transactions={transactions}
-            variant="flat"
-            accountsWithRelations={accountsWithRelations}
-            allTags={tags}
-            onCreateCategory={onCreateCategory}
-            onDeleteTransaction={onDeleteTransaction}
-            onSaveTransactions={onSaveTransactions}
-            scrollElement={scrollContainerRef.current}
-          />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          scrollContainerRef.current && (
+            <TransactionsTable
+              id="reports-detail-drawer"
+              columns={['date', 'title', 'category', 'notes', 'account', 'amount']}
+              transactions={transactions}
+              variant="flat"
+              accountsWithRelations={accountsWithRelations}
+              allTags={tags}
+              onCreateCategory={onCreateCategory}
+              onDeleteTransaction={onDeleteTransaction}
+              onSaveTransactions={onSaveTransactions}
+              scrollElement={scrollContainerRef.current}
+            />
+          )
         )}
       </div>
     </Drawer>

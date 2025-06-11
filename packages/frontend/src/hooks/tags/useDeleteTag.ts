@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { deleteTag } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -18,7 +19,7 @@ export const useDeleteTag = () => {
   return useMutation({
     mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_TAG>) => deleteTag(request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tags'] })
+      queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.TAGS })
     },
   })
 }

@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { getBook } from '@/api/book'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { IFrontEndAppState } from '@/hooks/app'
 
 /**
@@ -16,11 +17,11 @@ export const useGetBook = () => {
     isFetching,
     error,
   } = useQuery({
-    queryKey: ['book'],
+    queryKey: APP_QUERY_KEYS.BOOK,
     queryFn: async () => {
       const book = await getBook()
       // Update 'appState' with the book
-      queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+      queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
         ...prevState,
         book,
       }))

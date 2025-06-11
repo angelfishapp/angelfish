@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { listTransactions } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -18,7 +19,7 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
  */
 export const useListTransactions = (query: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>) => {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ['transactions', query],
+    queryKey: APP_QUERY_KEYS.QUERY_TRANSACTIONS(query),
     queryFn: async () => listTransactions(query),
     enabled: !!query.account_id || !!query.start_date || !!query.end_date,
   })

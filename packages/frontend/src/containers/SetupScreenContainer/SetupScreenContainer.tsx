@@ -41,6 +41,7 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
   const onSearchInstitutionsHandler = React.useCallback(async (query: string) => {
     return onSearchInstitutions({ query })
   }, [])
+
   /**
    * Create a new local Database with remote Cloud Account. Will return Book if successful
    * or undefined if didn't complete. Will open 'Save As' native dialog in Electron

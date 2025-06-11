@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { deleteAccount } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -20,7 +21,7 @@ export const useDeleteAccount = () => {
     mutationFn: (request: AppCommandRequest<AppCommandIds.DELETE_ACCOUNT>) =>
       deleteAccount(request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.ACCOUNTS })
     },
   })
 }

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { listTags } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -10,7 +11,7 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
  */
 export const useListTags = (_request: AppCommandRequest<AppCommandIds.LIST_TAGS>) => {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ['tags'],
+    queryKey: APP_QUERY_KEYS.TAGS,
     queryFn: async () => listTags(),
   })
 

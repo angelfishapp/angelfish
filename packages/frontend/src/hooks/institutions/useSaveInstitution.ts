@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { saveInstitution } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 
 /**
  * React-Query Hook to save an Institution.
@@ -17,7 +18,7 @@ export const useSaveInstitution = () => {
   return useMutation({
     mutationFn: saveInstitution,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['institutions'] })
+      queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.INSTITUTIONS })
     },
   })
 }

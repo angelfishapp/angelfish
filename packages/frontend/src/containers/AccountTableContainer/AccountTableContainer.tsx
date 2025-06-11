@@ -55,9 +55,7 @@ export default React.forwardRef<AccountTableMethods, AccountTableContainerProps>
         onSaveAccount={(account) => saveAccount.mutate(account)}
         onDeleteAccount={(account) => deleteAccount.mutate({ id: account.id, reassignId: null })}
         onSaveInstitution={(institution) => saveInstitution.mutate(institution)}
-        onDeleteInstitution={(institution) =>
-          deleteInstitution.mutate({ id: institution.id as number })
-        }
+        onDeleteInstitution={(institution) => deleteInstitution.mutate({ id: institution.id })}
         onSearchInstitutions={(query) => onSearchInstitutions({ query })}
         groupBy={groupBy}
         sortBy={sortBy}

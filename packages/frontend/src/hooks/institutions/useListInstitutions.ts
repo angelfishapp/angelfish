@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { listInstitutions } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -17,7 +18,7 @@ export const useListInstitutions = (
   _request: AppCommandRequest<AppCommandIds.LIST_INSTITUTIONS>,
 ) => {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ['institutions'],
+    queryKey: APP_QUERY_KEYS.INSTITUTIONS,
     queryFn: async () => listInstitutions(),
   })
 

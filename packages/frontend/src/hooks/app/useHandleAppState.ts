@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import React from 'react'
 
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import { AppEventIds, AppProcessIDs, CommandsClient, Logger } from '@angelfish/core'
 import type { IFrontEndAppState } from './FrontEndAppState.interface'
 
@@ -30,7 +31,7 @@ export function useHandleAppState() {
       // ON_LOGIN
       removeOnLogin = CommandsClient.addAppEventListener(AppEventIds.ON_LOGIN, (payload) => {
         logger.debug('ON_LOGIN', payload)
-        queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+        queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
           ...prevState,
           isAuthenticated: true,
           authenticatedUser: payload?.authenticatedUser,
@@ -40,7 +41,7 @@ export function useHandleAppState() {
       // ON_LOGOUT
       removeOnLogout = CommandsClient.addAppEventListener(AppEventIds.ON_LOGOUT, (payload) => {
         logger.debug('ON_LOGOUT', payload)
-        queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+        queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
           ...prevState,
           isAuthenticated: false,
           authenticatedUser: undefined,
@@ -51,7 +52,7 @@ export function useHandleAppState() {
       removeOnBookOpen = CommandsClient.addAppEventListener(AppEventIds.ON_BOOK_OPEN, (payload) => {
         logger.debug('ON_BOOK_OPEN', payload)
         bookOpen = true
-        queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+        queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
           ...prevState,
           book: payload?.book,
         }))
@@ -63,7 +64,7 @@ export function useHandleAppState() {
         (payload) => {
           logger.debug('ON_BOOK_CLOSE', payload)
           bookOpen = false
-          queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+          queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
             ...prevState,
             book: undefined,
           }))
@@ -73,7 +74,7 @@ export function useHandleAppState() {
       // ON_SYNC_STARTED
       removeOnSyncStarted = CommandsClient.addAppEventListener(AppEventIds.ON_SYNC_STARTED, () => {
         logger.debug('ON_SYNC_STARTED')
-        queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+        queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
           ...prevState,
           syncInfo: {
             isSyncing: true,
@@ -91,7 +92,7 @@ export function useHandleAppState() {
         AppEventIds.ON_SYNC_FINISHED,
         (payload) => {
           logger.debug('ON_SYNC_FINISHED', payload)
-          queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+          queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
             ...prevState,
             syncInfo: {
               isSyncing: false,
@@ -122,7 +123,7 @@ export function useHandleAppState() {
         AppEventIds.ON_UPDATE_AUTHENTICATED_USER,
         (payload) => {
           logger.debug('ON_UPDATE_AUTHENTICATED_USER', payload)
-          queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+          queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
             ...prevState,
             authenticatedUser: payload,
           }))
@@ -139,7 +140,7 @@ export function useHandleAppState() {
         AppEventIds.ON_USER_SETTINGS_UPDATED,
         (payload) => {
           logger.debug('ON_USER_SETTINGS_UPDATED', payload)
-          queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+          queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
             ...prevState,
             userSettings: payload,
           }))

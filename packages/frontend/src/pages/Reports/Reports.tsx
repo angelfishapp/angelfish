@@ -83,7 +83,7 @@ export default function Reports() {
   >({})
 
   // React Query Hooks
-  const { transactions, isLoading: isLoadingTransactions } = useListTransactions(transactionQuery)
+  const { transactions, isFetching: isLoadingTransactions } = useListTransactions(transactionQuery)
   const transactionSaveMutation = useSaveTransactions()
   const transactionDeleteMutation = useDeleteTransaction()
   const { accounts } = useListAccounts({})

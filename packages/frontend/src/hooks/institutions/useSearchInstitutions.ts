@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { onSearchInstitutions } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -15,7 +16,7 @@ export const useSearchInstitutions = ({
   query,
 }: AppCommandRequest<AppCommandIds.SEARCH_INSTITUTIONS>) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['searchInstitutions', query],
+    queryKey: APP_QUERY_KEYS.SEARCH_INSTITUTIONS(query),
     queryFn: async () => {
       return await onSearchInstitutions({ query })
     },

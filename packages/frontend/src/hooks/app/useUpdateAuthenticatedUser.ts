@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { updateAuthenticatedUser } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { IFrontEndAppState } from '@/hooks'
 
 /**
@@ -17,7 +18,7 @@ export const useUpdateAuthenticatedUser = () => {
   return useMutation({
     mutationFn: updateAuthenticatedUser,
     onSuccess: (authenticatedUser) => {
-      queryClient.setQueryData(['appState'], (prevState: IFrontEndAppState) => ({
+      queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
         ...prevState,
         authenticatedUser,
       }))

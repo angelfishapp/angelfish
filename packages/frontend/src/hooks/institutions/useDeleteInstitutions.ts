@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { deleteInstitution } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 
 /**
  * React-Query Hook that deletes an Institution with given ID.
@@ -17,7 +18,7 @@ export const useDeleteInstitution = () => {
   return useMutation({
     mutationFn: deleteInstitution,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['institutions'] })
+      queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.INSTITUTIONS })
     },
   })
 }

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { runReport } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 
 /**
@@ -15,7 +16,7 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
  */
 export const useRunReport = (query: AppCommandRequest<AppCommandIds.RUN_REPORT>) => {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ['reports', query],
+    queryKey: APP_QUERY_KEYS.REPORTS(query),
     queryFn: async () => runReport(query),
   })
 

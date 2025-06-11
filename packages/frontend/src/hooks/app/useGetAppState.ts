@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { getAppState } from '@/api'
+import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 import type { IFrontEndAppState } from './FrontEndAppState.interface'
 
@@ -16,7 +17,7 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
     isFetching,
     error,
   } = useQuery<IFrontEndAppState>({
-    queryKey: ['appState'],
+    queryKey: APP_QUERY_KEYS.APPSTATE,
     queryFn: async (): Promise<IFrontEndAppState> => {
       const result = await getAppState()
       // Ensure result is an object and assign required properties for IFrontEndAppState
