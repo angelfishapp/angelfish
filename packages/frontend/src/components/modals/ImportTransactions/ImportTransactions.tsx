@@ -57,7 +57,7 @@ export default function ImportTransactions({
         onNext={(value, delimiter) => {
           setFile(value)
           setError(undefined)
-          onGetFileMappings?.(value, delimiter)
+          onGetFileMappings?.(value[0], delimiter)
             .then((parsedFileMappings) => {
               setFileMappings(parsedFileMappings)
               setActiveStep(2)
@@ -74,7 +74,7 @@ export default function ImportTransactions({
         fileMappings={fileMappings}
         onNext={(mapper) => {
           setError(undefined)
-          onReconcileTransactions?.(file, mapper)
+          onReconcileTransactions?.(file[0], mapper)
             .then((reconciledTransactions) => {
               setTransactions(reconciledTransactions)
               setActiveStep(3)

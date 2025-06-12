@@ -2,7 +2,10 @@
  * Tests for all the CategoryGroupService Methods
  */
 
+import { mockRegisterTypedAppCommand } from '@angelfish/tests'
+
 import type { ICategoryGroup } from '@angelfish/core'
+import { AppCommandIds } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 
 import { CategoryGroupsService } from '.'
@@ -12,6 +15,9 @@ import { CategoryGroupsService } from '.'
  */
 beforeAll(async () => {
   await DatabaseManager.initConnection(':memory:')
+  mockRegisterTypedAppCommand(AppCommandIds.LIST_ACCOUNTS, async () => {
+    return []
+  })
 })
 
 /**

@@ -29,6 +29,14 @@ export interface DrawerProps {
    */
   hideBackdrop?: boolean
   /**
+   * Keep the drawer mounted in the DOM when closed
+   * This can be useful for performance reasons if you want to avoid
+   * unmounting and remounting the drawer every time it opens and closes.
+   * If set to false, the drawer will be unmounted when closed.
+   * @default false
+   */
+  keepMounted?: boolean
+  /**
    * Optionally Add List of Menu Items to Top of Drawer with ... button
    */
   menuItems?: DropdownMenuItem[]

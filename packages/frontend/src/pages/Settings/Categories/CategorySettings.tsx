@@ -7,18 +7,21 @@ import Card from '@mui/material/Card'
 import Collapse from '@mui/material/Collapse'
 import { chunk, groupBy } from 'lodash-es'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
 import { DropableComponent } from '@/components/DragAndDrop'
 import { CategoryDrawer, CategoryGroupDrawer } from '@/components/drawers'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { Emoji } from '@/components/Emoji'
-import { deleteAccount, saveAccount } from '@/redux/accounts/actions'
-import { selectAllAccountsWithRelations, selectAllCategories } from '@/redux/accounts/selectors'
-import { deleteCategoryGroup, saveCategoryGroup } from '@/redux/categoryGroups/actions'
-import { selectAllCategoryGroups } from '@/redux/categoryGroups/selectors'
-import { listTransactions } from '@/redux/transactions/actions'
-import { selectAllTransactions } from '@/redux/transactions/selectors'
+import {
+  useDeleteAccount,
+  useDeleteCategoryGroup,
+  useListAllAccountsWithRelations,
+  useListCategoryGroups,
+  useListTransactions,
+  useSaveAccount,
+  useSaveCategoryGroup,
+  useSelectAllCategories,
+} from '@/hooks'
 import type { AppCommandIds, AppCommandRequest, IAccount, ICategoryGroup } from '@angelfish/core'
 import { StyledCategoryGroupDivider, StyledCategoryGroupName } from './CategorySettings.styles'
 import { CategoriesTable } from './components/CategoriesTable'
@@ -33,8 +36,6 @@ const BUBBLEWIDTH = BUBBLE_SIZE + 16 + 8
  */
 
 export default function CategorySettings() {
-  const dispatch = useDispatch()
-
   // Component State
   const container = React.useRef<HTMLDivElement | null>(null)
   const [showDrawer, setShowDrawer] = React.useState<boolean>(false)
@@ -60,27 +61,26 @@ export default function CategorySettings() {
   >(undefined)
 
   // Get Category Groups from Redux store and filter into Income/Expenses
-  const categoryGroups: ICategoryGroup[] = useSelector(selectAllCategoryGroups)
+  const { categoryGroups } = useListCategoryGroups()
   const { Income: categoryGroupsIncome, Expense: categoryGroupsExpense } = groupBy(
     categoryGroups,
     (group) => group.type,
   )
 
   // Get Categories from Redux store and filter for currect group
-  const categories: IAccount[] = useSelector(selectAllCategories)
-  const accountsWithRelations = useSelector(selectAllAccountsWithRelations)
+  const { categories } = useSelectAllCategories()
+  const { accounts: accountsWithRelations } = useListAllAccountsWithRelations()
   const groupedCategories = groupBy(categories, (category) => category.cat_group_id)
 
   // Get transactions in background when selected category is changed
-  const transactions = useSelector(selectAllTransactions)
-  React.useEffect(() => {
-    if (selectedCategory) {
-      const transactionQuery: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS> = {
-        cat_id: selectedCategory.id,
-      }
-      dispatch(listTransactions(transactionQuery))
-    }
-  }, [selectedCategory, dispatch])
+  const transactionQuery: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS> | undefined =
+    selectedCategory ? { cat_id: selectedCategory.id } : undefined
+
+  const { transactions } = useListTransactions(transactionQuery ?? {})
+  const CategoryGroupSaveMutation = useSaveCategoryGroup()
+  const CategoryGroupDeleteMutation = useDeleteCategoryGroup()
+  const accountSaveMutation = useSaveAccount()
+  const accountDeleteMutation = useDeleteAccount()
 
   const updateItemsPerRow = React.useCallback(() => {
     if (!container.current) return
@@ -154,23 +154,17 @@ export default function CategorySettings() {
    * Handle Saving a Category Group
    */
   const onGroupSave = (categoryGroup: ICategoryGroup) => {
-    dispatch(saveCategoryGroup({ categoryGroup }))
+    CategoryGroupSaveMutation.mutate(categoryGroup)
   }
 
   /**
    * Handle Deleting a Category Group
    */
-  const onGroupDelete = (group: ICategoryGroup, categories?: IAccount[]) => {
-    categories?.forEach((category) => dispatch(saveAccount({ account: category })))
-    setTimeout(() => dispatch(deleteCategoryGroup({ categoryGroupId: group.id })), 500)
-    setDeleting(undefined)
-
-    if (!categories?.length) {
-      return setSelectedGroup(undefined)
-    }
+  const onGroupDelete = async (reassignId?: number) => {
+    await CategoryGroupDeleteMutation.mutate({ id: deleting?.data.id as number, reassignId })
 
     const newCategoryGroupID = categories.at(0)?.cat_group_id
-    const type = group.type.toLowerCase() as 'income' | 'expenses'
+    const type = deleting?.type.toLowerCase() as 'income' | 'expenses'
     const index = (type === 'income' ? categoryGroupsIncome : categoryGroupsExpense).findIndex(
       (x) => x.id === newCategoryGroupID,
     )
@@ -185,14 +179,14 @@ export default function CategorySettings() {
    * Handle Saving a Category
    */
   const onCategorySave = (category: IAccount) => {
-    dispatch(saveAccount({ account: category }))
+    accountSaveMutation.mutate(category)
   }
 
   /**
    * Handle Deleting a Category
    */
   const onCategoryDelete = (id: IAccount['id'], reassignId?: IAccount['id']) => {
-    dispatch(deleteAccount({ id, reassignId }))
+    accountDeleteMutation.mutate({ id, reassignId: reassignId ?? null })
     setDeleting(undefined)
   }
 
@@ -417,7 +411,7 @@ export default function CategorySettings() {
                                     </Button>
                                   </Box>
                                 }
-                                categories={groupedCategories[selectedGroup?.group.id]?.map(
+                                categories={(groupedCategories[selectedGroup?.group.id] ?? []).map(
                                   (data) => ({ ...data, type: 'income' }),
                                 )}
                                 onSelect={onCategorySelect}
@@ -517,7 +511,7 @@ export default function CategorySettings() {
                                     </Button>
                                   </Box>
                                 }
-                                categories={groupedCategories[selectedGroup?.group.id].map(
+                                categories={(groupedCategories[selectedGroup?.group.id] ?? []).map(
                                   (data) => ({ ...data, type: 'expense' }),
                                 )}
                                 onSelect={onCategorySelect}
@@ -552,7 +546,7 @@ export default function CategorySettings() {
           options={deleting.data.type === 'Income' ? categoryGroupsIncome : categoryGroupsExpense}
           categoryGroup={deleting.data}
           onClose={() => setDeleting(undefined)}
-          onConfirm={(categories) => onGroupDelete(deleting.data, categories)}
+          onConfirm={(reassignId) => onGroupDelete(reassignId)}
           accounts={groupedCategories[deleting.data.id]}
         />
       )}

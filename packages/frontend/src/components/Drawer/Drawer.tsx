@@ -16,6 +16,7 @@ export default function Drawer({
   children,
   disableBackdropClose = false,
   disableSaveButton = false,
+  keepMounted = false,
   menuItems,
   onClose,
   onSave,
@@ -29,6 +30,7 @@ export default function Drawer({
       anchor={position === 'right' ? 'right' : 'bottom'}
       onClose={disableBackdropClose ? undefined : (_, reason) => onClose?.(reason)}
       hideBackdrop={hideBackdrop}
+      keepMounted={keepMounted}
     >
       <Box>
         <Box display="flex" alignItems="center" marginBottom={2} height={50}>

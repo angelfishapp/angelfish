@@ -10,14 +10,24 @@ export interface AccountsViewProps {
    */
   account?: IAccount
   /**
-   * Array of Transactions to Render in Table
-   */
-  transactions: ITransaction[]
-  /**
    * Full list of available Accounts for Categorising
    * Transactions in the Table with Parent Relations Attached
    */
   accountsWithRelations: IAccount[]
+  /**
+   * Any error that occurred while loading the Account/Transactions
+   * @default null
+   */
+  error: null | Error
+  /**
+   * Is the Account/Transactions currently being loaded via IPC
+   * @default false
+   */
+  isLoading: boolean
+  /**
+   * Array of Transactions to Render in Table
+   */
+  transactions: ITransaction[]
   /**
    * Full list of available Tags for Tagging Transactions
    * in the Table

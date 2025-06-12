@@ -5,13 +5,11 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
 
 import { AvatarField } from '@/components/forms/AvatarField'
 import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
-import { selectAuthenticatedUser } from '@/redux/app/selectors'
-import { updateAuthenticatedUser } from '@/redux/users/actions'
+import { useGetAuthenticatedUser, useUpdateAuthenticatedUser } from '@/hooks'
 import { USER_AVATARS } from '@angelfish/core'
 
 /**
@@ -34,11 +32,9 @@ type UserSettingsFormValues = {
  */
 
 export default function UserSettings() {
-  const dispatch = useDispatch()
-
   // Component State
-  const authenticatedUser = useSelector(selectAuthenticatedUser)
-
+  const { authenticatedUser } = useGetAuthenticatedUser()
+  const updateAuthenticatedUserMutation = useUpdateAuthenticatedUser()
   // Setup Form
   const {
     control,
@@ -79,17 +75,13 @@ export default function UserSettings() {
   const handleUserSave = async (formData: UserSettingsFormValues) => {
     if (authenticatedUser) {
       // Copy and update user
-      dispatch(
-        updateAuthenticatedUser({
-          user: {
-            ...authenticatedUser,
-            avatar: formData.avatar,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            phone: formData.phone.number ? `+${formData.phone.number}` : undefined,
-          },
-        }),
-      )
+      updateAuthenticatedUserMutation.mutate({
+        ...authenticatedUser,
+        avatar: formData.avatar,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone: formData.phone.number ? `+${formData.phone.number}` : undefined,
+      })
       reset(formData)
     }
   }

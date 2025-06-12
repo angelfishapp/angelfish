@@ -1,32 +1,29 @@
-import { useDispatch, useSelector } from 'react-redux'
-
 import { UserTableUIContainer } from '@/components/UserTable'
-import { selectAuthenticatedUser } from '@/redux/app/selectors'
-import { deleteUser, saveUser } from '@/redux/users/actions'
-import { selectAllUsers } from '@/redux/users/selectors'
-import type { IAuthenticatedUser } from '@angelfish/core'
+import { useDeleteUser, useGetAuthenticatedUser, useListUsers, useSaveUser } from '@/hooks'
 import { USER_AVATARS } from '@angelfish/core'
+import type { IAuthenticatedUser } from '@angelfish/core/src/types'
 
 /**
  * Container for UserTableUIContainer
  */
 export default function UserTableContainer() {
-  // Redux State
-  const dispatch = useDispatch()
-  const users = useSelector(selectAllUsers)
-  const authenticatedUser = useSelector(selectAuthenticatedUser) as IAuthenticatedUser
+  // React-Query State
+  const { users } = useListUsers()
+  const { authenticatedUser } = useGetAuthenticatedUser()
+  const userSaveMutation = useSaveUser()
+  const userDeleteMutation = useDeleteUser()
 
   // Render
   return (
     <UserTableUIContainer
-      authenticated_user_id={authenticatedUser.id}
+      authenticated_user_id={(authenticatedUser as IAuthenticatedUser).id}
       avatars={USER_AVATARS}
       users={users}
       onSave={(user) => {
-        dispatch(saveUser({ user }))
+        userSaveMutation.mutate(user)
       }}
       onDelete={(user) => {
-        dispatch(deleteUser({ userId: user.id }))
+        userDeleteMutation.mutate({ id: user.id })
       }}
     />
   )
