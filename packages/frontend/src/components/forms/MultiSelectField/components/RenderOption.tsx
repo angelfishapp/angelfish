@@ -38,10 +38,6 @@ type RenderOptionProps = {
    * Whether to disable tooltips on this option.
    */
   disableTooltip: boolean
-  /**
-   * The current variant of selected account options.
-   */
-  variant: string
 }
 
 export const RenderOption: React.FC<RenderOptionProps> = ({
@@ -50,7 +46,6 @@ export const RenderOption: React.FC<RenderOptionProps> = ({
   selected,
   setSelected,
   disableTooltip,
-  variant,
 }) => {
   // Remove the key from props to avoid React warning about
   // spread JSX and duplicate keys
@@ -61,7 +56,7 @@ export const RenderOption: React.FC<RenderOptionProps> = ({
     return (
       <ListItem key={option.id} {...rest}>
         <Box display="flex" alignItems="center" width="100%">
-          <Box >
+          <Box>
             <Emoji size={24} emoji={option.cat_icon ?? ''} />
           </Box>
           <Box minWidth={200} flexGrow={1}>
@@ -72,87 +67,37 @@ export const RenderOption: React.FC<RenderOptionProps> = ({
       </ListItem>
     )
   }
-  if (variant === 'multi-box') {
-    if (option.class == 'ACCOUNT') {
-      // Render Bank Account
-      return (
-        <ListItem key={option.id} {...rest}>
-          <Box display="flex" alignItems="center" width="100%">
-            <Checkbox
-              checked={selected.some((s) => s.id === option.id)}
-              onClick={(e) => {
-                e.stopPropagation()
-                if (selected.some((s) => s.id === option.id)) {
-                  setSelected(selected.filter((s) => s.id !== option.id))
-                } else {
-                  setSelected([...selected, option])
-                }
-              }}
-            />
-            <Box marginRight={1}>
-              <BankIcon logo={option.institution?.logo} size={24} />
-            </Box>
-            <Box minWidth={200} flexGrow={1}>
-              <Typography style={{ lineHeight: 1.1 }} noWrap>
-                {option.name}
-              </Typography>
-              <Typography style={{ lineHeight: 1.1 }} color="textSecondary" noWrap>
-                {option.institution?.name}
-              </Typography>
-            </Box>
-            {!disableTooltip && (
-              <Box>
-                <Tooltip
-                  title="Account Transfer"
-                  placement="right"
-                  slotProps={{
-                    tooltip: {
-                      sx: {
-                        maxWidth: 200,
-                        backgroundColor: (theme) => theme.palette.grey[400],
-                        fontSize: '1em',
-                      },
-                    },
-                  }}
-                >
-                  <InfoIcon fontSize="small" color="primary" />
-                </Tooltip>
-              </Box>
-            )}
-          </Box>
-        </ListItem>
-      )
-    }
-    // Render MultiSelect Option
+  if (option.class == 'ACCOUNT') {
+    // Render Bank Account
     return (
       <ListItem key={option.id} {...rest}>
-        <Checkbox
-          checked={selected.some((s) => s.id === option.id)}
-          onClick={(e) => {
-            e.stopPropagation()
-            if (selected.some((s) => s.id === option.id)) {
-              setSelected(selected.filter((s) => s.id !== option.id))
-            } else {
-              setSelected([...selected, option])
-            }
-          }}
-        />
         <Box display="flex" alignItems="center" width="100%">
-          <Box marginRight={1} width={30}>
-            <Emoji size={24} emoji={option.cat_icon ?? ''} />
+          <Checkbox
+            checked={selected.some((s) => s.id === option.id)}
+            onClick={(e) => {
+              e.stopPropagation()
+              if (selected.some((s) => s.id === option.id)) {
+                setSelected(selected.filter((s) => s.id !== option.id))
+              } else {
+                setSelected([...selected, option])
+              }
+            }}
+          />
+          <Box marginRight={1}>
+            <BankIcon logo={option.institution?.logo} size={24} />
           </Box>
           <Box minWidth={200} flexGrow={1}>
             <Typography style={{ lineHeight: 1.1 }} noWrap>
               {option.name}
             </Typography>
             <Typography style={{ lineHeight: 1.1 }} color="textSecondary" noWrap>
-              {`${option.categoryGroup?.type} - ${option.categoryGroup?.name}`}
+              {option.institution?.name}
             </Typography>
           </Box>
           {!disableTooltip && (
             <Box>
               <Tooltip
-                title={option.cat_description}
+                title="Account Transfer"
                 placement="right"
                 slotProps={{
                   tooltip: {
@@ -172,7 +117,7 @@ export const RenderOption: React.FC<RenderOptionProps> = ({
       </ListItem>
     )
   }
-  if (option.class == 'ACCOUNT' && variant !== 'multi-box') {
+  if (option.class == 'ACCOUNT') {
     // Render Bank Account
     return (
       <ListItem key={option.id} {...rest}>

@@ -1,24 +1,21 @@
-"use client"
+'use client'
 
-import { Box, Container, Typography, Paper } from "@mui/material"
-import React, { useState } from 'react'
 import type { IAccount } from '@angelfish/core'
+import { Box, Container, Paper, Typography } from '@mui/material'
+import React, { useState } from 'react'
 import type { MultiSelectFieldProps } from './MultiSelectField.interface'
+import MultiSelect from './components/MultiSelect'
 import { RenderOption } from './components/RenderOption'
-import MultiSelectField from "./components/MultiSelect"
 
 /**
  * Autocomplete Field for selecting a Category or Account
  */
 
-export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function CategoryField(
-  {
-    variant = 'dropdown',
-    accountsWithRelations,
-    disableTooltip = false,
-    disableGroupBy = false,
-  }: MultiSelectFieldProps,
-) {
+export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function MultiSelectField({
+  accountsWithRelations,
+  disableTooltip = false,
+  disableGroupBy = false,
+}: MultiSelectFieldProps) {
   // states to handle multi-select variant
   const [selected, setSelected] = useState<IAccount[]>([])
 
@@ -29,9 +26,9 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
         Category Selection
       </Typography>
 
-      <Box sx={{ display: "flex", gap: 4, flexDirection: { xs: "column", md: "row" } }}>
+      <Box sx={{ display: 'flex', gap: 4, flexDirection: { xs: 'column', md: 'row' } }}>
         <Box sx={{ flex: 1 }}>
-          <MultiSelectField
+          <MultiSelect
             options={accountsWithRelations}
             value={selected}
             onChange={(_event, newValue) => setSelected(newValue)}
@@ -40,14 +37,14 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
             groupBy={
               !disableGroupBy
                 ? (option) => {
-                  if (option.class == 'CATEGORY') {
-                    if (option.id != 0) {
-                      return option.categoryGroup?.name ?? ''
+                    if (option.class == 'CATEGORY') {
+                      if (option.id != 0) {
+                        return option.categoryGroup?.name ?? ''
+                      }
+                      return ''
                     }
-                    return ''
+                    return 'Account Transfer'
                   }
-                  return 'Account Transfer'
-                }
                 : undefined
             }
             isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -60,14 +57,13 @@ export default React.forwardRef<HTMLDivElement, MultiSelectFieldProps>(function 
                 selected={selected}
                 setSelected={setSelected}
                 disableTooltip={disableTooltip}
-                variant={variant}
               />
             )}
           />
         </Box>
 
         <Box sx={{ flex: 1 }}>
-          <Paper elevation={3} sx={{ p: 2, height: "100%" }}>
+          <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Selected Categories ({selected.length})
             </Typography>

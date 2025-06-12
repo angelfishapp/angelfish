@@ -34,6 +34,5 @@ export const Default: Story = {
     label: 'Category',
     renderAsValue: false,
     onCreate: (name?) => action('onCreate')(name),
-    variant: 'multi-box',
   },
 }

@@ -62,9 +62,4 @@ export interface MultiSelectFieldProps extends FormFieldProps {
    * @default false
    */
   open?: boolean
-  /**
-   * requiered set the variant to be dropdown or multi-box
-   * @default false
-   */
-  variant?: 'dropdown' | 'multi-box'
 }
