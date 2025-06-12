@@ -17,22 +17,21 @@ import {
   subYears,
 } from 'date-fns'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
+import { exportReport, showSaveDialog } from '@/api'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { DateRangeField } from '@/components/forms/DateRangeField'
 import { RollingContainer } from '@/components/RollingContainer'
-import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
-import { selectAllTags } from '@/redux/tags/selectors'
-import { deleteTransaction, listTransactions, saveTransactions } from '@/redux/transactions/actions'
-import { selectAllTransactions } from '@/redux/transactions/selectors'
-import type {
-  AppCommandRequest,
-  ITransactionUpdate,
-  ReportsData,
-  ReportsQuery,
-} from '@angelfish/core'
-import { AppCommandIds, CommandsClient } from '@angelfish/core'
+import {
+  useDeleteTransaction,
+  useListAllAccountsWithRelations,
+  useListTags,
+  useListTransactions,
+  useRunReport,
+  useSaveTransactions,
+} from '@/hooks'
+import type { AppCommandRequest, ITransactionUpdate, ReportsQuery } from '@angelfish/core'
+import { type AppCommandIds } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
 import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
@@ -44,8 +43,6 @@ import { renderPeriodHeader } from './Reports.utils'
  */
 
 export default function Reports() {
-  const dispatch = useDispatch()
-
   /**
    * Default Date Ranges for Date Range Selector
    */
@@ -73,7 +70,6 @@ export default function Reports() {
   }
 
   // Component State
-  const [reportData, setReportData] = React.useState<ReportsData>({ periods: [], rows: [] })
   const [reportsQuery, setReportsQuery] = React.useState<ReportsQuery>({
     start_date: format(dateRanges['Last 12 Months'].start, 'yyyy-MM-dd'),
     end_date: format(dateRanges['Last 12 Months'].end, 'yyyy-MM-dd'),
@@ -85,37 +81,23 @@ export default function Reports() {
   const [transactionQuery, setTransactionQuery] = React.useState<
     AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS>
   >({})
-  const transactions = useSelector(selectAllTransactions)
-  const accounts = useSelector(selectAllAccountsWithRelations)
-  const tags = useSelector(selectAllTags)
 
-  // Get Reports Data when date ranges changed
-  React.useEffect(() => {
-    CommandsClient.executeAppCommand(AppCommandIds.RUN_REPORT, reportsQuery).then((response) => {
-      setReportData(response)
-    })
-  }, [
-    reportsQuery,
-    reportsQuery.start_date,
-    reportsQuery.end_date,
-    reportsQuery.include_unclassified,
-    transactions,
-    setReportData,
-  ])
-
-  // Get Transactions when transaction query changed
-  React.useEffect(() => {
-    dispatch(listTransactions(transactionQuery))
-  }, [transactionQuery, dispatch])
+  // React Query Hooks
+  const { transactions, isFetching: isLoadingTransactions } = useListTransactions(transactionQuery)
+  const transactionSaveMutation = useSaveTransactions()
+  const transactionDeleteMutation = useDeleteTransaction()
+  const { accounts } = useListAllAccountsWithRelations()
+  const { tags } = useListTags()
+  const { reportData } = useRunReport(reportsQuery)
 
   /**
    * Callback to save Transactions to the Database
    */
   const onSaveTransactions = React.useCallback(
     async (transactions: ITransactionUpdate[]) => {
-      dispatch(saveTransactions({ transactions }))
+      transactionSaveMutation.mutate(transactions)
     },
-    [dispatch],
+    [transactionSaveMutation],
   )
 
   /**
@@ -123,9 +105,9 @@ export default function Reports() {
    */
   const onDeleteTransaction = React.useCallback(
     async (id: number) => {
-      dispatch(deleteTransaction({ id }))
+      transactionDeleteMutation.mutate({ id })
     },
-    [dispatch],
+    [transactionDeleteMutation],
   )
 
   /**
@@ -186,7 +168,6 @@ export default function Reports() {
     handleResize()
     return () => window.removeEventListener('resize', handleResize)
   }, [headingCol?.offsetWidth, reportsQuery, reportData])
-
   // Render
   return (
     <Box padding={2}>
@@ -267,24 +248,18 @@ export default function Reports() {
                             label: 'Excel (XLSX)',
                             disabled: false,
                             onClick: async () => {
-                              const filePath = await CommandsClient.executeAppCommand(
-                                AppCommandIds.SHOW_SAVE_FILE_DIALOG,
-                                {
-                                  title: 'Export Report to Excel (XLSX)',
-                                  defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
-                                  filters: [{ name: 'Excel', extensions: ['xlsx'] }],
-                                },
-                              )
+                              const filePath = await showSaveDialog({
+                                title: 'Export Report to Excel (XLSX)',
+                                defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
+                                filters: [{ name: 'Excel', extensions: ['xlsx'] }],
+                              })
 
                               if (filePath) {
-                                await CommandsClient.executeAppCommand(
-                                  AppCommandIds.EXPORT_REPORT,
-                                  {
-                                    filePath,
-                                    fileType: 'XLSX',
-                                    query: reportsQuery,
-                                  },
-                                )
+                                exportReport({
+                                  filePath,
+                                  fileType: 'XLSX',
+                                  query: reportsQuery,
+                                })
                               }
                             },
                           },
@@ -308,6 +283,7 @@ export default function Reports() {
         tags={tags}
         title={periodDetailDrawerTitle}
         transactions={transactions}
+        isLoading={isLoadingTransactions}
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}

@@ -41,11 +41,11 @@ export default function GroupDeleteModal({
       {...rest}
       title="Delete Category Group"
       cancelText="Cancel"
-      onConfirm={handleSubmit((formValues: DeleteGroupFormValues) =>
-        onConfirm(
-          (accounts ?? []).map((account) => ({ ...account, categoryGroupID: formValues.groupId })),
-        ),
-      )}
+      onConfirm={handleSubmit((formValues: DeleteGroupFormValues) => {
+        onConfirm(formValues.groupId)
+        reset()
+        onClose?.()
+      })}
       confirmButtonDisabled={accounts && !isValid}
       confirmText="Delete"
       onClose={() => {

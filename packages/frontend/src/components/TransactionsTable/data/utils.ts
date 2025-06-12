@@ -4,6 +4,7 @@
 
 import type { IAccount, ILineItemUpdate, ITransaction } from '@angelfish/core'
 import { isSplitTransaction, roundNumber } from '@angelfish/core'
+import { DateSort } from './sorting'
 import type { FormData, TransactionRow } from './types'
 
 /**
@@ -21,9 +22,9 @@ export function buildTransactionRows(
   if (transactions.length <= 0) return transactionRows
 
   // Sort by Date to ensure running balance is correct
-  const sortedTransactions = transactions
-    .slice()
-    .sort((a, b) => a.date.getTime() - b.date.getTime())
+  const sortedTransactions = transactions.slice().sort((a, b) => {
+    return DateSort(a.date, a.id, b.date, b.id)
+  })
 
   // All Transactions should be for same account so get Account Start Balance
   // From first Transaction

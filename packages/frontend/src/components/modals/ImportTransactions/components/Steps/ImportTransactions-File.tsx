@@ -57,9 +57,9 @@ export default function ImportTransactionsFile({
   } = useForm<{ file: string; account: IAccount; csvDelimiter: string }>({
     defaultValues: { file: '', account: defaultAccount, csvDelimiter: ',' },
   })
-
-  const filePath = watch('file')
-  const isCVSFile = filePath ? filePath.toLowerCase().endsWith('.csv') : false
+  const filePathArray = watch('file')
+  const filePath = filePathArray[0]
+  const isCVSFile = filePath ? filePath?.toLowerCase().endsWith('.csv') : false
 
   return (
     <Step
@@ -81,7 +81,7 @@ export default function ImportTransactionsFile({
                   label="File Path"
                   helperText="You can import from transactions from OFX, QFX, QIF or CSV files."
                   multiple={false}
-                  fileTypes={['.ofx', '.qfx', '.qif', '.csv']}
+                  fileTypes={['ofx', 'qfx', 'qif', 'csv']}
                   required
                   onChange={(file: string | string[] | null) =>
                     onChange(file ? (file as string) : '')

@@ -44,4 +44,8 @@ export interface PeriodDetailDrawerProps {
    * Transactions to display in the drawer
    */
   transactions: ITransaction[]
+  /**
+   * Transactions Loading status in the drawer
+   */
+  isLoading?: boolean
 }

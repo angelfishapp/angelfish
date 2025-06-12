@@ -21,5 +21,5 @@ export interface GroupDeleteModalProps extends Partial<Omit<ConfirmDialogProps, 
   /**
    * Callback to execute when the user confirms the deletion
    */
-  onConfirm: (value: IAccount[]) => void
+  onConfirm: (reassignId?: number) => void
 }

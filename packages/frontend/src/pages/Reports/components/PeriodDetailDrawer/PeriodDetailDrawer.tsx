@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Drawer } from '@/components/Drawer'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { TransactionsTable } from '@/components/TransactionsTable'
 import type { PeriodDetailDrawerProps } from './PeriodDetailDrawer.interface'
 
@@ -19,12 +20,13 @@ export default function PeriodDetailDrawer({
   tags,
   title,
   transactions,
+  isLoading = false,
 }: PeriodDetailDrawerProps) {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 
   // Render
   return (
-    <Drawer title={title} position="bottom" onClose={onClose} open={open} hideBackdrop={true}>
+    <Drawer title={title} position="bottom" onClose={onClose} open={open} keepMounted={true}>
       <div
         ref={scrollContainerRef}
         style={{
@@ -36,19 +38,23 @@ export default function PeriodDetailDrawer({
           marginLeft: 0,
         }}
       >
-        {scrollContainerRef.current && (
-          <TransactionsTable
-            id="reports-detail-drawer"
-            columns={['date', 'title', 'category', 'notes', 'account', 'amount']}
-            transactions={transactions}
-            variant="flat"
-            accountsWithRelations={accountsWithRelations}
-            allTags={tags}
-            onCreateCategory={onCreateCategory}
-            onDeleteTransaction={onDeleteTransaction}
-            onSaveTransactions={onSaveTransactions}
-            scrollElement={scrollContainerRef.current}
-          />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          scrollContainerRef.current && (
+            <TransactionsTable
+              id="reports-detail-drawer"
+              columns={['date', 'title', 'category', 'notes', 'account', 'amount']}
+              transactions={transactions}
+              variant="flat"
+              accountsWithRelations={accountsWithRelations}
+              allTags={tags}
+              onCreateCategory={onCreateCategory}
+              onDeleteTransaction={onDeleteTransaction}
+              onSaveTransactions={onSaveTransactions}
+              scrollElement={scrollContainerRef.current}
+            />
+          )
         )}
       </div>
     </Drawer>

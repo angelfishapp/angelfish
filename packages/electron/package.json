@@ -1,7 +1,7 @@
 {
   "name": "@angelfish/electron",
   "productName": "Angelfish",
-  "version": "0.0.3",
+  "version": "0.0.31",
   "description": "A local-first personal finance app for people to track, manage and plan their finances to acheive financial freedom!",
   "author": {
     "name": "Angelfish Software LLC",

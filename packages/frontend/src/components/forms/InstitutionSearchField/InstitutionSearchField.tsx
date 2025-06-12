@@ -1,3 +1,4 @@
+import ClickAwayListener from '@mui/material/ClickAwayListener'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
@@ -61,83 +62,89 @@ export default React.forwardRef<HTMLDivElement, InstitutionSearchFieldProps>(
 
     // Render
     return (
-      <AutocompleteField
-        id={id}
-        formRef={ref}
-        freeSolo={true}
-        multiple={false}
-        options={searchResults}
-        loading={isLoading}
-        placeholder={placeholder}
-        autoHighlight
-        selectOnFocus
-        open={isOpen}
-        getOptionLabel={(option) => {
-          if (typeof option === 'string') {
-            return option
-          }
-          return option.name
+      <ClickAwayListener
+        onClickAway={() => {
+          setIsOpen(false)
         }}
-        renderOption={(props, option: IInstitutionUpdate) => {
-          const { key, ...rest } = props
-          // Use current string value
-          if (option.id === -1) {
+      >
+        <AutocompleteField
+          id={id}
+          formRef={ref}
+          freeSolo={true}
+          multiple={false}
+          options={searchResults}
+          loading={isLoading}
+          placeholder={placeholder}
+          autoHighlight
+          selectOnFocus
+          open={isOpen}
+          getOptionLabel={(option) => {
+            if (typeof option === 'string') {
+              return option
+            }
+            return option.name
+          }}
+          renderOption={(props, option: IInstitutionUpdate) => {
+            const { key, ...rest } = props
+            // Use current string value
+            if (option.id === -1) {
+              return (
+                <ListItem key={key} {...rest}>
+                  <ListItemText primary={`Use ${option.name}`} />
+                </ListItem>
+              )
+            }
+            // Render search result
             return (
               <ListItem key={key} {...rest}>
-                <ListItemText primary={`Use ${option.name}`} />
+                <ListItemIcon>
+                  <BankIcon logo={option.logo} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={option.name}
+                  secondary={option.url}
+                  secondaryTypographyProps={{
+                    noWrap: true,
+                  }}
+                />
               </ListItem>
             )
-          }
-          // Render search result
-          return (
-            <ListItem key={key} {...rest}>
-              <ListItemIcon>
-                <BankIcon logo={option.logo} />
-              </ListItemIcon>
-              <ListItemText
-                primary={option.name}
-                secondary={option.url}
-                secondaryTypographyProps={{
-                  noWrap: true,
-                }}
-              />
-            </ListItem>
-          )
-        }}
-        inputValue={value}
-        onInputChange={(_, newInputValue) => {
-          onChange?.(newInputValue)
-          if (!skipQuery) {
-            setQuery(newInputValue)
-          } else {
-            // Reset Skip Query
-            setSkipQuery(false)
-          }
-        }}
-        noOptionsText={isLoading ? 'Loading...' : 'No Results'}
-        filterOptions={(options) => {
-          options.push({ id: -1, name: query, country: '' })
-          return options
-        }}
-        onChange={(_, newValue) => {
-          setIsOpen(false)
-          setSkipQuery(true)
-          if (typeof newValue === 'string') {
-            onChange?.(newValue)
-            return
-          }
-          if (newValue) {
-            if (newValue.id === -1) {
-              // Use current string value
-              onChange?.(newValue.name)
+          }}
+          inputValue={value}
+          onInputChange={(_, newInputValue) => {
+            onChange?.(newInputValue)
+            if (!skipQuery) {
+              setQuery(newInputValue)
+            } else {
+              // Reset Skip Query
+              setSkipQuery(false)
+            }
+          }}
+          noOptionsText={isLoading ? 'Loading...' : 'No Results'}
+          filterOptions={(options) => {
+            options.push({ id: -1, name: query, country: '' })
+            return options
+          }}
+          onChange={(_, newValue) => {
+            setIsOpen(false)
+            setSkipQuery(true)
+            if (typeof newValue === 'string') {
+              onChange?.(newValue)
               return
             }
-            // Use selected value
-            onChange?.(newValue.name, newValue)
-          }
-        }}
-        {...formFieldProps}
-      />
+            if (newValue) {
+              if (newValue.id === -1) {
+                // Use current string value
+                onChange?.(newValue.name)
+                return
+              }
+              // Use selected value
+              onChange?.(newValue.name, newValue)
+            }
+          }}
+          {...formFieldProps}
+        />
+      </ClickAwayListener>
     )
   },
 )

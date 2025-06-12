@@ -1,7 +1,7 @@
 import { validate } from 'class-validator'
 
 import type { AppCommandRequest, AppCommandResponse, ICategoryGroup } from '@angelfish/core'
-import { AppCommandIds, Command } from '@angelfish/core'
+import { AppCommandIds, Command, CommandsClient } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { CategoryGroupEntity } from '../../database/entities'
 import { getWorkerLogger } from '../../logger'
@@ -77,7 +77,36 @@ class CategoryGroupsServiceClass {
   @Command(AppCommandIds.DELETE_CATEGORY_GROUP)
   public async deleteCategoryGroup({
     id,
+    reassignId,
   }: AppCommandRequest<AppCommandIds.DELETE_CATEGORY_GROUP>): AppCommandResponse<AppCommandIds.DELETE_CATEGORY_GROUP> {
+    // Check if the CategoryGroup has any Categories
+    const categories = await CommandsClient.executeAppCommand(AppCommandIds.LIST_ACCOUNTS, {
+      category_group_id: id,
+    })
+    if (categories.length > 0 && !reassignId) {
+      throw Error(
+        `CategoryGroup with ID ${id} has associated categories. Please reassign or delete them first.`,
+      )
+    }
+
+    // If there are categories, reassign them to another CategoryGroup
+    if (reassignId) {
+      // Check if the reassignId is valid
+      const reassignGroup = await this.getCategoryGroup({ id: reassignId })
+      if (!reassignGroup) {
+        throw Error(`CategoryGroup with ID ${reassignId} does not exist`)
+      }
+      // Reassign categories to the new CategoryGroup
+      logger.debug(
+        `Reassigning ${categories.length} categories from CategoryGroup ID ${id} to CategoryGroup ID ${reassignId}`,
+      )
+      for (const category of categories) {
+        category.cat_group_id = reassignId
+        await CommandsClient.executeAppCommand(AppCommandIds.SAVE_ACCOUNT, category)
+      }
+    }
+
+    // Finally, delete the CategoryGroup
     const categoriesGroupRepo = DatabaseManager.getConnection().getRepository(CategoryGroupEntity)
     await categoriesGroupRepo.delete(id)
   }

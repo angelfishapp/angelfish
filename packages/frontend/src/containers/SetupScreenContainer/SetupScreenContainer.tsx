@@ -1,34 +1,45 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
+import { createBook, onSearchInstitutions, showSaveDialog } from '@/api'
 import { SetupScreen } from '@/app/components/SetupScreen'
-import { deleteAccount, saveAccount } from '@/redux/accounts/actions'
-import { selectAllAccountsWithRelations } from '@/redux/accounts/selectors'
-import { selectAuthenticatedUser, selectBook } from '@/redux/app/selectors'
-import { deleteInstitution, saveInstitution } from '@/redux/institutions/actions'
-import { selectAllInstitutions } from '@/redux/institutions/selectors'
-import { deleteUser, saveUser, updateAuthenticatedUser } from '@/redux/users/actions'
-import { selectAllUsers } from '@/redux/users/selectors'
-import { AppCommandIds, BOOK_AVATARS, CommandsClient, USER_AVATARS } from '@angelfish/core'
+import {
+  useDeleteAccount,
+  useDeleteInstitution,
+  useDeleteUser,
+  useGetBook,
+  useListAllAccountsWithRelations,
+  useListInstitutions,
+  useListUsers,
+  useSaveAccount,
+  useSaveInstitution,
+  useSaveUser,
+  useUpdateAuthenticatedUser,
+} from '@/hooks'
+import { useGetAppState } from '@/hooks/app/useGetAppState'
+import { BOOK_AVATARS, USER_AVATARS } from '@angelfish/core'
 import type { SetupScreenContainerProps } from './SetupScreenContainer.interface'
 
 /**
  * Container for Setup Screen to handle all logic and data fetching
  */
 export default function SetupScreenContainer({ onComplete, onStart }: SetupScreenContainerProps) {
-  // Redux Hooks
-  const dispatch = useDispatch()
-  const authenticatedUser = useSelector(selectAuthenticatedUser)
-  const users = useSelector(selectAllUsers)
-  const accountsWithRelations = useSelector(selectAllAccountsWithRelations)
-  const institutions = useSelector(selectAllInstitutions)
-  const book = useSelector(selectBook)
+  // React Query Hooks
+  const { appState } = useGetAppState()
+  const { users } = useListUsers()
+  const { accounts: accountsWithRelations } = useListAllAccountsWithRelations()
+  const { institutions } = useListInstitutions()
+  const { book } = useGetBook()
 
-  /**
-   * Callback to search available Institutions via API/Database
-   */
-  const onSearchInstitutions = React.useCallback(async (query: string) => {
-    return await CommandsClient.executeAppCommand(AppCommandIds.SEARCH_INSTITUTIONS, { query })
+  const userSaveMutation = useSaveUser()
+  const userDeleteMutation = useDeleteUser()
+  const authenticatedUserMutation = useUpdateAuthenticatedUser()
+  const accountSaveMutation = useSaveAccount()
+  const accountDeleteMutation = useDeleteAccount()
+  const institutionSaveMutation = useSaveInstitution()
+  const institutionDeleteMutation = useDeleteInstitution()
+
+  const onSearchInstitutionsHandler = React.useCallback(async (query: string) => {
+    return onSearchInstitutions({ query })
   }, [])
 
   /**
@@ -44,7 +55,7 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
   const onCreateBook = React.useCallback(
     async (name: string, country: string, currency: string, logo?: string) => {
       // Open Save Dialog to select file location
-      const filePath = await CommandsClient.executeAppCommand(AppCommandIds.SHOW_SAVE_FILE_DIALOG, {
+      const filePath = await showSaveDialog({
         title: 'Select File Location...',
         defaultPath: `${name}.afish`,
         filters: [
@@ -54,19 +65,12 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
           },
         ],
       })
-
       // If filePath selected, create book file
       if (filePath) {
         onStart()
-        await CommandsClient.executeAppCommand(AppCommandIds.CREATE_BOOK, {
+        await createBook({
+          book: { name, entity: 'HOUSEHOLD', country, default_currency: currency, logo },
           filePath,
-          book: {
-            name,
-            country,
-            default_currency: currency,
-            logo,
-            entity: 'HOUSEHOLD',
-          },
         })
       } else {
         throw new Error('No File Path Selected')
@@ -80,27 +84,23 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
    */
   const onUpdateAuthenticatedUser = React.useCallback(
     (firstName: string, lastName: string, avatar?: string) => {
-      dispatch(
-        updateAuthenticatedUser({
-          user: {
-            first_name: firstName,
-            last_name: lastName,
-            avatar,
-          },
-        }),
-      )
+      authenticatedUserMutation.mutate({
+        first_name: firstName,
+        last_name: lastName,
+        avatar,
+      })
     },
-    [dispatch],
+    [authenticatedUserMutation],
   )
 
   // Render
-  if (!authenticatedUser) {
+  if (!appState?.authenticatedUser) {
     return null
   }
 
   return (
     <SetupScreen
-      authenticatedUser={authenticatedUser}
+      authenticatedUser={appState.authenticatedUser}
       bookAvatars={BOOK_AVATARS}
       userAvatars={USER_AVATARS}
       users={users}
@@ -112,13 +112,17 @@ export default function SetupScreenContainer({ onComplete, onStart }: SetupScree
       onCreateEncryptionKey={(_seed) => {
         /* TODO */
       }}
-      onDeleteUser={(user) => dispatch(deleteUser({ userId: user.id }))}
-      onSaveUser={(user) => dispatch(saveUser({ user }))}
-      onSaveAccount={(account) => dispatch(saveAccount({ account }))}
-      onDeleteAccount={(account) => dispatch(deleteAccount({ id: account.id }))}
-      onSaveInstitution={(institution) => dispatch(saveInstitution({ institution }))}
-      onDeleteInstitution={(institution) => dispatch(deleteInstitution({ id: institution.id }))}
-      onSearchInstitutions={onSearchInstitutions}
+      onDeleteUser={(user) => userDeleteMutation.mutate({ id: user.id })}
+      onSaveUser={(user) => userSaveMutation.mutate(user)}
+      onSaveAccount={(account) => accountSaveMutation.mutate(account)}
+      onDeleteAccount={(account) =>
+        accountDeleteMutation.mutate({ id: account.id, reassignId: null })
+      }
+      onSaveInstitution={(institution) => institutionSaveMutation.mutate(institution)}
+      onDeleteInstitution={(institution) =>
+        institutionDeleteMutation.mutate({ id: institution.id })
+      }
+      onSearchInstitutions={onSearchInstitutionsHandler}
       onComplete={onComplete}
     />
   )
