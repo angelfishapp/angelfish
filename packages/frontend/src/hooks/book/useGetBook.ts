@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getBook } from '@/api/book'
 import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { IFrontEndAppState } from '@/hooks/app'
+import { DEFAULT_APP_STATE } from '../app/useGetAppState'
 
 /**
  * React-Query Hook to get Book from the database.
@@ -21,10 +22,18 @@ export const useGetBook = () => {
     queryFn: async () => {
       const book = await getBook()
       // Update 'appState' with the book
-      queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
-        ...prevState,
-        book,
-      }))
+      queryClient.setQueryData<IFrontEndAppState>(APP_QUERY_KEYS.APPSTATE, (prevState) => {
+        if (!prevState) {
+          return {
+            ...DEFAULT_APP_STATE,
+            book,
+          }
+        }
+        return {
+          ...prevState,
+          book,
+        }
+      })
       return book
     },
   })

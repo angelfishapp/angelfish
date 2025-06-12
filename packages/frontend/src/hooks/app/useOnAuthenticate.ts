@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { onAuthenticate as apiOnAuthenticate } from '@/api'
 import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { IFrontEndAppState } from './FrontEndAppState.interface'
+import { DEFAULT_APP_STATE } from './useGetAppState'
 
 /**
  * React-Query Hook to get authentication function to authenticate a user.
@@ -14,11 +15,20 @@ export const useOnAuthenticate = () => {
   const onAuthenticate = async (oob_code: string) => {
     // Call the API to authenticate the user with the provided oob_code
     const authenticatedUser = await apiOnAuthenticate({ oob_code })
-    queryClient.setQueryData(APP_QUERY_KEYS.APPSTATE, (prevState: IFrontEndAppState) => ({
-      ...prevState,
-      authenticatedUser,
-      isAuthenticated: true,
-    }))
+    queryClient.setQueryData<IFrontEndAppState>(APP_QUERY_KEYS.APPSTATE, (prevState) => {
+      if (!prevState) {
+        return {
+          ...DEFAULT_APP_STATE,
+          authenticated: true,
+          authenticatedUser,
+        }
+      }
+      return {
+        ...prevState,
+        authenticated: true,
+        authenticatedUser,
+      }
+    })
   }
   return { onAuthenticate }
 }

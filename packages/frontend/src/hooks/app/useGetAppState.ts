@@ -21,22 +21,13 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
     queryFn: async (): Promise<IFrontEndAppState> => {
       const result = await getAppState()
       // Ensure result is an object and assign required properties for IFrontEndAppState
-      const appState: IFrontEndAppState = {
-        authenticated: result.authenticated,
-        authenticatedUser: result.authenticatedUser,
-        book: result.book,
-        bookFilePath: result.bookFilePath,
-        userSettings: result.userSettings,
-        isInitialised: true,
-        syncInfo: {
-          isSyncing: false,
-          success: false,
-          durationMs: 0,
-          startTime: undefined,
-          finishTime: undefined,
-          error: undefined,
-        },
-      }
+      const appState: IFrontEndAppState = DEFAULT_APP_STATE
+      appState.authenticated = result.authenticated ?? false
+      appState.authenticatedUser = result.authenticatedUser
+      appState.book = result.book
+      appState.bookFilePath = result.bookFilePath
+      appState.userSettings = result.userSettings ?? DEFAULT_APP_STATE.userSettings
+      appState.isInitialised = true
       return appState
     },
   })
@@ -47,4 +38,25 @@ export const useGetAppState = (_request: AppCommandRequest<AppCommandIds.GET_APP
     isFetching,
     error,
   }
+}
+
+/**
+ * Default App State
+ * This is used when the app is not authenticated or has not been initialised.
+ */
+export const DEFAULT_APP_STATE: IFrontEndAppState = {
+  authenticated: false,
+  authenticatedUser: undefined,
+  book: undefined,
+  bookFilePath: undefined,
+  isInitialised: false,
+  userSettings: { enableBackgroundAnimations: true },
+  syncInfo: {
+    isSyncing: false,
+    success: false,
+    durationMs: 0,
+    startTime: undefined,
+    finishTime: undefined,
+    error: undefined,
+  },
 }
