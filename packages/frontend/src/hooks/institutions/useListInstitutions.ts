@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { listInstitutions } from '@/api'
 import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
+import { useGetBook } from '../book'
 
 /**
  * React-Query Hook that lists Institutions
@@ -17,9 +18,11 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
 export const useListInstitutions = (
   _request: AppCommandRequest<AppCommandIds.LIST_INSTITUTIONS>,
 ) => {
+  const { book } = useGetBook()
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: APP_QUERY_KEYS.INSTITUTIONS,
     queryFn: async () => listInstitutions(),
+    enabled: !!book, // Only run if book is open
   })
 
   return { institutions: data ?? [], isLoading, isFetching, error }

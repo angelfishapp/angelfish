@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { listUsers } from '@/api'
 import { APP_QUERY_KEYS } from '@/app/ReactQuery'
 import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
+import { useGetBook } from '../book'
 
 /**
  * React-Query Hook that lists Users
@@ -15,9 +16,11 @@ import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
  * @returns       users (IUser[]), isLoading (boolean), isFetching (boolean), error (Error | null)
  */
 export const useListUsers = (_request: AppCommandRequest<AppCommandIds.LIST_USERS>) => {
+  const { book } = useGetBook()
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: APP_QUERY_KEYS.USERS,
     queryFn: async () => listUsers(),
+    enabled: !!book, // Only run if book is open
   })
 
   return { users: data ?? [], isLoading, isFetching, error }

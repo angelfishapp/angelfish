@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import React from 'react'
 
 import { APP_QUERY_KEYS } from '@/app/ReactQuery'
-import type { IUserSettings } from '@angelfish/core'
+import type { IBook, IUserSettings } from '@angelfish/core'
 import { AppEventIds, AppProcessIDs, CommandsClient, Logger } from '@angelfish/core'
 import type { IFrontEndAppState } from './FrontEndAppState.interface'
 import { DEFAULT_APP_STATE } from './useGetAppState'
@@ -68,18 +68,9 @@ export function useHandleAppState() {
       removeOnBookOpen = CommandsClient.addAppEventListener(AppEventIds.ON_BOOK_OPEN, (payload) => {
         logger.debug('ON_BOOK_OPEN', payload)
         bookOpen = true
-        queryClient.setQueryData<IFrontEndAppState>(APP_QUERY_KEYS.APPSTATE, (prevState) => {
-          if (!prevState) {
-            return {
-              ...DEFAULT_APP_STATE,
-              book: payload?.book,
-            }
-          }
-          return {
-            ...prevState,
-            book: payload?.book,
-          }
-        })
+        // Mark everything as stale and trigger refetch
+        queryClient.invalidateQueries()
+        queryClient.refetchQueries({ type: 'all' })
       })
 
       // ON_BOOK_CLOSE
@@ -98,6 +89,8 @@ export function useHandleAppState() {
               bookFilePath: undefined,
             }
           })
+          queryClient.setQueryData<IBook>(APP_QUERY_KEYS.BOOK, () => undefined)
+          queryClient.invalidateQueries()
         },
       )
 
@@ -158,13 +151,9 @@ export function useHandleAppState() {
 
           // Reload Store on success
           if (payload?.completed) {
-            queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.ACCOUNTS })
-            queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.BOOK })
-            queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.CATEGORY_GROUPS })
-            queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.INSTITUTIONS })
-            queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.TAGS })
-            queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.TRANSACTIONS })
-            queryClient.invalidateQueries({ queryKey: APP_QUERY_KEYS.USERS })
+            // Mark everything as stale and trigger refetch
+            queryClient.invalidateQueries()
+            queryClient.refetchQueries({ type: 'all' })
           }
         },
       )

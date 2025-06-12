@@ -21,7 +21,6 @@ export const useSaveBook = () => {
   return useMutation({
     mutationFn: (request: AppCommandRequest<AppCommandIds.SAVE_BOOK>) => saveBook(request),
     onSuccess: (book) => {
-      queryClient.setQueryData(APP_QUERY_KEYS.BOOK, book)
       // Update 'appState' with the book
       queryClient.setQueryData<IFrontEndAppState>(APP_QUERY_KEYS.APPSTATE, (prevState) => {
         if (!prevState) {
