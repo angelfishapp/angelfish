@@ -1,7 +1,7 @@
-import type { FilterOptionsState } from '@mui/material/useAutocomplete'
 
-import type { IAccount } from '@angelfish/core'
+import type { Currency, IAccount, ITag } from '@angelfish/core'
 import type { FormFieldProps } from '../FormField'
+import type { IInstitution } from '@angelfish/core/src/types'
 
 /**
  * CategoryField Component Properties
@@ -12,7 +12,7 @@ export interface MultiSelectFieldProps extends FormFieldProps {
    * Accounts that can be rendered with their related
    * CategoryGroup & Institution fields populated
    */
-  accountsWithRelations: IAccount[]
+  data: Array<IAccount | IInstitution | ITag |Currency  >
   /**
    * Optionally disable the GroupBy feature so categories
    * do not appear in groupings in AutoComplete
@@ -25,17 +25,9 @@ export interface MultiSelectFieldProps extends FormFieldProps {
    */
   disableTooltip?: boolean
   /**
-   * Optional filter function to filter the accounts BEFORE rendering
-   */
-  filter?: (account: IAccount) => boolean
-  /**
-   * A filter function to filter the options AFTER rendering
-   */
-  filterOptions?: (options: IAccount[], state: FilterOptionsState<IAccount>) => IAccount[]
-  /**
    * Callback for when value is changed
    */
-  onChange: (account: IAccount[] | IAccount | string | null) => void
+  onChange?: (account: IAccount[] | IAccount | string | null) => void
   /**
    * Callback for when user creates a new category. Will
    * pass any existing value in search field if present to
@@ -66,5 +58,4 @@ export interface MultiSelectFieldProps extends FormFieldProps {
    * requiered set the variant to be dropdown or multi-box
    * @default false
    */
-  variant?: 'dropdown' | 'multi-box'
 }
