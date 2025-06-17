@@ -25,6 +25,8 @@
  */
 
 import type {
+  CategorySpendReportData,
+  CategorySpendReportQuery,
   IAccount,
   IAuthenticatedUser,
   IAuthenticatedUserUpdate,
@@ -42,8 +44,6 @@ import type {
   IUserUpdate,
   ParsedFileMappings,
   ReconciledTransaction,
-  ReportsData,
-  ReportsQuery,
 } from '../types'
 import type {
   IAppState,
@@ -52,6 +52,7 @@ import type {
   IOpenFileDialogOptions,
   ISaveFileDialogOptions,
   ISyncSummary,
+  ITransactionQuery,
 } from './app-command-types'
 
 /**
@@ -484,15 +485,7 @@ export interface AppCommandDefinitions {
     response: void
   }
   [AppCommandIds.LIST_TRANSACTIONS]: {
-    request: {
-      account_id?: number
-      cat_id?: number
-      cat_group_id?: number
-      start_date?: string
-      end_date?: string
-      requires_sync?: boolean
-      currency_code?: string
-    }
+    request: ITransactionQuery
     response: ITransaction[]
   }
   [AppCommandIds.GET_TRANSACTIONS_DATE_RANGE]: {
@@ -512,14 +505,14 @@ export interface AppCommandDefinitions {
     response: void
   }
   [AppCommandIds.RUN_REPORT]: {
-    request: ReportsQuery
-    response: ReportsData
+    request: CategorySpendReportQuery
+    response: CategorySpendReportData
   }
   [AppCommandIds.EXPORT_REPORT]: {
     request: {
       filePath: string
       fileType: 'XLSX'
-      query: ReportsQuery
+      query: CategorySpendReportQuery
     }
     response: void
   }

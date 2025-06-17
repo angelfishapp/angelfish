@@ -1,11 +1,13 @@
+import { Brackets } from 'typeorm'
+
 import type {
   AppCommandIds,
   AppCommandRequest,
   CategoryGroupType,
+  CategorySpendReportData,
+  CategorySpendReportDataCategoryRow,
+  CategorySpendReportDataRow,
   CategoryType,
-  ReportsData,
-  ReportsDataCategoryRow,
-  ReportsDataRow,
 } from '@angelfish/core'
 import { roundNumber } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
@@ -80,11 +82,11 @@ export async function runCategorySpendReport({
   tag_ids,
   account_ids,
   account_owner,
-}: AppCommandRequest<AppCommandIds.RUN_REPORT>): Promise<ReportsData> {
+}: AppCommandRequest<AppCommandIds.RUN_REPORT>): Promise<CategorySpendReportData> {
   // Create a view with all the required joins and categorization logic for easier querying
   // This view will also filter out any line items that are transfers between accounts (CLASS = 'ACCOUNT') and return
   // multiple rows for line items with multiple tags or owners so needs to be deduplicated later
-  const reportsQuery = await DatabaseManager.getConnection()
+  const reportsQuery = DatabaseManager.getConnection()
     .createQueryBuilder()
     .from(
       (qb) =>
@@ -212,41 +214,108 @@ export async function runCategorySpendReport({
     .addGroupBy('period')
     .orderBy('period', 'ASC')
 
-  // Exclude unclassified line items if requested
-  if (!include_unclassified) {
-    reportsQuery.andWhere('cat_id NOT IN (:...excludedCats)', {
-      excludedCats: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID],
-    })
+  // Include unclassified line items if requested
+  if (include_unclassified) {
+    // If include_unclassified is true, add unclassified categories/groups to the include list
+    // This allows the report to include unclassified income and expenses
+    if (!category_ids) {
+      category_ids = { include: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID] }
+    } else if (category_ids.include) {
+      category_ids.include.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
+    } else {
+      category_ids.include = [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID]
+    }
+    if (!category_group_ids) {
+      category_group_ids = { include: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID] }
+    } else if (category_group_ids.include) {
+      category_group_ids.include.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
+    } else {
+      category_group_ids.include = [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID]
+    }
   }
   // Filter by category IDs if provided
-  if (category_ids && category_ids.length > 0) {
-    reportsQuery.andWhere('cat_id IN (:...category_ids)', { category_ids })
+  if (category_ids) {
+    if (category_ids.include && category_ids.include.length > 0) {
+      reportsQuery.andWhere('cat_id IN (:...category_ids)', { category_ids: category_ids.include })
+    }
+    if (category_ids.exclude && category_ids.exclude.length > 0) {
+      reportsQuery.andWhere('cat_id NOT IN (:...excludedCatIds)', {
+        excludedCatIds: category_ids.exclude,
+      })
+    }
   }
   // Filter by category types if provided
-  if (category_types && category_types.length > 0) {
-    reportsQuery.andWhere('cat_type IN (:...category_types)', { category_types })
+  if (category_types) {
+    if (category_types.include && category_types.include.length > 0) {
+      reportsQuery.andWhere('cat_type IN (:...category_types)', { category_types })
+    }
+    if (category_types.exclude && category_types.exclude.length > 0) {
+      reportsQuery.andWhere('cat_type NOT IN (:...excludedCatTypes)', {
+        excludedCatTypes: category_types.exclude,
+      })
+    }
   }
   // Filter by category group IDs if provided
-  if (category_group_ids && category_group_ids.length > 0) {
-    reportsQuery.andWhere('cat_group_id IN (:...category_group_ids)', { category_group_ids })
+  if (category_group_ids) {
+    if (category_group_ids.include && category_group_ids.include.length > 0) {
+      reportsQuery.andWhere('cat_group_id IN (:...category_group_ids)', { category_group_ids })
+    }
+    if (category_group_ids.exclude && category_group_ids.exclude.length > 0) {
+      reportsQuery.andWhere('cat_group_id NOT IN (:...excludedCatGroupIds)', {
+        excludedCatGroupIds: category_group_ids.exclude,
+      })
+    }
   }
   // Filter by category group types if provided
-  if (category_group_types && category_group_types.length > 0) {
-    reportsQuery.andWhere('cat_group_type IN (:...category_group_types)', {
-      category_group_types,
-    })
+  if (category_group_types) {
+    if (category_group_types.include && category_group_types.include.length > 0) {
+      reportsQuery.andWhere('cat_group_type IN (:...category_group_types)', {
+        category_group_types: category_group_types.include,
+      })
+    }
+    if (category_group_types.exclude && category_group_types.exclude.length > 0) {
+      reportsQuery.andWhere('cat_group_type NOT IN (:...excludedCatGroupTypes)', {
+        excludedCatGroupTypes: category_group_types.exclude,
+      })
+    }
   }
   // Filter by tag IDs if provided
-  if (tag_ids && tag_ids.length > 0) {
-    tag_ids.forEach((tagId) => {
-      reportsQuery.andWhere("',' || reports_view.tag_ids || ',' LIKE :tagMatch", {
-        tagMatch: `%,${tagId},%`,
-      })
-    })
+  if (tag_ids) {
+    if (tag_ids.include && tag_ids.include.length > 0) {
+      reportsQuery.andWhere(
+        new Brackets((qb) => {
+          tag_ids.include?.forEach((tagId, idx) => {
+            const paramName = `tagMatch${idx}`
+            qb.orWhere(`',' || reports_view.tags || ',' LIKE :${paramName}`, {
+              [paramName]: `%,${tagId},%`,
+            })
+          })
+        }),
+      )
+    }
+    if (tag_ids.exclude && tag_ids.exclude.length > 0) {
+      reportsQuery.andWhere(
+        new Brackets((qb) => {
+          tag_ids.exclude?.forEach((tagId, idx) => {
+            const paramName = `excludedTagMatch${idx}`
+            qb.andWhere(`',' || reports_view.tags || ',' NOT LIKE :${paramName}`, {
+              [paramName]: `%,${tagId},%`,
+            })
+          })
+        }),
+      )
+    }
   }
   // Filter by account IDs if provided
-  if (account_ids && account_ids.length > 0) {
-    reportsQuery.andWhere('reports_view.account IN (:...account_ids)', { account_ids })
+  if (account_ids) {
+    if (account_ids.include && account_ids.include.length > 0) {
+      reportsQuery.andWhere('reports_view.account IN (:...account_ids)', { account_ids })
+    }
+    if (account_ids.exclude && account_ids.exclude.length > 0) {
+      reportsQuery.andWhere('reports_view.account NOT IN (:...excludedAccountIds)', {
+        excludedAccountIds: account_ids.exclude,
+      })
+    }
   }
   // Filter by account owner if provided
   if (account_owner) {
@@ -261,7 +330,7 @@ export async function runCategorySpendReport({
 
   // Transform flat results into nested structure with dynamic period keys
   // Reorganise results into structure described above so its easy to render table
-  const results = rawResults.reduce<ReportsData>(
+  const results = rawResults.reduce<CategorySpendReportData>(
     (all, row) => {
       // Create table category group rows with categories as sub-rows
       const rowIndex = all['rows'].findIndex((x) => {
@@ -271,7 +340,7 @@ export async function runCategorySpendReport({
       })
       if (rowIndex === -1) {
         // Doesn't exist, create new row and subrow
-        const newCategory: ReportsDataCategoryRow = {
+        const newCategory: CategorySpendReportDataCategoryRow = {
           id: row.cat_id,
           name: row.cat_name,
           icon: row.cat_icon,
@@ -279,7 +348,7 @@ export async function runCategorySpendReport({
           total: row.total,
         }
         newCategory[row.period] = row.total
-        const newRow: ReportsDataRow = {
+        const newRow: CategorySpendReportDataRow = {
           id: row.cat_group_id,
           name: row.cat_group_name,
           icon: row.cat_group_icon,
@@ -301,7 +370,7 @@ export async function runCategorySpendReport({
         const subRowIndex = existingRow.categories?.findIndex((x) => x.id === row.cat_id)
         if (subRowIndex === -1) {
           // Doesn't exist, create new subrow
-          const newCategory: ReportsDataCategoryRow = {
+          const newCategory: CategorySpendReportDataCategoryRow = {
             id: row.cat_id,
             name: row.cat_name,
             icon: row.cat_icon,

@@ -14,10 +14,11 @@ export type {
 export type { IInstitution, IInstitutionUpdate } from './institution-interface'
 export type { ILineItem, ILineItemUpdate } from './line-item-interface'
 export type {
-  ReportsData,
-  ReportsDataCategoryRow,
-  ReportsDataRow,
-  ReportsQuery,
+  CategorySpendReportData,
+  CategorySpendReportDataCategoryRow,
+  CategorySpendReportDataRow,
+  CategorySpendReportQuery,
+  ReportsFilterList,
 } from './reports-interface'
 export type { ITag, ITagUpdate } from './tag-interface'
 export type { ITransaction, ITransactionUpdate } from './transaction-interface'

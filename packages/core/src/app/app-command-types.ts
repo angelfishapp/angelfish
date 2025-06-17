@@ -3,7 +3,7 @@
  * used in the `app-commands.ts` file to define the command payloads for the commands that are registered
  */
 
-import type { IAuthenticatedUser, IBook, IUserSettings } from '../types'
+import type { CategoryType, IAuthenticatedUser, IBook, IUserSettings } from '../types'
 
 /**
  * File type filters for file dialogs
@@ -156,4 +156,48 @@ export interface ISyncSummary {
    * Error message if the sync did not finish successfully
    */
   errorMessage?: string
+}
+
+/**
+ * Interface to query Transactions
+ */
+export interface ITransactionQuery {
+  /**
+   * Only return Transactions for a particular bank account ID
+   */
+  account_id?: number
+  /**
+   * Only return Transactions for a particular category ID
+   */
+  cat_id?: number
+  /**
+   * Only return Transactions for a particular category type
+   */
+  cat_type?: CategoryType
+  /**
+   * Only return Transactions for a particular category group ID
+   */
+  cat_group_id?: number
+  /**
+   * Only return Transactions for a particular ISO currency code
+   */
+  currency_code?: string
+  /**
+   * Only return Transactions from a particular start date
+   */
+  start_date?: string
+  /**
+   * Only return Transactions until a particular end date. If not
+   * provided along with start_date, will return transactions up to
+   * the current date
+   */
+  end_date?: string
+  /**
+   * Only return Transactions that have line items tagged with a particular tag ID
+   */
+  tag_id?: number
+  /**
+   * Only return Transactions that require sync
+   */
+  requires_sync?: boolean
 }
