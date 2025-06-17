@@ -1,5 +1,6 @@
 'use client'
 
+import type { IAccount, IInstitution, ITag } from '@angelfish/core'
 import {
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
@@ -20,219 +21,155 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-  TextField,
   Typography,
+  useAutocomplete,
 } from '@mui/material'
-import React, { useEffect, useMemo, useState } from 'react'
+import React from 'react'
+import { TextField } from '../../TextField'
+import { RenderOption } from './RenderOption'
 
-// Generic interface for the component props
-interface MultiSelectFieldProps<T> {
-  options: readonly T[]
+interface MultiSelectProps<T extends IAccount | ITag | IInstitution> {
+  options: T[]
   value?: T[]
   defaultValue?: T[]
-  onChange?: (event: React.SyntheticEvent, value: T[]) => void
+  onChange: (value: T[]) => void
   getOptionLabel?: (option: T) => string
   getOptionKey?: (option: T) => string | number
   groupBy?: (option: T) => string
   isOptionEqualToValue?: (option: T, value: T) => boolean
-  filterOptions?: (options: T[], state: any) => T[]
   disabled?: boolean
   readOnly?: boolean
   placeholder?: string
   maxHeight?: number | string
-  renderOption?: (props: any, option: T, state: any) => React.ReactNode
   renderGroup?: (params: any) => React.ReactNode
+  disableTooltip: boolean
+  formRef: any
+  label: string
 }
 
-export default function MultiSelect<T>({
+export default function MultiSelect<T extends IAccount | ITag | IInstitution>({
   options,
-  value = [],
-  defaultValue = [],
+  value,
   onChange,
-  getOptionLabel = (option: any) => option.label || option.name || String(option),
-  getOptionKey = (option: any) => option.id || option.key || getOptionLabel(option),
+  getOptionLabel = (option: T) => option.name || String(option),
+  getOptionKey = (option: T) => option.id ?? option.name ?? getOptionLabel(option),
   groupBy,
-  isOptionEqualToValue = (option: any, value: any) => getOptionKey(option) === getOptionKey(value),
+  isOptionEqualToValue = (option: T, value: T) => getOptionKey(option) === getOptionKey(value),
   disabled = false,
   readOnly = false,
-  placeholder = 'Search categories...',
+  placeholder,
   maxHeight = 400,
-  renderOption,
   renderGroup,
-}: MultiSelectFieldProps<T>) {
-  const [expandedGroups, setExpandedGroups] = useState<string[]>([])
-  const [searchTerm, setSearchTerm] = useState('')
+  label,
+  disableTooltip,
+}: MultiSelectProps<T>) {
+  const [expandedGroups, setExpandedGroups] = React.useState<string[]>([])
+  const {
+    getInputProps,
+    getListboxProps,
+    groupedOptions,
+    value: selectedOptions,
+    inputValue,
+  } = useAutocomplete<T, true, false, false>({
+    multiple: true,
+    options,
+    value,
+    onChange: (_event, value) => {
+      onChange?.(value)
+    },
+    getOptionLabel,
+    isOptionEqualToValue,
+    open: true,
+    filterOptions: (opts, { inputValue }) =>
+      inputValue.trim() === ''
+        ? opts
+        : opts.filter((option) =>
+            getOptionLabel(option).toLowerCase().includes(inputValue.toLowerCase()),
+          ),
+  })
 
-  // Use the controlled value or fall back to internal state
-  const selectedOptions = value || defaultValue
-
-  // Filter options based on search term
-  const filteredOptions = useMemo(() => {
-    if (!searchTerm.trim()) return options
-
-    return options.filter((option) =>
-      getOptionLabel(option).toLowerCase().includes(searchTerm.toLowerCase()),
-    )
-  }, [options, searchTerm, getOptionLabel])
-
-  // Group the filtered options
-  const groupedOptions = useMemo(() => {
-    if (!groupBy) {
-      return [{ group: null, options: filteredOptions }]
-    }
-
+  const customGroupedOptions = React.useMemo(() => {
+    if (!groupBy) return [{ group: null, options: groupedOptions as T[] }]
     const groups = new Map<string, T[]>()
-
-    filteredOptions.forEach((option) => {
+    ;(groupedOptions as T[]).forEach((option) => {
       const group = groupBy(option)
-      if (!groups.has(group)) {
-        groups.set(group, [])
-      }
+      if (!groups.has(group)) groups.set(group, [])
       groups.get(group)!.push(option)
     })
+    return Array.from(groups.entries()).map(([group, options]) => ({ group, options }))
+  }, [groupedOptions, groupBy])
 
-    return Array.from(groups.entries()).map(([group, options]) => ({
-      group,
-      options,
-    }))
-  }, [filteredOptions, groupBy])
-
-  // Initialize expanded groups
-  useEffect(() => {
-    const groupNames = groupedOptions.map((g) => g.group).filter(Boolean) as string[]
-    setExpandedGroups((prev) => {
-      const newGroups = groupNames.filter((name) => !prev.includes(name))
-      return newGroups.length > 0 ? [...prev, ...newGroups] : prev
-    })
-  }, [groupedOptions])
-
-  // Check if a group is partially selected
-  const isGroupPartiallySelected = (groupOptions: T[]) => {
-    if (!groupOptions.length) return false
-    const selectedCount = groupOptions.filter((option) =>
-      selectedOptions.some((selected) => isOptionEqualToValue(option, selected)),
-    ).length
-    return selectedCount > 0 && selectedCount < groupOptions.length
-  }
-
-  // Check if a group is fully selected
-  const isGroupSelected = (groupOptions: T[]) => {
-    if (!groupOptions.length) return false
-    return groupOptions.every((option) =>
-      selectedOptions.some((selected) => isOptionEqualToValue(option, selected)),
+  const toggleGroup = (groupName: string) => {
+    setExpandedGroups((prev) =>
+      prev.includes(groupName) ? prev.filter((g) => g !== groupName) : [...prev, groupName],
     )
   }
-
-  // Handle individual option selection
-  const handleOptionToggle = (option: T) => {
-    if (!onChange || disabled || readOnly) return
-
-    const isSelected = selectedOptions.some((selected) => isOptionEqualToValue(option, selected))
-    let newValue: T[]
-
-    if (isSelected) {
-      newValue = selectedOptions.filter((selected) => !isOptionEqualToValue(option, selected))
+  const toggleAll = () => {
+    if (selectedOptions?.length === options.length) {
+      onChange?.([])
     } else {
-      newValue = [...selectedOptions, option]
+      onChange?.([...options])
     }
-
-    onChange({} as React.SyntheticEvent, newValue)
   }
 
-  // Handle group selection
-  const handleGroupToggle = (groupOptions: T[]) => {
-    if (!onChange || disabled || readOnly) return
-
-    const isSelected = isGroupSelected(groupOptions)
-    let newValue: T[]
-
-    if (isSelected) {
-      // Deselect all options in the group
-      newValue = selectedOptions.filter(
-        (selected) => !groupOptions.some((option) => isOptionEqualToValue(option, selected)),
-      )
-    } else {
-      // Select all options in the group
-      newValue = [...selectedOptions]
-      groupOptions.forEach((option) => {
-        if (!newValue.some((selected) => isOptionEqualToValue(option, selected))) {
-          newValue.push(option)
-        }
-      })
-    }
-
-    onChange({} as React.SyntheticEvent, newValue)
+  const isSelected = (option: T) => {
+    return selectedOptions?.some((selected) => isOptionEqualToValue(option, selected))
   }
 
-  // Toggle group expansion
-  const handleGroupExpand = (groupName: string) => {
-    setExpandedGroups((prev) => {
-      if (prev.includes(groupName)) {
-        return prev.filter((name) => name !== groupName)
-      }
-      return [...prev, groupName]
-    })
+  const isGroupSelected = (groupOptions: T[]) => groupOptions.every((opt) => isSelected(opt))
+
+  const isGroupPartiallySelected = (groupOptions: T[]) => {
+    const count = groupOptions.filter(isSelected).length
+    return count > 0 && count < groupOptions.length
   }
 
-  // Select all options
-  const handleSelectAll = () => {
-    if (!onChange || disabled || readOnly) return
-    onChange({} as React.SyntheticEvent, [...options])
-  }
-
-  // Unselect all options
-  const handleUnselectAll = () => {
-    if (!onChange || disabled || readOnly) return
-    onChange({} as React.SyntheticEvent, [])
-  }
-
-  // Clear search
-  const handleClearSearch = () => {
-    setSearchTerm('')
+  const toggleGroupOptions = (groupOptions: T[]) => {
+    const fullySelected = isGroupSelected(groupOptions)
+    const newVal = fullySelected
+      ? selectedOptions.filter((sel) => !groupOptions.some((g) => isOptionEqualToValue(sel, g)))
+      : [...selectedOptions, ...groupOptions.filter((g) => !isSelected(g))]
+    onChange?.(newVal)
   }
 
   return (
     <Box sx={{ width: '100%', maxWidth: 500 }}>
       <Paper elevation={3} sx={{ p: 2 }}>
         <Typography variant="h6" gutterBottom>
-          Categories
+          {label}
         </Typography>
 
-        {/* Selected categories count */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
           <Typography variant="body2" color="text.secondary">
-            {selectedOptions.length} selected
+            {selectedOptions?.length} selected
           </Typography>
         </Box>
-
-        {/* Search box - positioned directly above the list */}
         <TextField
-          fullWidth
           variant="outlined"
           placeholder={placeholder}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          margin="normal"
-          size="small"
+          fullWidth
           disabled={disabled}
-          sx={{ mb: 1 }}
+          inputProps={getInputProps()}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
             ),
-            endAdornment: searchTerm ? (
+            endAdornment: inputValue ? (
               <InputAdornment position="end">
-                <IconButton size="small" onClick={handleClearSearch} edge="end" disabled={disabled}>
+                <IconButton
+                  size="small"
+                  disabled={disabled}
+                  onClick={() => {
+                    /* clear logic */
+                  }}
+                >
                   &times;
                 </IconButton>
               </InputAdornment>
             ) : null,
           }}
         />
-
-        {/* Category list with fixed height */}
         <Paper
           variant="outlined"
           sx={{
@@ -242,40 +179,28 @@ export default function MultiSelect<T>({
             overflow: 'hidden',
           }}
         >
-          {/* Scrollable list area */}
           <Box
             sx={{
               flexGrow: 1,
               overflow: 'auto',
-              '&::-webkit-scrollbar': {
-                width: '8px',
-              },
+              '&::-webkit-scrollbar': { width: '8px' },
               '&::-webkit-scrollbar-thumb': {
                 backgroundColor: 'rgba(0,0,0,0.2)',
                 borderRadius: '4px',
               },
             }}
           >
-            <List disablePadding>
-              {groupedOptions.map((group, groupIndex) => (
-                <React.Fragment key={group.group || 'ungrouped'}>
-                  {groupIndex > 0 && <Divider />}
-
-                  {/* Group header (only if groupBy is provided and group name exists) */}
+            <List disablePadding {...getListboxProps()}>
+              {customGroupedOptions.map((group, i) => (
+                <React.Fragment key={group.group + `g${i}`}>
+                  {i > 0 && <Divider />}
                   {groupBy && group.group && (
                     <ListItem
-                      component="button"
-                      onClick={() => handleGroupExpand(group.group!)}
-                      disabled={disabled}
+                      onClick={() => toggleGroup(group.group!)}
                       sx={{
-                        bgcolor: 'rgba(0, 0, 0, 0.03)',
-                        '&:hover': {
-                          bgcolor: disabled ? undefined : 'rgba(0, 0, 0, 0.06)',
-                        },
-                        border: 'none',
-                        width: '100%',
-                        textAlign: 'left',
-                        cursor: disabled ? 'default' : 'pointer',
+                        bgcolor: 'rgba(0,0,0,0.03)',
+                        '&:hover': { bgcolor: 'rgba(0,0,0,0.06)' },
+                        cursor: 'pointer',
                       }}
                     >
                       <ListItemIcon sx={{ minWidth: 36 }}>
@@ -285,7 +210,7 @@ export default function MultiSelect<T>({
                           indeterminate={isGroupPartiallySelected(group.options)}
                           onClick={(e) => {
                             e.stopPropagation()
-                            handleGroupToggle(group.options)
+                            toggleGroupOptions(group.options)
                           }}
                           disabled={disabled || readOnly}
                           checkedIcon={<CheckBoxIcon />}
@@ -310,59 +235,32 @@ export default function MultiSelect<T>({
                     </ListItem>
                   )}
 
-                  {/* Group options */}
                   <Collapse
-                    in={!groupBy || !group.group || expandedGroups.includes(group.group)}
+                    in={!groupBy || !group.group || !expandedGroups.includes(group.group)}
                     timeout="auto"
                     unmountOnExit
                   >
                     <List disablePadding>
-                      {group.options.map((option) => {
-                        const isSelected = selectedOptions.some((selected) =>
-                          isOptionEqualToValue(option, selected),
-                        )
-
-                        return (
-                          <ListItem
-                            key={getOptionKey(option)}
-                            onClick={() => handleOptionToggle(option)}
-                            sx={{
-                              pl: groupBy && group.group ? 4 : 2,
-                              cursor: disabled || readOnly ? 'default' : 'pointer',
-                              '&:hover': {
-                                bgcolor: disabled || readOnly ? undefined : 'rgba(0, 0, 0, 0.04)',
-                              },
-                            }}
-                            dense
-                          >
-                            {renderOption ? (
-                              renderOption({}, option, { selected: isSelected })
-                            ) : (
-                              <>
-                                <ListItemIcon sx={{ minWidth: 36 }}>
-                                  <Checkbox
-                                    edge="start"
-                                    checked={isSelected}
-                                    disabled={disabled || readOnly}
-                                    checkedIcon={<CheckBoxIcon />}
-                                    icon={<CheckBoxOutlineBlankIcon />}
-                                  />
-                                </ListItemIcon>
-                                <ListItemText primary={getOptionLabel(option)} />
-                              </>
-                            )}
-                          </ListItem>
-                        )
-                      })}
+                      {group.options.map((option) => (
+                        <RenderOption
+                          key={getOptionKey(option)}
+                          props={{ key: String(getOptionKey(option)) }}
+                          option={option}
+                          selected={selectedOptions}
+                          setSelected={onChange}
+                          disableTooltip={disableTooltip}
+                          label={label}
+                        />
+                      ))}
                     </List>
                   </Collapse>
                 </React.Fragment>
               ))}
 
-              {groupedOptions.every((group) => group.options.length === 0) && (
+              {customGroupedOptions.every((g) => g.options.length === 0) && (
                 <ListItem>
                   <ListItemText
-                    primary="No categories found"
+                    primary={`No ${label} found`}
                     primaryTypographyProps={{ align: 'center', color: 'text.secondary' }}
                   />
                 </ListItem>
@@ -370,7 +268,6 @@ export default function MultiSelect<T>({
             </List>
           </Box>
 
-          {/* Toggle All footer */}
           <Box
             sx={{
               display: 'flex',
@@ -382,9 +279,7 @@ export default function MultiSelect<T>({
           >
             <Box
               component="button"
-              onClick={
-                selectedOptions.length === options.length ? handleUnselectAll : handleSelectAll
-              }
+              onClick={toggleAll}
               disabled={disabled || readOnly}
               sx={{
                 background: 'none',
