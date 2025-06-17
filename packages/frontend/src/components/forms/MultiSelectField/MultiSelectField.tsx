@@ -21,7 +21,7 @@ export default React.forwardRef<
     disableTooltip = false,
     disableGroupBy = false,
     onChange,
-    id = 'category-field',
+    id = 'multi-select-field',
     label,
     placeholder,
     ...formFieldProps
