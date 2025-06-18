@@ -134,7 +134,9 @@ export default function Reports() {
           period != 'total'
             ? format(endOfMonth(parse(period, 'MM-yyyy', new Date())), 'yyyy-MM-dd')
             : reportsQuery.end_date,
-        ...(isCategoryGroup ? { cat_group_id: id } : { cat_id: id }),
+        ...(isCategoryGroup
+          ? { category_group_ids: { include: [id] } }
+          : { category_ids: { include: [id] } }),
       })
       setShowPeriodDetailDrawer(true)
     },

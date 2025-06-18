@@ -40,9 +40,12 @@ export default function IncomeAndExpensesSankey({
     // Step 1: Parse all months into Dates
     const allDates = data.periods.map((i) => parse(i, 'MM-yyyy', new Date())).filter(isValid)
     // Step 2: Find the latest date in the data
-    const latestDate = allDates.reduce((latest, current) =>
-      compareAsc(latest, current) === 1 ? latest : current,
-    )
+    const latestDate =
+      allDates.length > 0
+        ? allDates.reduce((latest, current) =>
+            compareAsc(latest, current) === 1 ? latest : current,
+          )
+        : new Date()
     // Step 3: Map data into DataFlows and filter out months older than the latest date minus the periods
     const group: DataFlow[] = data.rows
       .reduce<DataFlow[]>((acc, { icon, id, name, type, color, categories, total, ...months }) => {

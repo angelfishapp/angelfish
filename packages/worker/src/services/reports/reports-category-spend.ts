@@ -217,19 +217,27 @@ export async function runCategorySpendReport({
   if (include_unclassified) {
     // If include_unclassified is true, add unclassified categories/groups to the include list
     // This allows the report to include unclassified income and expenses
+    if (category_ids?.include) {
+      category_ids?.include.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
+    }
+    if (category_group_ids?.include) {
+      category_group_ids?.include.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
+    }
+  } else {
+    // Exclude unclassified categories/groups if not requested
     if (!category_ids) {
-      category_ids = { include: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID] }
-    } else if (category_ids.include) {
-      category_ids.include.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
+      category_ids = { exclude: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID] }
+    } else if (category_ids.exclude) {
+      category_ids.exclude.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
     } else {
-      category_ids.include = [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID]
+      category_ids.exclude = [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID]
     }
     if (!category_group_ids) {
-      category_group_ids = { include: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID] }
-    } else if (category_group_ids.include) {
-      category_group_ids.include.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
+      category_group_ids = { exclude: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID] }
+    } else if (category_group_ids.exclude) {
+      category_group_ids.exclude.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
     } else {
-      category_group_ids.include = [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID]
+      category_group_ids.exclude = [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID]
     }
   }
   // Filter by category IDs if provided
@@ -246,7 +254,9 @@ export async function runCategorySpendReport({
   // Filter by category types if provided
   if (category_types) {
     if (category_types.include && category_types.include.length > 0) {
-      reportsQuery.andWhere('cat_type IN (:...category_types)', { category_types })
+      reportsQuery.andWhere('cat_type IN (:...category_types)', {
+        category_types: category_types.include,
+      })
     }
     if (category_types.exclude && category_types.exclude.length > 0) {
       reportsQuery.andWhere('cat_type NOT IN (:...excludedCatTypes)', {
@@ -257,7 +267,9 @@ export async function runCategorySpendReport({
   // Filter by category group IDs if provided
   if (category_group_ids) {
     if (category_group_ids.include && category_group_ids.include.length > 0) {
-      reportsQuery.andWhere('cat_group_id IN (:...category_group_ids)', { category_group_ids })
+      reportsQuery.andWhere('cat_group_id IN (:...category_group_ids)', {
+        category_group_ids: category_group_ids.include,
+      })
     }
     if (category_group_ids.exclude && category_group_ids.exclude.length > 0) {
       reportsQuery.andWhere('cat_group_id NOT IN (:...excludedCatGroupIds)', {
@@ -308,7 +320,9 @@ export async function runCategorySpendReport({
   // Filter by account IDs if provided
   if (account_ids) {
     if (account_ids.include && account_ids.include.length > 0) {
-      reportsQuery.andWhere('reports_view.account IN (:...account_ids)', { account_ids })
+      reportsQuery.andWhere('reports_view.account IN (:...account_ids)', {
+        account_ids: account_ids.include,
+      })
     }
     if (account_ids.exclude && account_ids.exclude.length > 0) {
       reportsQuery.andWhere('reports_view.account NOT IN (:...excludedAccountIds)', {
