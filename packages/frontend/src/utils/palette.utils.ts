@@ -1,5 +1,5 @@
 import theme from '@/app/theme'
-import type { ReportsDataRow } from '@angelfish/core'
+import type { CategorySpendReportDataRow } from '@angelfish/core'
 
 // Default color palette
 export const palette = [
@@ -28,7 +28,7 @@ export const palette = [
  * @returns     A map of HEX colors for the rows
  */
 
-export function getDataSetColors(rows: ReportsDataRow[]) {
+export function getDataSetColors(rows: CategorySpendReportDataRow[]) {
   const colors: Record<string, string> = {}
   let palletteIndex = 0
 

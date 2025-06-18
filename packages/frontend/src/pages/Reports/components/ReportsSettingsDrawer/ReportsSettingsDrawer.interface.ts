@@ -1,4 +1,4 @@
-import type { ReportsQuery } from '@angelfish/core'
+import type { CategorySpendReportQuery } from '@angelfish/core'
 
 /**
  * ReportsSettingsDrawer Properties
@@ -7,7 +7,7 @@ export interface ReportsSettingsDrawerProps {
   /**
    * Initial query to populate form
    */
-  initialQuery: ReportsQuery
+  initialQuery: CategorySpendReportQuery
   /**
    * Show (true) or hide (false) the drawer
    * @default true
@@ -20,5 +20,5 @@ export interface ReportsSettingsDrawerProps {
   /**
    * Callback to update report query
    */
-  onSave: (reportQuery: ReportsQuery) => void
+  onSave: (reportQuery: CategorySpendReportQuery) => void
 }

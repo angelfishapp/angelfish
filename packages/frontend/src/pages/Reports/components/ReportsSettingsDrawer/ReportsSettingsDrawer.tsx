@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form'
 
 import { Drawer } from '@/components/Drawer'
 import { SwitchField } from '@/components/forms/SwitchField'
-import type { ReportsQuery } from '@angelfish/core'
+import type { CategorySpendReportQuery } from '@angelfish/core'
 import type { ReportsSettingsDrawerProps } from './ReportsSettingsDrawer.interface'
 
 /**
@@ -11,7 +11,7 @@ import type { ReportsSettingsDrawerProps } from './ReportsSettingsDrawer.interfa
  */
 
 type ReportSettingsFormValues = {
-  include_unclassified: ReportsQuery['include_unclassified']
+  include_unclassified: CategorySpendReportQuery['include_unclassified']
 }
 
 /**

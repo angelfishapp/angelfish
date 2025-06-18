@@ -30,7 +30,11 @@ import {
   useRunReport,
   useSaveTransactions,
 } from '@/hooks'
-import type { AppCommandRequest, ITransactionUpdate, ReportsQuery } from '@angelfish/core'
+import type {
+  AppCommandRequest,
+  CategorySpendReportQuery,
+  ITransactionUpdate,
+} from '@angelfish/core'
 import { type AppCommandIds } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
 import { ReportsChart } from './components/ReportsChart'
@@ -70,7 +74,7 @@ export default function Reports() {
   }
 
   // Component State
-  const [reportsQuery, setReportsQuery] = React.useState<ReportsQuery>({
+  const [reportsQuery, setReportsQuery] = React.useState<CategorySpendReportQuery>({
     start_date: format(dateRanges['Last 12 Months'].start, 'yyyy-MM-dd'),
     end_date: format(dateRanges['Last 12 Months'].end, 'yyyy-MM-dd'),
     include_unclassified: true,
