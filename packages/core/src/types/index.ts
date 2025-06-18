@@ -21,6 +21,7 @@ export type {
   ReportsFilterList,
 } from './reports-interface'
 export type { ITag, ITagUpdate } from './tag-interface'
+export { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from './transaction-interface'
 export type { ITransaction, ITransactionUpdate } from './transaction-interface'
 export type { IUser, IUserUpdate } from './user-interface'
 export type { IUserSettings } from './user-settings-inerface'

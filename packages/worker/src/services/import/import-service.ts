@@ -166,7 +166,7 @@ class ImportServiceClass {
     for (const [_key, value] of Object.entries(importAccounts)) {
       const existingTransactions = await CommandsClient.executeAppCommand(
         AppCommandIds.LIST_TRANSACTIONS,
-        { account_id: value.id },
+        { account_ids: { include: [value.id] } },
       )
       // Filter Transactions by Account
       const accountTransactions = importTransactions.filter((t) => t.account_id === value.id)

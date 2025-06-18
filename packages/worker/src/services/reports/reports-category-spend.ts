@@ -9,10 +9,9 @@ import type {
   CategorySpendReportDataRow,
   CategoryType,
 } from '@angelfish/core'
-import { roundNumber } from '@angelfish/core'
+import { roundNumber, UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
 import { getWorkerLogger } from '../../logger'
-import { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '../transactions'
 
 /**
  * Type for Row returned from database queries

@@ -1,5 +1,1 @@
-export {
-  TransactionService,
-  UNCLASSIFIED_EXPENSES_ID,
-  UNCLASSIFIED_INCOME_ID,
-} from './transactions-service'
+export { TransactionService } from './transactions-service'

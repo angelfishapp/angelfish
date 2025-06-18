@@ -2,6 +2,15 @@ import type { IAccount } from './account-interface'
 import type { ILineItem, ILineItemUpdate } from './line-item-interface'
 
 /**
+ * Special ID to filter for unclassified expenses
+ */
+export const UNCLASSIFIED_EXPENSES_ID = -1
+/**
+ * Special ID to filter for unclassified income
+ */
+export const UNCLASSIFIED_INCOME_ID = -2
+
+/**
  * Interface for Transaction Model
  */
 export interface ITransaction {

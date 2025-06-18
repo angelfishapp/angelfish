@@ -1,4 +1,5 @@
 import type { IAccount, ITransaction } from '@angelfish/core'
+import { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '@angelfish/core'
 import { getLongTransactions, institutions, TestLogger, users } from '@angelfish/tests'
 import { ReportsService } from '.'
 import { DatabaseManager } from '../../database/database-manager'
@@ -8,7 +9,6 @@ import {
   TransactionEntity,
   UserEntity,
 } from '../../database/entities'
-import { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '../transactions'
 
 /**
  * Type for storing Flat list of Transactions for verifying

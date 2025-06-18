@@ -3,7 +3,15 @@
  * used in the `app-commands.ts` file to define the command payloads for the commands that are registered
  */
 
-import type { CategoryType, IAuthenticatedUser, IBook, IUserSettings } from '../types'
+import type {
+  CategoryGroupType,
+  CategoryType,
+  IAuthenticatedUser,
+  IBook,
+  IUser,
+  IUserSettings,
+  ReportsFilterList,
+} from '../types'
 
 /**
  * File type filters for file dialogs
@@ -163,21 +171,30 @@ export interface ISyncSummary {
  */
 export interface ITransactionQuery {
   /**
-   * Only return Transactions for a particular bank account ID
+   * Filter Transactions by a list of bank account IDs.
    */
-  account_id?: number
+  account_ids?: ReportsFilterList<number>
   /**
-   * Only return Transactions for a particular category ID
+   * Filter Transactions to only show transactions from Accounts belonging
+   * to a specific user.
    */
-  cat_id?: number
+  account_owner?: IUser['id']
   /**
-   * Only return Transactions for a particular category type
+   * Filter Transactions by a list of category IDs.
    */
-  cat_type?: CategoryType
+  category_ids?: ReportsFilterList<number>
   /**
-   * Only return Transactions for a particular category group ID
+   * Filter Transactions by a list of category types.
    */
-  cat_group_id?: number
+  category_types?: ReportsFilterList<CategoryType>
+  /**
+   * Filter Transactions by a list of category group IDs.
+   */
+  category_group_ids?: ReportsFilterList<number>
+  /**
+   * Filter Transactions by a list of category group types.
+   */
+  category_group_types?: ReportsFilterList<CategoryGroupType>
   /**
    * Only return Transactions for a particular ISO currency code
    */
@@ -193,9 +210,9 @@ export interface ITransactionQuery {
    */
   end_date?: string
   /**
-   * Only return Transactions that have line items tagged with a particular tag ID
+   * Filter Transactions by a list of tag IDs.
    */
-  tag_id?: number
+  tag_ids?: ReportsFilterList<number>
   /**
    * Only return Transactions that require sync
    */
