@@ -86,7 +86,7 @@ export function getTableColumns(
                   const group = data.rows.find((row) =>
                     row.categories?.find((cat) => cat.id === cell.row.original.id),
                   )
-                  if (group) name = `Unclassified Income > ${cell.row.original.name}`
+                  if (group) name = `${group.name} > ${cell.row.original.name}`
                   else name = cell.row.original.name
                 } else {
                   name = cell.row.original.name
@@ -128,7 +128,10 @@ export function getTableColumns(
         footer: ({ table, column }) => {
           const total = table
             .getRowModel()
-            .rows.reduce((total, row) => total + (row.original[column.id] as number), 0)
+            .rows.reduce(
+              (total, row) => total + (row.depth === 0 ? (row.original[column.id] as number) : 0),
+              0,
+            )
           return <CurrencyLabel className="total-currency" value={total} />
         },
       })

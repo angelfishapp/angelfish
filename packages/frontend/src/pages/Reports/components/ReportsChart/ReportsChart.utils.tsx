@@ -53,7 +53,7 @@ export const getChartData = (data: CategorySpendReportData) => {
     const rowData: number[] = []
     for (const period of data.periods) {
       if (period !== 'total') {
-        rowData.push(row[period] ? row[period] * -1 : 0)
+        rowData.push(row[period] ? Math.abs(row[period]) : 0)
       }
     }
     datasets.push({

@@ -1,10 +1,16 @@
+import { Drawer } from '@/components/Drawer'
+import { MultiSelectField } from '@/components/forms/MultiSelectField'
+import { SwitchField } from '@/components/forms/SwitchField'
+import type { CategorySpendReportQuery } from '@angelfish/core'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import Typography from '@mui/material/Typography'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
-import { Drawer } from '@/components/Drawer'
-import { SwitchField } from '@/components/forms/SwitchField'
-import type { CategorySpendReportQuery } from '@angelfish/core'
+import type { ITag } from '@angelfish/core'
 import type { ReportsSettingsDrawerProps } from './ReportsSettingsDrawer.interface'
+import { StyledAccordion, StyledAccordionSummary } from './ReportsSettingsDrawer.styles'
+import { getFilterValues, isIncludeFilter } from './ReportsSettingsDrawer.utils'
 
 /**
  * Form Properties
@@ -12,6 +18,8 @@ import type { ReportsSettingsDrawerProps } from './ReportsSettingsDrawer.interfa
 
 type ReportSettingsFormValues = {
   include_unclassified: CategorySpendReportQuery['include_unclassified']
+  include_tags: boolean
+  tags: ITag[]
 }
 
 /**
@@ -23,6 +31,7 @@ export default function ReportsSettingsDrawer({
   open,
   onClose,
   onSave,
+  tags,
 }: ReportsSettingsDrawerProps) {
   // Setup Form
   const {
@@ -41,9 +50,13 @@ export default function ReportsSettingsDrawer({
     if (open) {
       reset({
         include_unclassified: initialQuery.include_unclassified,
+        include_tags: isIncludeFilter(initialQuery.tag_ids),
+        tags: getFilterValues(initialQuery.tag_ids).map((tagId) => {
+          return tags.find((tag) => tag.id === tagId)
+        }),
       })
     }
-  }, [open, reset, initialQuery.include_unclassified])
+  }, [open, reset, initialQuery, tags])
 
   /**
    * Handle updating the report query
@@ -51,6 +64,9 @@ export default function ReportsSettingsDrawer({
   const handleSave = (formData: ReportSettingsFormValues) => {
     const reportQuery = structuredClone(initialQuery)
     reportQuery.include_unclassified = formData.include_unclassified
+    reportQuery.tag_ids = formData.include_tags
+      ? { include: formData.tags.map((tag) => tag.id) }
+      : { exclude: formData.tags.map((tag) => tag.id) }
     onSave(reportQuery)
     onClose()
   }
@@ -64,20 +80,92 @@ export default function ReportsSettingsDrawer({
       disableSaveButton={!isValid || !isDirty}
       onSave={() => handleSubmit(handleSave)()}
     >
-      <Controller
-        name="include_unclassified"
-        control={control}
-        rules={{ required: false }}
-        render={({ field }) => (
-          <SwitchField
-            label="Include Unclassified Transactions"
-            fullWidth
-            error={errors?.include_unclassified ? true : false}
-            helperText="Include or Exclude transactions that have not been classified"
-            {...field}
+      <StyledAccordion>
+        <StyledAccordionSummary aria-controls="categories-content" id="categories-header">
+          <Typography component="span" fontWeight="bold">
+            Categories
+          </Typography>
+        </StyledAccordionSummary>
+        <AccordionDetails>
+          <Controller
+            name="include_unclassified"
+            control={control}
+            rules={{ required: false }}
+            render={({ field }) => (
+              <SwitchField
+                label="Include Unclassified Transactions"
+                fullWidth
+                error={errors?.include_unclassified ? true : false}
+                helperText="Include or Exclude transactions that have not been classified"
+                {...field}
+              />
+            )}
           />
-        )}
-      />
+        </AccordionDetails>
+      </StyledAccordion>
+      <StyledAccordion>
+        <StyledAccordionSummary aria-controls="tags-content" id="tags-header">
+          <Typography component="span" fontWeight="bold">
+            Tags
+          </Typography>
+        </StyledAccordionSummary>
+        <AccordionDetails>
+          <Controller
+            name="tags"
+            control={control}
+            rules={{ required: false }}
+            render={({ field: { onChange, value }, ...restField }) => {
+              return (
+                <MultiSelectField
+                  label="Selected Tags"
+                  fullWidth
+                  placeholder="Search Tags..."
+                  error={errors?.tags ? true : false}
+                  helperText="Unselect all Tags to remove the filter"
+                  options={tags}
+                  maxHeight={200}
+                  getOptionKey={(option) => {
+                    return option.id
+                  }}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  isOptionEqualToValue={(option, value) => {
+                    return option.id === value.id
+                  }}
+                  onChange={(_event, newValue) => {
+                    onChange(newValue)
+                  }}
+                  value={value}
+                  {...restField}
+                />
+              )
+            }}
+          />
+          <Controller
+            name="include_tags"
+            control={control}
+            rules={{ required: false }}
+            render={({ field: { value, ...restField } }) => (
+              <SwitchField
+                leftLabel="Exclude"
+                rightLabel="Include"
+                fullWidth
+                checkedColor="success"
+                margin="dense"
+                helperText={
+                  value
+                    ? 'Only include Transactions with selected Tags'
+                    : 'Exclude Transactions with selected Tags'
+                }
+                error={errors?.include_tags ? true : false}
+                value={value}
+                {...restField}
+              />
+            )}
+          />
+        </AccordionDetails>
+      </StyledAccordion>
     </Drawer>
   )
 }

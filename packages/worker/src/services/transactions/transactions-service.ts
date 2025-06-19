@@ -308,7 +308,7 @@ class TransactionServiceClass {
         const includeSubquery = query
           .subQuery()
           .select('1')
-          .from('line_items_tags', 'lt')
+          .from('line_item_tags', 'lt')
           .innerJoin('line_items', 'li', 'li.id = lt.line_item_id')
           .where('lt.tag_id IN (:...tagsInclude)')
           .andWhere('li.transaction_id = transaction.id')
@@ -327,7 +327,7 @@ class TransactionServiceClass {
         const excludeSubquery = query
           .subQuery()
           .select('1')
-          .from('line_items_tags', 'lt')
+          .from('line_item_tags', 'lt')
           .innerJoin('line_items', 'li', 'li.id = lt.line_item_id')
           .where('lt.tag_id IN (:...tagsExclude)')
           .andWhere('li.transaction_id = transaction.id')

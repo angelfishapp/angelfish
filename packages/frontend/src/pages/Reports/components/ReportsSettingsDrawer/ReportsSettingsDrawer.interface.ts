@@ -1,4 +1,4 @@
-import type { CategorySpendReportQuery } from '@angelfish/core'
+import type { CategorySpendReportQuery, ITag } from '@angelfish/core'
 
 /**
  * ReportsSettingsDrawer Properties
@@ -21,4 +21,8 @@ export interface ReportsSettingsDrawerProps {
    * Callback to update report query
    */
   onSave: (reportQuery: CategorySpendReportQuery) => void
+  /**
+   * Tags to filter the report by
+   */
+  tags: ITag[]
 }
