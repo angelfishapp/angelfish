@@ -15,9 +15,9 @@ const meta = {
   args: {
     fullWidth: true,
     value: [],
-    onChange: action('onChange'),
+    onChange: (event, value, reason, details) => action('onChange')(event, value, reason, details),
   },
-  render: (args) => {
+  render: ({ onChange, ...args }) => {
     const RenderComponent = () => {
       const [selected, setSelected] = React.useState<unknown[]>([])
 
@@ -26,7 +26,10 @@ const meta = {
           <MultiSelectField
             {...args}
             value={selected}
-            onChange={(_, val) => setSelected(Array.isArray(val) ? val : [])}
+            onChange={(event, val, reason, details) => {
+              setSelected(Array.isArray(val) ? val : [])
+              onChange?.(event, val, reason, details)
+            }}
           />
         </Paper>
       )

@@ -34,7 +34,7 @@ export default function MultiSelectField<Value>({
   getOptionKey,
   groupBy,
   id = 'multi-select-field',
-  isOptionEqualToValue,
+  isOptionEqualToValue = (option, value) => option === value,
   label,
   maxHeight = 400,
   noOptionsText = 'No options',
@@ -50,14 +50,18 @@ export default function MultiSelectField<Value>({
     getListboxProps,
     getOptionProps,
     groupedOptions,
-    value: _selectedValues,
+    value: selectedValues,
     inputValue,
   } = useAutocomplete<Value, true, false, false>({
     id,
     multiple: true,
     options,
     value,
-    onChange,
+    onChange: onChange
+      ? (event, newValue, reason, details) => {
+          onChange(event, newValue, reason, details?.option ? [details.option] : [])
+        }
+      : undefined,
     getOptionLabel,
     getOptionDisabled,
     // @ts-ignore: Suspect Type bug in MUI types
@@ -72,7 +76,9 @@ export default function MultiSelectField<Value>({
 
   // Generate owner state for the component
   const ownerState: MultiSelectFieldOwnerState<Value> = {
+    onChange,
     renderOption: renderOption || getOptionLabel,
+    selectedValues,
   }
 
   // Render
@@ -129,29 +135,33 @@ export default function MultiSelectField<Value>({
             <React.Fragment>
               {groupedOptions.map((option, index) => {
                 if (groupBy) {
-                  return renderGroup({
-                    key: option.key,
-                    group: option.group,
-                    children: option.options.map((option2, index2) => {
-                      const optionProps = getOptionProps({
-                        option: option2,
-                        index: option.index + index2,
-                      })
-                      return renderListOption(
-                        optionProps,
-                        option2,
-                        {
-                          selected:
-                            typeof optionProps['aria-selected'] === 'boolean'
-                              ? optionProps['aria-selected']
-                              : false,
-                          index,
-                          inputValue,
-                        },
-                        ownerState,
-                      )
-                    }),
-                  })
+                  return renderGroup(
+                    {
+                      key: option.key,
+                      group: option.group,
+                      children: option.options.map((option2, index2) => {
+                        const optionProps = getOptionProps({
+                          option: option2,
+                          index: option.index + index2,
+                        })
+                        return renderListOption(
+                          optionProps,
+                          option2,
+                          {
+                            selected:
+                              typeof optionProps['aria-selected'] === 'boolean'
+                                ? optionProps['aria-selected']
+                                : false,
+                            index,
+                            inputValue,
+                          },
+                          ownerState,
+                        )
+                      }),
+                    },
+                    option.options,
+                    ownerState,
+                  )
                 }
                 const optionProps = getOptionProps({ option: option as Value, index })
                 return renderListOption(
@@ -191,7 +201,23 @@ export default function MultiSelectField<Value>({
       >
         <Box
           component="button"
-          // onClick={toggleAll}
+          onClick={(event) => {
+            // Check if all options are selected
+            const allSelected = options.every((option) => selectedValues.includes(option))
+            if (allSelected) {
+              // Deselect all options
+              onChange?.(event, [], 'removeAll', [...options])
+            } else {
+              const details: Value[] = []
+              options.forEach((option) => {
+                if (!allSelected && !selectedValues.includes(option)) {
+                  details.push(option)
+                }
+              })
+              // Select all options
+              onChange?.(event, [...options], 'selectAll', details)
+            }
+          }}
           disabled={disabled}
           sx={{
             background: 'none',

@@ -24,12 +24,40 @@ export function defaultGetOptionLabel<Value>(option: Value): string {
  * @param params    The parameters for the group.
  * @returns         The rendered group header.
  */
-export function renderGroup(params: AutocompleteRenderGroupParams): React.ReactNode {
+export function renderGroup<Value>(
+  params: AutocompleteRenderGroupParams,
+  options: Value[],
+  { selectedValues, onChange }: MultiSelectFieldOwnerState<Value>,
+): React.ReactNode {
+  // Check if group is selected or partially selected
+  const isGroupSelected = options.every((option) => selectedValues.includes(option))
   return (
     <li key={params.key}>
       <ListSubheader component="div">
         {' '}
-        <Checkbox checked={false} />
+        <Checkbox
+          checked={isGroupSelected}
+          indeterminate={
+            !isGroupSelected && options.some((option) => selectedValues.includes(option))
+          }
+          onClick={(event) => {
+            // Add or remove all options in the group
+            const newOptions = [...selectedValues]
+            const details: Value[] = []
+            options.forEach((option) => {
+              if (!isGroupSelected) {
+                if (!selectedValues.includes(option)) {
+                  newOptions.push(option)
+                  details.push(option)
+                }
+              } else if (selectedValues.includes(option)) {
+                details.push(option)
+                newOptions.splice(newOptions.indexOf(option), 1)
+              }
+            })
+            onChange?.(event, newOptions, isGroupSelected ? 'removeGroup' : 'selectGroup', details)
+          }}
+        />
         {params.group}
       </ListSubheader>
       <ul>{params.children}</ul>
@@ -50,14 +78,14 @@ export function renderGroup(params: AutocompleteRenderGroupParams): React.ReactN
 export function renderListOption<Value>(
   props: React.HTMLAttributes<HTMLLIElement> & { key: any },
   option: Value,
-  state: AutocompleteRenderOptionState,
-  ownerState: MultiSelectFieldOwnerState<Value>,
+  { selected }: AutocompleteRenderOptionState,
+  { renderOption }: MultiSelectFieldOwnerState<Value>,
 ): React.ReactNode {
   const { key, ...otherProps } = props
   return (
-    <ListItem key={key} {...otherProps}>
-      <Checkbox checked={state.selected} />
-      {ownerState.renderOption(option)}
+    <ListItem key={key} {...otherProps} sx={{ cursor: 'pointer' }}>
+      <Checkbox checked={selected} />
+      {renderOption(option)}
     </ListItem>
   )
 }

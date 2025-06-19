@@ -1,4 +1,4 @@
-import type { UseAutocompleteProps } from '@mui/material/useAutocomplete'
+import type { AutocompleteChangeReason, UseAutocompleteProps } from '@mui/material/useAutocomplete'
 import type React from 'react'
 
 import type { FormFieldProps } from '../FormField'
@@ -7,8 +7,25 @@ import type { FormFieldProps } from '../FormField'
  * Interface for the owner state of the MultiSelectField component.
  */
 export interface MultiSelectFieldOwnerState<Value> {
+  onChange?: (
+    event: React.SyntheticEvent,
+    value: Value[],
+    reason: MultiSelectedFieldChangeReason,
+    details: Value[],
+  ) => void
   renderOption: (option: Value) => React.ReactNode
+  selectedValues: Value[]
 }
+
+/**
+ * onChange reasons for the MultiSelectField component.
+ */
+export type MultiSelectedFieldChangeReason =
+  | AutocompleteChangeReason
+  | 'selectAll'
+  | 'removeAll'
+  | 'selectGroup'
+  | 'removeGroup'
 
 /**
  * Props for the MultiSelectField component.
@@ -25,7 +42,6 @@ export interface MultiSelectFieldProps<Value>
       | 'groupBy'
       | 'id'
       | 'isOptionEqualToValue'
-      | 'onChange'
       | 'options'
       | 'value'
     > {
@@ -48,6 +64,21 @@ export interface MultiSelectFieldProps<Value>
    * This is used when the `value` is empty and no `defaultValue` is provided.
    */
   placeholder?: string
+  /**
+   * onChange event handler called whenever the selected options change.
+   *
+   * @param event       The event object.
+   * @param value       The new value of the select field.
+   * @param reason      The reason for the change.
+   * @param details     Additional details about the change.
+   * @default undefined
+   */
+  onChange?: (
+    event: React.SyntheticEvent,
+    value: Value[],
+    reason: MultiSelectedFieldChangeReason,
+    details: Value[],
+  ) => void
   /**
    * Render the option, use `getOptionLabel` by default.
    * @default `getOptionLabel`
