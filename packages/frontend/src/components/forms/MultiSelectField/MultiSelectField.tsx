@@ -1,93 +1,214 @@
-'use client'
+import ClearIcon from '@mui/icons-material/Close'
+import SearchIcon from '@mui/icons-material/Search'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import useAutocomplete, { createFilterOptions } from '@mui/material/useAutocomplete'
 
-import type { IAccount, IInstitution, ITag } from '@angelfish/core'
-import { Box, Container, Paper, Typography } from '@mui/material'
 import React from 'react'
-import MultiSelect from './components/MultiSelect'
-import type { MultiSelectFieldProps } from './MultiSelectField.interface'
-import { FormField } from '../FormField'
+
+import { TextField } from '../TextField'
+import type {
+  MultiSelectFieldOwnerState,
+  MultiSelectFieldProps,
+} from './MultiSelectField.interface'
+import { defaultGetOptionLabel, renderGroup, renderListOption } from './MultiSelectField.utils'
 
 /**
- * Autocomplete Field for selecting a Category or Account
+ * Multi-Select Field Component. Renders options in a searchable fixed size list with checkboxes and optional grouping allowing user
+ * to easily browse and select multiple options on Forms. Uses the useAutocomplete hook from MUI so works very similar to the Autocomplete
+ * component.
  */
-
-export default React.forwardRef<
-  HTMLDivElement,
-  // this line should be generic
-  MultiSelectFieldProps<IInstitution | IAccount | ITag>
->(function Multiselectfield(
-  {
+export default function MultiSelectField<Value>({
+  defaultValue,
+  disabled = false,
+  options,
+  filterOptions = createFilterOptions<Value>(),
+  formRef,
+  fullWidth = true,
+  getOptionDisabled,
+  getOptionLabel = defaultGetOptionLabel,
+  getOptionKey,
+  groupBy,
+  id = 'multi-select-field',
+  isOptionEqualToValue,
+  label,
+  maxHeight = 400,
+  noOptionsText = 'No options',
+  onChange,
+  placeholder,
+  renderOption,
+  value,
+  ...formFieldProps
+}: MultiSelectFieldProps<Value>) {
+  // useAutoComplete hook
+  const {
+    getInputProps,
+    getListboxProps,
+    getOptionProps,
+    groupedOptions,
+    value: _selectedValues,
+    inputValue,
+  } = useAutocomplete<Value, true, false, false>({
+    id,
+    multiple: true,
+    options,
     value,
-    data,
-    disableTooltip = false,
-    disableGroupBy = false,
     onChange,
-    id = 'multi-select-field',
-    label,
-    placeholder,
-    ...formFieldProps
-  }: MultiSelectFieldProps<IInstitution | IAccount | ITag>,
-  ref,
-) {
-  // Render
+    getOptionLabel,
+    getOptionDisabled,
+    // @ts-ignore: Suspect Type bug in MUI types
+    groupBy,
+    getOptionKey,
+    defaultValue,
+    isOptionEqualToValue,
+    open: true,
+    componentName: 'MultiSelectField',
+    filterOptions,
+  })
+
+  // Generate owner state for the component
+  const ownerState: MultiSelectFieldOwnerState<Value> = {
+    renderOption: renderOption || getOptionLabel,
+  }
 
   // Render
   return (
-    <FormField ref={ref} {...formFieldProps}>
-      <Container id={id} maxWidth="md" sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {label} Selection
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 4, flexDirection: { xs: 'column', md: 'row' } }}>
-          <Box sx={{ flex: 1 }}>
-            <MultiSelect
-              formRef={ref}
-              label={label}
-              options={data}
-              value={value}
-              disableTooltip={disableTooltip}
-              onChange={(newValue) => onChange?.(newValue as Array<IInstitution | IAccount | ITag>)}
-              getOptionLabel={(option) => option.name}
-              getOptionKey={(option) => option.id}
-              groupBy={
-                !disableGroupBy
-                  ? (option) => {
-                    if ('class' in option && option.class === 'CATEGORY') {
-                      if (option.id != 0) {
-                        return option.categoryGroup?.name ? String(option.categoryGroup.name) : ''
-                      }
-                      return ''
-                    } else if (label !== 'Categories') return String(label)
-                    return 'Account Transfer'
-                  }
-                  : undefined
-              }
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              placeholder={placeholder}
-              maxHeight={400}
-              {...formFieldProps}
-            />
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
-              <Typography variant="h6" gutterBottom>
-                Selected {label} ({value?.length})
-              </Typography>
-              {value?.length > 0 ? (
-                <Box component="ul" sx={{ pl: 2 }}>
-                  {value?.map((item: IAccount | IInstitution | ITag) => (
-                    <Typography component="li" key={item.id}>
-                      {item.name} {(item as IAccount).categoryGroup?.name}
-                    </Typography>
-                  ))}
-                </Box>
-              ) : (
-                <Typography color="text.secondary">No {label} selected</Typography>
-              )}
-            </Paper>
-          </Box>
+    <Box sx={{ width: fullWidth ? '100%' : 'auto', minWidth: 300 }}>
+      <TextField
+        {...formFieldProps}
+        id={id}
+        label={label}
+        disabled={disabled}
+        ref={formRef}
+        variant="outlined"
+        placeholder={placeholder}
+        fullWidth
+        margin="none"
+        inputProps={getInputProps()}
+        slotProps={{
+          input: {
+            sx: {
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              borderBottom: 'none',
+            },
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+            endAdornment: inputValue ? (
+              <InputAdornment position="end">
+                <IconButton size="small" disabled={disabled}>
+                  <ClearIcon />
+                </IconButton>
+              </InputAdornment>
+            ) : null,
+          },
+        }}
+      />
+      <Box
+        sx={{
+          flexGrow: 1,
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          overflow: 'auto',
+          '&::-webkit-scrollbar': { width: '8px' },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            borderRadius: '4px',
+          },
+          height: maxHeight,
+        }}
+      >
+        <List disablePadding {...getListboxProps()}>
+          {groupedOptions.length > 0 ? (
+            <React.Fragment>
+              {groupedOptions.map((option, index) => {
+                if (groupBy) {
+                  return renderGroup({
+                    key: option.key,
+                    group: option.group,
+                    children: option.options.map((option2, index2) => {
+                      const optionProps = getOptionProps({
+                        option: option2,
+                        index: option.index + index2,
+                      })
+                      return renderListOption(
+                        optionProps,
+                        option2,
+                        {
+                          selected:
+                            typeof optionProps['aria-selected'] === 'boolean'
+                              ? optionProps['aria-selected']
+                              : false,
+                          index,
+                          inputValue,
+                        },
+                        ownerState,
+                      )
+                    }),
+                  })
+                }
+                const optionProps = getOptionProps({ option: option as Value, index })
+                return renderListOption(
+                  optionProps,
+                  option as Value,
+                  {
+                    selected:
+                      typeof optionProps['aria-selected'] === 'boolean'
+                        ? optionProps['aria-selected']
+                        : false,
+                    index,
+                    inputValue,
+                  },
+                  ownerState,
+                )
+              })}
+            </React.Fragment>
+          ) : (
+            <ListItem>
+              <ListItemText
+                primary={noOptionsText}
+                slotProps={{ primary: { align: 'center', color: 'text.secondary' } }}
+              />
+            </ListItem>
+          )}
+        </List>
+      </Box>
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+          p: 1,
+          bgcolor: 'rgba(0, 0, 0, 0.02)',
+        }}
+      >
+        <Box
+          component="button"
+          // onClick={toggleAll}
+          disabled={disabled}
+          sx={{
+            background: 'none',
+            border: 'none',
+            color: disabled ? 'text.disabled' : 'primary.main',
+            cursor: disabled ? 'default' : 'pointer',
+            fontSize: '0.875rem',
+            p: 0,
+            textDecoration: disabled ? 'none' : 'underline',
+            '&:hover': {
+              color: disabled ? 'text.disabled' : 'primary.dark',
+            },
+          }}
+        >
+          Toggle All
         </Box>
-      </Container>
-    </FormField>
+      </Box>
+    </Box>
   )
-})
+}

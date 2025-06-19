@@ -1,15 +1,12 @@
 import Paper from '@mui/material/Paper'
 import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
+import React from 'react'
 
-import {
-  getAccountsWithRelations,
-  institutions as INSTITUTIONS,
-  tags as tagsData,
-} from '@angelfish/tests/fixtures'
+import { CategoryLabel } from '@/components/CategoryLabel'
+import type { IAccount, ITag } from '@angelfish/core'
+import { getAccountsWithRelations, tags as tagsData } from '@angelfish/tests/fixtures'
 
-import type { IAccount, IInstitution, ITag } from '@angelfish/core'
-import { useState } from 'react'
 import { MultiSelectField } from '.'
 
 const meta = {
@@ -17,32 +14,24 @@ const meta = {
   component: MultiSelectField,
   args: {
     fullWidth: true,
-    renderAsValue: false,
     value: [],
     onChange: action('onChange'),
   },
-  render: ({ ...args }) => {
-    function RenderComponent<T extends IAccount | IInstitution | ITag>() {
-      const [selected, setSelected] = useState<T[]>([])
+  render: (args) => {
+    const RenderComponent = () => {
+      const [selected, setSelected] = React.useState<unknown[]>([])
 
       return (
         <Paper>
           <MultiSelectField
             {...args}
             value={selected}
-            onChange={(value) => {
-              if (Array.isArray(value)) {
-                setSelected(value as T[])
-              } else if (value && typeof value === 'object') {
-                setSelected([value as T])
-              } else {
-                setSelected([])
-              }
-            }}
+            onChange={(_, val) => setSelected(Array.isArray(val) ? val : [])}
           />
         </Paper>
       )
     }
+
     return <RenderComponent />
   },
 } satisfies Meta<typeof MultiSelectField>
@@ -53,36 +42,75 @@ type Story = StoryObj<typeof meta>
  * Stories
  */
 
-export const Default: Story = {
+export const Categories: Story = {
   args: {
-    data: getAccountsWithRelations(),
+    // Need to sort categories by group name to avoid duplicate group names
+    options: getAccountsWithRelations().sort((a, b) => {
+      const aGroup = a.class == 'CATEGORY' ? (a.categoryGroup?.name ?? '') : 'ZZZZ'
+      const bGroup = b.class == 'CATEGORY' ? (b.categoryGroup?.name ?? '') : 'ZZZZ'
+      return aGroup.localeCompare(bGroup)
+    }) as IAccount[],
     label: 'Categories',
     placeholder: 'Search Categories...',
-    onCreate: (name: string) => action('onCreate')(name),
+    groupBy: (option) => {
+      const account = option as IAccount
+      if (account.class == 'CATEGORY') {
+        if (account.id != 0) {
+          return account.categoryGroup?.name ?? ''
+        }
+        return ''
+      }
+      return 'Account Transfer'
+    },
+    getOptionKey: (option) => {
+      const account = option as IAccount
+      return account.id
+    },
+    getOptionLabel: (option) => {
+      const account = option as IAccount
+      if (account.class === 'CATEGORY') {
+        return `${account.name} (${account.categoryGroup?.name})`
+      }
+      return `${account.name} (${account.institution?.name})`
+    },
+    filterOptions: (options, { inputValue }) => {
+      if (inputValue.trim() === '') {
+        return options
+      }
+
+      // Filter options based on input value
+      const searchOptions: Record<string, string> = {}
+      for (const account of options as IAccount[]) {
+        if (account.class == 'CATEGORY') {
+          searchOptions[account.id] =
+            `${account.name} ${account.categoryGroup?.name}  ${account.cat_description}`.toLowerCase()
+        } else {
+          searchOptions[account.id] = `${account.name} ${account.institution?.name}`.toLowerCase()
+        }
+      }
+      return (options as IAccount[]).filter((account) => {
+        return searchOptions[account.id].indexOf(inputValue.toLowerCase()) > -1
+      })
+    },
+    renderOption: (option) => {
+      const account = option as IAccount
+      return <CategoryLabel account={account} displayGroup={false} />
+    },
   },
 }
-export const Institutions: Story = {
-  args: {
-    data: INSTITUTIONS,
-    placeholder: 'Search Institutions...',
-    label: 'Institutions',
-    onCreate: (name: string) => action('onCreate')(name),
-  },
-}
+
 export const Tags: Story = {
   args: {
-    data: tagsData,
+    options: tagsData,
     placeholder: 'Search Tags...',
     label: 'Tags',
-    onCreate: (name: string) => action('onCreate')(name),
+    getOptionKey: (option) => {
+      const tag = option as ITag
+      return tag.id
+    },
+    getOptionLabel: (option) => {
+      const tag = option as ITag
+      return tag.name
+    },
   },
 }
-// there is an error with Currencies ID it take code as id
-// export const Currencies: Story = {
-//   args: {
-//     data: allCurrencies,
-//     label: 'Currencies',
-//     renderAsValue: false,
-//     onCreate: (name?) => action('onCreate')(name),
-//   },
-// }

@@ -1,53 +1,56 @@
+import type { UseAutocompleteProps } from '@mui/material/useAutocomplete'
+import type React from 'react'
+
 import type { FormFieldProps } from '../FormField'
 
-export interface MultiSelectFieldProps<T> extends FormFieldProps {
-  /**
-   * The list of options to select from
-   */
-  data: T[]
+/**
+ * Interface for the owner state of the MultiSelectField component.
+ */
+export interface MultiSelectFieldOwnerState<Value> {
+  renderOption: (option: Value) => React.ReactNode
+}
 
+/**
+ * Props for the MultiSelectField component.
+ */
+export interface MultiSelectFieldProps<Value>
+  extends FormFieldProps,
+    Pick<
+      UseAutocompleteProps<Value, true, false, false>,
+      | 'defaultValue'
+      | 'filterOptions'
+      | 'getOptionDisabled'
+      | 'getOptionLabel'
+      | 'getOptionKey'
+      | 'groupBy'
+      | 'id'
+      | 'isOptionEqualToValue'
+      | 'onChange'
+      | 'options'
+      | 'value'
+    > {
   /**
-   * Disable the GroupBy feature
+   * Forwarded reference for FormField Control
    */
-  disableGroupBy?: boolean
-
+  formRef?: React.Ref<HTMLDivElement>
   /**
-   * Disable the description Tooltip
+   * Maximum height of the dropdown list.
+   * @default 400
    */
-  disableTooltip?: boolean
-
+  maxHeight?: number | string
   /**
-   * Callback when selection changes
+   * Text to display when there are no options available.
+   * @default 'No options'
    */
-  onChange: (items: T[]) => void
-
+  noOptionsText?: string
   /**
-   * Callback when user creates a new item
-   */
-  onCreate?: (name: string) => void
-
-  /**
-   * Placeholder text
+   * Placeholder text for the input field.
+   * This is used when the `value` is empty and no `defaultValue` is provided.
    */
   placeholder?: string
-
   /**
-   * Show selected values instead of the input field
+   * Render the option, use `getOptionLabel` by default.
+   * @default `getOptionLabel`
    */
-  renderAsValue?: boolean
-
-  /**
-   * Selected value
-   */
-  value: T[]
-
-  /**
-   * Whether Autocomplete is open
-   */
-  open?: boolean
-
-  /**
-   * Label for the field
-   */
-  label: string
+  renderOption?: (option: Value) => React.ReactNode
 }

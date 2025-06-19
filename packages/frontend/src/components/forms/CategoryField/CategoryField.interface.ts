@@ -35,7 +35,7 @@ export interface CategoryFieldProps extends FormFieldProps {
   /**
    * Callback for when value is changed
    */
-  onChange: (account: IAccount[] | IAccount | string | null) => void
+  onChange: (account: IAccount | string | null) => void
   /**
    * Callback for when user creates a new category. Will
    * pass any existing value in search field if present to
@@ -56,15 +56,10 @@ export interface CategoryFieldProps extends FormFieldProps {
   /**
    * Optionally set the current value for Field
    */
-  value?: any
+  value?: IAccount | null
   /**
    * Optionally set AutomComplete list to be Open
    * @default false
    */
   open?: boolean
-  /**
-   * requiered set the variant to be dropdown or multi-box
-   * @default false
-   */
-  variant?: 'dropdown' | 'multi-box'
 }
