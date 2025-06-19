@@ -1,5 +1,5 @@
 import InfoIcon from '@mui/icons-material/Info'
-import type { AutocompleteRenderGroupParams } from '@mui/material'
+import type { AutocompleteRenderGroupParams } from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
 import ListItem from '@mui/material/ListItem'
 import ListSubheader from '@mui/material/ListSubheader'

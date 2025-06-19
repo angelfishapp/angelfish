@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import moment from 'moment'
@@ -9,11 +7,7 @@ const { Default, SelectField } = composeStories(stories)
 
 describe('renders Date Field Story', () => {
   test('render of default Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    render(<Default />)
 
     const [title] = screen.getAllByText(/Date Range Field/i)
     expect(title).toBeInTheDocument()
@@ -31,11 +25,7 @@ describe('renders Date Field Story', () => {
     expect(input.value).toBe(`${yesterdayFormatted} - ${todayFormatted}`)
   })
   test('render of default Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <SelectField />
-      </ThemeProvider>,
-    )
+    render(<SelectField />)
 
     const icon = screen.getByTestId(/ExpandMoreIcon/i)
     expect(icon).toBeInTheDocument()

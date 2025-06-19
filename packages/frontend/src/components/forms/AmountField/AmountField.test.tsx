@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './AmountField.stories'
@@ -8,11 +6,7 @@ const { Default, DefaultValue } = composeStories(stories)
 
 describe('renders AmountField Story', () => {
   test('render of default Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    render(<Default />)
 
     const [title] = screen.getAllByText(/Amount/i)
     expect(title).toBeInTheDocument()
@@ -28,11 +22,7 @@ describe('renders AmountField Story', () => {
     expect(!isNaN(Number(input.value))).toBe(true)
   })
   test('render of DefaultValue Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <DefaultValue />
-      </ThemeProvider>,
-    )
+    render(<DefaultValue />)
 
     const [title] = screen.getAllByText(/Amount/i)
     expect(title).toBeInTheDocument()

@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import * as stories from './AccountTable.stories'
@@ -20,11 +18,7 @@ describe('AccountTable', () => {
   })
 
   it('calls onCreateInstitution when clicking "Add An Institution"', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Empty />
-      </ThemeProvider>,
-    )
+    render(<Empty />)
     await waitFor(() => {
       const addLink = screen.getByText('Add An Institution')
       fireEvent.click(addLink)
@@ -35,11 +29,7 @@ describe('AccountTable', () => {
   })
 
   it('opens context menu on institution row right-click', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    render(<Default />)
     await waitFor(() => {
       const row = document.querySelector('[data-row="account-123"]') as HTMLElement
       expect(row).toBeInTheDocument()

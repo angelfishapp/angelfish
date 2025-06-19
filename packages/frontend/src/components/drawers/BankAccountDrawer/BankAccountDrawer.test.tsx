@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { render, screen, waitFor } from '@testing-library/react'
 import * as stories from './BankAccountDrawer.stories'
@@ -8,11 +6,7 @@ const { UpdateBankAccount, AddNewBankAccount } = composeStories(stories)
 
 describe('BankAccount Drawer stories', () => {
   it('renders the UpdateBankAccount drawer', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <UpdateBankAccount />
-      </ThemeProvider>,
-    )
+    render(<UpdateBankAccount />)
     await waitFor(() => {
       const drawer = screen.getByText('Edit Bank Account')
       expect(drawer).toBeInTheDocument()
@@ -57,11 +51,7 @@ describe('BankAccount Drawer stories', () => {
   })
 
   it('renders the AddNewBankAccount drawer', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <AddNewBankAccount />
-      </ThemeProvider>,
-    )
+    render(<AddNewBankAccount />)
     await waitFor(() => {
       const drawer = screen.getByText('Add New Bank Account')
       expect(drawer).toBeInTheDocument()

@@ -10,7 +10,7 @@ export default defineConfig({
   test: {
     globals: true, // Allows using `describe`, `it`, etc. without importing
     environment: 'jsdom', // Use JSDom environment
-    setupFiles: ['./tests/setup.ts'],
+    setupFiles: ['./tests/setup.tsx'],
     coverage: {
       reporter: ['text', 'lcov'],
     },

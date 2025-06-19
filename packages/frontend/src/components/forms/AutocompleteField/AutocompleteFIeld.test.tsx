@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './AutocompleteField.stories'
@@ -8,11 +6,7 @@ const { SingleSelect, CustomValueDisplay, MultiSelect } = composeStories(stories
 
 describe('renders Search Story', () => {
   test('render of default Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <SingleSelect />
-      </ThemeProvider>,
-    )
+    render(<SingleSelect />)
 
     const [title] = screen.getAllByText(/Singleselect Autocomplete Field/i)
     expect(title).toBeInTheDocument()
@@ -42,11 +36,7 @@ describe('renders Search Story', () => {
   })
 
   test('render of default Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <MultiSelect />
-      </ThemeProvider>,
-    )
+    render(<MultiSelect />)
 
     const [title] = screen.getAllByText(/Multiselect Autocomplete Field/i)
     expect(title).toBeInTheDocument()
@@ -83,11 +73,7 @@ describe('renders Search Story', () => {
   })
 
   test('render of CustomValueDisplay Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <CustomValueDisplay />
-      </ThemeProvider>,
-    )
+    render(<CustomValueDisplay />)
 
     const [title] = screen.getAllByText(/Custom Value Display Autocomplete Field/i)
     expect(title).toBeInTheDocument()

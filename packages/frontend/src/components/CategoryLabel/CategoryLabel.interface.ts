@@ -16,6 +16,11 @@ export interface CategoryLabelProps {
    */
   className?: string
   /**
+   * Optionally display group name in label
+   * @default true
+   */
+  displayGroup?: boolean
+  /**
    * Optionally change icon size
    * @default 24
    */

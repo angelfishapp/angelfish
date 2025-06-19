@@ -1,31 +1,20 @@
-import theme from '@/app/theme'
-import Paper from '@mui/material/Paper'
-import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+
 import * as stories from './OOBField.stories'
 
 // Compose all stories
 const { Default } = composeStories(stories)
 
-const renderWithTheme = (ui: React.ReactElement) => {
-  return render(
-    <ThemeProvider theme={theme}>
-      <Paper>{ui}</Paper>
-    </ThemeProvider>,
-  )
-}
-
 describe('OOBField Component (with Storybook)', () => {
   it('renders the default OOBField', () => {
-    renderWithTheme(<Default />)
+    render(<Default />)
     expect(screen.getByText('Enter or paste the verification code')).toBeInTheDocument()
   })
 
   it('calls onSubmit with the correct verification code', async () => {
     const mockOnSubmit = vi.fn()
-    renderWithTheme(<Default onSubmit={mockOnSubmit} />)
+    render(<Default onSubmit={mockOnSubmit} />)
 
     const input1 = document.getElementById('oob-digit-0') as HTMLInputElement
     expect(input1).toBeInTheDocument()

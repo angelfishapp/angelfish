@@ -1,5 +1,6 @@
 import Typeography from '@mui/material/Typography'
 import clsx from 'clsx'
+import React from 'react'
 
 import { BankIcon } from '@/components/BankIcon'
 import { Emoji } from '@/components/Emoji'
@@ -15,7 +16,12 @@ import type { CategoryLabelProps } from './CategoryLabel.interface'
  * If account is null, will render `Unclassified`
  */
 
-export default function CategoryLabel({ account, className, iconSize = 24 }: CategoryLabelProps) {
+export default function CategoryLabel({
+  account,
+  className,
+  displayGroup = true,
+  iconSize = 24,
+}: CategoryLabelProps) {
   if (!account) {
     return (
       <Typeography className={className}>
@@ -45,9 +51,13 @@ export default function CategoryLabel({ account, className, iconSize = 24 }: Cat
           className={clsx('category-group', 'MuiTypography-colorTextSecondary')}
           style={{ marginLeft: 5 }}
         >
-          {group}
-        </span>{' '}
-        &gt; <span className="category-name">{account.name}</span>
+          {displayGroup && (
+            <React.Fragment>
+              <span>{group}</span> &gt;
+            </React.Fragment>
+          )}
+          <span className="category-name">{account.name}</span>
+        </span>
       </Typeography>
     </div>
   )
