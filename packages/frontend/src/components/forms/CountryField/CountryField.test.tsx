@@ -1,18 +1,12 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './CountryField.stories'
 
 const { Default } = composeStories(stories)
 
-describe('renders CountryFIeld Story', () => {
+describe('renders CountryField Story', () => {
   test('render of default Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    render(<Default />)
 
     const [title] = screen.getAllByText(/Country Field/i)
     expect(title).toBeInTheDocument()

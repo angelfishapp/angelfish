@@ -1,16 +1,13 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
+
 import * as TextFieldStories from './TextField.stories'
 
 const { SingleLineText, WithAdornments, MultiLineText } = composeStories(TextFieldStories)
 
-describe('TextField (story-based)', () => {
-  const renderWithTheme = (ui: React.ReactElement) =>
-    render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>)
+describe('TextField', () => {
   it('renders SingleLineText with label and placeholder', () => {
-    renderWithTheme(<SingleLineText />)
+    render(<SingleLineText />)
 
     expect(screen.getByText('Single Line Textfield')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('Placeholder text...')).toBeInTheDocument()
@@ -18,14 +15,14 @@ describe('TextField (story-based)', () => {
   })
 
   it('renders WithAdornments with start and end adornments', () => {
-    renderWithTheme(<WithAdornments />)
+    render(<WithAdornments />)
 
     expect(screen.getByText('$')).toBeInTheDocument()
     expect(screen.getByText('kg')).toBeInTheDocument()
   })
 
   it('renders MultiLineText with correct rows and label', () => {
-    renderWithTheme(<MultiLineText />)
+    render(<MultiLineText />)
 
     expect(screen.getByText('Multi Line Textfield')).toBeInTheDocument()
     const textarea = screen.getByPlaceholderText('Placeholder text...') as HTMLTextAreaElement

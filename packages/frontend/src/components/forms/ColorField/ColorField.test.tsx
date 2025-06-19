@@ -1,9 +1,7 @@
-// ColorField.test.tsx
-import theme from '@/app/theme'
-import { ThemeProvider } from '@emotion/react'
 import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+
 import * as stories from './ColorField.stories'
 
 const { Default } = composeStories(stories)
@@ -11,11 +9,7 @@ const { Default } = composeStories(stories)
 describe('ColorField', () => {
   it('opens color picker and triggers onChange when color is selected', async () => {
     const user = userEvent.setup()
-    render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    render(<Default />)
 
     const colorButton = screen.getByRole('button')
     await user.click(colorButton)

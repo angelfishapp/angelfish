@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './CategoryField.stories'
@@ -8,11 +6,7 @@ const { Default, WithValue, Filtered, ShowAsTextField } = composeStories(stories
 
 describe('renders Search Story', () => {
   test('render of default Story', async () => {
-    const { container } = render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    const { container } = render(<Default />)
 
     const [title] = screen.getAllByText(/Category/i)
     expect(title).toBeInTheDocument()
@@ -34,11 +28,7 @@ describe('renders Search Story', () => {
   })
 
   test('render of WithValue Story', async () => {
-    const { container } = render(
-      <ThemeProvider theme={theme}>
-        <WithValue />
-      </ThemeProvider>,
-    )
+    const { container } = render(<WithValue />)
 
     const [title] = screen.getAllByText(/Category/i)
     expect(title).toBeInTheDocument()
@@ -55,11 +45,7 @@ describe('renders Search Story', () => {
     expect(textBox).toBeInTheDocument()
   })
   test('render of ShowAsTextField Story', async () => {
-    const { container } = render(
-      <ThemeProvider theme={theme}>
-        <ShowAsTextField />
-      </ThemeProvider>,
-    )
+    const { container } = render(<ShowAsTextField />)
 
     const [title] = screen.getAllByText(/Category/i)
     expect(title).toBeInTheDocument()
@@ -82,11 +68,7 @@ describe('renders Search Story', () => {
     expect(textBox).toBeInTheDocument()
   })
   test('render of Filtered Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Filtered />
-      </ThemeProvider>,
-    )
+    render(<Filtered />)
 
     const [title] = screen.getAllByText(/Bank Accounts/i)
     expect(title).toBeInTheDocument()

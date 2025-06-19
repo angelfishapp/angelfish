@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './CategoryGroupField.stories'
@@ -8,11 +6,7 @@ const { Default } = composeStories(stories)
 
 describe('renders categoryGroupField Story', () => {
   test('render of default Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    render(<Default />)
 
     const [title] = screen.getAllByText(/Category Group Field/i)
     expect(title).toBeInTheDocument()
