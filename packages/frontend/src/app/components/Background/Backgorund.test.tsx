@@ -1,19 +1,13 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
 import { render } from '@testing-library/react'
-import type React from 'react'
-import { describe, expect, it } from 'vitest'
+
 import * as stories from './Background.stories'
 
 const { LandDay, SubmergedEvening } = composeStories(stories)
 
 describe('Background component tests', () => {
-  const renderWithTheme = (ui: React.ReactElement) =>
-    render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>)
-
   it('renders PrimaryBackground without crashing', () => {
-    const { container } = renderWithTheme(<LandDay />)
+    const { container } = render(<LandDay />)
     expect(container.querySelector('.land_bg_water')).toBeInTheDocument()
     expect(container.querySelector('.login_splash')).toBeInTheDocument()
     expect(container.querySelector('.water-shimmer')).toBeInTheDocument()
@@ -23,7 +17,7 @@ describe('Background component tests', () => {
   })
 
   it('renders SubmergedEvening without crashing', () => {
-    const { container } = renderWithTheme(<SubmergedEvening />)
+    const { container } = render(<SubmergedEvening />)
     expect(container.querySelector('.underwater_bg')).toBeInTheDocument()
     expect(container.querySelector('.aquarium')).toBeInTheDocument()
     expect(container.querySelector('.water-shimmer')).toBeInTheDocument()

@@ -1,6 +1,4 @@
 // ColorField.test.tsx
-import theme from '@/app/theme'
-import { ThemeProvider } from '@emotion/react'
 import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import * as stories from './EmojiField.stories'
@@ -9,11 +7,7 @@ const { Default } = composeStories(stories)
 
 describe('EmojiFIeld', () => {
   it('opens EmojiFIeld and triggers onChange when EMoji is selected', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    render(<Default />)
 
     const emojiButton = screen.getByRole('button')
     expect(emojiButton).toBeInTheDocument()

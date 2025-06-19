@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { render, screen, waitFor } from '@testing-library/react'
 import * as stories from './CategoryGroupDrawer.stories'
@@ -8,11 +6,7 @@ const { UpdateCategoryGroup, AddNewCategoryGroup } = composeStories(stories)
 
 describe('CategoryDrawer  stories', () => {
   it('renders the UpdateCategoryGroup drawer', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <UpdateCategoryGroup />
-      </ThemeProvider>,
-    )
+    render(<UpdateCategoryGroup />)
     await waitFor(() => {
       const drawer = screen.getByText('Edit Category Group')
       expect(drawer).toBeInTheDocument()
@@ -39,11 +33,7 @@ describe('CategoryDrawer  stories', () => {
   })
 
   it('renders the AddNewCategoryGroup drawer', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <AddNewCategoryGroup />
-      </ThemeProvider>,
-    )
+    render(<AddNewCategoryGroup />)
     await waitFor(() => {
       const drawer = screen.getByText('Create Category Group')
       expect(drawer).toBeInTheDocument()

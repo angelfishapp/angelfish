@@ -1,6 +1,4 @@
-import theme from '@/app/theme'
 import type { ITag } from '@angelfish/core'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './MultiSelectField.stories'
@@ -9,11 +7,7 @@ const { Categories, Tags } = composeStories(stories)
 
 describe('renders MultiSelectField Story', () => {
   test('render of Catergories Story', async () => {
-    const { container } = render(
-      <ThemeProvider theme={theme}>
-        <Categories />
-      </ThemeProvider>,
-    )
+    const { container } = render(<Categories />)
     const { label, placeholder } = Categories.args
     const [title] = screen.getAllByText(label as string)
     expect(title).toBeInTheDocument()
@@ -32,11 +26,7 @@ describe('renders MultiSelectField Story', () => {
   })
 
   test('render of Tags Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Tags />
-      </ThemeProvider>,
-    )
+    render(<Tags />)
     const { label, placeholder, options } = Tags.args
     const tags = options as ITag[]
     const [title] = screen.getAllByText(label as string)

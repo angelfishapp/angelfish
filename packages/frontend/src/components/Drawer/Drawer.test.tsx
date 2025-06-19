@@ -1,4 +1,3 @@
-import { createTheme, ThemeProvider } from '@mui/material'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -6,13 +5,6 @@ import * as stories from './Drawer.stories'
 
 const { Right, RightWithSaveButton, Bottom } = composeStories(stories)
 
-const mockTheme = createTheme({
-  custom: {
-    side: {
-      width: 240,
-    },
-  },
-})
 describe('Drawer stories', () => {
   it('renders the Right drawer', async () => {
     render(<Right />)
@@ -45,11 +37,7 @@ describe('Drawer stories', () => {
   })
 
   it('renders the Bottom drawer with Delete menu item', async () => {
-    render(
-      <ThemeProvider theme={mockTheme}>
-        <Bottom />
-      </ThemeProvider>,
-    )
+    render(<Bottom />)
     await waitFor(() => {
       const paper = document.querySelector('.MuiDrawer-paper')
       expect(paper).toHaveClass('MuiDrawer-paperAnchorBottom')

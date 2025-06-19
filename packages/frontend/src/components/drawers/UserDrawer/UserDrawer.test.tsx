@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { render, screen, waitFor } from '@testing-library/react'
 import * as stories from './UserDrawer.stories'
@@ -8,11 +6,7 @@ const { UpdateUser, AddNewUser } = composeStories(stories)
 
 describe('User Drawer stories', () => {
   it('renders the UpdateUser drawer', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <UpdateUser />
-      </ThemeProvider>,
-    )
+    render(<UpdateUser />)
     await waitFor(() => {
       const drawer = screen.getByText('Edit User')
       expect(drawer).toBeInTheDocument()
@@ -40,11 +34,7 @@ describe('User Drawer stories', () => {
   })
 
   it('renders the AddNewUser drawer', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <AddNewUser />
-      </ThemeProvider>,
-    )
+    render(<AddNewUser />)
     await waitFor(() => {
       const drawer = screen.getByText('Add User')
       expect(drawer).toBeInTheDocument()

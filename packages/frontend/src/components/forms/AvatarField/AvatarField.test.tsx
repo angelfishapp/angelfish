@@ -1,5 +1,3 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/system'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './AvatarField.stories'
@@ -8,11 +6,7 @@ const { Default, NoAvatar, Logo } = composeStories(stories)
 
 describe('renders Search Story', () => {
   test('render of default Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Default />
-      </ThemeProvider>,
-    )
+    render(<Default />)
 
     const [title] = screen.getAllByText(/Avatar Field/i)
     expect(title).toBeInTheDocument()
@@ -33,11 +27,7 @@ describe('renders Search Story', () => {
   })
 
   test('render of NoAvatar Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <NoAvatar />
-      </ThemeProvider>,
-    )
+    render(<NoAvatar />)
     const [title] = screen.getAllByText(/Avatar Field/i)
     expect(title).toBeInTheDocument()
 
@@ -56,11 +46,7 @@ describe('renders Search Story', () => {
   })
 
   test('render of NoAvatar Story', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Logo />
-      </ThemeProvider>,
-    )
+    render(<Logo />)
     const [title] = screen.getAllByText(/Logo Field/i)
     expect(title).toBeInTheDocument()
 

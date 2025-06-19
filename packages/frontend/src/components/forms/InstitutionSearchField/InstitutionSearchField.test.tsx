@@ -1,25 +1,19 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
-import type React from 'react'
-import { describe, expect, it, vi } from 'vitest'
+
 import * as stories from './InstitutionSearchField.stories'
 
 const { EmptyValue, WithValue } = composeStories(stories)
 
-describe('InstitutionField', () => {
-  const renderWithTheme = (ui: React.ReactElement) =>
-    render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>)
-
+describe('InstitutionSearchField', () => {
   it('renders without crashing', () => {
-    renderWithTheme(<EmptyValue />)
+    render(<EmptyValue />)
     const [title] = screen.getAllByText(/Institution Search Field/i)
     expect(title).toBeInTheDocument()
   })
 
   it('displays options when typing', () => {
-    renderWithTheme(<EmptyValue {...EmptyValue.args} />)
+    render(<EmptyValue {...EmptyValue.args} />)
     const input = screen.getByPlaceholderText('Type in Institution Name...') as HTMLInputElement
     fireEvent.focus(input)
     fireEvent.change(input, { target: { value: 'Chase' } })
@@ -29,7 +23,7 @@ describe('InstitutionField', () => {
 
   it('calls onChange when an option is selected', () => {
     const handleChange = vi.fn()
-    renderWithTheme(<EmptyValue onChange={handleChange} />)
+    render(<EmptyValue onChange={handleChange} />)
 
     const input = screen.getByPlaceholderText('Type in Institution Name...') as HTMLInputElement
     fireEvent.focus(input)
@@ -40,7 +34,7 @@ describe('InstitutionField', () => {
   })
 
   it('renders the selected value with an icon', () => {
-    renderWithTheme(<WithValue />)
+    render(<WithValue />)
 
     const input = screen.getByPlaceholderText('Type in Institution Name...')
     expect(input).toHaveValue(WithValue.args.value)

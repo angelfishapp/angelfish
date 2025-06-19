@@ -1,20 +1,13 @@
-import theme from '@/app/theme'
-import { ThemeProvider } from '@mui/material/styles'
 import { composeStories } from '@storybook/react'
-
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import type React from 'react'
-import { describe, expect, it } from 'vitest'
+
 import * as stories from './SelectField.stories'
 
 const { Default } = composeStories(stories)
 
-describe('SelectFIeld tests ', () => {
-  const renderWithTheme = (ui: React.ReactElement) =>
-    render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>)
-
+describe('SelectField tests ', () => {
   it('renders without crashing', async () => {
-    renderWithTheme(<Default />)
+    render(<Default />)
     await waitFor(() => {
       expect(screen.getByText('Select Field')).toBeInTheDocument()
 
