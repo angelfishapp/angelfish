@@ -1,5 +1,3 @@
-import { Brackets } from 'typeorm'
-
 import type {
   AppCommandIds,
   AppCommandRequest,
@@ -82,118 +80,151 @@ export async function runCategorySpendReport({
   account_ids,
   account_owner,
 }: AppCommandRequest<AppCommandIds.RUN_REPORT>): Promise<CategorySpendReportData> {
+  logger.debug('Running Category Spend Report with query', {
+    start_date,
+    end_date,
+    include_unclassified,
+    category_ids,
+    category_types,
+    category_group_ids,
+    category_group_types,
+    tag_ids,
+    account_ids,
+    account_owner,
+  })
   // Create a view with all the required joins and categorization logic for easier querying
   // This view will also filter out any line items that are transfers between accounts (CLASS = 'ACCOUNT') and return
   // multiple rows for line items with multiple tags or owners so needs to be deduplicated later
   const reportsQuery = DatabaseManager.getConnection()
     .createQueryBuilder()
-    .from(
-      (qb) =>
-        qb
-          .select('line_items.id', 'lid')
-          .addSelect('transactions.id', 'tid')
-          .addSelect('transactions.date', 'date')
-          .addSelect('substr(transactions.date, 6, 2)', 'month')
-          .addSelect('substr(transactions.date, 1, 4)', 'year')
-          .addSelect('transactions.account_id', 'account')
-          .addSelect('line_items.local_amount', 'amount')
-          .addSelect('GROUP_CONCAT(DISTINCT tags.id)', 'tags')
-          .addSelect('GROUP_CONCAT(DISTINCT users.id)', 'owners')
-          .addSelect(
-            `CASE 
+    .from((qb) => {
+      qb.select('line_items.id', 'lid')
+        .addSelect('transactions.id', 'tid')
+        .addSelect('transactions.date', 'date')
+        .addSelect('substr(transactions.date, 6, 2)', 'month')
+        .addSelect('substr(transactions.date, 1, 4)', 'year')
+        .addSelect('transactions.account_id', 'account')
+        .addSelect('line_items.local_amount', 'amount')
+        .addSelect('tags.id', 'tags')
+        .addSelect('users.id', 'owners')
+        .addSelect(
+          `CASE 
                   WHEN line_items.account_id IS NULL AND line_items.local_amount > 0 THEN ${UNCLASSIFIED_INCOME_ID}
                   WHEN line_items.account_id IS NULL AND line_items.local_amount < 0 THEN ${UNCLASSIFIED_EXPENSES_ID}
                   ELSE line_items.account_id
                 END`,
-            'cat_id',
-          )
-          .addSelect(
-            `CASE 
+          'cat_id',
+        )
+        .addSelect(
+          `CASE 
                   WHEN line_items.account_id IS NULL AND line_items.local_amount > 0 THEN 'Income'
                   WHEN line_items.account_id IS NULL AND line_items.local_amount < 0 THEN 'Expense'
                   ELSE category_groups.type
                 END`,
-            'cat_group_type',
-          )
-          .addSelect(
-            `CASE 
+          'cat_group_type',
+        )
+        .addSelect(
+          `CASE 
                   WHEN line_items.account_id IS NULL THEN NULL
                   ELSE category_groups.color
                 END`,
-            'cat_group_color',
-          )
-          .addSelect(
-            `CASE 
+          'cat_group_color',
+        )
+        .addSelect(
+          `CASE 
                   WHEN line_items.account_id IS NULL AND line_items.local_amount > 0 THEN ${UNCLASSIFIED_INCOME_ID}
                   WHEN line_items.account_id IS NULL AND line_items.local_amount < 0 THEN ${UNCLASSIFIED_EXPENSES_ID}
                   ELSE accounts.cat_group_id
                 END`,
-            'cat_group_id',
-          )
-          .addSelect(
-            `CASE 
+          'cat_group_id',
+        )
+        .addSelect(
+          `CASE 
                   WHEN line_items.account_id IS NULL AND line_items.local_amount > 0 THEN 'Unclassified Income'
                   WHEN line_items.account_id IS NULL AND line_items.local_amount < 0 THEN 'Unclassified Expenses'
                   ELSE category_groups.name
                 END`,
-            'cat_group_name',
-          )
-          .addSelect(
-            `CASE 
+          'cat_group_name',
+        )
+        .addSelect(
+          `CASE 
                   WHEN line_items.account_id IS NULL THEN 'question'
                   ELSE category_groups.icon
                 END`,
-            'cat_group_icon',
-          )
-          .addSelect(
-            `CASE 
+          'cat_group_icon',
+        )
+        .addSelect(
+          `CASE 
                   WHEN line_items.account_id IS NULL AND line_items.local_amount > 0 THEN 'Unclassified Income'
                   WHEN line_items.account_id IS NULL
                   AND line_items.local_amount < 0 THEN 'Unclassified Expenses'
                   ELSE accounts.name
                 END`,
-            'cat_name',
-          )
-          .addSelect(
-            `CASE
+          'cat_name',
+        )
+        .addSelect(
+          `CASE
                   WHEN line_items.account_id IS NULL THEN 'question'
                   ELSE accounts.cat_icon
                 END`,
-            'cat_icon',
-          )
-          .addSelect(
-            `CASE
+          'cat_icon',
+        )
+        .addSelect(
+          `CASE
                   WHEN line_items.account_id IS NULL THEN 'Unknown'
                   ELSE accounts.cat_type
                 END`,
-            'cat_type',
-          )
-          .from('line_items', 'line_items')
-          .leftJoin('transactions', 'transactions', 'transactions.id = line_items.transaction_id')
-          .leftJoin('accounts', 'accounts', 'accounts.id = line_items.account_id')
-          .leftJoin(
-            'category_groups',
-            'category_groups',
-            'category_groups.id = accounts.cat_group_id',
-          )
-          .leftJoin(
-            'line_item_tags',
-            'line_item_tags',
-            'line_item_tags.line_item_id = line_items.id',
-          )
-          .leftJoin('tags', 'tags', 'tags.id = line_item_tags.tag_id')
-          .leftJoin(
-            'account_owners',
-            'account_owners',
-            'account_owners.account_id = transactions.account_id',
-          )
-          .leftJoin('users', 'users', 'users.id = account_owners.user_id')
-          .where("(accounts.class IS NULL OR accounts.class != 'ACCOUNT')")
-          .groupBy('lid'),
-      'reports_view',
-    )
+          'cat_type',
+        )
+        .from('line_items', 'line_items')
+        .leftJoin('transactions', 'transactions', 'transactions.id = line_items.transaction_id')
+        .leftJoin('accounts', 'accounts', 'accounts.id = line_items.account_id')
+        .leftJoin(
+          'category_groups',
+          'category_groups',
+          'category_groups.id = accounts.cat_group_id',
+        )
+        .leftJoin('line_item_tags', 'line_item_tags', 'line_item_tags.line_item_id = line_items.id')
+        .leftJoin('tags', 'tags', 'tags.id = line_item_tags.tag_id')
+        .leftJoin(
+          'account_owners',
+          'account_owners',
+          'account_owners.account_id = transactions.account_id',
+        )
+        .leftJoin('users', 'users', 'users.id = account_owners.user_id')
+        .where("(accounts.class IS NULL OR accounts.class != 'ACCOUNT')")
+        .andWhere('date BETWEEN :start_date AND :end_date', { start_date, end_date })
+        .groupBy('lid')
 
-  logger.silly('Reports View Query: ', reportsQuery.getSql())
+      // Filter by tag IDs if provided
+      if (tag_ids) {
+        if (tag_ids.include && tag_ids.include.length > 0) {
+          const includeSubQuery = qb
+            .subQuery()
+            .select('1')
+            .from('line_item_tags', 'lit')
+            .where('lit.line_item_id = line_items.id')
+            .andWhere('lit.tag_id IN (:...include_tag_ids)', { include_tag_ids: tag_ids.include })
+            .getQuery()
+
+          qb.andWhere(`EXISTS ${includeSubQuery}`)
+        }
+        if (tag_ids.exclude && tag_ids.exclude.length > 0) {
+          const excludeSubQuery = qb
+            .subQuery()
+            .select('1')
+            .from('line_item_tags', 'lit')
+            .where('lit.line_item_id = line_items.id')
+            .andWhere('lit.tag_id IN (:...exclude_tag_ids)', { exclude_tag_ids: tag_ids.exclude })
+            .getQuery()
+
+          qb.andWhere(`NOT EXISTS ${excludeSubQuery}`)
+        }
+      }
+
+      logger.silly('Reports View Query: ', qb.getSql())
+      return qb
+    }, 'reports_view')
 
   // Query against the view to get the final result
   reportsQuery
@@ -208,7 +239,6 @@ export async function runCategorySpendReport({
     .addSelect('reports_view.cat_group_type', 'cat_group_type')
     .addSelect('reports_view.cat_group_color', 'cat_group_color')
     .addSelect('COALESCE(ROUND(SUM(reports_view.amount), 2), 0)', 'total')
-    .where('reports_view.date BETWEEN :start_date AND :end_date', { start_date, end_date })
     .groupBy('cat_id')
     .addGroupBy('period')
     .orderBy('period', 'ASC')
@@ -217,10 +247,10 @@ export async function runCategorySpendReport({
   if (include_unclassified) {
     // If include_unclassified is true, add unclassified categories/groups to the include list
     // This allows the report to include unclassified income and expenses
-    if (category_ids?.include) {
+    if (category_ids?.include && category_ids.include.length > 0) {
       category_ids?.include.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
     }
-    if (category_group_ids?.include) {
+    if (category_group_ids?.include && category_group_ids.include.length > 0) {
       category_group_ids?.include.push(UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID)
     }
   } else {
@@ -254,9 +284,15 @@ export async function runCategorySpendReport({
   // Filter by category types if provided
   if (category_types) {
     if (category_types.include && category_types.include.length > 0) {
-      reportsQuery.andWhere('cat_type IN (:...category_types)', {
-        category_types: category_types.include,
-      })
+      if (include_unclassified) {
+        reportsQuery.orWhere('cat_type IN (:...category_types)', {
+          category_types: category_types.include,
+        })
+      } else {
+        reportsQuery.andWhere('cat_type IN (:...category_types)', {
+          category_types: category_types.include,
+        })
+      }
     }
     if (category_types.exclude && category_types.exclude.length > 0) {
       reportsQuery.andWhere('cat_type NOT IN (:...excludedCatTypes)', {
@@ -290,33 +326,6 @@ export async function runCategorySpendReport({
       })
     }
   }
-  // Filter by tag IDs if provided
-  if (tag_ids) {
-    if (tag_ids.include && tag_ids.include.length > 0) {
-      reportsQuery.andWhere(
-        new Brackets((qb) => {
-          tag_ids.include?.forEach((tagId, idx) => {
-            const paramName = `tagMatch${idx}`
-            qb.orWhere(`',' || reports_view.tags || ',' LIKE :${paramName}`, {
-              [paramName]: `%,${tagId},%`,
-            })
-          })
-        }),
-      )
-    }
-    if (tag_ids.exclude && tag_ids.exclude.length > 0) {
-      reportsQuery.andWhere(
-        new Brackets((qb) => {
-          tag_ids.exclude?.forEach((tagId, idx) => {
-            const paramName = `excludedTagMatch${idx}`
-            qb.andWhere(`',' || reports_view.tags || ',' NOT LIKE :${paramName}`, {
-              [paramName]: `%,${tagId},%`,
-            })
-          })
-        }),
-      )
-    }
-  }
   // Filter by account IDs if provided
   if (account_ids) {
     if (account_ids.include && account_ids.include.length > 0) {
@@ -332,8 +341,8 @@ export async function runCategorySpendReport({
   }
   // Filter by account owner if provided
   if (account_owner) {
-    reportsQuery.andWhere("',' || reports_view.owners || ',' LIKE :ownerMatch", {
-      ownerMatch: `%,${account_owner},%`,
+    reportsQuery.andWhere('reports_view.owners = :ownerMatch', {
+      ownerMatch: account_owner,
     })
   }
 
@@ -427,7 +436,29 @@ export async function runCategorySpendReport({
     })
   }
 
-  logger.debug('Running Report with query', results)
+  // Sort category groups alphabetically, with Unclassified at the bottom
+  results.rows.sort((a, b) => {
+    const isAUnclassified = a.id === UNCLASSIFIED_EXPENSES_ID || a.id === UNCLASSIFIED_INCOME_ID
+    const isBUnclassified = b.id === UNCLASSIFIED_EXPENSES_ID || b.id === UNCLASSIFIED_INCOME_ID
+    if (isAUnclassified && !isBUnclassified) return 1
+    if (!isAUnclassified && isBUnclassified) return -1
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+  })
+
+  // Sort subcategories alphabetically within each group, with Unclassified at the bottom
+  for (const row of results.rows) {
+    if (row.categories) {
+      row.categories.sort((a, b) => {
+        const isAUnclassified = a.name.toLowerCase().includes('unclassified')
+        const isBUnclassified = b.name.toLowerCase().includes('unclassified')
+        if (isAUnclassified && !isBUnclassified) return 1
+        if (!isAUnclassified && isBUnclassified) return -1
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+      })
+    }
+  }
+
+  logger.debug('Report Results', results)
   return results
 }
 

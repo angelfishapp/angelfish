@@ -28,6 +28,12 @@ export interface TabsProps {
    */
   id: string
   /**
+   * The index of the currently active tab.
+   * This is used to control which tab is displayed as active.
+   * @default 0
+   */
+  index?: number
+  /**
    * The color of the indicator that shows which tab is currently active.
    * This can be one of the predefined colors in Material-UI.
    */

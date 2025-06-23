@@ -160,10 +160,7 @@ export default function Reports() {
   ) as Array<HTMLElement>
 
   const chartWidth = cols.filter(
-    (item) =>
-      item.className.includes('col-id-') &&
-      !item.className.includes('col-id-name') &&
-      !item.className.includes('col-id-total'),
+    (item) => !item.className.includes('col-id-name') && !item.className.includes('col-id-total'),
   )[0]?.offsetWidth
 
   const headingCol = document.getElementsByClassName('isPinned')[1] as HTMLElement

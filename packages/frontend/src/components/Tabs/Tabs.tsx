@@ -15,6 +15,7 @@ export default function Tabs({
   centered,
   children,
   id,
+  index = 0,
   indicatorColor,
   orientation,
   onTabChange,
@@ -23,7 +24,12 @@ export default function Tabs({
   variant,
 }: TabsProps) {
   // Component State
-  const [openTab, setOpenTabValue] = React.useState(0)
+  const [openTab, setOpenTabValue] = React.useState(index)
+
+  // Update the openTab state when the index prop changes
+  React.useEffect(() => {
+    setOpenTabValue(index)
+  }, [index])
 
   // Filter out only valid TabPanel children
   const tabs = React.Children.toArray(children).filter(

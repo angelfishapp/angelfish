@@ -43,6 +43,8 @@ export default function ReportsSettingsDrawer({
   onSave,
   tags,
 }: ReportsSettingsDrawerProps) {
+  // Component State
+  const [initalCategoryTab, setInitialCategoryTab] = React.useState<number>(0)
   // Setup Form
   const {
     control,
@@ -62,14 +64,19 @@ export default function ReportsSettingsDrawer({
    */
   React.useEffect(() => {
     if (open) {
+      const categories = getFilterValues(initialQuery.category_ids).map((categoryId) => {
+        return accountsWithRelations.find((account) => account.id === categoryId)
+      })
+      const category_types = getFilterValues(initialQuery.category_types)
+      setInitialCategoryTab(categories.length > 0 ? 0 : category_types.length > 0 ? 1 : 0)
+
+      // Reset the form with initial values
       reset({
         include_unclassified: initialQuery.include_unclassified,
         include_categories: isIncludeFilter(initialQuery.category_ids),
-        categories: getFilterValues(initialQuery.category_ids).map((categoryId) => {
-          return accountsWithRelations.find((account) => account.id === categoryId)
-        }),
+        categories,
         include_cat_types: isIncludeFilter(initialQuery.category_types),
-        category_types: getFilterValues(initialQuery.category_types),
+        category_types,
         include_tags: isIncludeFilter(initialQuery.tag_ids),
         tags: getFilterValues(initialQuery.tag_ids).map((tagId) => {
           return tags.find((tag) => tag.id === tagId)
@@ -134,7 +141,7 @@ export default function ReportsSettingsDrawer({
               />
             )}
           />
-          <Tabs id="category-tabs" aria-label="Category Tabs">
+          <Tabs id="category-tabs" aria-label="Category Tabs" index={initalCategoryTab}>
             <TabPanel index={0} label={`Categories (${selectedCategoriesCount})`}>
               <Controller
                 name="categories"
@@ -185,10 +192,12 @@ export default function ReportsSettingsDrawer({
                 name="category_types"
                 control={control}
                 rules={{ required: false }}
-                render={({ field: { onChange, value }, ...restField }) => {
+                render={({ field: { onChange, value, ref, ...restField } }) => {
                   return (
                     <MultiSelectField
+                      id="category-types-select"
                       label="Selected Category Types"
+                      formRef={ref}
                       fullWidth
                       placeholder="Search Category Types..."
                       error={errors?.category_types ? true : false}
@@ -258,10 +267,12 @@ export default function ReportsSettingsDrawer({
             name="tags"
             control={control}
             rules={{ required: false }}
-            render={({ field: { onChange, value }, ...restField }) => {
+            render={({ field: { onChange, value, ref, ...restField } }) => {
               return (
                 <MultiSelectField
+                  id="tags-select"
                   label="Selected Tags"
+                  formRef={ref}
                   fullWidth
                   placeholder="Search Tags..."
                   error={errors?.tags ? true : false}
