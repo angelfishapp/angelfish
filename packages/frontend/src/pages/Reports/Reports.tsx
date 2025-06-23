@@ -300,6 +300,7 @@ export default function Reports() {
         onSaveTransactions={onSaveTransactions}
       />
       <ReportsSettingsDrawer
+        accountsWithRelations={accounts}
         initialQuery={reportsQuery}
         open={showSettingsDrawer}
         onClose={() => setShowSettingsDrawer(false)}

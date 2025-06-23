@@ -1,9 +1,13 @@
-import type { CategorySpendReportQuery, ITag } from '@angelfish/core'
+import type { CategorySpendReportQuery, IAccount, ITag } from '@angelfish/core'
 
 /**
  * ReportsSettingsDrawer Properties
  */
 export interface ReportsSettingsDrawerProps {
+  /**
+   * Accounts with relations to display in the form
+   */
+  accountsWithRelations: IAccount[]
   /**
    * Initial query to populate form
    */
