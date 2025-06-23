@@ -80,6 +80,7 @@ export default function MultiSelectField<Value>({
 
   // Generate owner state for the component
   const ownerState: MultiSelectFieldOwnerState<Value> = {
+    isOptionEqualToValue,
     onChange,
     renderOption: renderOption || getOptionLabel,
     selectedValues,

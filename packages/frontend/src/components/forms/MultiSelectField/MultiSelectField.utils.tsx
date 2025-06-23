@@ -27,30 +27,34 @@ export function defaultGetOptionLabel<Value>(option: Value): string {
 export function renderGroup<Value>(
   params: AutocompleteRenderGroupParams,
   options: Value[],
-  { selectedValues, onChange }: MultiSelectFieldOwnerState<Value>,
+  { selectedValues, onChange, isOptionEqualToValue }: MultiSelectFieldOwnerState<Value>,
 ): React.ReactNode {
   // Check if group is selected or partially selected
-  const isGroupSelected = options.every((option) => selectedValues.includes(option))
+  const isGroupSelected = options.every((option) =>
+    selectedValues.some((value) => isOptionEqualToValue(option, value)),
+  )
+  const isGroupPartiallySelected =
+    !isGroupSelected &&
+    options.some((option) => selectedValues.some((value) => isOptionEqualToValue(option, value)))
+
   return (
     <li key={params.key}>
       <ListSubheader component="div">
         {' '}
         <Checkbox
           checked={isGroupSelected}
-          indeterminate={
-            !isGroupSelected && options.some((option) => selectedValues.includes(option))
-          }
+          indeterminate={isGroupPartiallySelected}
           onClick={(event) => {
             // Add or remove all options in the group
             const newOptions = [...selectedValues]
             const details: Value[] = []
             options.forEach((option) => {
               if (!isGroupSelected) {
-                if (!selectedValues.includes(option)) {
+                if (!selectedValues.some((value) => isOptionEqualToValue(option, value))) {
                   newOptions.push(option)
                   details.push(option)
                 }
-              } else if (selectedValues.includes(option)) {
+              } else if (selectedValues.some((value) => isOptionEqualToValue(option, value))) {
                 details.push(option)
                 newOptions.splice(newOptions.indexOf(option), 1)
               }
