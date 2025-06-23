@@ -1,25 +1,7 @@
 import type { TabsProps as MuiTabsProps } from '@mui/material/Tabs'
 import type React from 'react'
 
-/**
- * Definition of a Tab to render in the Tabs component.
- * Each tab has a label, content, and an index.
- */
-export interface ITab {
-  /**
-   * The content to be displayed when the tab is active.
-   */
-  content: React.ReactNode
-  /**
-   * The label for the tab, which will be displayed in the tab header.
-   */
-  label: string
-  /**
-   * The index of the tab, used to identify it within the Tabs component.
-   * Should be unique for each tab and starts from 0.
-   */
-  index: number
-}
+import type { TabPanelProps } from './TabsPanel.interface'
 
 /**
  * Props for the Tabs component.
@@ -35,6 +17,11 @@ export interface TabsProps {
    * @default false
    */
   centered?: MuiTabsProps['centered']
+  /**
+   * Array of tabs to render in the Tabs component.
+   * Each tab should conform to the ITab interface.
+   */
+  children: React.ReactElement<TabPanelProps> | React.ReactElement<TabPanelProps>[]
   /**
    * Unique identifier for the Tabs component.
    * This is used to manage the state of the component and should be unique across the application
@@ -59,11 +46,6 @@ export interface TabsProps {
    * Style object or function to customize the styles of the Tabs component.
    */
   sx?: MuiTabsProps['sx']
-  /**
-   * Array of tabs to render in the Tabs component.
-   * Each tab should conform to the ITab interface.
-   */
-  tabs: ITab[]
   /**
    * The text color of the tabs.
    * This can be one of the predefined colors in Material-UI.

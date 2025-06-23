@@ -1,2 +1,4 @@
 export { default as Tabs } from './Tabs'
-export type { ITab, TabsProps } from './Tabs.interface'
+export type { TabsProps } from './Tabs.interface'
+export { default as TabPanel } from './TabsPanel'
+export type { TabPanelProps } from './TabsPanel.interface'

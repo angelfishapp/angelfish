@@ -4,34 +4,8 @@ import MuiTabs from '@mui/material/Tabs'
 import React from 'react'
 
 import type { TabsProps } from './Tabs.interface'
-
-/**
- * TabPanelProps: Defines the properties for the TabPanel component.
- */
-interface TabPanelProps {
-  children?: React.ReactNode
-  id: string
-  index: number
-  value: number
-}
-
-/**
- * TabPanel Component: Renders the content of a tab.
- * It is hidden when the tab is not active.
- */
-function TabPanel({ children, value, id, index, ...other }: TabPanelProps) {
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`${id}-tabpanel-${index}`}
-      aria-labelledby={`${id}-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  )
-}
+import TabPanel from './TabsPanel'
+import type { TabPanelProps } from './TabsPanel.interface'
 
 /**
  * Tabs Component: Renders a set of tabs with a controlled state.
@@ -39,16 +13,25 @@ function TabPanel({ children, value, id, index, ...other }: TabPanelProps) {
 export default function Tabs({
   'aria-label': ariaLabel,
   centered,
+  children,
   id,
   indicatorColor,
   orientation,
   onTabChange,
   sx,
-  tabs,
   textColor,
   variant,
 }: TabsProps) {
+  // Component State
   const [openTab, setOpenTabValue] = React.useState(0)
+
+  // Filter out only valid TabPanel children
+  const tabs = React.Children.toArray(children).filter(
+    (child): child is React.ReactElement<TabPanelProps> =>
+      React.isValidElement(child) && child.type === TabPanel,
+  )
+
+  // Render
   return (
     <Box
       sx={
@@ -73,27 +56,34 @@ export default function Tabs({
           variant={variant}
         >
           {tabs
-            .sort((a, b) => a.index - b.index)
+            .sort((a, b) => a.props.index - b.props.index)
             .map((tab, index) => (
               <MuiTab
-                key={tab.index}
-                label={tab.label}
+                key={tab.props.index}
+                label={tab.props.label}
                 id={`${id}-tab-${index}`}
                 aria-controls={`${id}-tabpanel-${index}`}
                 onClick={() => {
                   setOpenTabValue(index)
                   onTabChange?.(index)
                 }}
+                disableRipple={true}
               />
             ))}
         </MuiTabs>
       </Box>
       {tabs
-        .sort((a, b) => a.index - b.index)
-        .map((tab, index) => (
-          <TabPanel key={tab.index} id={id} value={openTab} index={index}>
-            {tab.content}
-          </TabPanel>
+        .sort((a, b) => a.props.index - b.props.index)
+        .map((tab) => (
+          <div
+            key={tab.props.index}
+            role="tabpanel"
+            hidden={openTab !== tab.props.index}
+            id={`${id}-tabpanel-${tab.props.index}`}
+            aria-labelledby={`${id}-tab-${tab.props.index}`}
+          >
+            {openTab === tab.props.index && <Box sx={{ p: 3 }}>{tab.props.children}</Box>}
+          </div>
         ))}
     </Box>
   )
