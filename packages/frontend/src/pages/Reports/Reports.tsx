@@ -135,6 +135,7 @@ export default function Reports() {
             ? format(endOfMonth(parse(period, 'MM-yyyy', new Date())), 'yyyy-MM-dd')
             : reportsQuery.end_date,
         tag_ids: reportsQuery.tag_ids,
+        account_ids: reportsQuery.account_ids,
         ...(isCategoryGroup
           ? { category_group_ids: { include: [id] } }
           : { category_ids: { include: [id] } }),
@@ -148,6 +149,7 @@ export default function Reports() {
       reportsQuery.start_date,
       reportsQuery.end_date,
       reportsQuery.tag_ids,
+      reportsQuery.account_ids,
     ],
   )
   // calculating the width for first col in the table and make it the same for range Date section so it would

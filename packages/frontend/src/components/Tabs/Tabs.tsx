@@ -88,7 +88,7 @@ export default function Tabs({
             id={`${id}-tabpanel-${tab.props.index}`}
             aria-labelledby={`${id}-tab-${tab.props.index}`}
           >
-            {openTab === tab.props.index && <Box sx={{ p: 3 }}>{tab.props.children}</Box>}
+            {openTab === tab.props.index && <Box sx={{ paddingTop: 2 }}>{tab.props.children}</Box>}
           </div>
         ))}
     </Box>

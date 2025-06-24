@@ -56,8 +56,11 @@ export default function ReportsSettingsDrawer({
     mode: 'onBlur',
   })
 
+  // Get counts for display
   const selectedCategoriesCount = watch('categories')?.length || 0
   const selectedCategoryTypesCount = watch('category_types')?.length || 0
+  const selectedTagsCount = watch('tags')?.length || 0
+  const selectedAccountsCount = watch('accounts')?.length || 0
 
   /**
    * Make sure form is reset whenever drawer is opened
@@ -123,7 +126,7 @@ export default function ReportsSettingsDrawer({
       <StyledAccordion>
         <StyledAccordionSummary aria-controls="categories-content" id="categories-header">
           <Typography component="span" fontWeight="bold">
-            Categories
+            Categories ({selectedCategoriesCount + selectedCategoryTypesCount})
           </Typography>
         </StyledAccordionSummary>
         <AccordionDetails>
@@ -259,7 +262,7 @@ export default function ReportsSettingsDrawer({
       <StyledAccordion>
         <StyledAccordionSummary aria-controls="tags-content" id="tags-header">
           <Typography component="span" fontWeight="bold">
-            Tags
+            Tags ({selectedTagsCount})
           </Typography>
         </StyledAccordionSummary>
         <AccordionDetails>
@@ -324,7 +327,7 @@ export default function ReportsSettingsDrawer({
       <StyledAccordion>
         <StyledAccordionSummary aria-controls="tags-content" id="tags-header">
           <Typography component="span" fontWeight="bold">
-            Accounts
+            Accounts ({selectedAccountsCount})
           </Typography>
         </StyledAccordionSummary>
         <AccordionDetails>

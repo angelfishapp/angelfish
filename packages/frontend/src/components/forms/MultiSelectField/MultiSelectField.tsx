@@ -127,6 +127,7 @@ export default function MultiSelectField<Value>({
         sx={{
           flexGrow: 1,
           border: '1px solid rgba(0, 0, 0, 0.12)',
+          borderTop: 'none',
           overflow: 'auto',
           '&::-webkit-scrollbar': { width: '8px' },
           '&::-webkit-scrollbar-thumb': {
@@ -199,12 +200,17 @@ export default function MultiSelectField<Value>({
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'center',
-          borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          borderTop: 'none',
+          borderRadius: '0 0 8px 8px',
           p: 1,
           bgcolor: 'rgba(0, 0, 0, 0.02)',
         }}
       >
+        {selectedValues.length} Selected
+        {/* Toggle All Button */}
         <Box
           component="button"
           onClick={(event) => {

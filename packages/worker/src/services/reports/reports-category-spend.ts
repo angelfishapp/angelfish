@@ -284,7 +284,10 @@ export async function runCategorySpendReport({
   // Filter by category types if provided
   if (category_types) {
     if (category_types.include && category_types.include.length > 0) {
-      if (include_unclassified) {
+      if (include_unclassified && category_ids?.include?.length === 0) {
+        reportsQuery.orWhere('cat_id IN (:...unclassified_cats)', {
+          unclassified_cats: [UNCLASSIFIED_INCOME_ID, UNCLASSIFIED_EXPENSES_ID],
+        })
         reportsQuery.orWhere('cat_type IN (:...category_types)', {
           category_types: category_types.include,
         })
