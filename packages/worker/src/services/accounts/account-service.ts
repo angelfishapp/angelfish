@@ -3,7 +3,7 @@ import { validate } from 'class-validator'
 import type { AppCommandRequest, AppCommandResponse, IAccount } from '@angelfish/core'
 import { AppCommandIds, Command, CommandsClient } from '@angelfish/core'
 import { DatabaseManager } from '../../database/database-manager'
-import { AccountEntity, LineItemEntity, TransactionEntity } from '../../database/entities'
+import { AccountEntity, LineItemEntity } from '../../database/entities'
 import { getWorkerLogger } from '../../logger'
 
 const logger = getWorkerLogger('AccountService')
@@ -12,10 +12,6 @@ const logger = getWorkerLogger('AccountService')
  * Manage Accounts in database.
  */
 class AccountServiceClass {
-  // SQL Select Statement to calculate current balance of the account
-  private readonly BALANCE_SELECT =
-    'ROUND(COALESCE(SUM(transactions.amount), 0) + COALESCE(account.acc_start_balance, 0), 2)'
-
   /**
    *  List of all Accounts in the database
    *
@@ -29,8 +25,20 @@ class AccountServiceClass {
   }: AppCommandRequest<AppCommandIds.LIST_ACCOUNTS>): AppCommandResponse<AppCommandIds.LIST_ACCOUNTS> {
     const query = DatabaseManager.getConnection().createQueryBuilder(AccountEntity, 'account')
     // Gets SUM of current_balance for all transactions associated with account
-    query.addSelect(this.BALANCE_SELECT, 'account_current_balance')
-    query.leftJoin(TransactionEntity, 'transactions', 'transactions.account_id = account.id')
+    const accountBalanceQuery = query
+      .subQuery()
+      .select('transactions.account_id', 'account_id')
+      .addSelect('ROUND(SUM(transactions.amount), 2)', 'total')
+      .from('transactions', 'transactions')
+      .groupBy('transactions.account_id')
+      .getQuery()
+
+    query.addCommonTableExpression(accountBalanceQuery.slice(1, -1), 'account_balances')
+    query.addSelect(
+      'ROUND(COALESCE(account.acc_start_balance, 0) + COALESCE(ab.total, 0), 2)',
+      'account_current_balance',
+    )
+    query.leftJoin('account_balances', 'ab', 'ab.account_id = account.id')
     query.leftJoinAndSelect('account.acc_owners', 'users')
 
     // Add Where Clause
@@ -100,8 +108,20 @@ class AccountServiceClass {
   }: AppCommandRequest<AppCommandIds.GET_ACCOUNT>): AppCommandResponse<AppCommandIds.GET_ACCOUNT> {
     const query = DatabaseManager.getConnection().createQueryBuilder(AccountEntity, 'account')
     // Gets SUM of current_balance for all transactions associated with account
-    query.addSelect(this.BALANCE_SELECT, 'account_current_balance')
-    query.leftJoin(TransactionEntity, 'transactions', 'transactions.account_id = account.id')
+    const accountBalanceQuery = query
+      .subQuery()
+      .select('transactions.account_id', 'account_id')
+      .addSelect('ROUND(SUM(transactions.amount), 2)', 'total')
+      .from('transactions', 'transactions')
+      .where('transactions.account_id = :id', { id })
+      .groupBy('transactions.account_id')
+      .getQuery()
+    query.addCommonTableExpression(accountBalanceQuery.slice(1, -1), 'account_balances')
+    query.addSelect(
+      'ROUND(COALESCE(account.acc_start_balance, 0) + COALESCE(ab.total, 0), 2)',
+      'account_current_balance',
+    )
+    query.leftJoin('account_balances', 'ab', 'ab.account_id = account.id')
     query.leftJoinAndSelect('account.acc_owners', 'users')
     query.where('account.id = :id', { id })
     query.groupBy('account.id, users.id')
