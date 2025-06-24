@@ -22,10 +22,10 @@ const meta = {
         <TabPanel index={0} label="Tab 1 Label">
           <div>Content for Tab 1</div>
         </TabPanel>
-        <TabPanel index={1} label="Tab 1 Label">
+        <TabPanel index={1} label="Tab 2 Label">
           <div>Content for Tab 2</div>
         </TabPanel>
-        <TabPanel index={2} label="Tab 1 Label">
+        <TabPanel index={2} label="Tab 3 Label">
           <div>Content for Tab 3</div>
         </TabPanel>
       </Tabs>

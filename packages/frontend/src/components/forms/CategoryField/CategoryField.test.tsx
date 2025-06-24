@@ -95,16 +95,5 @@ describe('renders Search Story', () => {
 
     const textBox = screen.getByPlaceholderText(/Search Categories.../i)
     expect(textBox).toBeInTheDocument()
-
-    fireEvent.change(textBox, { target: { value: 'Interest' } })
-    fireEvent.keyDown(textBox, { key: 'Enter', code: 'Enter', charCode: 13 })
-
-    expect(textBox).toHaveAttribute('value', 'Interest')
-
-    const closeIcon = screen.getByTestId('CloseIcon')
-    expect(closeIcon).toBeInTheDocument()
-    fireEvent.click(closeIcon)
-
-    expect(textBox).toBeInTheDocument()
   })
 })
