@@ -191,7 +191,7 @@ export default function Reports() {
             overflow: 'hidden',
           }}
         >
-          <RollingContainer>
+          <RollingContainer scrollbars={[{ top: 385 }]}>
             <Box
               display="flex"
               width="100%"
