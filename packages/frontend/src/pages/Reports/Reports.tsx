@@ -16,7 +16,7 @@ import {
   subQuarters,
   subYears,
 } from 'date-fns'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { exportReport, showSaveDialog } from '@/api'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
@@ -152,29 +152,35 @@ export default function Reports() {
       reportsQuery.account_ids,
     ],
   )
+
   // calculating the width for first col in the table and make it the same for range Date section so it would
   // be aligned with the table header in chart case of resizing the window
-
-  const [dateRangeSectionWidth, setDateRangeSectionWidth] = useState('332px')
-
-  const cols = Array.from(
-    document.getElementsByClassName(' MuiTableCell-head'),
-  ) as Array<HTMLElement>
-
-  const chartWidth = cols.filter(
-    (item) => !item.className.includes('col-id-name') && !item.className.includes('col-id-total'),
-  )[0]?.offsetWidth
-
-  const headingCol = document.getElementsByClassName('isPinned')[1] as HTMLElement
-
-  useEffect(() => {
+  const [dateRangeSectionWidth, setDateRangeSectionWidth] = React.useState('332px')
+  const [chartPeriodWidth, setChartPeriodWidth] = React.useState(150)
+  React.useEffect(() => {
     const handleResize = () => {
+      const headingCol = document.getElementsByClassName('isPinned')[1] as HTMLElement
+      if (!headingCol) return
       setDateRangeSectionWidth(headingCol?.offsetWidth.toString() + 'px')
+      const cols = Array.from(
+        document.getElementsByClassName(' MuiTableCell-head'),
+      ) as Array<HTMLElement>
+
+      const chartWidth = cols.filter(
+        (item) =>
+          item.className.includes('col-id-') &&
+          !item.className.includes('col-id-name') &&
+          !item.className.includes('col-id-total'),
+      )[0]?.offsetWidth
+      if (chartWidth) {
+        setChartPeriodWidth(chartWidth)
+      }
     }
     window.addEventListener('resize', handleResize)
     handleResize()
     return () => window.removeEventListener('resize', handleResize)
-  }, [headingCol?.offsetWidth, reportsQuery, reportData])
+  }, [reportsQuery, reportData])
+
   // Render
   return (
     <Box padding={2}>
@@ -276,7 +282,7 @@ export default function Reports() {
                     </Box>
                   </Box>
                 </Box>
-                <ReportsChart data={reportData} chartWidth={chartWidth} />
+                <ReportsChart data={reportData} chartPeriodWidth={chartPeriodWidth} />
               </Box>
             </Box>
 

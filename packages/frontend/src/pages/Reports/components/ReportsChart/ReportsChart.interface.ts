@@ -5,9 +5,12 @@ import type { CategorySpendReportData } from '@angelfish/core'
  */
 export interface ReportsChartProps {
   /**
+   * The column/period width of the Table so the graph can line up
+   */
+  chartPeriodWidth: number
+  /**
    * Report results data from the ReportsService
    * IPC API
    */
   data: CategorySpendReportData
-  chartWidth: number
 }
