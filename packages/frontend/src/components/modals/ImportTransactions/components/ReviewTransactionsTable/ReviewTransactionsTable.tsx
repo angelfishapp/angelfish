@@ -149,6 +149,8 @@ export default function ReviewTransactionsTable({
   // Render
   return (
     <Table
+      // tableLayout : fixed in the table is making the size problem 
+      sx={{ tableLayout: "auto" }}
       columns={columns}
       data={rows}
       scrollElement={scrollElement}
