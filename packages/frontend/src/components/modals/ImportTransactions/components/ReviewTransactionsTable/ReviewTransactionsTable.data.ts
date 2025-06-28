@@ -18,6 +18,9 @@ export interface ReconciledTransactionRow {
   account_id?: number
   account?: IAccount
   transaction: ReconciledTransaction
+  notes?: string
+  tags?: string[]
+  reviewed?: boolean
 }
 
 /**

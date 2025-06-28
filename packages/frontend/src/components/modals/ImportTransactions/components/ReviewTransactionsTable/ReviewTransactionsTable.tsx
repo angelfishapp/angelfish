@@ -9,11 +9,15 @@ import { CategoryField } from '@/components/forms/CategoryField'
 import { Table } from '@/components/Table'
 import { updateTransaction } from '@angelfish/core'
 import type { ReconciledTransaction } from '@angelfish/core/src/types'
+
 import HeaderRow from './components/TableHeaderGroup'
 import TableRow from './components/TableRow'
 import type { ReconciledTransactionRow } from './ReviewTransactionsTable.data'
 import { flattenRowData, getSelectedRowState } from './ReviewTransactionsTable.data'
 import type { ReviewTransactionsTableProps } from './ReviewTransactionsTable.interface'
+import IconButton from "@mui/material/IconButton"
+import { Edit as EditIcon } from "@mui/icons-material"
+import { tags as tagsData } from '@angelfish/tests/fixtures'
 
 /**
  * Render the status tag for the transaction
@@ -40,10 +44,28 @@ export default function ReviewTransactionsTable({
   onUpdateTransactions,
   scrollElement,
 }: ReviewTransactionsTableProps) {
+  const [expandedRow, setExpandedRow] = React.useState<string | null>(null)
+
   // Flatten Row Data and select all rows with import==true
   const [rows, initialSelectedRows] = React.useMemo(() => {
     return [flattenRowData(transactions, accountsWithRelations), getSelectedRowState(transactions)]
   }, [accountsWithRelations, transactions])
+
+  // Handler for updating individual transactions
+  const handleEditTransaction = (rowIndex: number, updates: Partial<ReconciledTransaction>) => {
+    const updatedTransaction = updateTransaction(rows[rowIndex].transaction, updates) as ReconciledTransaction
+
+    onUpdateTransactions(
+      rows.map((transaction, index) => {
+        return index === rowIndex ? updatedTransaction : transaction.transaction
+      }),
+    )
+  }
+
+  // Handler for double-click to expand/collapse rows
+  const handleRowDoubleClick = (event: React.MouseEvent, row: any) => {
+    setExpandedRow(expandedRow === row.id ? null : row.id)
+  }
 
   /**
    * Define the columns for the table
@@ -87,17 +109,26 @@ export default function ReviewTransactionsTable({
         },
       },
       {
-        id: 'title',
-        header: 'Payee',
-        accessorKey: 'title',
-        size: 300,
+        id: "title",
+        header: "Payee",
+        accessorKey: "title",
+        size: 250,
         cell: ({ row }) => {
+          // Updated to check for new field names
+          const hasNotes = row.original.transaction.note || row.original.transaction.notes
+          const hasTags = row.original.transaction.tags?.length > 0
+          const isReviewed = row.original.transaction.is_reviewed
+
           return (
-            <>
-              {row.original.title}
-              <br />
+            <div>
+              <div style={{ fontWeight: isReviewed ? "normal" : "bold" }}>
+                {row.original.title}
+                {hasNotes && <span style={{ color: "#1976d2", marginLeft: 4 }}>📝</span>}
+                {hasTags && <span style={{ color: "#ed6c02", marginLeft: 4 }}>🏷️</span>}
+                {isReviewed && <span style={{ color: "#2e7d32", marginLeft: 4 }}>✓</span>}
+              </div>
               {renderStatusTag(row.original.reconciliation)}
-            </>
+            </div>
           )
         },
       },
@@ -105,7 +136,7 @@ export default function ReviewTransactionsTable({
         id: 'category',
         header: 'Category',
         accessorKey: 'category',
-        size: 330,
+        size: 200,
         cell: ({ row }) => {
           return (
             <CategoryField
@@ -115,14 +146,9 @@ export default function ReviewTransactionsTable({
               value={row.original.category || null}
               onChange={(account) => {
                 if (typeof account === 'object') {
-                  const updatedTransaction = updateTransaction(rows[row.index].transaction, {
+                  handleEditTransaction(row.index, {
                     category_id: account ? account.id : null,
-                  }) as ReconciledTransaction
-                  onUpdateTransactions(
-                    rows.map((transaction, index) => {
-                      return index === row.index ? updatedTransaction : transaction.transaction
-                    }),
-                  )
+                  })
                 }
               }}
             />
@@ -143,18 +169,40 @@ export default function ReviewTransactionsTable({
         header: 'Account',
         accessorKey: 'account_id',
       },
+      {
+        id: "actions",
+        header: "",
+        size: 50,
+        cell: ({ row }) => {
+          const rowId = `row-${row.index}`
+          return (
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation()
+                setExpandedRow(expandedRow === rowId ? null : rowId)
+              }}
+              sx={{
+                color: expandedRow === rowId ? "primary.main" : "text.secondary",
+                backgroundColor: expandedRow === rowId ? "primary.light" : "transparent",
+              }}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          )
+        },
+      },
     ]
-  }, [accountsWithRelations, onUpdateTransactions, rows])
+  }, [accountsWithRelations, expandedRow, handleEditTransaction])
 
   // Render
   return (
     <Table
-      // tableLayout : fixed in the table is making the size problem 
       sx={{ tableLayout: "auto" }}
       columns={columns}
       data={rows}
       scrollElement={scrollElement}
-      estimateSize={() => 40}
+      estimateSize={() => (expandedRow ? 200 : 40)}
       stickyHeader
       displayFooter={false}
       enableRowSelection={true}
@@ -162,7 +210,16 @@ export default function ReviewTransactionsTable({
       enableSorting={true}
       expandAllRows={true}
       HeaderElement={HeaderRow}
-      RowElement={TableRow}
+      RowElement={(props) => (
+        <TableRow
+          {...props}
+          expandedRow={expandedRow}
+          accountsWithRelations={accountsWithRelations}
+          allTags={tagsData} // just for testing Pass tags data to TableRow
+          onUpdate={handleEditTransaction}
+          onCloseEdit={() => setExpandedRow(null)}
+        />
+      )}
       initialState={{
         sorting: [{ id: 'date', desc: true }],
         grouping: ['account_id'],
@@ -181,9 +238,10 @@ export default function ReviewTransactionsTable({
           )
         }
       }}
-      disableRowClick={true} // Disable row click
-      disableRowDoubleClick={true} // Disable row double click
-      disableRowContextMenu={true} // Disable context menu
+      onRowDoubleClick={handleRowDoubleClick}
+      disableRowClick={true}
+      disableRowDoubleClick={false}
+      disableRowContextMenu={true}
     />
   )
 }
