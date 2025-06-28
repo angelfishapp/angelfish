@@ -79,8 +79,7 @@ export type SupportedColumnNames =
  * column definition of Transaction Rows
  * @returns {ColumnDef<TransactionRow>[]}
  */
-export function 
-buildColumns(
+export function buildColumns(
   colnames: SupportedColumnNames[] = [
     'date',
     'title',

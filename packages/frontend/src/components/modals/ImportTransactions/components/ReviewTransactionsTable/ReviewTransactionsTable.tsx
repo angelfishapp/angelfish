@@ -1,34 +1,34 @@
-import Checkbox from "@mui/material/Checkbox"
-import Chip from "@mui/material/Chip"
-import type { ColumnDef } from "@tanstack/react-table"
-import { isEqual } from "lodash"
-import React, { type JSX } from "react"
+import Checkbox from '@mui/material/Checkbox'
+import Chip from '@mui/material/Chip'
+import type { ColumnDef } from '@tanstack/react-table'
+import { isEqual } from 'lodash'
+import React, { type JSX } from 'react'
 
-import { CurrencyLabel } from "@/components/CurrencyLabel"
-import { CategoryField } from "@/components/forms/CategoryField"
-import { Table } from "@/components/Table"
+import { CurrencyLabel } from '@/components/CurrencyLabel'
+import { CategoryField } from '@/components/forms/CategoryField'
+import { Table } from '@/components/Table'
 
-import HeaderRow from "./components/TableHeaderGroup"
-import TableRow from "./components/TableRow"
-import type { ReconciledTransactionRow } from "./ReviewTransactionsTable.data"
-import { flattenRowData, getSelectedRowState } from "./ReviewTransactionsTable.data"
-import type { ReviewTransactionsTableProps } from "./ReviewTransactionsTable.interface"
-import IconButton from "@mui/material/IconButton"
-import { Edit as EditIcon } from "@mui/icons-material"
-// TO-DO : this the only thing we need to fix it's import 
-import { tags as tagsData } from "@angelfish/tests/fixtures"
-import type { ITag } from "@angelfish/core"
+import { Edit as EditIcon } from '@mui/icons-material'
+import IconButton from '@mui/material/IconButton'
+import HeaderRow from './components/TableHeaderGroup'
+import TableRow from './components/TableRow'
+import type { ReconciledTransactionRow } from './ReviewTransactionsTable.data'
+import { flattenRowData, getSelectedRowState } from './ReviewTransactionsTable.data'
+import type { ReviewTransactionsTableProps } from './ReviewTransactionsTable.interface'
+// TO-DO : this the only thing we need to fix it's import
+import type { ITag } from '@angelfish/core'
+import { tags as tagsData } from '@angelfish/tests/fixtures'
 
 /**
  * Renders a chip representing the status of a transaction.
  * @param {"new" | "transfer" | "duplicate"} status - The reconciliation status of the transaction
  * @returns {JSX.Element}
  */
-function renderStatusTag(status: "new" | "transfer" | "duplicate") {
+function renderStatusTag(status: 'new' | 'transfer' | 'duplicate') {
   switch (status) {
-    case "transfer":
+    case 'transfer':
       return <Chip label="Transfer" color="warning" size="small" />
-    case "duplicate":
+    case 'duplicate':
       return <Chip label="Duplicate" color="error" size="small" />
     default:
       return <Chip label="New" color="success" size="small" />
@@ -144,7 +144,7 @@ export default function ReviewTransactionsTable({
   const columns = React.useMemo<ColumnDef<ReconciledTransactionRow>[]>(() => {
     return [
       {
-        id: "select",
+        id: 'select',
         size: 45,
         header: ({ table }) => (
           <Checkbox
@@ -152,7 +152,7 @@ export default function ReviewTransactionsTable({
             indeterminate={table.getIsSomeRowsSelected()}
             onChange={table.getToggleAllRowsSelectedHandler()}
             color="secondary"
-            sx={{ color: "white" }}
+            sx={{ color: 'white' }}
           />
         ),
         cell: ({ row }) => (
@@ -167,21 +167,21 @@ export default function ReviewTransactionsTable({
         ),
       },
       {
-        id: "date",
-        header: "Date",
-        accessorKey: "date",
+        id: 'date',
+        header: 'Date',
+        accessorKey: 'date',
         size: 105,
         cell: ({ row }) =>
-          row.original.date?.toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
+          row.original.date?.toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
           }),
       },
       {
-        id: "title",
-        header: "Payee",
-        accessorKey: "title",
+        id: 'title',
+        header: 'Payee',
+        accessorKey: 'title',
         size: 250,
         cell: ({ row }) => {
           const hasNotes = row.original.transaction.line_items?.[0]?.note
@@ -190,11 +190,11 @@ export default function ReviewTransactionsTable({
 
           return (
             <div>
-              <div style={{ fontWeight: isReviewed ? "normal" : "bold" }}>
+              <div style={{ fontWeight: isReviewed ? 'normal' : 'bold' }}>
                 {row.original.title}
-                {hasNotes && <span style={{ color: "#1976d2", marginLeft: 4 }}>📝</span>}
-                {hasTags && <span style={{ color: "#ed6c02", marginLeft: 4 }}>🏷️</span>}
-                {isReviewed && <span style={{ color: "#2e7d32", marginLeft: 4 }}>✓</span>}
+                {hasNotes && <span style={{ color: '#1976d2', marginLeft: 4 }}>📝</span>}
+                {hasTags && <span style={{ color: '#ed6c02', marginLeft: 4 }}>🏷️</span>}
+                {isReviewed && <span style={{ color: '#2e7d32', marginLeft: 4 }}>✓</span>}
               </div>
               {renderStatusTag(row.original.reconciliation)}
             </div>
@@ -202,13 +202,14 @@ export default function ReviewTransactionsTable({
         },
       },
       {
-        id: "category",
-        header: "Category",
-        accessorKey: "category",
+        id: 'category',
+        header: 'Category',
+        accessorKey: 'category',
         size: 200,
         cell: ({ row }) => {
           const currentAccountId = row.original.transaction.line_items?.[0]?.account_id
-          const currentCategory = accountsWithRelations.find((acc) => acc.id === currentAccountId) || null
+          const currentCategory =
+            accountsWithRelations.find((acc) => acc.id === currentAccountId) || null
 
           return (
             <CategoryField
@@ -218,9 +219,9 @@ export default function ReviewTransactionsTable({
               value={currentCategory}
               onChange={(account) => {
                 const newAccountId =
-                  account && typeof account === "object" && "id" in account
+                  account && typeof account === 'object' && 'id' in account
                     ? String(account.id)
-                    : typeof account === "string"
+                    : typeof account === 'string'
                       ? account
                       : null
 
@@ -233,20 +234,20 @@ export default function ReviewTransactionsTable({
         },
       },
       {
-        id: "amount",
-        header: "Amount",
-        accessorKey: "amount",
+        id: 'amount',
+        header: 'Amount',
+        accessorKey: 'amount',
         size: 130,
         cell: ({ row }) => <CurrencyLabel value={row.original.amount} />,
       },
       {
-        id: "account_id",
-        header: "Account",
-        accessorKey: "account_id",
+        id: 'account_id',
+        header: 'Account',
+        accessorKey: 'account_id',
       },
       {
-        id: "actions",
-        header: "",
+        id: 'actions',
+        header: '',
         size: 50,
         cell: ({ row }) => {
           const rowId = `row-${row.index}`
@@ -258,8 +259,8 @@ export default function ReviewTransactionsTable({
                 setExpandedRow(expandedRow === rowId ? null : rowId)
               }}
               sx={{
-                color: expandedRow === rowId ? "primary.main" : "text.secondary",
-                backgroundColor: expandedRow === rowId ? "primary.light" : "transparent",
+                color: expandedRow === rowId ? 'primary.main' : 'text.secondary',
+                backgroundColor: expandedRow === rowId ? 'primary.light' : 'transparent',
               }}
             >
               <EditIcon fontSize="small" />
@@ -272,7 +273,7 @@ export default function ReviewTransactionsTable({
 
   return (
     <Table
-      sx={{ tableLayout: "auto" }}
+      sx={{ tableLayout: 'auto' }}
       columns={columns}
       data={rows}
       scrollElement={scrollElement}
@@ -294,8 +295,8 @@ export default function ReviewTransactionsTable({
         />
       )}
       initialState={{
-        sorting: [{ id: "date", desc: true }],
-        grouping: ["account_id"],
+        sorting: [{ id: 'date', desc: true }],
+        grouping: ['account_id'],
         rowSelection: initialSelectedRows,
       }}
       onStateChange={({ rowSelection }) => {
