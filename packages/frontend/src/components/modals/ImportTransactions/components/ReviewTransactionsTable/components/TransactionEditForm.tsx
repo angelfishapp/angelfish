@@ -1,58 +1,85 @@
-"use client"
+import React, { type JSX } from "react"
+import { Box, FormLabel, Button } from "@mui/material"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"
+import CheckBox from "@mui/material/Checkbox"
+import SaveIcon from "@mui/icons-material/Save"
 
-import React from "react"
-import { Box, FormLabel } from "@mui/material"
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
-import CheckBox from '@mui/material/Checkbox'
+import { TextField } from "@/components/forms/TextField"
+import { TagsField } from "@/components/forms/TagsField"
+import type { ITag, ReconciledTransaction } from "@angelfish/core"
 
-// Import your existing form components
-import { TextField } from '@/components/forms/TextField'
-import { TagsField } from '@/components/forms/TagsField'
-import type { ITag } from "@angelfish/core"
-
-
-interface ReconciledTransaction {
-    id: string
-    title: string
-    amount: number
-    date: Date
-    note?: string
-    tags?: ITag[]
-    isReviewed?: boolean
-    category_id?: string
-    category?: any
-}
-
+/**
+ * Props for the TransactionEditForm component.
+ */
 interface TransactionEditFormProps {
-    transaction: any
+    /** The transaction to edit */
+    transaction: ReconciledTransaction
+
+    /** Optional array of all available tags */
     allTags?: ITag[]
-    onUpdate: (updates: Partial<ReconciledTransaction>) => void
+
+    /**
+     * Callback function called when saving the form.
+     * @param updates - Object containing updated note, tags, and reviewed status
+     */
+    onSave: (updates: {
+        note?: string
+        tags?: Partial<ITag>[]
+        isReviewed?: boolean
+    }) => void
+
+    /** Callback function to close the form */
+    onClose: () => void
 }
 
+/**
+ * A form for editing a single transaction's note, tags, and review status.
+ *
+ * @param {TransactionEditFormProps} props - Component props
+ * @returns {JSX.Element} The rendered component
+ */
 export default function TransactionEditForm({
     transaction,
     allTags = [],
-    onUpdate,
-}: TransactionEditFormProps) {
-    const [note, setNote] = React.useState(transaction.note || "")
-    const [tags, setTags] = React.useState<ITag[]>(transaction.tags || [])
-    const [isReviewed, setIsReviewed] = React.useState(transaction.isReviewed || false)
+    onSave,
+    onClose,
+}: TransactionEditFormProps): JSX.Element {
+    const firstLineItem = transaction.line_items?.[0] || {}
 
-    const handleNotesChange = (value: string) => {
-        setNote(value)
-        onUpdate({ note: value })
-    }
+    const [note, setNote] = React.useState(firstLineItem.note || "")
+    const [tags, setTags] = React.useState<Partial<ITag>[]>(firstLineItem.tags || [])
+    const [isReviewed, setIsReviewed] = React.useState(transaction.is_reviewed || false)
 
-    const handleTagsChange = (newTags: ITag[]) => {
-        setTags(newTags)
-        onUpdate({ tags: newTags })
-    }
+    /**
+     * Handles saving the form and calling the `onSave` and `onClose` callbacks.
+     */
+    const handleSave = React.useCallback(() => {
+        onSave({
+            note,
+            tags,
+            isReviewed,
+        })
+        onClose()
+    }, [note, tags, isReviewed, onSave, onClose])
 
-    const handleReviewedChange = (checked: boolean) => {
-        setIsReviewed(checked)
-        onUpdate({ isReviewed: checked })
-    }
+    /**
+     * Handles keyboard shortcuts:
+     * - Esc to close
+     * - Cmd/Ctrl + Enter to save
+     *
+     * @param {React.KeyboardEvent} e - The keyboard event
+     */
+    const handleKeyDown = React.useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === "Escape") {
+                onClose()
+            } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                handleSave()
+            }
+        },
+        [onClose, handleSave],
+    )
 
     return (
         <Box
@@ -62,13 +89,28 @@ export default function TransactionEditForm({
                 borderTop: 1,
                 borderColor: "divider",
             }}
+            onKeyDown={handleKeyDown}
         >
-            {/* Single Row with 3 Fields */}
-            <Box sx={{ display: "grid", gridTemplateColumns: "2fr 2fr 1fr", gap: 2, alignItems: "start" }}>
-
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: "2fr 2fr 1fr auto",
+                    gap: 2,
+                    alignItems: "start",
+                    minHeight: 60,
+                }}
+            >
                 {/* Notes Field */}
                 <Box>
-                    <FormLabel sx={{ fontSize: "0.875rem", fontWeight: 500, color: "text.primary", mb: 0.5, display: "block" }}>
+                    <FormLabel
+                        sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 500,
+                            color: "text.primary",
+                            mb: 0.5,
+                            display: "block",
+                        }}
+                    >
                         Notes
                     </FormLabel>
                     <TextField
@@ -76,40 +118,69 @@ export default function TransactionEditForm({
                         fullWidth
                         placeholder="Add a note..."
                         value={note}
-                        onChange={(e) => handleNotesChange(e.target.value)}
+                        onChange={(e) => setNote(e.target.value)}
                         size="small"
+                        autoFocus
                     />
                 </Box>
 
                 {/* Tags Field */}
                 <Box>
-                    <FormLabel sx={{ fontSize: "0.875rem", fontWeight: 500, color: "text.primary", mb: 0.5, display: "block" }}>
+                    <FormLabel
+                        sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 500,
+                            color: "text.primary",
+                            mb: 0.5,
+                            display: "block",
+                        }}
+                    >
                         Tags
                     </FormLabel>
                     <TagsField
                         margin="none"
                         tags={allTags}
                         fullWidth
-                        value={tags}
-                        onChange={(newTags) => handleTagsChange(newTags as ITag[])}
+                        value={tags as ITag[]}
+                        onChange={(newTags) => setTags(newTags as ITag[])}
                         size="small"
                     />
                 </Box>
 
                 {/* Reviewed Field */}
                 <Box>
-                    <FormLabel sx={{ fontSize: "0.875rem", fontWeight: 500, color: "text.primary", mb: 0.5, display: "block" }}>
+                    <FormLabel
+                        sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 500,
+                            color: "text.primary",
+                            mb: 0.5,
+                            display: "block",
+                        }}
+                    >
                         Reviewed
                     </FormLabel>
-                    <div className="is_reviewed">
-                        <CheckBox
-                            color={isReviewed ? 'success' : undefined}
-                            icon={<CheckCircleOutlineIcon />}
-                            checked={isReviewed}
-                            checkedIcon={<CheckCircleIcon />}
-                            onChange={(e) => handleReviewedChange(e.target.checked)}
-                        />
-                    </div>
+                    <CheckBox
+                        color={isReviewed ? "success" : undefined}
+                        icon={<CheckCircleOutlineIcon />}
+                        checked={isReviewed}
+                        checkedIcon={<CheckCircleIcon />}
+                        onChange={(e) => setIsReviewed(e.target.checked)}
+                    />
+                </Box>
+
+                {/* Save Button */}
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                    <FormLabel sx={{ fontSize: "0.875rem", opacity: 0 }}>Actions</FormLabel>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        startIcon={<SaveIcon />}
+                        onClick={handleSave}
+                        sx={{ minWidth: 80 }}
+                    >
+                        Save
+                    </Button>
                 </Box>
             </Box>
         </Box>

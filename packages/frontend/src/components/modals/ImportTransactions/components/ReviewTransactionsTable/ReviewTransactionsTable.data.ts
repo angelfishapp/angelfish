@@ -7,6 +7,7 @@ import type { IAccount, ReconciledTransaction } from '@angelfish/core'
  * ReviewTransactionsTable.
  */
 export interface ReconciledTransactionRow {
+  id?: number | undefined
   date: Date
   title: string
   isSplit: boolean
