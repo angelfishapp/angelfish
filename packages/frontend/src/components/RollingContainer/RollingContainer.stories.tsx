@@ -12,11 +12,18 @@ const meta = {
   title: 'Components/Rolling Container',
   component: RollingContainer,
   args: {
-    children: (
-      <Paper sx={{ width: 5000, height: 600, margin: 0 }}>
-        This is the content. Reduce your viewport to see scrolling effect
-      </Paper>
-    ),
+    children: (createScrollBar) => {
+      // Create multiple scroll bar components
+      const ChartScrollBar = createScrollBar('chart')
+
+      return (
+        <Paper sx={{ width: 5000, height: 600, margin: 0 }}>
+          <ChartScrollBar>
+            This is the content. Reduce your viewport to see scrolling effect
+          </ChartScrollBar>
+        </Paper>
+      )
+    },
   },
   render: ({ children, ...args }) => <RollingContainer {...args}>{children}</RollingContainer>,
 } satisfies Meta<typeof RollingContainer>
@@ -29,5 +36,8 @@ type Story = StoryObj<typeof meta>
  */
 
 export const Default: Story = {
-  args: {},
+  args: {
+    showSyncScrollbar: true,
+    syncScrollbarPosition: 'external',
+  },
 }
