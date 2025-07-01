@@ -273,12 +273,11 @@ export const RollingContainer: FC<RollingContainerProps> = ({
             ref={(ref) => {
               syncScrollbarRefs.current.set(id, ref)
             }}
-            className="scrollbar"
             style={{
               position: 'absolute',
               left: 0,
               right: 0,
-              top: syncScrollbarPosition === 'external' ? scrollbarInfo.top - 8 : 'auto',
+              top: syncScrollbarPosition === 'external' ? scrollbarInfo.top : 'auto',
               bottom: syncScrollbarPosition === 'original' ? 0 : 'auto',
               overflowX: 'auto',
               overflowY: 'hidden',
