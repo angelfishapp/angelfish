@@ -14,13 +14,16 @@ const meta = {
   args: {
     children: (createScrollBar) => {
       // Create multiple scroll bar components
-      const ChartScrollBar = createScrollBar('chart')
+      const ScrollBar = createScrollBar('ScrollBar')
+      const ExtraScrollBar = createScrollBar('charts')
+
 
       return (
         <Paper sx={{ width: 5000, height: 600, margin: 0 }}>
-          <ChartScrollBar>
-            This is the content. Reduce your viewport to see scrolling effect
-          </ChartScrollBar>
+          This is the content. Reduce your viewport to see scrolling effect
+          <ScrollBar />
+          This is the content. Reduce your viewport to see scrolling effect
+          <ExtraScrollBar />
         </Paper>
       )
     },

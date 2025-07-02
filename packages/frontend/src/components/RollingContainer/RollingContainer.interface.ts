@@ -15,7 +15,7 @@ export interface RollingContainerProps {
    * @param createScrollBar - Function to create a scrollable container by ID.
    */
   children: (
-    createScrollBar: (id: string) => ({ children }: { children: ReactNode }) => JSX.Element,
+    createScrollBar: (id: string) => () => JSX.Element,
   ) => ReactNode
 
   /**

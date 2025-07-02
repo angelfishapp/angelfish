@@ -276,9 +276,8 @@ export default function Reports() {
                           </Box>
                         </Box>
                       </Box>
-                      <ChartScrollBar>
-                        <ReportsChart data={reportData} chartWidth={chartWidth} />
-                      </ChartScrollBar>
+                      <ReportsChart data={reportData} chartWidth={chartWidth} />
+                      <ChartScrollBar />
                     </Box>
                   </Box>
                   <ReportsTable data={reportData} onClick={handleClick} />
@@ -298,7 +297,7 @@ export default function Reports() {
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}
-        onCreateCategory={() => {}}
+        onCreateCategory={() => { }}
         onDeleteTransaction={onDeleteTransaction}
         onSaveTransactions={onSaveTransactions}
       />

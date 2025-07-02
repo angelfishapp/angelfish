@@ -239,13 +239,12 @@ export const RollingContainer: FC<RollingContainerProps> = ({
       syncScrollbarsRef.current.set(id, { id, ref: null, top: 0 })
     }
 
-    const RollingContainerScrollBar = ({ children }: { children: ReactNode }) => (
+    const RollingContainerScrollBar = () => (
       <div
         ref={(ref) => {
           scrollBarContainerRefs.current.set(id, ref)
         }}
       >
-        {children}
       </div>
     )
 
@@ -277,7 +276,7 @@ export const RollingContainer: FC<RollingContainerProps> = ({
               position: 'absolute',
               left: 0,
               right: 0,
-              top: syncScrollbarPosition === 'external' ? scrollbarInfo.top : 'auto',
+              top: syncScrollbarPosition === 'external' ? scrollbarInfo.top - 8 : 'auto',
               bottom: syncScrollbarPosition === 'original' ? 0 : 'auto',
               overflowX: 'auto',
               overflowY: 'hidden',
