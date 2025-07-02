@@ -1,52 +1,95 @@
-import type { JSX, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 /**
  * Props for the RollingContainer component.
  */
 export interface RollingContainerProps {
   /**
-   * Optional class name to apply to the container.
+   * Optional custom class name for the container.
    */
   className?: string
 
   /**
-   * A render prop that receives a `createScrollBar` function and returns React children.
-   *
-   * @param createScrollBar - Function to create a scrollable container by ID.
+   * Child components to render inside the scrollable container.
    */
-  children: (
-    createScrollBar: (id: string) => () => JSX.Element,
-  ) => ReactNode
+  children: ReactNode
 
   /**
-   * Whether to show a synchronized scrollbar.
+   * Whether to show synchronized scrollbars.
+   * @default true
    */
   showSyncScrollbar?: boolean
 
   /**
-   * The vertical position of the synchronized scrollbar.
-   * - `"original"`: Displays the scrollbar at the bottom.
-   * - `"external"`: Displays the scrollbar below a chart (if applicable).
+   * Positioning mode for the synchronized scrollbars.
+   * - "original": attached to bottom of the content.
+   * - "external": absolutely positioned outside the content flow.
+   * @default "original"
    */
   syncScrollbarPosition?: 'original' | 'external'
 }
 
 /**
- * Information about a single scroll bar instance.
+ * Props for the RollingContainerScrollBar component.
+ */
+export interface RollingContainerScrollBarProps {
+  /**
+   * Unique identifier used to register the scrollbar within the container context.
+   */
+  id: string
+}
+
+/**
+ * Metadata for a registered scrollbar element.
  */
 export interface ScrollBarInfo {
   /**
-   * Unique identifier for the scrollbar.
+   * Unique identifier of the scrollbar.
    */
   id: string
 
   /**
-   * The DOM reference to the scrollbar container element.
+   * Reference to the HTML element representing the scrollbar.
    */
   ref: HTMLDivElement | null
 
   /**
-   * The vertical scroll position of the scrollbar.
+   * The calculated top offset position (used for absolute positioning).
    */
   top: number
+}
+
+/**
+ * Context type used by RollingContainer to coordinate scrollbar synchronization.
+ */
+export interface RollingContainerContextType {
+  /**
+   * Registers a scrollbar by ID and DOM ref, enabling synchronization.
+   *
+   * @param id - Unique identifier for the scrollbar.
+   * @param ref - Reference to the scrollbar container element.
+   */
+  registerScrollBar: (id: string, ref: HTMLDivElement | null) => void
+
+  /**
+   * Unregisters a scrollbar by ID and removes it from sync tracking.
+   *
+   * @param id - Unique identifier of the scrollbar to unregister.
+   */
+  unregisterScrollBar: (id: string) => void
+
+  /**
+   * Collection of all registered scrollbars with their positioning info.
+   */
+  scrollBarInfo: Map<string, ScrollBarInfo>
+
+  /**
+   * Positioning mode for synchronized scrollbars.
+   */
+  syncScrollbarPosition: 'original' | 'external'
+
+  /**
+   * Indicates whether to render synchronized scrollbars.
+   */
+  showSyncScrollbar: boolean
 }

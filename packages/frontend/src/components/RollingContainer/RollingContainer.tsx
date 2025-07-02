@@ -1,11 +1,12 @@
 'use client'
 
 import clsx from 'clsx'
-import type { FC, ReactNode } from 'react'
+import type { FC } from 'react'
 import React from 'react'
 import type { RollingContainerProps, ScrollBarInfo } from './RollingContainer.interface'
 import { Root } from './RollingContainer.styles'
 import { isScrolledToEnd, isScrolledToStart } from './RollingContainer.utils'
+import { RollingContainerProvider } from './RollingContainerContext'
 
 /**
  * `RollingContainer` component
@@ -73,8 +74,6 @@ export const RollingContainer: FC<RollingContainerProps> = ({
 
   /**
    * Synchronizes the main area and other scrollbars with the one being scrolled
-   *
-   * @param scrollbarId - ID of the sync scrollbar being interacted with
    */
   const handleSyncScroll = React.useCallback(
     (scrollbarId: string) => {
@@ -135,13 +134,48 @@ export const RollingContainer: FC<RollingContainerProps> = ({
       new ResizeObserver(() => {
         if (!scrollArea.current) return
 
+        // Reduced timeout for faster response
         setTimeout(() => {
           updateScrolling()
           updateSyncScrollbarPositions()
-        }, 250)
+        }, 50)
       }),
     [updateScrolling, updateSyncScrollbarPositions],
   )
+
+  /**
+   * Register a scrollbar component
+   */
+  const registerScrollBar = React.useCallback(
+    (id: string, ref: HTMLDivElement | null) => {
+      if (ref) {
+        scrollBarContainerRefs.current.set(id, ref)
+      }
+
+      if (!syncScrollbarsRef.current.has(id)) {
+        syncScrollbarsRef.current.set(id, { id, ref: null, top: 0 })
+      }
+
+      // Force update immediately after registration
+      forceUpdate()
+
+      // Also update positions after a short delay
+      setTimeout(() => {
+        updateSyncScrollbarPositions()
+      }, 10)
+    },
+    [updateSyncScrollbarPositions],
+  )
+
+  /**
+   * Unregister a scrollbar component
+   */
+  const unregisterScrollBar = React.useCallback((id: string) => {
+    scrollBarContainerRefs.current.delete(id)
+    syncScrollbarsRef.current.delete(id)
+    syncScrollbarRefs.current.delete(id)
+    forceUpdate()
+  }, [])
 
   /**
    * Sets up scroll and resize event listeners
@@ -151,10 +185,15 @@ export const RollingContainer: FC<RollingContainerProps> = ({
 
     const scrollAreaNode = scrollArea.current
 
+    // Immediate initial setup
+    updateScrolling()
+    updateSyncScrollbarPositions()
+
+    // Additional setup with short delay
     setTimeout(() => {
       updateScrolling()
       updateSyncScrollbarPositions()
-    }, 250)
+    }, 10)
 
     scrollAreaNode.addEventListener('scroll', handleMainScroll)
     window.addEventListener('resize', updateScrolling)
@@ -181,7 +220,6 @@ export const RollingContainer: FC<RollingContainerProps> = ({
       if (scrollbarRef) {
         const handleScroll = handleSyncScroll(id)
         scrollbarRef.addEventListener('scroll', handleScroll)
-
         cleanupFunctions.push(() => {
           scrollbarRef.removeEventListener('scroll', handleScroll)
         })
@@ -228,70 +266,63 @@ export const RollingContainer: FC<RollingContainerProps> = ({
     }
   }, [children, updateSyncScrollbarPositions])
 
-  /**
-   * Factory to create a wrapper component that tracks a scrollable content section
-   *
-   * @param id - Unique sync ID
-   * @returns A scroll-tracked component for content registration
-   */
-  const createRollingContainerScrollBar = React.useCallback((id: string) => {
-    if (!syncScrollbarsRef.current.has(id)) {
-      syncScrollbarsRef.current.set(id, { id, ref: null, top: 0 })
-    }
-
-    const RollingContainerScrollBar = () => (
-      <div
-        ref={(ref) => {
-          scrollBarContainerRefs.current.set(id, ref)
-        }}
-      >
-      </div>
-    )
-
-    RollingContainerScrollBar.displayName = `RollingContainerScrollBar_${id}`
-
-    return RollingContainerScrollBar
+  // Force initial render
+  React.useEffect(() => {
+    forceUpdate()
   }, [])
 
-  return (
-    <Root
-      className={clsx(
-        className,
-        scrolling.atStart ? 'atStart' : undefined,
-        scrolling.atEnd ? 'atEnd' : undefined,
-      )}
-    >
-      <div ref={scrollArea} className="scrollbar">
-        {children(createRollingContainerScrollBar)}
-      </div>
+  const contextValue = React.useMemo(
+    () => ({
+      registerScrollBar,
+      unregisterScrollBar,
+      scrollBarInfo: syncScrollbarsRef.current,
+      syncScrollbarPosition,
+      showSyncScrollbar,
+    }),
+    [registerScrollBar, unregisterScrollBar, syncScrollbarPosition, showSyncScrollbar],
+  )
 
-      {showSyncScrollbar &&
-        Array.from(syncScrollbarsRef.current.entries()).map(([id, scrollbarInfo]) => (
-          <div
-            key={id}
-            ref={(ref) => {
-              syncScrollbarRefs.current.set(id, ref)
-            }}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: syncScrollbarPosition === 'external' ? scrollbarInfo.top - 8 : 'auto',
-              bottom: syncScrollbarPosition === 'original' ? 0 : 'auto',
-              overflowX: 'auto',
-              overflowY: 'hidden',
-              zIndex: 12,
-            }}
-          >
+  return (
+    <RollingContainerProvider value={contextValue}>
+      <Root
+        className={clsx(
+          className,
+          scrolling.atStart ? 'atStart' : undefined,
+          scrolling.atEnd ? 'atEnd' : undefined,
+        )}
+      >
+        <div ref={scrollArea} className="scrollbar">
+          {children}
+        </div>
+
+        {showSyncScrollbar &&
+          Array.from(syncScrollbarsRef.current.entries()).map(([id, scrollbarInfo]) => (
             <div
-              className="sync-content"
-              style={{
-                height: '1px',
-                backgroundColor: 'transparent',
+              key={id}
+              ref={(ref) => {
+                syncScrollbarRefs.current.set(id, ref)
               }}
-            />
-          </div>
-        ))}
-    </Root>
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: syncScrollbarPosition === 'external' ? scrollbarInfo.top - 8 : 'auto',
+                bottom: syncScrollbarPosition === 'original' ? 0 : 'auto',
+                overflowX: 'auto',
+                overflowY: 'hidden',
+                zIndex: 12,
+              }}
+            >
+              <div
+                className="sync-content"
+                style={{
+                  height: '1px',
+                  backgroundColor: 'transparent',
+                }}
+              />
+            </div>
+          ))}
+      </Root>
+    </RollingContainerProvider>
   )
 }

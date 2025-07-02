@@ -22,6 +22,7 @@ import { exportReport, showSaveDialog } from '@/api'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { DateRangeField } from '@/components/forms/DateRangeField'
 import { RollingContainer } from '@/components/RollingContainer'
+import { RollingContainerScrollBar } from '@/components/RollingContainer/components/RollingContainerScrollBar'
 import {
   useDeleteTransaction,
   useListAllAccountsWithRelations,
@@ -192,98 +193,90 @@ export default function Reports() {
           }}
         >
           <RollingContainer showSyncScrollbar={true} syncScrollbarPosition="external">
-            {(createScrollBar) => {
-              // Create multiple scroll bar components
-              const ChartScrollBar = createScrollBar('chart')
-              // const TableScrollBar = createScrollBar("table")
-
-              return (
-                <>
-                  <Box
-                    display="flex"
-                    width="100%"
-                    minWidth={`${reportData.periods.length * 150 + 300}px`}
-                  >
-                    <Box
-                      width={dateRangeSectionWidth}
-                      flex="none"
-                      borderRight="1px solid transparent"
-                      bgcolor="white"
-                      left="0"
-                      zIndex="1"
-                      className="isPinned left"
-                      p={3}
-                    >
-                      <DateRangeField
-                        value={{
-                          start: parse(reportsQuery.start_date, 'yyyy-MM-dd', new Date()),
-                          end: parse(reportsQuery.end_date, 'yyyy-MM-dd', new Date()),
-                        }}
-                        onChange={(range) => {
-                          setReportsQuery({
-                            start_date: format(range.start, 'yyyy-MM-dd'),
-                            end_date: format(range.end, 'yyyy-MM-dd'),
-                            include_unclassified: reportsQuery.include_unclassified,
-                          })
-                        }}
-                        dateRanges={dateRanges}
-                        maxDate={new Date()}
-                        border={false}
-                        displayRangeLabel={true}
-                        endAdornment={<ExpandMoreIcon />}
-                      />
-                    </Box>
-                    <Box flex={1}>
-                      <Box py={3} display="flex" justifyContent="flex-end" alignItems="center">
-                        <Box paddingRight={3} position="sticky" display="flex" right={0}>
-                          <Box marginRight={2}>
-                            <Button
-                              variant="outlined"
-                              style={{ border: 'none' }}
-                              onClick={() => setShowSettingsDrawer(true)}
-                            >
-                              Settings
-                            </Button>
-                          </Box>
-                          <Box>
-                            <DropdownMenuButton
-                              label="Export"
-                              variant="outlined"
-                              style={{ border: 'none' }}
-                              menuItems={[
-                                {
-                                  label: 'Excel (XLSX)',
-                                  disabled: false,
-                                  onClick: async () => {
-                                    const filePath = await showSaveDialog({
-                                      title: 'Export Report to Excel (XLSX)',
-                                      defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
-                                      filters: [{ name: 'Excel', extensions: ['xlsx'] }],
-                                    })
-
-                                    if (filePath) {
-                                      exportReport({
-                                        filePath,
-                                        fileType: 'XLSX',
-                                        query: reportsQuery,
-                                      })
-                                    }
-                                  },
-                                },
-                              ]}
-                              position={{ vertical: 'bottom', horizontal: 'left' }}
-                            />
-                          </Box>
-                        </Box>
+            <>
+              <Box
+                display="flex"
+                width="100%"
+                minWidth={`${reportData.periods.length * 150 + 300}px`}
+              >
+                <Box
+                  width={dateRangeSectionWidth}
+                  flex="none"
+                  borderRight="1px solid transparent"
+                  bgcolor="white"
+                  left="0"
+                  zIndex="1"
+                  className="isPinned left"
+                  p={3}
+                >
+                  <DateRangeField
+                    value={{
+                      start: parse(reportsQuery.start_date, 'yyyy-MM-dd', new Date()),
+                      end: parse(reportsQuery.end_date, 'yyyy-MM-dd', new Date()),
+                    }}
+                    onChange={(range) => {
+                      setReportsQuery({
+                        start_date: format(range.start, 'yyyy-MM-dd'),
+                        end_date: format(range.end, 'yyyy-MM-dd'),
+                        include_unclassified: reportsQuery.include_unclassified,
+                      })
+                    }}
+                    dateRanges={dateRanges}
+                    maxDate={new Date()}
+                    border={false}
+                    displayRangeLabel={true}
+                    endAdornment={<ExpandMoreIcon />}
+                  />
+                </Box>
+                <Box flex={1}>
+                  <Box py={3} display="flex" justifyContent="flex-end" alignItems="center">
+                    <Box paddingRight={3} position="sticky" display="flex" right={0}>
+                      <Box marginRight={2}>
+                        <Button
+                          variant="outlined"
+                          style={{ border: 'none' }}
+                          onClick={() => setShowSettingsDrawer(true)}
+                        >
+                          Settings
+                        </Button>
                       </Box>
-                      <ReportsChart data={reportData} chartWidth={chartWidth} />
-                      <ChartScrollBar />
+                      <Box>
+                        <DropdownMenuButton
+                          label="Export"
+                          variant="outlined"
+                          style={{ border: 'none' }}
+                          menuItems={[
+                            {
+                              label: 'Excel (XLSX)',
+                              disabled: false,
+                              onClick: async () => {
+                                const filePath = await showSaveDialog({
+                                  title: 'Export Report to Excel (XLSX)',
+                                  defaultPath: `Angelfish_IncomeExpenseReport_${reportsQuery.start_date}_To_${reportsQuery.end_date}.xlsx`,
+                                  filters: [{ name: 'Excel', extensions: ['xlsx'] }],
+                                })
+
+                                if (filePath) {
+                                  exportReport({
+                                    filePath,
+                                    fileType: 'XLSX',
+                                    query: reportsQuery,
+                                  })
+                                }
+                              },
+                            },
+                          ]}
+                          position={{ vertical: 'bottom', horizontal: 'left' }}
+                        />
+                      </Box>
                     </Box>
                   </Box>
-                  <ReportsTable data={reportData} onClick={handleClick} />
-                </>
-              )
-            }}
+                  <ReportsChart data={reportData} chartWidth={chartWidth} />
+                  <RollingContainerScrollBar id="chart" />
+                </Box>
+              </Box>
+              <ReportsTable data={reportData} onClick={handleClick} />
+            </>
           </RollingContainer>
         </Paper>
       </Box>
@@ -297,7 +290,7 @@ export default function Reports() {
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}
-        onCreateCategory={() => { }}
+        onCreateCategory={() => {}}
         onDeleteTransaction={onDeleteTransaction}
         onSaveTransactions={onSaveTransactions}
       />
