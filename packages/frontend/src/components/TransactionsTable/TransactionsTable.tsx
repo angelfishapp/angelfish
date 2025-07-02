@@ -1,11 +1,12 @@
-import { type Table as ReactTable, type RowData } from '@tanstack/react-table'
-import React from 'react'
-
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
+import { useKeyboardShortcuts } from '@/hooks/utils/useKeyboardShortcuts'
 import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
 import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
+import type { Table as ReactTable, RowData } from '@tanstack/react-table'
+import React from 'react'
+import { DeleteConfirmationModal } from '../modals/DeleteConfirmationModal/DeleteConfirmationModal'
 import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
 import TableRow from './components/TableRow/TableRow'
@@ -98,6 +99,16 @@ declare module '@tanstack/react-table' {
 }
 
 /**
+ * Keyboard shortcuts:
+ * - Arrow keys: Navigate rows
+ * - Shift + Arrow keys: Multi-select rows
+ * - Ctrl/Cmd + C: Duplicate transactions
+ * - Shift + N: Create new transaction
+ * - Ctrl/Cmd + R: Toggle reviewed status
+ * - Delete/Backspace: Delete transactions
+ */
+
+/**
  * Provides DataGrid Table to display list of Transactions and allow user to select
  * and Edit them.
  *
@@ -130,6 +141,9 @@ export default function TransactionsTable({
   // Hold new row if creating new transaction so we can merge it into transactionRows
   // This also ensures only one new row can be created at a time
   const [newRow, setNewRow] = React.useState<TransactionRow | undefined>(undefined)
+  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false)
+  const [transactionsToDelete, setTransactionsToDelete] = React.useState<TransactionRow[]>([])
+  const [isTableFocused, setIsTableFocused] = React.useState(false)
 
   // Setup columns and normalise table data
   const displayColumns = React.useMemo(() => buildColumns(columns), [columns])
@@ -161,159 +175,243 @@ export default function TransactionsTable({
       sorting: [{ id: 'date', desc: true }],
     }
   }, [id])
+
   const [table, setTable] = React.useState<ReactTable<TransactionRow> | undefined>(undefined)
 
-  // Render
-  return (
-    <StyledTransactionTable
-      tableVarient={variant}
-      data={[...transactionRows, ...(newRow !== undefined ? [newRow] : [])]}
-      columns={displayColumns}
-      scrollElement={scrollElement}
-      estimateSize={() => 40}
-      scrollMarginAdjustment={94}
-      overscan={10}
-      initialState={initialState}
-      enableSorting={true}
-      enableSortingRemoval={false}
-      enableMultiSort={false}
-      enableRowSelection={true}
-      enableMultiRowSelection={true}
-      enableColumnResizing={true}
-      enableColumnFilters={true}
-      enableGlobalFilter={true}
-      enableHiding={true}
-      enableExpanding={true}
-      stickyHeader={true}
-      maxLeafRowFilterDepth={0}
-      displayFooter={showFooter}
-      size="small"
-      EmptyView={<>No Transaction Data</>}
-      RowElement={TableRow}
-      onRowClick={(event, row, tableInstance) => {
-        // Stop clicking on edit rows from selecting them
-        if (row.id in editRows) return
-        handleRowSelection(event, row, tableInstance)
-      }}
-      onRowDoubleClick={(_, row) => {
-        // Toggle Edit Mode for Row if row already isn't in edit mode
-        if (row.id in editRows) return
-        table?.options.meta?.transactionsTable?.toggleEditMode(row.id)
-      }}
-      onRowContextMenu={(event, row, tableInstance) => {
-        // Disable context menu on edit rows
-        if (row.id in editRows) return { top: 0, left: 0 }
-        return handleRowContextMenu(event, row, tableInstance)
-      }}
-      getSubRows={(row) => (row.isSplit ? row.rows : undefined)}
-      FilterBarElement={showFilterBar ? FilterBar : undefined}
-      FooterElement={({ headerGroup }) => {
-        return (
-          <tr>
-            <td
-              colSpan={headerGroup.headers.length}
-              style={{ padding: 5, fontWeight: 700, textAlign: 'center' }}
-            >
-              Starting Balance:{' '}
-              <CurrencyLabel
-                value={account?.acc_start_balance ?? 0}
-                currency={account?.acc_iso_currency}
-              />
-            </td>
-          </tr>
-        )
-      }}
-      ContextMenuElement={ContextMenu}
-      onStateChange={(state, reactTable) => {
-        setTable(reactTable)
-        // Persist view settings to localStorage if id given
-        if (id) {
-          localStorage.setItem(
-            `${id}-transaction-table`,
-            JSON.stringify({
-              columnSizing: state.columnSizing,
-              columnVisibility: state.columnVisibility,
-            }),
-          )
-        }
-      }}
-      meta={{
-        transactionsTable: {
-          account,
-          accountsWithRelations,
-          recentCategories,
-          allTags,
-          isEditMode: (id) => id in editRows,
-          toggleEditMode: (id, value) => {
-            // Determine if row should be in edit mode
-            let shouldEdit = false
-            if (typeof value === 'boolean') {
-              shouldEdit = value
-            } else {
-              shouldEdit = !(id in editRows)
-            }
+  // Keyboard shortcuts handlers
+  const handleDeleteConfirm = React.useCallback((rows: TransactionRow[]) => {
+    setTransactionsToDelete(rows)
+    setDeleteModalOpen(true)
+  }, [])
 
-            // Update editRows state
-            const updated = structuredClone(editRows)
-            if (shouldEdit) {
-              updated[id] = true
-            } else {
-              delete updated[id]
-            }
-            setEditRows(updated)
-          },
-          insertNewRow: (date: Date = new Date()) => {
-            // Insert new row into transactionRows with date set so it appears
-            // in correct place in table (if sorted by date). To keep things simple
-            // we will only allow one new row at a time and reset any rows that are
-            // currently open for editing
-            if (account) {
-              const newTransaction = createNewTransaction({
-                account_id: account.id,
-                title: '',
-                date,
-                currency_code: account.acc_iso_currency as string,
-              })
-              const newRow = buildTransactionRow(
-                accountsWithRelations,
-                newTransaction as ITransaction,
+  const handleDuplicate = React.useCallback(
+    (rows: TransactionRow[]) => {
+      table?.options.meta?.transactionsTable?.duplicateRows(rows)
+    },
+    [table],
+  )
+
+  const handleInsertNew = React.useCallback(
+    (date?: Date) => {
+      if (table?.options.meta?.transactionsTable?.insertNewRow) {
+        table.options.meta.transactionsTable.insertNewRow(date)
+      }
+    },
+    [table],
+  )
+
+  const handleToggleReviewed = React.useCallback(
+    (rows: TransactionRow[]) => {
+      // Handle reviewed status toggle - update transactions directly
+      const updatedTransactions = rows.map((row) => ({
+        ...row.transaction,
+        is_reviewed: !row.transaction.is_reviewed,
+      }))
+      onSaveTransactions(updatedTransactions)
+    },
+    [onSaveTransactions],
+  )
+
+  const confirmDelete = React.useCallback(() => {
+    table?.options.meta?.transactionsTable?.deleteRows(transactionsToDelete)
+    setDeleteModalOpen(false)
+    setTransactionsToDelete([])
+  }, [table, transactionsToDelete])
+
+  const cancelDelete = React.useCallback(() => {
+    setDeleteModalOpen(false)
+    setTransactionsToDelete([])
+  }, [])
+
+  // Setup keyboard shortcuts
+  useKeyboardShortcuts({
+    table,
+    onDeleteConfirm: handleDeleteConfirm,
+    onDuplicate: handleDuplicate,
+    onInsertNew: handleInsertNew,
+    onToggleReviewed: handleToggleReviewed,
+    isEnabled: isTableFocused,
+  })
+
+  // Debug focus state
+  React.useEffect(() => {}, [isTableFocused])
+
+  // Debug new row state
+  React.useEffect(() => {}, [newRow])
+
+  return (
+    <>
+      <div
+        onFocus={() => {
+          setIsTableFocused(true)
+        }}
+        onBlur={(e) => {
+          // Only blur if focus is moving outside the table container
+          if (!e.currentTarget.contains(e.relatedTarget)) {
+            setIsTableFocused(false)
+          }
+        }}
+        onClick={() => {
+          setIsTableFocused(true)
+        }}
+        tabIndex={0}
+        className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        style={{ outline: 'none' }}
+      >
+        <StyledTransactionTable
+          tableVarient={variant}
+          data={[...transactionRows, ...(newRow !== undefined ? [newRow] : [])]}
+          columns={displayColumns}
+          scrollElement={scrollElement}
+          estimateSize={() => 40}
+          scrollMarginAdjustment={94}
+          overscan={10}
+          initialState={initialState}
+          enableSorting={true}
+          enableSortingRemoval={false}
+          enableMultiSort={false}
+          enableRowSelection={true}
+          enableMultiRowSelection={true}
+          enableColumnResizing={true}
+          enableColumnFilters={true}
+          enableGlobalFilter={true}
+          enableHiding={true}
+          enableExpanding={true}
+          stickyHeader={true}
+          maxLeafRowFilterDepth={0}
+          displayFooter={showFooter}
+          size="small"
+          EmptyView={<>No Transaction Data</>}
+          RowElement={TableRow}
+          onRowClick={(event, row, tableInstance) => {
+            if (row.id in editRows) return
+            handleRowSelection(event, row, tableInstance)
+          }}
+          onRowDoubleClick={(_, row) => {
+            if (row.id in editRows) return
+            table?.options.meta?.transactionsTable?.toggleEditMode(row.id)
+          }}
+          onRowContextMenu={(event, row, tableInstance) => {
+            if (row.id in editRows) return { top: 0, left: 0 }
+            return handleRowContextMenu(event, row, tableInstance)
+          }}
+          getSubRows={(row) => (row.isSplit ? row.rows : undefined)}
+          FilterBarElement={showFilterBar ? FilterBar : undefined}
+          FooterElement={({ headerGroup }) => {
+            return (
+              <tr>
+                <td
+                  colSpan={headerGroup.headers.length}
+                  style={{ padding: 5, fontWeight: 700, textAlign: 'center' }}
+                >
+                  Starting Balance:{' '}
+                  <CurrencyLabel
+                    value={account?.acc_start_balance ?? 0}
+                    currency={account?.acc_iso_currency}
+                  />
+                </td>
+              </tr>
+            )
+          }}
+          ContextMenuElement={ContextMenu}
+          onStateChange={(state, reactTable) => {
+            setTable(reactTable)
+            // Persist view settings to localStorage if id given
+            if (id) {
+              localStorage.setItem(
+                `${id}-transaction-table`,
+                JSON.stringify({
+                  columnSizing: state.columnSizing,
+                  columnVisibility: state.columnVisibility,
+                }),
               )
-              setNewRow(newRow)
-              // Reset editRows state
-              setEditRows({})
             }
-          },
-          removeNewRow: () => {
-            // Remove new row
-            setNewRow(undefined)
-            // Reset editRows state
-            setEditRows({})
-          },
-          updateRows: (rows, properties) => {
-            const originalTransactions = rows.map((row) => row.transaction)
-            const updatedTransactions = updateTransactions(originalTransactions, properties)
-            onSaveTransactions(updatedTransactions)
-            if (rows.length === 1 && rows[0].isNew) {
-              // Close new row form
-              table?.options.meta?.transactionsTable?.removeNewRow()
-            }
-          },
-          duplicateRows: (rows) => {
-            const duplicateTransactions = rows.map((row) => duplicateTransaction(row.transaction))
-            onSaveTransactions(duplicateTransactions)
-          },
-          deleteRows: (rows) => {
-            for (const row of rows) {
-              onDeleteTransaction(row.transaction.id)
-            }
-            // Reset selection and editRows as indexes will change
-            table?.resetRowSelection()
-            setEditRows({})
-          },
-          onCreateCategory,
-          onImportTransactions,
-        },
-      }}
-    />
+          }}
+          meta={{
+            transactionsTable: {
+              account,
+              accountsWithRelations,
+              recentCategories,
+              allTags,
+              isEditMode: (id) => id in editRows,
+              toggleEditMode: (id, value) => {
+                // Determine if row should be in edit mode
+                let shouldEdit = false
+                if (typeof value === 'boolean') {
+                  shouldEdit = value
+                } else {
+                  shouldEdit = !(id in editRows)
+                }
+                // Update editRows state
+                const updated = structuredClone(editRows)
+                if (shouldEdit) {
+                  updated[id] = true
+                } else {
+                  delete updated[id]
+                }
+                setEditRows(updated)
+              },
+              insertNewRow: (date: Date = new Date()) => {
+                // Insert new row into transactionRows with date set so it appears
+                // in correct place in table (if sorted by date). To keep things simple
+                // we will only allow one new row at a time and reset any rows that are
+                // currently open for editing
+                if (account) {
+                  const newTransaction = createNewTransaction({
+                    account_id: account.id,
+                    title: '',
+                    date,
+                    currency_code: account.acc_iso_currency as string,
+                  })
+                  const newRow = buildTransactionRow(
+                    accountsWithRelations,
+                    newTransaction as ITransaction,
+                  )
+                  setNewRow(newRow)
+                  // Reset editRows state
+                  setEditRows({ [newRow.tid]: true }) // Put new row in edit mode
+                }
+              },
+              removeNewRow: () => {
+                // Remove new row
+                setNewRow(undefined)
+                // Reset editRows state
+                setEditRows({})
+              },
+              updateRows: (rows, properties) => {
+                const originalTransactions = rows.map((row) => row.transaction)
+                const updatedTransactions = updateTransactions(originalTransactions, properties)
+                onSaveTransactions(updatedTransactions)
+                if (rows.length === 1 && rows[0].isNew) {
+                  table?.options.meta?.transactionsTable?.removeNewRow()
+                }
+              },
+              duplicateRows: (rows) => {
+                const duplicateTransactions = rows.map((row) =>
+                  duplicateTransaction(row.transaction),
+                )
+                onSaveTransactions(duplicateTransactions)
+              },
+              deleteRows: (rows) => {
+                for (const row of rows) {
+                  onDeleteTransaction(row.transaction.id)
+                }
+                table?.resetRowSelection()
+                setEditRows({})
+              },
+              onCreateCategory,
+              onImportTransactions,
+            },
+          }}
+        />
+      </div>
+
+      <DeleteConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        transactions={transactionsToDelete}
+      />
+    </>
   )
 }
