@@ -11,8 +11,38 @@ export const Root = styled('div')({
   '& > div': {
     width: '100%',
     overflowX: 'auto',
-  },
 
+    '&::-webkit-scrollbar': {
+      width: '7px',
+      height: '7px',
+      backgroundColor: 'transparent',
+    },
+
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: 'transparent',
+    },
+
+    '&::-webkit-scrollbar-track:hover': {
+      backgroundColor: 'transparent',
+    },
+
+    '&::-webkit-scrollbar-track:active': {
+      backgroundColor: 'transparent',
+    },
+
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      borderRadius: '4px',
+    },
+
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    },
+
+    '&::-webkit-scrollbar-thumb:active': {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+  },
   '& .isPinned': {
     position: 'sticky',
 
@@ -56,24 +86,18 @@ export const Root = styled('div')({
     right: 0,
   },
 
-  // When scroll has moved past start of rolling container
   '&:not(.atStart)': {
-    // Show shadow effect on left of rolling container
     '&::before': {
       boxShadow: 'inset rgb(0 0 0 / 50%) 7px 0 7px 0px',
       zIndex: 11,
     },
-
-    // Show shadow effect on right of pinned column
     '& .isPinned.left::after': {
       boxShadow: 'rgb(0 0 0 / 50%) 7px 0 7px 0px',
       width: 7,
     },
   },
 
-  // When scroll has moved to end of rolling container
   '&:not(.atEnd)': {
-    // Show shadow effect on right of rolling container
     '&::after': {
       boxShadow: 'inset rgb(0 0 0 / 50%) -7px 0 7px 0px',
     },
