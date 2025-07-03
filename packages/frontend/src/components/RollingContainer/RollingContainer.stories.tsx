@@ -1,8 +1,7 @@
 import Paper from '@mui/material/Paper'
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { RollingContainer } from '.'
-import { RollingContainerScrollBar } from './components/RollingContainerScrollBar'
+import { RollingContainer, RollingContainerScrollBar } from '.'
 
 /**
  * Story Book Meta

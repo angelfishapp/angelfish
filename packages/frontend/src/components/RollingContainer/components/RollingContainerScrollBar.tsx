@@ -1,6 +1,5 @@
-'use client'
-
 import React from 'react'
+
 import type { RollingContainerScrollBarProps } from '../RollingContainer.interface'
 import { useRollingContainer } from '../RollingContainerContext'
 

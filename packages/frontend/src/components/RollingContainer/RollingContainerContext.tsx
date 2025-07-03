@@ -1,6 +1,5 @@
-'use client'
-
 import { createContext, useContext } from 'react'
+
 import type { RollingContainerContextType } from './RollingContainer.interface'
 
 const RollingContainerContext = createContext<RollingContainerContextType | null>(null)

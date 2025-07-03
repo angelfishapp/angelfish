@@ -1,8 +1,7 @@
-'use client'
-
 import clsx from 'clsx'
 import type { FC } from 'react'
 import React from 'react'
+
 import type { RollingContainerProps, ScrollBarInfo } from './RollingContainer.interface'
 import { Root } from './RollingContainer.styles'
 import { isScrolledToEnd, isScrolledToStart } from './RollingContainer.utils'
