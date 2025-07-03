@@ -19,10 +19,13 @@ import FilterButton from './FilterButton'
 /**
  * FilterBar shown at top of TransactionsTable to filter transactions
  */
-
 export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>) {
   // Component State
   const [filtersVisible, setFiltersVisible] = React.useState<boolean>(false)
+
+  // Get expand all splits state from table meta
+  const expandAllSplits = table.options.meta?.transactionsTable?.expandAllSplits ?? false
+  const toggleExpandAllSplits = table.options.meta?.transactionsTable?.toggleExpandAllSplits
 
   return (
     <Box display="flex" width="100%" alignItems="center" marginBottom={2}>
@@ -51,6 +54,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
       >
         {filtersVisible ? <FilterListOffIcon /> : <FilterListIcon />}
       </IconButton>
+
       {filtersVisible ? (
         /* Render Filter Bar */
         <StyledFilterBar marginLeft={1}>
@@ -92,6 +96,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
               value={table.getState().globalFilter || ''}
             />
           </Box>
+
           <Box marginLeft={1}>
             <StyledActionButton
               color="primary"
@@ -102,6 +107,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
             >
               <AddIcon />
             </StyledActionButton>
+
             {table.options.meta?.transactionsTable?.onImportTransactions && (
               <StyledActionButton
                 color="primary"
@@ -115,6 +121,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
           </Box>
         </Box>
       )}
+
       <Box marginLeft={1}>
         <StyledSettingsButton
           Icon={SettingsIcon}
@@ -126,22 +133,40 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
                 label: 'Show Columns',
               },
             ] as DropdownMenuItem[]
-          ).concat(
-            table
-              .getAllColumns()
-              .filter(
-                // if header is not defined it retuns a function and in that case we dont want to show those column who dont have haeder value
-                (column) =>
-                  !!column.columnDef.header &&
-                  typeof column.columnDef.header === 'string' &&
-                  column.getCanHide(),
-              )
-              .map((column) => ({
-                label: column.columnDef.header as string,
-                onClick: () => column.toggleVisibility(),
-                icon: column.getIsVisible() ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
-              })),
-          )}
+          )
+            .concat(
+              table
+                .getAllColumns()
+                .filter(
+                  // if header is not defined it retuns a function and in that case we dont want to show those column who dont have haeder value
+                  (column) =>
+                    !!column.columnDef.header &&
+                    typeof column.columnDef.header === 'string' &&
+                    column.getCanHide(),
+                )
+                .map((column) => ({
+                  label: column.columnDef.header as string,
+                  onClick: () => column.toggleVisibility(),
+                  icon: column.getIsVisible() ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
+                })),
+            )
+            .concat([
+              // Add separator using existing pattern
+              {
+                label: '─────────────────────',
+                disabled: true,
+              },
+              // Add Expand All Splits option
+              {
+                label: 'Expand All Splits',
+                onClick: () => {
+                  if (toggleExpandAllSplits) {
+                    toggleExpandAllSplits(!expandAllSplits)
+                  }
+                },
+                icon: expandAllSplits ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
+              },
+            ] as DropdownMenuItem[])}
         />
       </Box>
     </Box>
