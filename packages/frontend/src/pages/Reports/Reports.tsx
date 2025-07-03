@@ -21,8 +21,7 @@ import React, { useEffect, useState } from 'react'
 import { exportReport, showSaveDialog } from '@/api'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { DateRangeField } from '@/components/forms/DateRangeField'
-import { RollingContainer } from '@/components/RollingContainer'
-import { RollingContainerScrollBar } from '@/components/RollingContainer/components/RollingContainerScrollBar'
+import { RollingContainer, RollingContainerScrollBar } from '@/components/RollingContainer'
 import {
   useDeleteTransaction,
   useListAllAccountsWithRelations,
