@@ -1,7 +1,6 @@
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
-import { useKeyboardShortcuts } from '@/hooks/utils/useKeyboardShortcuts'
 import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
 import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
 import type { Table as ReactTable, RowData } from '@tanstack/react-table'
@@ -19,6 +18,7 @@ import {
 } from './data'
 import type { TransactionsTableProps } from './TransactionsTable.interface'
 import { StyledTransactionTable } from './TransactionsTable.styles'
+import { useKeyboardShortcuts } from './utils/useKeyboardShortcuts'
 
 /*
  * Extend react-table to add custom metadata for TransactionsTable
@@ -234,10 +234,10 @@ export default function TransactionsTable({
   })
 
   // Debug focus state
-  React.useEffect(() => {}, [isTableFocused])
+  React.useEffect(() => { }, [isTableFocused])
 
   // Debug new row state
-  React.useEffect(() => {}, [newRow])
+  React.useEffect(() => { }, [newRow])
 
   return (
     <>

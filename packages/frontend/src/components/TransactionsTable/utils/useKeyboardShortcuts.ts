@@ -91,7 +91,7 @@ export function useKeyboardShortcuts({
       const { key, metaKey, ctrlKey, shiftKey } = event
       const isModifierPressed = metaKey || ctrlKey
       const selectedRows = table.getSelectedRowModel().rows
-      const allRows = table.getRowModel().rows
+      const allRows = table.getRowModel().rows.filter((row) => row.depth === 0)
 
       // Prevent default behavior for our shortcuts
       const shouldPreventDefault = () => {
