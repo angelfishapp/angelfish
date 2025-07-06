@@ -1,7 +1,9 @@
+import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
+import { forwardRef } from 'react'
 
 import { Table } from '@/components/Table'
-import type { TransactionsTableProps } from './TransactionsTable.interface'
+import type { FilterBarWrapperProps, TransactionsTableProps } from './TransactionsTable.interface'
 import type { TransactionRow } from './data'
 
 const UnstyledTable = Table<TransactionRow>
@@ -143,3 +145,36 @@ export const StyledTransactionTable = styled(UnstyledTable, {
     justifyContent: 'center',
   },
 }))
+
+export const FilterBarWrapper = forwardRef<HTMLDivElement, FilterBarWrapperProps>(
+  ({ children, isSticky }, ref) => (
+    <Box
+      ref={ref}
+      sx={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 102,
+        backdropFilter: isSticky ? 'blur(50px)' : 'none',
+        height: isSticky ? 79 : 50,
+      }}
+    >
+      {children}
+    </Box>
+  ),
+)
+FilterBarWrapper.displayName = 'FilterBarWrapper'
+
+export const PositionedContainer = styled('div')({
+  position: 'relative',
+})
+export const StickyTableContainer = styled('div')({
+  position: 'relative',
+})
+
+export const StickySentinel = styled('div')({
+  position: 'absolute',
+  top: 0,
+  height: '1px',
+  width: '100%',
+  pointerEvents: 'none',
+})

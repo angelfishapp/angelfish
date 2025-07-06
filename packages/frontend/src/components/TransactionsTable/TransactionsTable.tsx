@@ -1,11 +1,10 @@
-import { type Table as ReactTable, type RowData } from '@tanstack/react-table'
-import React from 'react'
-
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
 import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
 import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
+import type { Table as ReactTable, RowData } from '@tanstack/react-table'
+import React from 'react'
 import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
 import TableRow from './components/TableRow/TableRow'
@@ -17,11 +16,15 @@ import {
   getRecentCategories,
 } from './data'
 import type { TransactionsTableProps } from './TransactionsTable.interface'
-import { StyledTransactionTable } from './TransactionsTable.styles'
+import {
+  FilterBarWrapper,
+  PositionedContainer,
+  StickySentinel,
+  StickyTableContainer,
+  StyledTransactionTable,
+} from './TransactionsTable.styles'
 
-/*
- * Extend react-table to add custom metadata for TransactionsTable
- */
+/* Extend react-table to add custom metadata for TransactionsTable */
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     transactionsTable?: {
@@ -130,6 +133,11 @@ export default function TransactionsTable({
   // Hold new row if creating new transaction so we can merge it into transactionRows
   // This also ensures only one new row can be created at a time
   const [newRow, setNewRow] = React.useState<TransactionRow | undefined>(undefined)
+  // Add sticky detection state
+  const [isSticky, setIsSticky] = React.useState(false)
+  const [filterBarHeight, setFilterBarHeight] = React.useState(0)
+  const sentinelRef = React.useRef<HTMLDivElement>(null)
+  const filterBarRef = React.useRef<HTMLDivElement>(null)
 
   // Setup columns and normalise table data
   const displayColumns = React.useMemo(() => buildColumns(columns), [columns])
@@ -163,157 +171,216 @@ export default function TransactionsTable({
   }, [id])
   const [table, setTable] = React.useState<ReactTable<TransactionRow> | undefined>(undefined)
 
+  // Measure filter bar height
+  React.useEffect(() => {
+    if (filterBarRef.current && table) {
+      setFilterBarHeight(filterBarRef.current.offsetHeight)
+    }
+  }, [showFilterBar, table])
+
+  // Intersection Observer to detect when header becomes sticky
+  React.useEffect(() => {
+    if (!sentinelRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsSticky(!entry.isIntersecting)
+      },
+      {
+        threshold: 0,
+        rootMargin: '-1px 0px 0px 0px',
+      },
+    )
+
+    observer.observe(sentinelRef.current)
+
+    return () => observer.disconnect()
+  }, [])
+  React.useEffect(() => {
+    const styleId = 'transaction-sticky-style'
+    let styleTag = document.getElementById(styleId) as HTMLStyleElement | null
+
+    const top = showFilterBar && filterBarHeight > 0 ? `${filterBarHeight + 30}px` : '0px'
+    const backdrop = isSticky ? 'blur(8px)' : 'none'
+
+    const css = `
+    .sticky-table-container thead th {
+      position: sticky !important;
+      top: ${top} !important;
+      z-index: 101 !important;
+      backdrop-filter: ${backdrop} !important;
+    }
+
+    .sticky-table-container table thead {
+      position: sticky !important;
+      top: ${top} !important;
+      z-index: 101 !important;
+    }
+  `
+
+    if (!styleTag) {
+      styleTag = document.createElement('style')
+      styleTag.id = styleId
+      document.head.appendChild(styleTag)
+    }
+
+    styleTag.innerHTML = css
+
+    return () => {
+      // optional cleanup
+      styleTag?.remove()
+    }
+  }, [showFilterBar, filterBarHeight, isSticky])
   // Render
   return (
-    <StyledTransactionTable
-      tableVarient={variant}
-      data={[...transactionRows, ...(newRow !== undefined ? [newRow] : [])]}
-      columns={displayColumns}
-      scrollElement={scrollElement}
-      estimateSize={() => 40}
-      scrollMarginAdjustment={94}
-      overscan={10}
-      initialState={initialState}
-      enableSorting={true}
-      enableSortingRemoval={false}
-      enableMultiSort={false}
-      enableRowSelection={true}
-      enableMultiRowSelection={true}
-      enableColumnResizing={true}
-      enableColumnFilters={true}
-      enableGlobalFilter={true}
-      enableHiding={true}
-      enableExpanding={true}
-      stickyHeader={true}
-      maxLeafRowFilterDepth={0}
-      displayFooter={showFooter}
-      size="small"
-      EmptyView={<>No Transaction Data</>}
-      RowElement={TableRow}
-      onRowClick={(event, row, tableInstance) => {
-        // Stop clicking on edit rows from selecting them
-        if (row.id in editRows) return
-        handleRowSelection(event, row, tableInstance)
-      }}
-      onRowDoubleClick={(_, row) => {
-        // Toggle Edit Mode for Row if row already isn't in edit mode
-        if (row.id in editRows) return
-        table?.options.meta?.transactionsTable?.toggleEditMode(row.id)
-      }}
-      onRowContextMenu={(event, row, tableInstance) => {
-        // Disable context menu on edit rows
-        if (row.id in editRows) return { top: 0, left: 0 }
-        return handleRowContextMenu(event, row, tableInstance)
-      }}
-      getSubRows={(row) => (row.isSplit ? row.rows : undefined)}
-      FilterBarElement={showFilterBar ? FilterBar : undefined}
-      FooterElement={({ headerGroup }) => {
-        return (
-          <tr>
-            <td
-              colSpan={headerGroup.headers.length}
-              style={{ padding: 5, fontWeight: 700, textAlign: 'center' }}
-            >
-              Starting Balance:{' '}
-              <CurrencyLabel
-                value={account?.acc_start_balance ?? 0}
-                currency={account?.acc_iso_currency}
-              />
-            </td>
-          </tr>
-        )
-      }}
-      ContextMenuElement={ContextMenu}
-      onStateChange={(state, reactTable) => {
-        setTable(reactTable)
-        // Persist view settings to localStorage if id given
-        if (id) {
-          localStorage.setItem(
-            `${id}-transaction-table`,
-            JSON.stringify({
-              columnSizing: state.columnSizing,
-              columnVisibility: state.columnVisibility,
-            }),
-          )
-        }
-      }}
-      meta={{
-        transactionsTable: {
-          account,
-          accountsWithRelations,
-          recentCategories,
-          allTags,
-          isEditMode: (id) => id in editRows,
-          toggleEditMode: (id, value) => {
-            // Determine if row should be in edit mode
-            let shouldEdit = false
-            if (typeof value === 'boolean') {
-              shouldEdit = value
-            } else {
-              shouldEdit = !(id in editRows)
-            }
-
-            // Update editRows state
-            const updated = structuredClone(editRows)
-            if (shouldEdit) {
-              updated[id] = true
-            } else {
-              delete updated[id]
-            }
-            setEditRows(updated)
-          },
-          insertNewRow: (date: Date = new Date()) => {
-            // Insert new row into transactionRows with date set so it appears
-            // in correct place in table (if sorted by date). To keep things simple
-            // we will only allow one new row at a time and reset any rows that are
-            // currently open for editing
-            if (account) {
-              const newTransaction = createNewTransaction({
-                account_id: account.id,
-                title: '',
-                date,
-                currency_code: account.acc_iso_currency as string,
-              })
-              const newRow = buildTransactionRow(
-                accountsWithRelations,
-                newTransaction as ITransaction,
+    <PositionedContainer>
+      {/* Sentinel element to detect when header should be sticky */}
+      <StickySentinel ref={sentinelRef} />
+      {/* Sticky Filter Bar */}
+      {showFilterBar && table && (
+        <FilterBarWrapper isSticky={isSticky} ref={filterBarRef}>
+          <FilterBar table={table} />
+        </FilterBarWrapper>
+      )}
+      {/* Table container with custom CSS for sticky header positioning */}
+      <StickyTableContainer className="sticky-table-container">
+        <StyledTransactionTable
+          tableVarient={variant}
+          data={[...transactionRows, ...(newRow !== undefined ? [newRow] : [])]}
+          columns={displayColumns}
+          scrollElement={scrollElement}
+          estimateSize={() => 40}
+          scrollMarginAdjustment={94}
+          overscan={10}
+          initialState={initialState}
+          enableSorting={true}
+          enableSortingRemoval={false}
+          enableMultiSort={false}
+          enableRowSelection={true}
+          enableMultiRowSelection={true}
+          enableColumnResizing={true}
+          enableColumnFilters={true}
+          enableGlobalFilter={true}
+          enableHiding={true}
+          enableExpanding={true}
+          stickyHeader={true}
+          maxLeafRowFilterDepth={0}
+          displayFooter={showFooter}
+          size="small"
+          EmptyView={<>No Transaction Data</>}
+          RowElement={TableRow}
+          onRowClick={(event, row, tableInstance) => {
+            if (row.id in editRows) return
+            handleRowSelection(event, row, tableInstance)
+          }}
+          onRowDoubleClick={(_, row) => {
+            if (row.id in editRows) return
+            table?.options.meta?.transactionsTable?.toggleEditMode(row.id)
+          }}
+          onRowContextMenu={(event, row, tableInstance) => {
+            if (row.id in editRows) return { top: 0, left: 0 }
+            return handleRowContextMenu(event, row, tableInstance)
+          }}
+          getSubRows={(row) => (row.isSplit ? row.rows : undefined)}
+          FilterBarElement={undefined}
+          FooterElement={({ headerGroup }) => {
+            return (
+              <tr>
+                <td
+                  colSpan={headerGroup.headers.length}
+                  style={{ padding: 5, fontWeight: 700, textAlign: 'center' }}
+                >
+                  Starting Balance:{' '}
+                  <CurrencyLabel
+                    value={account?.acc_start_balance ?? 0}
+                    currency={account?.acc_iso_currency}
+                  />
+                </td>
+              </tr>
+            )
+          }}
+          ContextMenuElement={ContextMenu}
+          onStateChange={(state, reactTable) => {
+            setTable(reactTable)
+            if (id) {
+              localStorage.setItem(
+                `${id}-transaction-table`,
+                JSON.stringify({
+                  columnSizing: state.columnSizing,
+                  columnVisibility: state.columnVisibility,
+                }),
               )
-              setNewRow(newRow)
-              // Reset editRows state
-              setEditRows({})
             }
-          },
-          removeNewRow: () => {
-            // Remove new row
-            setNewRow(undefined)
-            // Reset editRows state
-            setEditRows({})
-          },
-          updateRows: (rows, properties) => {
-            const originalTransactions = rows.map((row) => row.transaction)
-            const updatedTransactions = updateTransactions(originalTransactions, properties)
-            onSaveTransactions(updatedTransactions)
-            if (rows.length === 1 && rows[0].isNew) {
-              // Close new row form
-              table?.options.meta?.transactionsTable?.removeNewRow()
-            }
-          },
-          duplicateRows: (rows) => {
-            const duplicateTransactions = rows.map((row) => duplicateTransaction(row.transaction))
-            onSaveTransactions(duplicateTransactions)
-          },
-          deleteRows: (rows) => {
-            for (const row of rows) {
-              onDeleteTransaction(row.transaction.id)
-            }
-            // Reset selection and editRows as indexes will change
-            table?.resetRowSelection()
-            setEditRows({})
-          },
-          onCreateCategory,
-          onImportTransactions,
-        },
-      }}
-    />
+          }}
+          meta={{
+            transactionsTable: {
+              account,
+              accountsWithRelations,
+              recentCategories,
+              allTags,
+              isEditMode: (id) => id in editRows,
+              toggleEditMode: (id, value) => {
+                let shouldEdit = false
+                if (typeof value === 'boolean') {
+                  shouldEdit = value
+                } else {
+                  shouldEdit = !(id in editRows)
+                }
+                const updated = structuredClone(editRows)
+                if (shouldEdit) {
+                  updated[id] = true
+                } else {
+                  delete updated[id]
+                }
+                setEditRows(updated)
+              },
+              insertNewRow: (date: Date = new Date()) => {
+                if (account) {
+                  const newTransaction = createNewTransaction({
+                    account_id: account.id,
+                    title: '',
+                    date,
+                    currency_code: account.acc_iso_currency as string,
+                  })
+                  const newRow = buildTransactionRow(
+                    accountsWithRelations,
+                    newTransaction as ITransaction,
+                  )
+                  setNewRow(newRow)
+                  setEditRows({})
+                }
+              },
+              removeNewRow: () => {
+                setNewRow(undefined)
+                setEditRows({})
+              },
+              updateRows: (rows, properties) => {
+                const originalTransactions = rows.map((row) => row.transaction)
+                const updatedTransactions = updateTransactions(originalTransactions, properties)
+                onSaveTransactions(updatedTransactions)
+                if (rows.length === 1 && rows[0].isNew) {
+                  table?.options.meta?.transactionsTable?.removeNewRow()
+                }
+              },
+              duplicateRows: (rows) => {
+                const duplicateTransactions = rows.map((row) =>
+                  duplicateTransaction(row.transaction),
+                )
+                onSaveTransactions(duplicateTransactions)
+              },
+              deleteRows: (rows) => {
+                for (const row of rows) {
+                  onDeleteTransaction(row.transaction.id)
+                }
+                table?.resetRowSelection()
+                setEditRows({})
+              },
+              onCreateCategory,
+              onImportTransactions,
+            },
+          }}
+        />
+      </StickyTableContainer>
+    </PositionedContainer>
   )
 }

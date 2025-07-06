@@ -65,3 +65,13 @@ export interface TransactionsTableProps {
    */
   variant?: 'raised' | 'flat'
 }
+/**
+ * Props for the FilterBarWrapper component.
+ *
+ * @property {React.ReactNode} children - The content to be rendered inside the wrapper.
+ * @property {boolean} isSticky - Indicates whether the filter bar is currently in a sticky state.
+ */
+export type FilterBarWrapperProps = {
+  children: React.ReactNode
+  isSticky: boolean
+}
