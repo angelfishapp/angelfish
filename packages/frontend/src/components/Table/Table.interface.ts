@@ -25,6 +25,7 @@ export interface TableFilterBarProps<T> {
    * The react-table instance for the table
    */
   table: Table<T>
+  sx?: SxProps<Theme>
 }
 
 /**

@@ -20,12 +20,14 @@ import FilterButton from './FilterButton'
  * FilterBar shown at top of TransactionsTable to filter transactions
  */
 
-export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>) {
+export default function FilterBar({ table, ...props }: TableFilterBarProps<TransactionRow>) {
   // Component State
   const [filtersVisible, setFiltersVisible] = React.useState<boolean>(false)
 
   return (
-    <Box display="flex" width="100%" alignItems="center" marginBottom={2}>
+    <Box display="flex" width="100%" alignItems="center" marginBottom={2}
+      {...props}
+    >
       {/* Show/Hide Filter Bar Button */}
       <IconButton
         sx={(theme) => ({

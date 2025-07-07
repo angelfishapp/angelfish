@@ -239,7 +239,7 @@ export default function TransactionsTable({
       {/* Sticky Filter Bar */}
       {showFilterBar && table && (
         <FilterBarWrapper isSticky={isSticky} ref={filterBarRef}>
-          <FilterBar table={table} />
+          <FilterBar table={table} sx={{ width: isSticky ? "95vw" : "100%" }} />
         </FilterBarWrapper>
       )}
       {/* Table container with custom CSS for sticky header positioning */}

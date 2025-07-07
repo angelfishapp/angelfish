@@ -154,8 +154,10 @@ export const FilterBarWrapper = forwardRef<HTMLDivElement, FilterBarWrapperProps
         position: 'sticky',
         top: 0,
         zIndex: 102,
-        backdropFilter: isSticky ? 'blur(50px)' : 'none',
-        height: isSticky ? 79 : 50,
+        backdropFilter: isSticky ? 'blur(10px)' : 'none',
+        height: isSticky ? 90 : 50,
+        paddingY: isSticky ? "20px" : 0,
+        width: isSticky ? "150vw" : '100%',
       }}
     >
       {children}
