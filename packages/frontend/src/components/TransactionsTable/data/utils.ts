@@ -1,8 +1,7 @@
 /**
  * Helper Functions to process data for the Transactions Table
  */
-
-import type { IAccount, ILineItemUpdate, ITransaction } from '@angelfish/core'
+import type { IAccount, ILineItemUpdate, ITag, ITransaction } from '@angelfish/core'
 import { isSplitTransaction, roundNumber } from '@angelfish/core'
 import { DateSort } from './sorting'
 import type { FormData, TransactionRow } from './types'
@@ -38,6 +37,7 @@ export function buildTransactionRows(
     balance += amount
     if (balance < 0.01 && balance > -0.01) balance = 0
     balance = roundNumber(balance)
+
     const transactionRow = buildTransactionRow(normalizedAccounts, transaction, balance)
     transactionRows.push(transactionRow as TransactionRow)
   })
@@ -60,7 +60,6 @@ export function buildTransactionRow(
 ): TransactionRow {
   const lineItems = transaction.line_items
   const isSplit = isSplitTransaction(transaction)
-
   const account = normalizedAccounts.find((account) => account.id == transaction.account_id)!
 
   const transactionrow: TransactionRow = {
@@ -91,7 +90,6 @@ export function buildTransactionRow(
       currency: transaction.currency_code,
       // unique data
       line_item_id: lineItem.id,
-
       category: normalizedAccounts.find((account) => account.id == lineItem.account_id)!,
       amount: roundNumber(lineItem.amount),
       tags: lineItem.tags,
@@ -132,6 +130,43 @@ export function getRecentCategories(transactionRows: TransactionRow[], limit = 5
   }
 
   return recentCategories
+}
+
+/**
+ * Process rows to get array of recently used tags. Will return last N Tags
+ * depending on limit
+ *
+ * @param transactionRows   Sorted array of Transaction Rows from buildTransactionRows function
+ * @param limit             Max number of tags to return (@default 5)
+ */
+export function getRecentTags(transactionRows: TransactionRow[], limit = 5): ITag[] {
+  const recentTags: ITag[] = []
+
+  // Step 1: Sort transactions by modified_on descending, fallback to transaction.id
+  const sortedTransactions = [...transactionRows].sort((rowA, rowB) => {
+    const timeDiff = rowB.transaction.modified_on.getTime() - rowA.transaction.modified_on.getTime()
+    return timeDiff !== 0 ? timeDiff : rowB.transaction.id - rowA.transaction.id
+  })
+
+  // Step 2: Collect distinct tags in order of most recent usage
+  for (const row of sortedTransactions) {
+    if (row.tags && row.tags.length > 0) {
+      for (const tag of row.tags) {
+        const alreadyIncluded = recentTags.some((t) => t.id === tag.id)
+        if (!alreadyIncluded) {
+          recentTags.push(tag)
+        }
+        if (recentTags.length >= limit) {
+          break
+        }
+      }
+    }
+    if (recentTags.length >= limit) {
+      break
+    }
+  }
+
+  return recentTags
 }
 
 /**
