@@ -15,13 +15,14 @@ import {
   buildTransactionRow,
   buildTransactionRows,
   getRecentCategories,
+  getRecentTags,
 } from './data'
 import type { TransactionsTableProps } from './TransactionsTable.interface'
-import { StyledTransactionTable } from './TransactionsTable.styles'
+import {
+  StyledTransactionTable,
+} from './TransactionsTable.styles'
 
-/*
- * Extend react-table to add custom metadata for TransactionsTable
- */
+/* Extend react-table to add custom metadata for TransactionsTable */
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     transactionsTable?: {
@@ -165,10 +166,107 @@ export default function TransactionsTable({
     () => buildTransactionRows(transactions, accountsWithRelations),
     [transactions, accountsWithRelations],
   )
-  const recentCategories = React.useMemo(
-    () => getRecentCategories(transactionRows),
-    [transactionRows],
-  )
+
+  // State-managed recent categories with improved algorithm
+  const [recentCategoriesState, setRecentCategoriesState] = React.useState<
+    TransactionsTableProps['accountsWithRelations']
+  >([])
+
+  // State-managed recent tags with improved algorithm
+  const [recentTagsState, setRecentTagsState] = React.useState<ITag[]>([])
+
+  // Initialize recent categories only once when transactionRows first loads
+  React.useEffect(() => {
+    if (transactionRows.length > 0 && recentCategoriesState.length === 0) {
+      const initialRecentCategories = getRecentCategories(transactionRows)
+      setRecentCategoriesState(initialRecentCategories)
+    }
+  }, [transactionRows, recentCategoriesState.length])
+
+  // Initialize recent tags only once when transactionRows first loads
+  React.useEffect(() => {
+    if (transactionRows.length > 0 && recentTagsState.length === 0) {
+      const initialRecentTags = getRecentTags(transactionRows)
+      setRecentTagsState(initialRecentTags)
+    }
+  }, [transactionRows, recentTagsState.length])
+
+  // Function to add a new category to recent categories (from search box usage)
+  const addRecentCategory = React.useCallback((category: any) => {
+    setRecentCategoriesState((prev) => {
+      // Check if category already exists in the list
+      const existingIndex = prev.findIndex((cat) => cat.id === category.id)
+
+      if (existingIndex !== -1) {
+        // If it exists and it's already at the top, do nothing
+        if (existingIndex === 0) {
+          return prev
+        }
+        // If it exists but not at top, move it to top
+        const updated = [...prev]
+        const [movedCategory] = updated.splice(existingIndex, 1)
+        return [movedCategory, ...updated]
+      }
+
+      // If it's a new category, add to top and keep only 5 items
+      return [category, ...prev].slice(0, 5)
+    })
+  }, [])
+
+  // Function to move an existing recent category to the top
+  const moveRecentCategoryToTop = React.useCallback((category: any) => {
+    setRecentCategoriesState((prev) => {
+      const existingIndex = prev.findIndex((cat) => cat.id === category.id)
+
+      // If category doesn't exist or is already at top, do nothing
+      if (existingIndex === -1 || existingIndex === 0) {
+        return prev
+      }
+
+      // Move category to top
+      const updated = [...prev]
+      const [movedCategory] = updated.splice(existingIndex, 1)
+      return [movedCategory, ...updated]
+    })
+  }, [])
+  // Function to add new tags to recent tags (from search box usage)
+  const addRecentTags = React.useCallback((tags: ITag[]) => {
+    setRecentTagsState((prev) => {
+      let updated = [...prev]
+      // Process each new tag
+      for (const tag of tags) {
+        const existingIndex = updated.findIndex((t) => t.id === tag.id)
+        if (existingIndex !== -1) {
+          // If tag exists, move it to top (unless already at top)
+          if (existingIndex !== 0) {
+            const [movedTag] = updated.splice(existingIndex, 1)
+            updated = [movedTag, ...updated]
+          }
+        } else {
+          // If it's a new tag, add to top
+          updated = [tag, ...updated]
+        }
+      }
+      // Keep only 5 items
+      return updated.slice(0, 5)
+    })
+  }, [])
+
+  // Function to move an existing recent tag to the top
+  const moveRecentTagToTop = React.useCallback((tag: ITag) => {
+    setRecentTagsState((prev) => {
+      const existingIndex = prev.findIndex((t) => t.id === tag.id)
+
+      // If tag doesn't exist or is already at top, do nothing
+      if (existingIndex === -1 || existingIndex === 0) {
+        return prev
+      }
+      // Move tag to top
+      const updated = [...prev]
+      const [movedTag] = updated.splice(existingIndex, 1)
+      return [movedTag, ...updated]
+    })
+  }, [])
 
   // React-Table State
   const initialState: TableProps<TransactionRow>['initialState'] = React.useMemo(() => {
@@ -190,7 +288,6 @@ export default function TransactionsTable({
     }
   }, [id])
   const [table, setTable] = React.useState<ReactTable<TransactionRow> | undefined>(undefined)
-
   // Render
   return (
     <StyledTransactionTable
@@ -328,7 +425,9 @@ export default function TransactionsTable({
             }
           },
           duplicateRows: (rows) => {
-            const duplicateTransactions = rows.map((row) => duplicateTransaction(row.transaction))
+            const duplicateTransactions = rows.map((row) =>
+              duplicateTransaction(row.transaction),
+            )
             onSaveTransactions(duplicateTransactions)
           },
           deleteRows: (rows) => {
@@ -341,6 +440,12 @@ export default function TransactionsTable({
           },
           onCreateCategory,
           onImportTransactions,
+          // Functions for managing recent categories
+          addRecentCategory,
+          moveRecentCategoryToTop,
+          // Functions for managing recent tags
+          addRecentTags,
+          moveRecentTagToTop,
         },
       }}
     />
