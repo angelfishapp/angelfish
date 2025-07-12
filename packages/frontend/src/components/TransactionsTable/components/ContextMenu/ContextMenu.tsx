@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditNoteIcon from '@mui/icons-material/EditNote'
 import InventoryIcon from '@mui/icons-material/Inventory'
 import TagIcon from '@mui/icons-material/LocalOffer'
-import { DialogContentText } from '@mui/material'
+import { Chip, DialogContentText } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React from 'react'
 
@@ -55,15 +55,40 @@ export default function TransactionTableContextMenu({
       return {
         item: <CategoryLabel account={category} className="category" iconSize={25} />,
         onClick: () => {
+          // Update the transactions with the selected category
           const rows = table.getSelectedRowModel().rows.map((row) => row.original)
           table.options.meta?.transactionsTable?.updateRows(rows, {
             category_id: category.id,
           })
+          // Move this category to the top of recent categories
+          table.options.meta?.transactionsTable?.moveRecentCategoryToTop(category)
+          onClose()
         },
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [table, table.options.meta?.transactionsTable?.recentCategories])
+  }, [table, onClose])
+
+  // Generate recently used tag items
+  const recentTags: ContextMenuItem[] = React.useMemo(() => {
+    const tags = table.options.meta?.transactionsTable?.recentTags ?? []
+    return tags.map((tag) => {
+      return {
+        item: <Chip label={tag.name} size="small" variant="outlined" />,
+        onClick: () => {
+          // Update the transactions with the selected tag
+          const rows = table.getSelectedRowModel().rows.map((row) => row.original)
+          table.options.meta?.transactionsTable?.updateRows(rows, {
+            add_tags: [tag],
+          })
+
+          // Move this tag to the top of recent tags
+          table.options.meta?.transactionsTable?.moveRecentTagToTop(tag)
+
+          onClose()
+        },
+      }
+    })
+  }, [table, onClose])
 
   // Generate menu items based on visible columns
   const showNote =
@@ -71,16 +96,19 @@ export default function TransactionTableContextMenu({
       .getAllColumns()
       .find((col) => col.id === 'note')
       ?.getIsVisible() || false
+
   const showTags =
     table
       .getAllColumns()
       .find((col) => col.id === 'tags')
       ?.getIsVisible() || false
+
   const showIsReviewed =
     table
       .getAllColumns()
       .find((col) => col.id === 'is_reviewed')
       ?.getIsVisible() || false
+
   const menuItems: ContextMenuItem[] = React.useMemo(() => {
     const items: ContextMenuItem[] = [
       {
@@ -105,25 +133,32 @@ export default function TransactionTableContextMenu({
         subMenu: [
           {
             item: (
-              <CategoryField
-                fullWidth
-                renderAsValue={false}
-                margin="none"
-                accountsWithRelations={
-                  table.options.meta?.transactionsTable?.accountsWithRelations ?? []
-                }
-                onChange={(category) => {
-                  if (category) {
-                    const rows = selectedRows.map((row) => row.original)
-                    table.options.meta?.transactionsTable?.updateRows(rows, {
-                      category_id: (category as IAccount).id,
-                    })
-                    setShowSubMenu(null)
-                    onClose()
+              <div style={{ minWidth: '350px', width: '100%' }}>
+                <CategoryField
+                  fullWidth
+                  renderAsValue={false}
+                  margin="none"
+                  accountsWithRelations={
+                    table.options.meta?.transactionsTable?.accountsWithRelations ?? []
                   }
-                }}
-                onCreate={(name) => table.options.meta?.transactionsTable?.onCreateCategory(name)}
-              />
+                  onChange={(category) => {
+                    if (category) {
+                      // Update the transactions with the selected category
+                      const rows = selectedRows.map((row) => row.original)
+                      table.options.meta?.transactionsTable?.updateRows(rows, {
+                        category_id: (category as IAccount).id,
+                      })
+
+                      // Add this category to recent categories (it will go to top)
+                      table.options.meta?.transactionsTable?.addRecentCategory(category)
+
+                      setShowSubMenu(null)
+                      onClose()
+                    }
+                  }}
+                  onCreate={(name) => table.options.meta?.transactionsTable?.onCreateCategory(name)}
+                />
+              </div>
             ),
             className: 'search-categories',
           },
@@ -218,22 +253,34 @@ export default function TransactionTableContextMenu({
         subMenu: [
           {
             item: (
-              <TagsField
-                fullWidth
-                margin="none"
-                tags={table.options.meta?.transactionsTable?.allTags ?? []}
-                onChange={(tags) => {
-                  const rows = selectedRows.map((row) => row.original)
-                  table.options.meta?.transactionsTable?.updateRows(rows, {
-                    add_tags: tags as ITag[],
-                  })
-                  setShowSubMenu(null)
-                  onClose()
-                }}
-              />
+              <div style={{ minWidth: '350px', width: '100%' }}>
+                <TagsField
+                  fullWidth
+                  margin="none"
+                  placeholder="Search or create new tags"
+                  tags={table.options.meta?.transactionsTable?.allTags ?? []}
+                  onChange={(tags) => {
+                    // Update the transactions with the selected tags
+                    const rows = selectedRows.map((row) => row.original)
+                    table.options.meta?.transactionsTable?.updateRows(rows, {
+                      add_tags: tags as ITag[],
+                    })
+
+                    // Add these tags to recent tags (they will go to top)
+                    table.options.meta?.transactionsTable?.addRecentTags(tags as ITag[])
+
+                    setShowSubMenu(null)
+                    onClose()
+                  }}
+                />
+              </div>
             ),
             className: 'tags',
           },
+          {
+            item: 'Recently Used',
+          },
+          ...recentTags,
         ],
       })
     }
@@ -284,6 +331,7 @@ export default function TransactionTableContextMenu({
     showSubMenu,
     onClose,
     recentCategories,
+    recentTags,
   ])
 
   // Render

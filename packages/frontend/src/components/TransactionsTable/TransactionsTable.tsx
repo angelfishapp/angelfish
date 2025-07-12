@@ -4,7 +4,7 @@ import React from 'react'
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
-import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
+import type { ITag, ITransaction, UpdateTransactionProperties } from '@angelfish/core'
 import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
 import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
@@ -41,6 +41,10 @@ declare module '@tanstack/react-table' {
        * All tags available in database
        */
       allTags: TransactionsTableProps['allTags']
+      /**
+       * Recent tags used in transactions
+       */
+      recentTags: ITag[]
       /**
        * Is the row currently in edit mode
        *
@@ -93,6 +97,30 @@ declare module '@tanstack/react-table' {
        * Callback to start Import Transactions Modal
        */
       onImportTransactions?: TransactionsTableProps['onImportTransactions']
+      /**
+       * Add a new category to recent categories (from search box usage)
+       *
+       * @param category  The category to add to recent list
+       */
+      addRecentCategory: (category: any) => void
+      /**
+       * Move an existing recent category to the top of the list
+       *
+       * @param category  The category to move to top
+       */
+      moveRecentCategoryToTop: (category: any) => void
+      /**
+       * Add new tags to recent tags (from search box usage)
+       *
+       * @param tags  The tags to add to recent list
+       */
+      addRecentTags: (tags: ITag[]) => void
+      /**
+       * Move an existing recent tag to the top of the list
+       *
+       * @param tag  The tag to move to top
+       */
+      moveRecentTagToTop: (tag: ITag) => void
     }
   }
 }
@@ -241,8 +269,9 @@ export default function TransactionsTable({
         transactionsTable: {
           account,
           accountsWithRelations,
-          recentCategories,
+          recentCategories: recentCategoriesState, // Use state-managed recent categories
           allTags,
+          recentTags: recentTagsState, // Use state-managed recent tags,
           isEditMode: (id) => id in editRows,
           toggleEditMode: (id, value) => {
             // Determine if row should be in edit mode
