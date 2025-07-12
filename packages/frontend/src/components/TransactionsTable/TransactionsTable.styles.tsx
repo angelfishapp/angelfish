@@ -154,10 +154,10 @@ export const FilterBarWrapper = forwardRef<HTMLDivElement, FilterBarWrapperProps
         position: 'sticky',
         top: 0,
         zIndex: 102,
-        backdropFilter: isSticky ? 'blur(10px)' : 'none',
+        backgroundColor: isSticky ? 'primary.main' : 'transparent',
         height: isSticky ? 90 : 50,
-        paddingY: isSticky ? "20px" : 0,
-        width: isSticky ? "150vw" : '100%',
+        padding: '20px',
+        width: '100%',
       }}
     >
       {children}
@@ -168,6 +168,7 @@ FilterBarWrapper.displayName = 'FilterBarWrapper'
 
 export const PositionedContainer = styled('div')({
   position: 'relative',
+  padding: 0,
 })
 export const StickyTableContainer = styled('div')({
   position: 'relative',

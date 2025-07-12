@@ -25,9 +25,7 @@ export default function FilterBar({ table, ...props }: TableFilterBarProps<Trans
   const [filtersVisible, setFiltersVisible] = React.useState<boolean>(false)
 
   return (
-    <Box display="flex" width="100%" alignItems="center" marginBottom={2}
-      {...props}
-    >
+    <Box display="flex" width="100%" alignItems="center" marginBottom={2} {...props}>
       {/* Show/Hide Filter Bar Button */}
       <IconButton
         sx={(theme) => ({
