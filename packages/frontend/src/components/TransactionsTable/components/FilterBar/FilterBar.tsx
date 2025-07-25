@@ -19,7 +19,6 @@ import FilterButton from './FilterButton'
 /**
  * FilterBar shown at top of TransactionsTable to filter transactions
  */
-
 export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>) {
   // Component State
   const [filtersVisible, setFiltersVisible] = React.useState<boolean>(false)
@@ -51,6 +50,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
       >
         {filtersVisible ? <FilterListOffIcon /> : <FilterListIcon />}
       </IconButton>
+
       {filtersVisible ? (
         /* Render Filter Bar */
         <StyledFilterBar marginLeft={1}>
@@ -92,6 +92,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
               value={table.getState().globalFilter || ''}
             />
           </Box>
+
           <Box marginLeft={1}>
             <StyledActionButton
               color="primary"
@@ -102,6 +103,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
             >
               <AddIcon />
             </StyledActionButton>
+
             {table.options.meta?.transactionsTable?.onImportTransactions && (
               <StyledActionButton
                 color="primary"
@@ -115,6 +117,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
           </Box>
         </Box>
       )}
+
       <Box marginLeft={1}>
         <StyledSettingsButton
           Icon={SettingsIcon}
@@ -123,25 +126,37 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
           menuItems={(
             [
               {
-                label: 'Show Columns',
+                label: 'Display Columns',
               },
             ] as DropdownMenuItem[]
-          ).concat(
-            table
-              .getAllColumns()
-              .filter(
-                // if header is not defined it retuns a function and in that case we dont want to show those column who dont have haeder value
-                (column) =>
-                  !!column.columnDef.header &&
-                  typeof column.columnDef.header === 'string' &&
-                  column.getCanHide(),
-              )
-              .map((column) => ({
-                label: column.columnDef.header as string,
-                onClick: () => column.toggleVisibility(),
-                icon: column.getIsVisible() ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
-              })),
-          )}
+          )
+            .concat(
+              table
+                .getAllColumns()
+                .filter(
+                  // if header is not defined it retuns a function and in that case we dont want to show those column who dont have haeder value
+                  (column) =>
+                    !!column.columnDef.header &&
+                    typeof column.columnDef.header === 'string' &&
+                    column.getCanHide(),
+                )
+                .map((column, index, array) => ({
+                  label: column.columnDef.header as string,
+                  onClick: () => column.toggleVisibility(),
+                  icon: column.getIsVisible() ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
+                  divider: index === array.length - 1, // Add divider only to last item
+                })),
+            )
+            .concat([
+              // Add Expand All Splits option
+              {
+                label: 'Expand All Splits',
+                onClick: () => {
+                  table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())
+                },
+                icon: table.getIsAllRowsExpanded() ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
+              },
+            ] as DropdownMenuItem[])}
         />
       </Box>
     </Box>

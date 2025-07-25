@@ -153,6 +153,7 @@ export default function TransactionsTable({
           sorting: [{ id: 'date', desc: true }],
           columnSizing: settings.columnSizing,
           columnVisibility: settings.columnVisibility,
+          expanded: settings.expanded ? true : {},
         }
       }
     }
@@ -184,6 +185,7 @@ export default function TransactionsTable({
       enableGlobalFilter={true}
       enableHiding={true}
       enableExpanding={true}
+      getRowCanExpand={(row) => row.original.isSplit}
       stickyHeader={true}
       maxLeafRowFilterDepth={0}
       displayFooter={showFooter}
@@ -233,6 +235,7 @@ export default function TransactionsTable({
             JSON.stringify({
               columnSizing: state.columnSizing,
               columnVisibility: state.columnVisibility,
+              expanded: reactTable.getIsAllRowsExpanded(),
             }),
           )
         }
