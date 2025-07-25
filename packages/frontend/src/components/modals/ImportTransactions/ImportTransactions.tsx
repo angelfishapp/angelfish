@@ -19,6 +19,7 @@ export default function ImportTransactions({
   onReconcileTransactions,
   onComplete,
   open = false,
+  tags = [],
 }: ImportTransactionsProps) {
   const [file, setFile] = React.useState<string>('')
   const [fileMappings, setFileMappings] = React.useState<ParsedFileMappings | undefined>(undefined)
@@ -86,6 +87,7 @@ export default function ImportTransactions({
       />
       <ImportTransactionsConfirm
         accountsWithRelations={accountsWithRelations}
+        tags={tags}
         error={error}
         transactions={transactions}
         onCancel={() => {

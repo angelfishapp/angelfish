@@ -11,6 +11,7 @@ import {
   getAccountsWithRelations,
   getBankAccountsWithRelations,
   reconciledTransactions,
+  tags,
 } from '@angelfish/tests/fixtures'
 
 const meta = {
@@ -108,6 +109,7 @@ const meta = {
           <Button onClick={() => setOpen(true)}>Import Transactions</Button>
           <ImportTransactions
             open={open}
+            tags={tags}
             onClose={() => setOpen(false)}
             onComplete={async (value) => {
               setOpen(false)

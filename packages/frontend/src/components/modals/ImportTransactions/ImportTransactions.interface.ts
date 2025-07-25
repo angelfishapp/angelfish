@@ -1,6 +1,7 @@
 import type {
   IAccount,
   ImportTransactionsMapper,
+  ITag,
   ParsedFileMappings,
   ReconciledTransaction,
 } from '@angelfish/core'
@@ -23,6 +24,10 @@ export interface ImportTransactionsProps {
    * @default false
    */
   open?: boolean
+  /**
+   *list of Tags Avalilable to ues
+   */
+  tags?: ITag[]
   /**
    * Callback to close the modal
    */

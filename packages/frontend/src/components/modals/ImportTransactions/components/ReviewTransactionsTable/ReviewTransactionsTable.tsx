@@ -17,7 +17,6 @@ import { flattenRowData, getSelectedRowState } from './ReviewTransactionsTable.d
 import type { ReviewTransactionsTableProps } from './ReviewTransactionsTable.interface'
 // TO-DO : this the only thing we need to fix it's import
 import type { ITag } from '@angelfish/core'
-import { tags as tagsData } from '@angelfish/tests/fixtures'
 
 /**
  * Renders a chip representing the status of a transaction.
@@ -46,6 +45,7 @@ export default function ReviewTransactionsTable({
   transactions,
   onUpdateTransactions,
   scrollElement,
+  tags,
 }: ReviewTransactionsTableProps): JSX.Element {
   const [expandedRow, setExpandedRow] = React.useState<string | null>(null)
 
@@ -289,7 +289,7 @@ export default function ReviewTransactionsTable({
         <TableRow
           {...props}
           expandedRow={expandedRow}
-          allTags={tagsData}
+          allTags={tags}
           onSave={handleSaveTransaction}
           onCloseEdit={() => setExpandedRow(null)}
         />

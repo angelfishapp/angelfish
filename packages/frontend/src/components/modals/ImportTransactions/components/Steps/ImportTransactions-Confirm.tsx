@@ -3,7 +3,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import React from 'react'
 
 import { Step } from '@/components/Stepper'
-import type { IAccount, ReconciledTransaction } from '@angelfish/core'
+import type { IAccount, ITag, ReconciledTransaction } from '@angelfish/core'
 import { ReviewTransactionsTable } from '../ReviewTransactionsTable'
 
 /**
@@ -32,6 +32,10 @@ export interface ImportTransactionsConfirmProps {
    * of Transactions to import.
    */
   onNext: (transactions: ReconciledTransaction[]) => void
+  /**
+   * List of tags to be used in the table
+   */
+  tags?: ITag[]
 }
 
 /**
@@ -45,6 +49,7 @@ export default function ImportTransactionsConfirm({
   transactions,
   onCancel,
   onNext,
+  tags = [],
 }: ImportTransactionsConfirmProps) {
   // Keep track of updated transactions
   const [updatedTransactions, setUpdatedTransactions] = React.useState<
@@ -93,6 +98,7 @@ export default function ImportTransactionsConfirm({
               setUpdatedTransactions(updatedTransactions)
             }}
             scrollElement={scrollContainerRef.current}
+            tags={tags}
           />
         )}
       </div>

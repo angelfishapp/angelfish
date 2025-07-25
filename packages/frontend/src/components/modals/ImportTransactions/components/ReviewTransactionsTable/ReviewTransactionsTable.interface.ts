@@ -1,4 +1,4 @@
-import type { IAccount } from '@angelfish/core'
+import type { IAccount, ITag } from '@angelfish/core'
 import type { ReconciledTransaction } from '@angelfish/core/src/types'
 
 /**
@@ -23,4 +23,8 @@ export interface ReviewTransactionsTableProps {
    * HTML Div Element to use as Scroll Container for Table Virtualization
    */
   scrollElement: HTMLDivElement | null
+  /**
+   * List of tags to be used in the table
+   */
+  tags?: ITag[]
 }
