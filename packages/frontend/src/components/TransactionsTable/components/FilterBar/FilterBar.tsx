@@ -23,10 +23,6 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
   // Component State
   const [filtersVisible, setFiltersVisible] = React.useState<boolean>(false)
 
-  // Get expand all splits state from table meta
-  const expandAllSplits = table.options.meta?.transactionsTable?.expandAllSplits ?? false
-  const toggleExpandAllSplits = table.options.meta?.transactionsTable?.toggleExpandAllSplits
-
   return (
     <Box display="flex" width="100%" alignItems="center" marginBottom={2}>
       {/* Show/Hide Filter Bar Button */}
@@ -130,7 +126,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
           menuItems={(
             [
               {
-                label: 'Show Columns',
+                label: 'Display Columns',
               },
             ] as DropdownMenuItem[]
           )
@@ -144,27 +140,21 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
                     typeof column.columnDef.header === 'string' &&
                     column.getCanHide(),
                 )
-                .map((column) => ({
+                .map((column, index, array) => ({
                   label: column.columnDef.header as string,
                   onClick: () => column.toggleVisibility(),
                   icon: column.getIsVisible() ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
+                  divider: index === array.length - 1, // Add divider only to last item
                 })),
             )
             .concat([
-              // Add separator using existing pattern
-              {
-                label: '─────────────────────',
-                disabled: true,
-              },
               // Add Expand All Splits option
               {
                 label: 'Expand All Splits',
                 onClick: () => {
-                  if (toggleExpandAllSplits) {
-                    toggleExpandAllSplits(!expandAllSplits)
-                  }
+                  table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())
                 },
-                icon: expandAllSplits ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
+                icon: table.getIsAllRowsExpanded() ? CheckBoxIcon : CheckBoxOutlineBlankIcon,
               },
             ] as DropdownMenuItem[])}
         />

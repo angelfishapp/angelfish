@@ -73,6 +73,7 @@ export interface TableProps<T>
     // Feature: Row Expanding
     | 'enableExpanding'
     | 'autoResetExpanded'
+    | 'getRowCanExpand'
     // Feature: Column Grouping
     | 'enableGrouping'
     | 'aggregationFns'

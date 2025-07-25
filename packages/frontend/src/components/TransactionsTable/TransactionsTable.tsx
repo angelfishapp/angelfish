@@ -1,13 +1,11 @@
-import type { Table as ReactTable, Row, RowData } from '@tanstack/react-table'
+import { type Table as ReactTable, type RowData } from '@tanstack/react-table'
 import React from 'react'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
-
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
 import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
 import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
-
 import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
 import TableRow from './components/TableRow/TableRow'
@@ -95,14 +93,6 @@ declare module '@tanstack/react-table' {
        * Callback to start Import Transactions Modal
        */
       onImportTransactions?: TransactionsTableProps['onImportTransactions']
-      /**
-       * Whether expand all splits is enabled
-       */
-      expandAllSplits: boolean
-      /**
-       * Toggle expand all splits setting
-       */
-      toggleExpandAllSplits: (value: boolean) => void
     }
   }
 }
@@ -135,58 +125,22 @@ export default function TransactionsTable({
 }: TransactionsTableProps) {
   // Component State
   const showFooter = (account && account.acc_start_balance != 0) || false
-
   // Keep track of rows which are in edit state when double clicked
   const [editRows, setEditRows] = React.useState<Record<string, boolean>>({})
-
   // Hold new row if creating new transaction so we can merge it into transactionRows
   // This also ensures only one new row can be created at a time
   const [newRow, setNewRow] = React.useState<TransactionRow | undefined>(undefined)
 
-  // Track expand all splits setting - ALWAYS start as false
-  const [expandAllSplits, setExpandAllSplits] = React.useState<boolean>(false)
-
   // Setup columns and normalise table data
   const displayColumns = React.useMemo(() => buildColumns(columns), [columns])
-
   const transactionRows = React.useMemo(
     () => buildTransactionRows(transactions, accountsWithRelations),
     [transactions, accountsWithRelations],
   )
-
   const recentCategories = React.useMemo(
     () => getRecentCategories(transactionRows),
     [transactionRows],
   )
-
-  // Helper function to get all expandable row IDs
-  const getAllExpandableRowIds = React.useCallback(
-    (rows: TransactionRow[]): Record<string, boolean> => {
-      const expandableIds: Record<string, boolean> = {}
-
-      const processRows = (rowsToProcess: TransactionRow[]) => {
-        rowsToProcess.forEach((row) => {
-          if (row.isSplit && row.rows && row.rows.length > 0) {
-            const rowId = row.tid
-            if (rowId) {
-              expandableIds[rowId] = true
-              // Recursively process sub-rows if they exist
-              processRows(row.rows)
-            }
-          }
-        })
-      }
-
-      processRows(rows)
-      return expandableIds
-    },
-    [],
-  )
-
-  // Helper function to get row ID
-  const getRowId = React.useCallback((row: Row<TransactionRow>) => {
-    return row.original?.tid || row.id
-  }, [])
 
   // React-Table State
   const initialState: TableProps<TransactionRow>['initialState'] = React.useMemo(() => {
@@ -194,87 +148,21 @@ export default function TransactionsTable({
     if (id) {
       const persistedSettings = localStorage.getItem(`${id}-transaction-table`) ?? '{}'
       const settings = JSON.parse(persistedSettings)
-
       if (!!Object.keys(settings).length) {
-        // Set expandAllSplits from persisted settings AFTER component mounts
-        if (typeof settings.expandAllSplits === 'boolean') {
-          // Use setTimeout to set this after initial render to avoid hydration issues
-          setTimeout(() => {
-            setExpandAllSplits(settings.expandAllSplits)
-          }, 0)
-        }
-
         return {
           sorting: [{ id: 'date', desc: true }],
           columnSizing: settings.columnSizing,
           columnVisibility: settings.columnVisibility,
-          // Always start with empty expanded state - let the effect handle expansion
-          expanded: {},
+          expanded: settings.expanded ? true : {},
         }
       }
     }
-
-    // By default sort by date descending and DON'T expand anything
+    // By default sort by date descending
     return {
       sorting: [{ id: 'date', desc: true }],
-      expanded: {},
     }
   }, [id])
-
   const [table, setTable] = React.useState<ReactTable<TransactionRow> | undefined>(undefined)
-
-  // Handle expand all splits toggle
-  const handleToggleExpandAllSplits = React.useCallback(
-    (value: boolean) => {
-      setExpandAllSplits(value)
-
-      if (table) {
-        if (value) {
-          // Expand all split transactions
-          const allRows = [...transactionRows, ...(newRow !== undefined ? [newRow] : [])]
-          const expandableIds = getAllExpandableRowIds(allRows)
-
-          // Use the updater function to ensure proper state update
-          table.setExpanded((old) => {
-            const currentState = old === true ? {} : old || {}
-            return {
-              ...currentState,
-              ...expandableIds,
-            }
-          })
-        } else {
-          // Collapse all transactions - reset to empty object
-          table.setExpanded({})
-        }
-      }
-    },
-    [table, transactionRows, newRow, getAllExpandableRowIds],
-  )
-
-  // Update expanded state when expandAllSplits changes or when data changes
-  React.useEffect(() => {
-    if (table && expandAllSplits) {
-      const allRows = [...transactionRows, ...(newRow !== undefined ? [newRow] : [])]
-      const expandableIds = getAllExpandableRowIds(allRows)
-
-      // Use the updater function to merge with existing expanded state
-      table.setExpanded((old) => {
-        const currentState = old === true ? {} : old || {}
-        return {
-          ...currentState,
-          ...expandableIds,
-        }
-      })
-    }
-  }, [expandAllSplits, table, transactionRows, newRow, getAllExpandableRowIds])
-
-  // Add a new effect to handle when expandAllSplits is turned off
-  React.useEffect(() => {
-    if (table && !expandAllSplits) {
-      // Only reset if we're turning off expand all
-      table.setExpanded({})
-    }
-  }, [expandAllSplits, table])
 
   // Render
   return (
@@ -297,29 +185,26 @@ export default function TransactionsTable({
       enableGlobalFilter={true}
       enableHiding={true}
       enableExpanding={true}
+      getRowCanExpand={(row) => row.original.isSplit}
       stickyHeader={true}
       maxLeafRowFilterDepth={0}
       displayFooter={showFooter}
       size="small"
       EmptyView={<>No Transaction Data</>}
       RowElement={TableRow}
-      getRowId={(row) => `${row.tid}`}
       onRowClick={(event, row, tableInstance) => {
         // Stop clicking on edit rows from selecting them
-        const rowId = getRowId(row)
-        if (rowId && rowId in editRows) return
+        if (row.id in editRows) return
         handleRowSelection(event, row, tableInstance)
       }}
       onRowDoubleClick={(_, row) => {
         // Toggle Edit Mode for Row if row already isn't in edit mode
-        const rowId = getRowId(row)
-        if (rowId && rowId in editRows) return
-        table?.options.meta?.transactionsTable?.toggleEditMode(rowId as string)
+        if (row.id in editRows) return
+        table?.options.meta?.transactionsTable?.toggleEditMode(row.id)
       }}
       onRowContextMenu={(event, row, tableInstance) => {
         // Disable context menu on edit rows
-        const rowId = getRowId(row)
-        if (rowId && rowId in editRows) return { top: 0, left: 0 }
+        if (row.id in editRows) return { top: 0, left: 0 }
         return handleRowContextMenu(event, row, tableInstance)
       }}
       getSubRows={(row) => (row.isSplit ? row.rows : undefined)}
@@ -343,7 +228,6 @@ export default function TransactionsTable({
       ContextMenuElement={ContextMenu}
       onStateChange={(state, reactTable) => {
         setTable(reactTable)
-
         // Persist view settings to localStorage if id given
         if (id) {
           localStorage.setItem(
@@ -351,7 +235,7 @@ export default function TransactionsTable({
             JSON.stringify({
               columnSizing: state.columnSizing,
               columnVisibility: state.columnVisibility,
-              expandAllSplits,
+              expanded: reactTable.getIsAllRowsExpanded(),
             }),
           )
         }
@@ -379,7 +263,6 @@ export default function TransactionsTable({
             } else {
               delete updated[id]
             }
-
             setEditRows(updated)
           },
           insertNewRow: (date: Date = new Date()) => {
@@ -394,14 +277,11 @@ export default function TransactionsTable({
                 date,
                 currency_code: account.acc_iso_currency as string,
               })
-
               const newRow = buildTransactionRow(
                 accountsWithRelations,
                 newTransaction as ITransaction,
               )
-
               setNewRow(newRow)
-
               // Reset editRows state
               setEditRows({})
             }
@@ -409,16 +289,13 @@ export default function TransactionsTable({
           removeNewRow: () => {
             // Remove new row
             setNewRow(undefined)
-
             // Reset editRows state
             setEditRows({})
           },
           updateRows: (rows, properties) => {
             const originalTransactions = rows.map((row) => row.transaction)
             const updatedTransactions = updateTransactions(originalTransactions, properties)
-
             onSaveTransactions(updatedTransactions)
-
             if (rows.length === 1 && rows[0].isNew) {
               // Close new row form
               table?.options.meta?.transactionsTable?.removeNewRow()
@@ -432,15 +309,12 @@ export default function TransactionsTable({
             for (const row of rows) {
               onDeleteTransaction(row.transaction.id)
             }
-
             // Reset selection and editRows as indexes will change
             table?.resetRowSelection()
             setEditRows({})
           },
           onCreateCategory,
           onImportTransactions,
-          expandAllSplits,
-          toggleExpandAllSplits: handleToggleExpandAllSplits,
         },
       }}
     />
