@@ -10,7 +10,7 @@ import type { TagsFieldProps } from './TagsField.interface'
  */
 
 export default React.forwardRef<HTMLDivElement, TagsFieldProps>(function TagsField(
-  { tags, onChange, value, id = 'tag-field', ...formFieldProps }: TagsFieldProps,
+  { tags, placeholder, onChange, value, id = 'tag-field', ...formFieldProps }: TagsFieldProps,
   ref,
 ) {
   /**
@@ -24,6 +24,7 @@ export default React.forwardRef<HTMLDivElement, TagsFieldProps>(function TagsFie
     <AutocompleteField
       id={id}
       formRef={ref}
+      placeholder={placeholder}
       {...formFieldProps}
       multiple
       freeSolo

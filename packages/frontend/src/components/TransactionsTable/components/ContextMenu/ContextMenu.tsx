@@ -21,6 +21,12 @@ import type { IAccount, ITag } from '@angelfish/core'
 import { hasSplitTransaction } from '@angelfish/core'
 import type { TransactionRow } from '../../data'
 import { StyledContextMenu } from './ContextMenu.styles'
+import {
+  getRecentCategories,
+  getRecentTags,
+  updateRecentCategories,
+  updateRecentTags,
+} from './ContextMenu.utils'
 
 /**
  * Context Menu for TransactionsTable
@@ -32,6 +38,7 @@ export default function TransactionTableContextMenu({
   table,
 }: TableContextMenuProps<TransactionRow>) {
   const selectedRows = table.getSelectedRowModel().rows
+  const allRows = table.getRowModel().rows
 
   // Component State
   const [showSubMenu, setShowSubMenu] = React.useState<'categories' | 'tags' | null>(null)
@@ -39,6 +46,8 @@ export default function TransactionTableContextMenu({
   const [totalSum, setTotalSum] = React.useState<number>(0)
   const [showEditNotes, setShowEditNotes] = React.useState<boolean>(false)
   const [updatedNotes, setUpdatedNotes] = React.useState<string>('')
+  const [recentCategories, setRecentCategories] = React.useState<IAccount[]>([])
+  const [recentTags, setRecentTags] = React.useState<ITag[]>([])
 
   // Get all transactions and determine total sum of all transactions
   // and whether any of the transactions are split transactions
@@ -48,10 +57,18 @@ export default function TransactionTableContextMenu({
     setHasSplitTransactions(hasSplitTransaction(transactions))
   }, [selectedRows])
 
+  // Generate recently used categories and tags
+  React.useMemo(() => {
+    const transactionRows = allRows.map((row) => row.original)
+    // Only generate first time when allRows is populated
+    if (recentCategories.length > 0 || recentTags.length > 0) return
+    setRecentCategories(getRecentCategories(transactionRows))
+    setRecentTags(getRecentTags(transactionRows))
+  }, [allRows, recentCategories, recentTags])
+
   // Generate recently used category items
-  const recentCategories: ContextMenuItem[] = React.useMemo(() => {
-    const categories = table.options.meta?.transactionsTable?.recentCategories ?? []
-    return categories.map((category) => {
+  const recentCategoryMenuItems: ContextMenuItem[] = React.useMemo(() => {
+    return recentCategories.map((category) => {
       return {
         item: <CategoryLabel account={category} className="category" iconSize={25} />,
         onClick: () => {
@@ -60,18 +77,18 @@ export default function TransactionTableContextMenu({
           table.options.meta?.transactionsTable?.updateRows(rows, {
             category_id: category.id,
           })
-          // Move this category to the top of recent categories
-          table.options.meta?.transactionsTable?.moveRecentCategoryToTop(category)
+          // Update recent categories
+          setRecentCategories(updateRecentCategories(recentCategories, category))
+          // Close the context menu
           onClose()
         },
       }
     })
-  }, [table, onClose])
+  }, [recentCategories, table, onClose])
 
   // Generate recently used tag items
-  const recentTags: ContextMenuItem[] = React.useMemo(() => {
-    const tags = table.options.meta?.transactionsTable?.recentTags ?? []
-    return tags.map((tag) => {
+  const recentTagMenuItems: ContextMenuItem[] = React.useMemo(() => {
+    return recentTags.map((tag) => {
       return {
         item: <Chip label={tag.name} size="small" variant="outlined" />,
         onClick: () => {
@@ -81,14 +98,14 @@ export default function TransactionTableContextMenu({
             add_tags: [tag],
           })
 
-          // Move this tag to the top of recent tags
-          table.options.meta?.transactionsTable?.moveRecentTagToTop(tag)
-
+          // Update recent tags
+          setRecentTags(updateRecentTags(recentTags, [tag]))
+          // Close the context menu
           onClose()
         },
       }
     })
-  }, [table, onClose])
+  }, [recentTags, table, onClose])
 
   // Generate menu items based on visible columns
   const showNote =
@@ -149,8 +166,10 @@ export default function TransactionTableContextMenu({
                         category_id: (category as IAccount).id,
                       })
 
-                      // Add this category to recent categories (it will go to top)
-                      table.options.meta?.transactionsTable?.addRecentCategory(category)
+                      // Update recent categories
+                      setRecentCategories(
+                        updateRecentCategories(recentCategories, category as IAccount),
+                      )
 
                       setShowSubMenu(null)
                       onClose()
@@ -165,7 +184,7 @@ export default function TransactionTableContextMenu({
           {
             item: 'Recently Used',
           },
-          ...recentCategories,
+          ...recentCategoryMenuItems,
         ],
       },
       {
@@ -266,9 +285,8 @@ export default function TransactionTableContextMenu({
                       add_tags: tags as ITag[],
                     })
 
-                    // Add these tags to recent tags (they will go to top)
-                    table.options.meta?.transactionsTable?.addRecentTags(tags as ITag[])
-
+                    // Update recent tags
+                    setRecentTags(updateRecentTags(recentTags, tags as ITag[]))
                     setShowSubMenu(null)
                     onClose()
                   }}
@@ -280,7 +298,7 @@ export default function TransactionTableContextMenu({
           {
             item: 'Recently Used',
           },
-          ...recentTags,
+          ...recentTagMenuItems,
         ],
       })
     }
@@ -331,7 +349,8 @@ export default function TransactionTableContextMenu({
     showSubMenu,
     onClose,
     recentCategories,
-    recentTags,
+    recentCategoryMenuItems,
+    recentTagMenuItems,
   ])
 
   // Render
