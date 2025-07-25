@@ -350,6 +350,7 @@ export default function TransactionTableContextMenu({
     onClose,
     recentCategories,
     recentCategoryMenuItems,
+    recentTags,
     recentTagMenuItems,
   ])
 
