@@ -1,33 +1,23 @@
-import type { TransactionRow } from '@/components/TransactionsTable/data'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from '@mui/material'
-import type { DeleteConfirmationModalProps } from './DeleteConfirmationModal.interface'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Typography from '@mui/material/Typography'
+
+import type { TransactionRow } from '@/components/TransactionsTable/data'
+import type { DeleteConfirmationDialogProps } from './DeleteConfirmationDialog.interface'
 
 /**
- * DeleteConfirmationModal component
+ * DeleteConfirmationDialog component
  *
  * A modal dialog used to confirm deletion of one or more financial transactions.
  * Displays a warning icon, transaction details (if ≤ 5), and action buttons for canceling or confirming deletion.
  *
- * @component
- * @param {DeleteConfirmationModalProps} props - Component props
- * @param {boolean} props.isOpen - Whether the dialog is open or not
- * @param {() => void} props.onClose - Callback to close the dialog
- * @param {() => void} props.onConfirm - Callback when user confirms deletion
- * @param {TransactionRow[]} props.transactions - List of transactions selected for deletion
- *
- * @returns {JSX.Element} Rendered Delete Confirmation modal
- *
  * @example
- * <DeleteConfirmationModal
+ * <DeleteConfirmationDialog
  *   isOpen={isModalOpen}
  *   onClose={handleClose}
  *   onConfirm={handleDelete}
@@ -35,12 +25,12 @@ import type { DeleteConfirmationModalProps } from './DeleteConfirmationModal.int
  * />
  */
 
-export function DeleteConfirmationModal({
+export default function DeleteConfirmationDialog({
   isOpen,
   onClose,
   onConfirm,
   transactions,
-}: DeleteConfirmationModalProps) {
+}: DeleteConfirmationDialogProps) {
   const transactionCount = transactions.length
   const isMultiple = transactionCount > 1
 

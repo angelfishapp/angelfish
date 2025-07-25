@@ -1,12 +1,13 @@
+import type { Table as ReactTable, RowData } from '@tanstack/react-table'
+import React from 'react'
+
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
 import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
 import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
-import type { Table as ReactTable, RowData } from '@tanstack/react-table'
-import React from 'react'
-import { DeleteConfirmationModal } from '../modals/DeleteConfirmationModal/DeleteConfirmationModal'
 import { ContextMenu } from './components/ContextMenu'
+import { DeleteConfirmationDialog } from './components/DeleteConfirmationDialog'
 import { FilterBar } from './components/FilterBar'
 import TableRow from './components/TableRow/TableRow'
 import type { TransactionRow } from './data'
@@ -99,16 +100,6 @@ declare module '@tanstack/react-table' {
 }
 
 /**
- * Keyboard shortcuts:
- * - Arrow keys: Navigate rows
- * - Shift + Arrow keys: Multi-select rows
- * - Ctrl/Cmd + C: Duplicate transactions
- * - Shift + N: Create new transaction
- * - Ctrl/Cmd + R: Toggle reviewed status
- * - Delete/Backspace: Delete transactions
- */
-
-/**
  * Provides DataGrid Table to display list of Transactions and allow user to select
  * and Edit them.
  *
@@ -118,6 +109,7 @@ declare module '@tanstack/react-table' {
  *   user adjusts them so the table will be the same when they return when `id` provided.
  * - Can be embedded in drawer or full screen page using `variant` prop
  * - Provides filter bar at top for editing table settings, adding new transactions, and filtering the table
+ * - Provides keyboard shortcuts for quick access to common actions
  */
 export default function TransactionsTable({
   account,
@@ -234,10 +226,10 @@ export default function TransactionsTable({
   })
 
   // Debug focus state
-  React.useEffect(() => { }, [isTableFocused])
+  React.useEffect(() => {}, [isTableFocused])
 
   // Debug new row state
-  React.useEffect(() => { }, [newRow])
+  React.useEffect(() => {}, [newRow])
 
   return (
     <>
@@ -406,7 +398,7 @@ export default function TransactionsTable({
         />
       </div>
 
-      <DeleteConfirmationModal
+      <DeleteConfirmationDialog
         isOpen={deleteModalOpen}
         onClose={cancelDelete}
         onConfirm={confirmDelete}
