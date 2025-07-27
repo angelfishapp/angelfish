@@ -1,9 +1,11 @@
+import type { Table as ReactTable, RowData } from '@tanstack/react-table'
+
+import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
+import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
+
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
-import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
-import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
-import type { Table as ReactTable, RowData } from '@tanstack/react-table'
 import React from 'react'
 import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
@@ -170,6 +172,7 @@ export default function TransactionsTable({
     }
   }, [id])
   const [table, setTable] = React.useState<ReactTable<TransactionRow> | undefined>(undefined)
+  const [tableWidth, setTableWidth] = React.useState<number | string>('100%')
 
   // Measure filter bar height
   React.useEffect(() => {
@@ -200,15 +203,13 @@ export default function TransactionsTable({
     const styleId = 'transaction-sticky-style'
     let styleTag = document.getElementById(styleId) as HTMLStyleElement | null
 
-    const top = showFilterBar && filterBarHeight > 0 ? `${filterBarHeight + 30}px` : '0px'
-    const backdrop = isSticky ? 'blur(8px)' : 'none'
+    const top = showFilterBar && filterBarHeight > 0 ? `${filterBarHeight - 5}px` : '0px'
 
     const css = `
     .sticky-table-container thead th {
       position: sticky !important;
       top: ${top} !important;
       z-index: 101 !important;
-      backdrop-filter: ${backdrop} !important;
     }
 
     .sticky-table-container table thead {
@@ -238,7 +239,7 @@ export default function TransactionsTable({
       <StickySentinel ref={sentinelRef} />
       {/* Sticky Filter Bar */}
       {showFilterBar && table && (
-        <FilterBarWrapper isSticky={isSticky} ref={filterBarRef}>
+        <FilterBarWrapper isSticky={isSticky} ref={filterBarRef} width={tableWidth}>
           <FilterBar table={table} />
         </FilterBarWrapper>
       )}
@@ -302,6 +303,9 @@ export default function TransactionsTable({
           ContextMenuElement={ContextMenu}
           onStateChange={(state, reactTable) => {
             setTable(reactTable)
+            // handling getting table width and breaking point for table width
+            const offset = window.innerWidth - 1672
+            setTableWidth(reactTable.getTotalSize() + offset)
             if (id) {
               localStorage.setItem(
                 `${id}-transaction-table`,

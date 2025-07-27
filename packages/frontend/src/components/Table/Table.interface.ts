@@ -26,6 +26,7 @@ export interface TableFilterBarProps<T> {
    */
   table: Table<T>
   sx?: SxProps<Theme>
+  width?: string | number
 }
 
 /**

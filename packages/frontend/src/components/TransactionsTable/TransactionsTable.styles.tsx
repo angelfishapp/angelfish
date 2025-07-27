@@ -147,7 +147,7 @@ export const StyledTransactionTable = styled(UnstyledTable, {
 }))
 
 export const FilterBarWrapper = forwardRef<HTMLDivElement, FilterBarWrapperProps>(
-  ({ children, isSticky }, ref) => (
+  ({ children, isSticky, width }, ref) => (
     <Box
       ref={ref}
       sx={{
@@ -155,9 +155,9 @@ export const FilterBarWrapper = forwardRef<HTMLDivElement, FilterBarWrapperProps
         top: 0,
         zIndex: 102,
         backgroundColor: isSticky ? 'primary.main' : 'transparent',
-        height: isSticky ? 90 : 50,
+        height: 90,
         padding: '20px',
-        width: '100%',
+        width,
       }}
     >
       {children}
