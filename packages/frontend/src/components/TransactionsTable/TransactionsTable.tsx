@@ -176,34 +176,6 @@ export default function TransactionsTable({
     setDeleteModalOpen(true)
   }, [])
 
-  const handleDuplicate = React.useCallback(
-    (rows: TransactionRow[]) => {
-      table?.options.meta?.transactionsTable?.duplicateRows(rows)
-    },
-    [table],
-  )
-
-  const handleInsertNew = React.useCallback(
-    (date?: Date) => {
-      if (table?.options.meta?.transactionsTable?.insertNewRow) {
-        table.options.meta.transactionsTable.insertNewRow(date)
-      }
-    },
-    [table],
-  )
-
-  const handleToggleReviewed = React.useCallback(
-    (rows: TransactionRow[]) => {
-      // Handle reviewed status toggle - update transactions directly
-      const updatedTransactions = rows.map((row) => ({
-        ...row.transaction,
-        is_reviewed: !row.transaction.is_reviewed,
-      }))
-      onSaveTransactions(updatedTransactions)
-    },
-    [onSaveTransactions],
-  )
-
   const confirmDelete = React.useCallback(() => {
     table?.options.meta?.transactionsTable?.deleteRows(transactionsToDelete)
     setDeleteModalOpen(false)
@@ -219,17 +191,8 @@ export default function TransactionsTable({
   useKeyboardShortcuts({
     table,
     onDeleteConfirm: handleDeleteConfirm,
-    onDuplicate: handleDuplicate,
-    onInsertNew: handleInsertNew,
-    onToggleReviewed: handleToggleReviewed,
     isEnabled: isTableFocused,
   })
-
-  // Debug focus state
-  React.useEffect(() => {}, [isTableFocused])
-
-  // Debug new row state
-  React.useEffect(() => {}, [newRow])
 
   return (
     <>

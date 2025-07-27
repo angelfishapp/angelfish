@@ -1,8 +1,8 @@
+import type { Table as ReactTable, RowSelectionState } from '@tanstack/react-table'
 import type React from 'react'
 import { useCallback, useEffect, useRef } from 'react'
 
 import type { TransactionRow } from '@/components/TransactionsTable/data'
-import type { Table as ReactTable } from '@tanstack/react-table'
 
 /**
  * Configuration for the `useKeyboardShortcuts` custom hook.
@@ -12,66 +12,28 @@ interface KeyboardShortcutsConfig {
    * The TanStack table instance managing the transactions table.
    */
   table: ReactTable<TransactionRow> | undefined
-
-  /**
-   * Callback to trigger when the user confirms deletion using Delete or Backspace.
-   * Called with the currently selected transactions.
-   */
-  onDeleteConfirm: (rows: TransactionRow[]) => void
-
-  /**
-   * Callback to trigger when the user duplicates selected transactions (Ctrl/Cmd + C).
-   */
-  onDuplicate: (rows: TransactionRow[]) => void
-
-  /**
-   * Callback to trigger when the user inserts a new transaction (Shift + N).
-   * Optionally receives the currently selected row’s date.
-   */
-  onInsertNew: (date?: Date) => void
-
-  /**
-   * Callback to toggle the "reviewed" state of selected transactions (Ctrl/Cmd + R).
-   */
-  onToggleReviewed: (rows: TransactionRow[]) => void
-
   /**
    * Whether keyboard shortcuts are currently enabled. Defaults to true.
    */
   isEnabled?: boolean
+  onDeleteConfirm: (transactions: TransactionRow[]) => void
 }
 
 /**
  * Custom React hook to enable keyboard shortcuts for a transactions table UI.
- *
- * Supported keyboard shortcuts:
- * - Arrow Up/Down: Navigate and select rows (supports shift for multi-select)
- * - Ctrl/Cmd + C: Duplicate selected rows
- * - Ctrl/Cmd + R: Toggle "reviewed" state for selected rows
- * - Shift + N: Insert a new transaction (optionally using selected row's date)
- * - Delete / Backspace: Confirm deletion of selected rows
- *
- * Automatically prevents default browser behavior for the above keys.
- * Skips shortcuts when the user is focused on an input, textarea, or contenteditable element.
- *
- * @param {KeyboardShortcutsConfig} config - Configuration object for the hook
  */
-
 export function useKeyboardShortcuts({
   table,
-  onDeleteConfirm,
-  onDuplicate,
-  onInsertNew,
-  onToggleReviewed,
   isEnabled = true,
+  onDeleteConfirm,
 }: KeyboardShortcutsConfig) {
-  // Keep track of selection state for multi-selection
+  // Track selection state for proper multi-select behavior
   const selectionStateRef = useRef<{
-    anchor: string | null
-    lastDirection: 'up' | 'down' | null
+    anchorRowId: string | null
+    lastSelectedRowId: string | null
   }>({
-    anchor: null,
-    lastDirection: null,
+    anchorRowId: null,
+    lastSelectedRowId: null,
   })
 
   const handleKeyDown = useCallback(
@@ -91,74 +53,113 @@ export function useKeyboardShortcuts({
 
       const { key, metaKey, ctrlKey, shiftKey } = event
       const isModifierPressed = metaKey || ctrlKey
-      const selectedRows = table.getSelectedRowModel().rows
-      const allRows = table.getRowModel().rows.filter((row) => row.depth === 0)
 
-      // Prevent default behavior for our shortcuts
-      const shouldPreventDefault = () => {
-        if (key === 'ArrowUp' || key === 'ArrowDown') return true
-        if (isModifierPressed && (key === 'c' || key === 'r')) return true
-        if (shiftKey && key.toLowerCase() === 'n') return true
-        if (key === 'Delete' || key === 'Backspace') return true
+      // Handle Ctrl+N with aggressive prevention
+      if (isModifierPressed && (key === 'n' || key === 'N' || event.keyCode === 78)) {
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+        if (event.returnValue !== undefined) {
+          event.returnValue = false
+        }
+
+        const selectedRows = table.getSelectedRowModel().rows
+        const currentDate =
+          selectedRows.length > 0 ? new Date(selectedRows[0].original.transaction.date) : new Date()
+        table.options.meta?.transactionsTable?.insertNewRow(currentDate)
         return false
       }
 
-      if (shouldPreventDefault()) {
+      const selectedRows = table.getSelectedRowModel().rows
+
+      // Prevent default for navigation and action keys
+      if (
+        key === 'ArrowUp' ||
+        key === 'ArrowDown' ||
+        key === 'Enter' ||
+        key === 'Delete' ||
+        key === 'Backspace' ||
+        (isModifierPressed && (key === 'c' || key === 'r'))
+      ) {
         event.preventDefault()
         event.stopPropagation()
       }
 
       switch (key) {
         case 'ArrowUp':
-          handleArrowNavigation('up', shiftKey, table, allRows, selectedRows, selectionStateRef)
+          handleArrowNavigation('up', shiftKey, table, selectionStateRef)
           break
-
         case 'ArrowDown':
-          handleArrowNavigation('down', shiftKey, table, allRows, selectedRows, selectionStateRef)
+          handleArrowNavigation('down', shiftKey, table, selectionStateRef)
           break
-
         case 'c':
         case 'C':
           if (isModifierPressed && selectedRows.length > 0) {
-            onDuplicate(selectedRows.map((row) => row.original))
+            table.options.meta?.transactionsTable?.duplicateRows(
+              selectedRows.map((row) => row.original),
+            )
           }
           break
-
-        case 'n':
-        case 'N':
-          if (shiftKey && !isModifierPressed) {
-            const currentDate =
-              selectedRows.length > 0
-                ? new Date(selectedRows[0].original.transaction.date)
-                : new Date()
-            onInsertNew(currentDate)
-          }
-          break
-
         case 'r':
         case 'R':
           if (isModifierPressed && selectedRows.length > 0) {
-            onToggleReviewed(selectedRows.map((row) => row.original))
+            const rows = selectedRows.map((row) => row.original)
+            table.options.meta?.transactionsTable?.updateRows(rows, { is_reviewed: true })
           }
           break
-
         case 'Delete':
         case 'Backspace':
           if (selectedRows.length > 0) {
             onDeleteConfirm(selectedRows.map((row) => row.original))
           }
+
+          break
+        case 'Enter':
+          if (selectedRows.length === 1) {
+            const row = selectedRows[0]
+            table.options.meta?.transactionsTable?.toggleEditMode(row.id, true)
+          }
           break
       }
     },
-    [table, onDeleteConfirm, onDuplicate, onInsertNew, onToggleReviewed, isEnabled],
+    [table, isEnabled, onDeleteConfirm],
   )
 
+  // Aggressive Ctrl+N prevention
   useEffect(() => {
     if (!isEnabled) return
 
-    // Use capture phase and add to window to catch all events
-    window.addEventListener('keydown', handleKeyDown, true)
-    return () => window.removeEventListener('keydown', handleKeyDown, true)
+    const preventCtrlN = (event: KeyboardEvent) => {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        (event.key === 'n' || event.key === 'N' || event.keyCode === 78 || event.which === 78)
+      ) {
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+        if (event.returnValue !== undefined) {
+          event.returnValue = false
+        }
+        return false
+      }
+    }
+
+    // Add listeners to multiple targets with different phases
+    window.addEventListener('keydown', preventCtrlN, { capture: true, passive: false })
+    document.addEventListener('keydown', preventCtrlN, { capture: true, passive: false })
+    window.addEventListener('keypress', preventCtrlN, { capture: true, passive: false })
+    document.addEventListener('keypress', preventCtrlN, { capture: true, passive: false })
+
+    // Main handler
+    window.addEventListener('keydown', handleKeyDown, { capture: true, passive: false })
+
+    return () => {
+      window.removeEventListener('keydown', preventCtrlN, { capture: true })
+      document.removeEventListener('keydown', preventCtrlN, { capture: true })
+      window.removeEventListener('keypress', preventCtrlN, { capture: true })
+      document.removeEventListener('keypress', preventCtrlN, { capture: true })
+      window.removeEventListener('keydown', handleKeyDown, { capture: true })
+    }
   }, [handleKeyDown, isEnabled])
 }
 
@@ -166,140 +167,107 @@ function handleArrowNavigation(
   direction: 'up' | 'down',
   shiftKey: boolean,
   table: ReactTable<TransactionRow>,
-  allRows: any[],
-  selectedRows: any[],
   selectionStateRef: React.MutableRefObject<{
-    anchor: string | null
-    lastDirection: 'up' | 'down' | null
+    anchorRowId: string | null
+    lastSelectedRowId: string | null
   }>,
 ) {
-  if (allRows.length === 0) return
+  const allRows = table.getRowModel().rows
+  const selectedRows = table.getSelectedRowModel().rows
 
-  let targetIndex = 0
-
-  if (selectedRows.length > 0) {
-    // Find the current selection boundary based on direction
-    let currentIndex: number
-
-    if (shiftKey && selectionStateRef.current.anchor) {
-      // Multi-selection mode - find the boundary to extend from
-      if (direction === 'up') {
-        // Find the topmost selected row
-        const topRowId = selectedRows.reduce((topRow, row) => {
-          const topIndex = allRows.findIndex((r) => r.id === topRow.id)
-          const currentIndex = allRows.findIndex((r) => r.id === row.id)
-          return currentIndex < topIndex ? row : topRow
-        }).id
-        currentIndex = allRows.findIndex((row) => row.id === topRowId)
-        targetIndex = Math.max(0, currentIndex - 1)
-      } else {
-        // Find the bottommost selected row
-        const bottomRowId = selectedRows.reduce((bottomRow, row) => {
-          const bottomIndex = allRows.findIndex((r) => r.id === bottomRow.id)
-          const currentIndex = allRows.findIndex((r) => r.id === row.id)
-          return currentIndex > bottomIndex ? row : bottomRow
-        }).id
-        currentIndex = allRows.findIndex((row) => row.id === bottomRowId)
-        targetIndex = Math.min(allRows.length - 1, currentIndex + 1)
-      }
-    } else {
-      // Single selection or starting new multi-selection
-      const currentRowId = selectedRows[selectedRows.length - 1].id
-      currentIndex = allRows.findIndex((row) => row.id === currentRowId)
-
-      if (direction === 'up') {
-        targetIndex = Math.max(0, currentIndex - 1)
-      } else {
-        targetIndex = Math.min(allRows.length - 1, currentIndex + 1)
-      }
-    }
-  } else {
-    // No selection, start from top or bottom
-    targetIndex = direction === 'up' ? allRows.length - 1 : 0
-    selectionStateRef.current.anchor = null
+  // Find current row to navigate from
+  let currentRowId = selectionStateRef.current.lastSelectedRowId
+  if (!currentRowId && selectedRows.length > 0) {
+    currentRowId = selectedRows[selectedRows.length - 1].id
   }
 
-  const targetRow = allRows[targetIndex]
+  let currentRow = allRows.find((row) => row.id === currentRowId)
+  let currentLevel = currentRow?.depth ?? 0
+
+  // If no current row, start from first/last row at level 0
+  if (!currentRow) {
+    const topLevelRows = allRows.filter((row) => row.depth === 0)
+    if (topLevelRows.length === 0) return
+
+    currentRow = direction === 'up' ? topLevelRows[topLevelRows.length - 1] : topLevelRows[0]
+    currentLevel = 0
+  }
+
+  // Get all rows at the same level
+  const sameLevel = allRows.filter((row) => row.depth === currentLevel)
+  const currentIndex = sameLevel.findIndex((row) => row.id === currentRow!.id)
+
+  if (currentIndex === -1) return
+
+  // Calculate target index
+  let targetIndex: number
+  if (direction === 'up') {
+    targetIndex = Math.max(0, currentIndex - 1)
+  } else {
+    targetIndex = Math.min(sameLevel.length - 1, currentIndex + 1)
+  }
+
+  // If we're at the boundary, don't do anything
+  if (targetIndex === currentIndex) return
+
+  const targetRow = sameLevel[targetIndex]
   if (!targetRow) return
 
-  if (shiftKey && selectedRows.length > 0) {
-    // Multi-select mode
-    // Set anchor if not already set (first shift+arrow press)
-    if (!selectionStateRef.current.anchor) {
-      selectionStateRef.current.anchor = selectedRows[0].id
+  // Update last selected row
+  selectionStateRef.current.lastSelectedRowId = targetRow.id
+
+  if (shiftKey) {
+    // Multi-select behavior
+    let anchorRowId = selectionStateRef.current.anchorRowId
+
+    // If no anchor, use the first selected row or current row as anchor
+    if (!anchorRowId) {
+      if (selectedRows.length > 0) {
+        anchorRowId = selectedRows[0].id
+      } else {
+        anchorRowId = currentRow.id
+      }
+      selectionStateRef.current.anchorRowId = anchorRowId
     }
 
-    const anchorIndex = allRows.findIndex((row) => row.id === selectionStateRef.current.anchor)
-
-    // Calculate the new selection range
-    let startIndex: number
-    let endIndex: number
-
-    if (direction === 'up') {
-      // Extending upward
-      const currentTopIndex = Math.min(
-        ...selectedRows.map((row) => allRows.findIndex((r) => r.id === row.id)),
-      )
-      startIndex = Math.min(targetIndex, anchorIndex)
-      endIndex = Math.max(anchorIndex, currentTopIndex)
-
-      // If we're going up from anchor, extend the selection upward
-      if (targetIndex < anchorIndex) {
-        startIndex = targetIndex
-        endIndex = anchorIndex
-      } else {
-        // We're contracting from below
-        startIndex = targetIndex
-        endIndex = anchorIndex
-      }
-    } else {
-      // Extending downward
-      const currentBottomIndex = Math.max(
-        ...selectedRows.map((row) => allRows.findIndex((r) => r.id === row.id)),
-      )
-      startIndex = Math.min(anchorIndex, currentBottomIndex)
-      endIndex = Math.max(targetIndex, anchorIndex)
-
-      // If we're going down from anchor, extend the selection downward
-      if (targetIndex > anchorIndex) {
-        startIndex = anchorIndex
-        endIndex = targetIndex
-      } else {
-        // We're contracting from above
-        startIndex = anchorIndex
-        endIndex = targetIndex
-      }
+    // Find anchor row in same level
+    const anchorIndex = sameLevel.findIndex((row) => row.id === anchorRowId)
+    if (anchorIndex === -1) {
+      // Anchor not found at same level, reset to current row
+      anchorRowId = currentRow.id
+      selectionStateRef.current.anchorRowId = anchorRowId
+      const newAnchorIndex = sameLevel.findIndex((row) => row.id === anchorRowId)
+      if (newAnchorIndex === -1) return
     }
 
-    const newSelection: Record<string, boolean> = {}
+    // Select range from anchor to target
+    const finalAnchorIndex = sameLevel.findIndex((row) => row.id === anchorRowId)
+    const startIndex = Math.min(finalAnchorIndex, targetIndex)
+    const endIndex = Math.max(finalAnchorIndex, targetIndex)
+
+    const newSelection: RowSelectionState = {}
     for (let i = startIndex; i <= endIndex; i++) {
-      if (allRows[i]) {
-        newSelection[allRows[i].id] = true
+      if (sameLevel[i]) {
+        newSelection[sameLevel[i].id] = true
       }
     }
 
     table.setRowSelection(newSelection)
-    selectionStateRef.current.lastDirection = direction
   } else {
-    // Single select mode - reset selection state
-    selectionStateRef.current.anchor = targetRow.id
-    selectionStateRef.current.lastDirection = null
-    table.setRowSelection({
-      [targetRow.id]: true,
-    })
+    // Single select - clear previous selection and select target
+    selectionStateRef.current.anchorRowId = targetRow.id
+    const newSelection: RowSelectionState = {}
+    newSelection[targetRow.id] = true
+    table.setRowSelection(newSelection)
   }
 
-  // Scroll to the selected row
+  // Scroll to target row
   scrollToRow(targetRow.id)
 }
 
 function scrollToRow(rowId: string) {
-  // Find the row element and scroll it into view
   const rowElement = document.querySelector(`[data-row-id="${rowId}"]`)
   if (rowElement) {
-    rowElement.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-    })
+    rowElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }
 }
