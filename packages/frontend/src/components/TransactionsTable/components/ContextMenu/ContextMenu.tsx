@@ -68,7 +68,7 @@ export default function TransactionTableContextMenu({
 
   // New tags will receive ID after being saved in database so we need to update the recent tags
   // when allTags changes
-  const allTags = React.useMemo(() => {
+  React.useMemo(() => {
     recentTags.forEach((tag) => {
       if (!tag.id) {
         // If tag does not have ID, match it with allTags name and update it
@@ -298,7 +298,7 @@ export default function TransactionTableContextMenu({
                   fullWidth
                   margin="none"
                   placeholder="Search or create new tags"
-                  tags={allTags}
+                  tags={table.options.meta?.transactionsTable?.allTags ?? []}
                   onChange={(tags) => {
                     // Update the transactions with the selected tags
                     const rows = selectedRows.map((row) => row.original)
