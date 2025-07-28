@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event'
 import type { ReactElement } from 'react'
 import { vi } from 'vitest'
 import * as TableStories from './TransactionsTable.stories'
+import * as TableModule from '../Table'
 
 const emotionCache = createCache({ key: 'css', prepend: true })
 
@@ -63,34 +64,32 @@ describe('TransactionsTable Keyboard Shortcuts', () => {
     expect(tableContainer).toHaveFocus()
   })
 
-  it('should navigate rows with arrow keys', async () => {
+  it('should call selection logic when navigating with arrow keys', async () => {
+    const spy = vi.spyOn(TableModule, 'handleRowSelection')
+
     renderWithEmotion(<LongTable />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Tags')).toBeInTheDocument()
-    })
+    await waitFor(() => expect(screen.getByText('Tags')).toBeInTheDocument())
+    const tableContainer = document.querySelector('[tabindex="0"]')!
 
-    const tableContainer = document.querySelector('[tabindex="0"]')
-    await user.click(tableContainer!)
+    await user.click(tableContainer)
     await user.keyboard('{ArrowDown}')
 
-    expect(tableContainer).toHaveFocus()
+    expect(spy).toHaveBeenCalled()
   })
+  it('should call selection logic for multi-select with Shift+Arrow', async () => {
+    const spy = vi.spyOn(TableModule, 'handleRowSelection')
 
-  it('should handle multi-selection with Shift + Arrow keys', async () => {
     renderWithEmotion(<LongTable />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Tags')).toBeInTheDocument()
-    })
+    await waitFor(() => expect(screen.getByText('Tags')).toBeInTheDocument())
+    const tableContainer = document.querySelector('[tabindex="0"]')!
 
-    const tableContainer = document.querySelector('[tabindex="0"]')
-    await user.click(tableContainer!)
-
+    await user.click(tableContainer)
     await user.keyboard('{ArrowDown}')
     await user.keyboard('{Shift>}{ArrowDown}{ArrowDown}{/Shift}')
 
-    expect(tableContainer).toHaveFocus()
+    expect(spy).toHaveBeenCalled()
   })
 
   it('should trigger duplication when Ctrl+C is pressed with selected rows', async () => {
@@ -99,32 +98,23 @@ describe('TransactionsTable Keyboard Shortcuts', () => {
 
     renderWithEmotion(<DefaultWithMock />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Tags')).toBeInTheDocument()
-    })
+    await waitFor(() => expect(screen.getByText('Tags')).toBeInTheDocument())
 
-    const tableContainer = document.querySelector('[tabindex="0"]')
-    await user.click(tableContainer!)
+    const tableContainer = document.querySelector('[tabindex="0"]')!
+    await user.click(tableContainer)
     await user.keyboard('{ArrowDown}')
     await user.keyboard('{Control>}c{/Control}')
 
-    await waitFor(
-      () => {
-        expect(mockOnSaveTransactions).toHaveBeenCalled()
-      },
-      { timeout: 3000 },
-    )
+    await waitFor(() => expect(mockOnSaveTransactions).toHaveBeenCalled())
   })
 
   it('should create new transaction when Shift+N is pressed', async () => {
     renderWithEmotion(<Default />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Tags')).toBeInTheDocument()
-    })
+    await waitFor(() => expect(screen.getByText('Tags')).toBeInTheDocument())
 
-    const tableContainer = document.querySelector('[tabindex="0"]')
-    await user.click(tableContainer!)
+    const tableContainer = document.querySelector('[tabindex="0"]')!
+    await user.click(tableContainer)
     await user.keyboard('{Shift>}n{/Shift}')
 
     expect(tableContainer).toHaveFocus()
@@ -136,21 +126,14 @@ describe('TransactionsTable Keyboard Shortcuts', () => {
 
     renderWithEmotion(<DefaultWithMock />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Tags')).toBeInTheDocument()
-    })
+    await waitFor(() => expect(screen.getByText('Tags')).toBeInTheDocument())
 
-    const tableContainer = document.querySelector('[tabindex="0"]')
-    await user.click(tableContainer!)
+    const tableContainer = document.querySelector('[tabindex="0"]')!
+    await user.click(tableContainer)
     await user.keyboard('{ArrowDown}')
     await user.keyboard('{Control>}r{/Control}')
 
-    await waitFor(
-      () => {
-        expect(mockOnSaveTransactions).toHaveBeenCalled()
-      },
-      { timeout: 3000 },
-    )
+    await waitFor(() => expect(mockOnSaveTransactions).toHaveBeenCalled())
   })
 
   it('should not handle shortcuts when table is not focused', async () => {
@@ -159,14 +142,10 @@ describe('TransactionsTable Keyboard Shortcuts', () => {
 
     renderWithEmotion(<DefaultWithMock />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Tags')).toBeInTheDocument()
-    })
+    await waitFor(() => expect(screen.getByText('Tags')).toBeInTheDocument())
 
-    // Don't focus the table, just press the shortcut
     await user.keyboard('{Control>}c{/Control}')
 
-    // Wait a bit to ensure no action was taken
     await new Promise((resolve) => setTimeout(resolve, 100))
     expect(mockOnSaveTransactions).not.toHaveBeenCalled()
   })
@@ -174,15 +153,15 @@ describe('TransactionsTable Keyboard Shortcuts', () => {
   it('should handle shortcuts with empty table', async () => {
     renderWithEmotion(<EmptyTable />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Tags')).toBeInTheDocument()
-    })
+    await waitFor(() => expect(screen.getByText('Tags')).toBeInTheDocument())
 
-    const tableContainer = document.querySelector('[tabindex="0"]')
-    await user.click(tableContainer!)
+    const tableContainer = document.querySelector('[tabindex="0"]')!
+    await user.click(tableContainer)
     await user.keyboard('{ArrowDown}')
     await user.keyboard('{ArrowUp}')
 
     expect(tableContainer).toHaveFocus()
+    const selectedRows = document.querySelectorAll('[data-state="selected"]')
+    expect(selectedRows.length).toBe(0)
   })
 })
