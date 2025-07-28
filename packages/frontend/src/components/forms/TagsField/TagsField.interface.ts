@@ -15,6 +15,10 @@ export interface TagsFieldProps extends FormFieldProps {
    */
   onChange: (tags: ITagUpdate[]) => void
   /**
+   *  placeholder for the Field
+   */
+  placeholder?: string
+  /**
    * Optionally set the current value for Field
    */
   value?: ITag[] | null

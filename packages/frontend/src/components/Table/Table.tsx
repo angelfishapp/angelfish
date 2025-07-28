@@ -274,6 +274,9 @@ export default function Table<T>({
     },
     [onRowContextMenu, enableRowSelection],
   )
+  const handleContextMenuClose = React.useCallback(() => {
+    setContextMenuPos({ top: 0, left: 0 })
+  }, [])
 
   // Keep track of parent row index for zebra striping
   let isStriped = false
@@ -424,7 +427,7 @@ export default function Table<T>({
             <ContextMenuElement
               open={contextMenuPos.top !== 0}
               anchorPosition={contextMenuPos}
-              onClose={() => setContextMenuPos({ top: 0, left: 0 })}
+              onClose={handleContextMenuClose}
               table={table}
             />
           )}

@@ -203,7 +203,12 @@ export function updateTransaction(
         // Merge new tags with existing tags or remove tags from existing tags if present
         tags = tags
           .filter((tag) => !remove_tags?.find((removeTag) => removeTag.id === tag.id))
-          .concat(add_tags || [])
+          // Add only new tags that don't already exist
+          .concat(
+            (add_tags || []).filter(
+              (addTag) => !tags.some((existingTag) => existingTag.id === addTag.id),
+            ),
+          )
       }
       return {
         ...lineItem,

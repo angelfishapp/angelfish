@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditNoteIcon from '@mui/icons-material/EditNote'
 import InventoryIcon from '@mui/icons-material/Inventory'
 import TagIcon from '@mui/icons-material/LocalOffer'
-import { DialogContentText } from '@mui/material'
+import { Chip, DialogContentText } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React from 'react'
 
@@ -21,6 +21,12 @@ import type { IAccount, ITag } from '@angelfish/core'
 import { hasSplitTransaction } from '@angelfish/core'
 import type { TransactionRow } from '../../data'
 import { StyledContextMenu } from './ContextMenu.styles'
+import {
+  getRecentCategories,
+  getRecentTags,
+  updateRecentCategories,
+  updateRecentTags,
+} from './ContextMenu.utils'
 
 /**
  * Context Menu for TransactionsTable
@@ -39,31 +45,87 @@ export default function TransactionTableContextMenu({
   const [totalSum, setTotalSum] = React.useState<number>(0)
   const [showEditNotes, setShowEditNotes] = React.useState<boolean>(false)
   const [updatedNotes, setUpdatedNotes] = React.useState<string>('')
+  const [recentCategories, setRecentCategories] = React.useState<IAccount[]>([])
+  const [recentTags, setRecentTags] = React.useState<ITag[]>([])
 
   // Get all transactions and determine total sum of all transactions
   // and whether any of the transactions are split transactions
-  React.useMemo(() => {
+  React.useEffect(() => {
     const transactions = selectedRows.map((row) => row.original.transaction)
     setTotalSum(transactions.reduce((sum, transaction) => sum + transaction.amount, 0))
     setHasSplitTransactions(hasSplitTransaction(transactions))
   }, [selectedRows])
 
+  // Generate recently used categories and tags
+  const accountId = table.options.meta?.transactionsTable?.account?.id
+  React.useEffect(() => {
+    if (!accountId) return
+    const transactionRows = table.getRowModel().rows.map((row) => row.original)
+    setRecentCategories(getRecentCategories(transactionRows))
+    setRecentTags(getRecentTags(transactionRows))
+  }, [accountId, table])
+
+  // New tags will receive ID after being saved in database so we need to update the recent tags
+  // when allTags changes
+  React.useMemo(() => {
+    recentTags.forEach((tag) => {
+      if (!tag.id) {
+        // If tag does not have ID, match it with allTags name and update it
+        const matchedTag = table.options.meta?.transactionsTable?.allTags.find(
+          (t) => t.name === tag.name,
+        )
+        if (matchedTag) {
+          tag.id = matchedTag.id
+          tag.created_on = matchedTag.created_on
+          tag.modified_on = matchedTag.modified_on
+          tag.name = matchedTag.name
+        }
+      }
+    })
+
+    return table.options.meta?.transactionsTable?.allTags ?? []
+  }, [table.options.meta?.transactionsTable?.allTags, recentTags])
+
   // Generate recently used category items
-  const recentCategories: ContextMenuItem[] = React.useMemo(() => {
-    const categories = table.options.meta?.transactionsTable?.recentCategories ?? []
-    return categories.map((category) => {
+  const recentCategoryMenuItems: ContextMenuItem[] = React.useMemo(() => {
+    return recentCategories.map((category) => {
       return {
         item: <CategoryLabel account={category} className="category" iconSize={25} />,
         onClick: () => {
+          // Update the transactions with the selected category
           const rows = table.getSelectedRowModel().rows.map((row) => row.original)
           table.options.meta?.transactionsTable?.updateRows(rows, {
             category_id: category.id,
           })
+          // Update recent categories
+          setRecentCategories(updateRecentCategories(recentCategories, category))
+          // Close the context menu
+          onClose()
         },
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [table, table.options.meta?.transactionsTable?.recentCategories])
+  }, [recentCategories, table, onClose])
+
+  // Generate recently used tag items
+  const recentTagMenuItems: ContextMenuItem[] = React.useMemo(() => {
+    return recentTags.map((tag) => {
+      return {
+        item: <Chip label={tag.name} size="small" variant="outlined" />,
+        onClick: () => {
+          // Update the transactions with the selected tag
+          const rows = table.getSelectedRowModel().rows.map((row) => row.original)
+          table.options.meta?.transactionsTable?.updateRows(rows, {
+            add_tags: [tag],
+          })
+
+          // Update recent tags
+          setRecentTags(updateRecentTags(recentTags, [tag]))
+          // Close the context menu
+          onClose()
+        },
+      }
+    })
+  }, [recentTags, table, onClose])
 
   // Generate menu items based on visible columns
   const showNote =
@@ -71,16 +133,19 @@ export default function TransactionTableContextMenu({
       .getAllColumns()
       .find((col) => col.id === 'note')
       ?.getIsVisible() || false
+
   const showTags =
     table
       .getAllColumns()
       .find((col) => col.id === 'tags')
       ?.getIsVisible() || false
+
   const showIsReviewed =
     table
       .getAllColumns()
       .find((col) => col.id === 'is_reviewed')
       ?.getIsVisible() || false
+
   const menuItems: ContextMenuItem[] = React.useMemo(() => {
     const items: ContextMenuItem[] = [
       {
@@ -105,32 +170,41 @@ export default function TransactionTableContextMenu({
         subMenu: [
           {
             item: (
-              <CategoryField
-                fullWidth
-                renderAsValue={false}
-                margin="none"
-                accountsWithRelations={
-                  table.options.meta?.transactionsTable?.accountsWithRelations ?? []
-                }
-                onChange={(category) => {
-                  if (category) {
-                    const rows = selectedRows.map((row) => row.original)
-                    table.options.meta?.transactionsTable?.updateRows(rows, {
-                      category_id: (category as IAccount).id,
-                    })
-                    setShowSubMenu(null)
-                    onClose()
+              <div style={{ minWidth: '350px', width: '100%' }}>
+                <CategoryField
+                  fullWidth
+                  renderAsValue={false}
+                  margin="none"
+                  accountsWithRelations={
+                    table.options.meta?.transactionsTable?.accountsWithRelations ?? []
                   }
-                }}
-                onCreate={(name) => table.options.meta?.transactionsTable?.onCreateCategory(name)}
-              />
+                  onChange={(category) => {
+                    if (category) {
+                      // Update the transactions with the selected category
+                      const rows = selectedRows.map((row) => row.original)
+                      table.options.meta?.transactionsTable?.updateRows(rows, {
+                        category_id: (category as IAccount).id,
+                      })
+
+                      // Update recent categories
+                      setRecentCategories(
+                        updateRecentCategories(recentCategories, category as IAccount),
+                      )
+
+                      setShowSubMenu(null)
+                      onClose()
+                    }
+                  }}
+                  onCreate={(name) => table.options.meta?.transactionsTable?.onCreateCategory(name)}
+                />
+              </div>
             ),
             className: 'search-categories',
           },
           {
             item: 'Recently Used',
           },
-          ...recentCategories,
+          ...recentCategoryMenuItems,
         ],
       },
       {
@@ -218,22 +292,33 @@ export default function TransactionTableContextMenu({
         subMenu: [
           {
             item: (
-              <TagsField
-                fullWidth
-                margin="none"
-                tags={table.options.meta?.transactionsTable?.allTags ?? []}
-                onChange={(tags) => {
-                  const rows = selectedRows.map((row) => row.original)
-                  table.options.meta?.transactionsTable?.updateRows(rows, {
-                    add_tags: tags as ITag[],
-                  })
-                  setShowSubMenu(null)
-                  onClose()
-                }}
-              />
+              <div style={{ minWidth: '350px', width: '100%' }}>
+                <TagsField
+                  fullWidth
+                  margin="none"
+                  placeholder="Search or create new tags"
+                  tags={table.options.meta?.transactionsTable?.allTags ?? []}
+                  onChange={(tags) => {
+                    // Update the transactions with the selected tags
+                    const rows = selectedRows.map((row) => row.original)
+                    table.options.meta?.transactionsTable?.updateRows(rows, {
+                      add_tags: tags as ITag[],
+                    })
+
+                    // Update recent tags
+                    setRecentTags(updateRecentTags(recentTags, tags as ITag[]))
+                    setShowSubMenu(null)
+                    onClose()
+                  }}
+                />
+              </div>
             ),
             className: 'tags',
           },
+          {
+            item: 'Recently Used',
+          },
+          ...recentTagMenuItems,
         ],
       })
     }
@@ -284,6 +369,9 @@ export default function TransactionTableContextMenu({
     showSubMenu,
     onClose,
     recentCategories,
+    recentCategoryMenuItems,
+    recentTags,
+    recentTagMenuItems,
   ])
 
   // Render

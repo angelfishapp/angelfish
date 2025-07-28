@@ -10,12 +10,7 @@ import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
 import TableRow from './components/TableRow/TableRow'
 import type { TransactionRow } from './data'
-import {
-  buildColumns,
-  buildTransactionRow,
-  buildTransactionRows,
-  getRecentCategories,
-} from './data'
+import { buildColumns, buildTransactionRow, buildTransactionRows } from './data'
 import type { TransactionsTableProps } from './TransactionsTable.interface'
 import { StyledTransactionTable } from './TransactionsTable.styles'
 
@@ -33,10 +28,6 @@ declare module '@tanstack/react-table' {
        * All categories/accounts with relations from database
        */
       accountsWithRelations: TransactionsTableProps['accountsWithRelations']
-      /**
-       * Recent categories/accounts used in transactions
-       */
-      recentCategories: TransactionsTableProps['accountsWithRelations']
       /**
        * All tags available in database
        */
@@ -136,10 +127,6 @@ export default function TransactionsTable({
   const transactionRows = React.useMemo(
     () => buildTransactionRows(transactions, accountsWithRelations),
     [transactions, accountsWithRelations],
-  )
-  const recentCategories = React.useMemo(
-    () => getRecentCategories(transactionRows),
-    [transactionRows],
   )
 
   // React-Table State
@@ -244,7 +231,6 @@ export default function TransactionsTable({
         transactionsTable: {
           account,
           accountsWithRelations,
-          recentCategories,
           allTags,
           isEditMode: (id) => id in editRows,
           toggleEditMode: (id, value) => {
