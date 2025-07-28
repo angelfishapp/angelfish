@@ -1,7 +1,7 @@
-import type { Table as ReactTable, RowSelectionState } from '@tanstack/react-table'
-import type React from 'react'
+import type { Table as ReactTable } from '@tanstack/react-table'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { handleRowSelection } from '@/components/Table'
 import type { TransactionRow } from '@/components/TransactionsTable/data'
 
 /**
@@ -51,7 +51,7 @@ export function useKeyboardShortcuts({
         return
       }
 
-      const { key, metaKey, ctrlKey, shiftKey } = event
+      const { key, metaKey, ctrlKey } = event
       const isModifierPressed = metaKey || ctrlKey
 
       // Handle Ctrl+N with aggressive prevention
@@ -87,10 +87,10 @@ export function useKeyboardShortcuts({
 
       switch (key) {
         case 'ArrowUp':
-          handleArrowNavigation('up', shiftKey, table, selectionStateRef)
+          handleRowSelection(event, null, table, selectionStateRef, 'up')
           break
         case 'ArrowDown':
-          handleArrowNavigation('down', shiftKey, table, selectionStateRef)
+          handleRowSelection(event, null, table, selectionStateRef, 'down')
           break
         case 'c':
         case 'C':
@@ -161,113 +161,4 @@ export function useKeyboardShortcuts({
       window.removeEventListener('keydown', handleKeyDown, { capture: true })
     }
   }, [handleKeyDown, isEnabled])
-}
-
-function handleArrowNavigation(
-  direction: 'up' | 'down',
-  shiftKey: boolean,
-  table: ReactTable<TransactionRow>,
-  selectionStateRef: React.MutableRefObject<{
-    anchorRowId: string | null
-    lastSelectedRowId: string | null
-  }>,
-) {
-  const allRows = table.getRowModel().rows
-  const selectedRows = table.getSelectedRowModel().rows
-
-  // Find current row to navigate from
-  let currentRowId = selectionStateRef.current.lastSelectedRowId
-  if (!currentRowId && selectedRows.length > 0) {
-    currentRowId = selectedRows[selectedRows.length - 1].id
-  }
-
-  let currentRow = allRows.find((row) => row.id === currentRowId)
-  let currentLevel = currentRow?.depth ?? 0
-
-  // If no current row, start from first/last row at level 0
-  if (!currentRow) {
-    const topLevelRows = allRows.filter((row) => row.depth === 0)
-    if (topLevelRows.length === 0) return
-
-    currentRow = direction === 'up' ? topLevelRows[topLevelRows.length - 1] : topLevelRows[0]
-    currentLevel = 0
-  }
-
-  // Get all rows at the same level
-  const sameLevel = allRows.filter((row) => row.depth === currentLevel)
-  const currentIndex = sameLevel.findIndex((row) => row.id === currentRow!.id)
-
-  if (currentIndex === -1) return
-
-  // Calculate target index
-  let targetIndex: number
-  if (direction === 'up') {
-    targetIndex = Math.max(0, currentIndex - 1)
-  } else {
-    targetIndex = Math.min(sameLevel.length - 1, currentIndex + 1)
-  }
-
-  // If we're at the boundary, don't do anything
-  if (targetIndex === currentIndex) return
-
-  const targetRow = sameLevel[targetIndex]
-  if (!targetRow) return
-
-  // Update last selected row
-  selectionStateRef.current.lastSelectedRowId = targetRow.id
-
-  if (shiftKey) {
-    // Multi-select behavior
-    let anchorRowId = selectionStateRef.current.anchorRowId
-
-    // If no anchor, use the first selected row or current row as anchor
-    if (!anchorRowId) {
-      if (selectedRows.length > 0) {
-        anchorRowId = selectedRows[0].id
-      } else {
-        anchorRowId = currentRow.id
-      }
-      selectionStateRef.current.anchorRowId = anchorRowId
-    }
-
-    // Find anchor row in same level
-    const anchorIndex = sameLevel.findIndex((row) => row.id === anchorRowId)
-    if (anchorIndex === -1) {
-      // Anchor not found at same level, reset to current row
-      anchorRowId = currentRow.id
-      selectionStateRef.current.anchorRowId = anchorRowId
-      const newAnchorIndex = sameLevel.findIndex((row) => row.id === anchorRowId)
-      if (newAnchorIndex === -1) return
-    }
-
-    // Select range from anchor to target
-    const finalAnchorIndex = sameLevel.findIndex((row) => row.id === anchorRowId)
-    const startIndex = Math.min(finalAnchorIndex, targetIndex)
-    const endIndex = Math.max(finalAnchorIndex, targetIndex)
-
-    const newSelection: RowSelectionState = {}
-    for (let i = startIndex; i <= endIndex; i++) {
-      if (sameLevel[i]) {
-        newSelection[sameLevel[i].id] = true
-      }
-    }
-
-    table.setRowSelection(newSelection)
-  } else {
-    // Single select - clear previous selection and select target
-    selectionStateRef.current.anchorRowId = targetRow.id
-    const newSelection: RowSelectionState = {}
-    newSelection[targetRow.id] = true
-    table.setRowSelection(newSelection)
-  }
-
-  // Scroll to target row
-  scrollToRow(targetRow.id)
-}
-
-function scrollToRow(rowId: string) {
-  const rowElement = document.querySelector(`[data-row-id="${rowId}"]`)
-  if (rowElement) {
-    rowElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  }
 }
