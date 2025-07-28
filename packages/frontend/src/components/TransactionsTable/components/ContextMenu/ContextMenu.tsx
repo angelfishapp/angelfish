@@ -66,6 +66,27 @@ export default function TransactionTableContextMenu({
     setRecentTags(getRecentTags(transactionRows))
   }, [allRows, recentCategories, recentTags])
 
+  // New tags will receive ID after being saved in database so we need to update the recent tags
+  // when allTags changes
+  const allTags = React.useMemo(() => {
+    recentTags.forEach((tag) => {
+      if (!tag.id) {
+        // If tag does not have ID, match it with allTags name and update it
+        const matchedTag = table.options.meta?.transactionsTable?.allTags.find(
+          (t) => t.name === tag.name,
+        )
+        if (matchedTag) {
+          tag.id = matchedTag.id
+          tag.created_on = matchedTag.created_on
+          tag.modified_on = matchedTag.modified_on
+          tag.name = matchedTag.name
+        }
+      }
+    })
+
+    return table.options.meta?.transactionsTable?.allTags ?? []
+  }, [table.options.meta?.transactionsTable?.allTags, recentTags])
+
   // Generate recently used category items
   const recentCategoryMenuItems: ContextMenuItem[] = React.useMemo(() => {
     return recentCategories.map((category) => {
@@ -277,7 +298,7 @@ export default function TransactionTableContextMenu({
                   fullWidth
                   margin="none"
                   placeholder="Search or create new tags"
-                  tags={table.options.meta?.transactionsTable?.allTags ?? []}
+                  tags={allTags}
                   onChange={(tags) => {
                     // Update the transactions with the selected tags
                     const rows = selectedRows.map((row) => row.original)
