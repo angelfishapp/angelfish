@@ -38,7 +38,6 @@ export default function TransactionTableContextMenu({
   table,
 }: TableContextMenuProps<TransactionRow>) {
   const selectedRows = table.getSelectedRowModel().rows
-  const allRows = table.getRowModel().rows
 
   // Component State
   const [showSubMenu, setShowSubMenu] = React.useState<'categories' | 'tags' | null>(null)
@@ -51,20 +50,20 @@ export default function TransactionTableContextMenu({
 
   // Get all transactions and determine total sum of all transactions
   // and whether any of the transactions are split transactions
-  React.useMemo(() => {
+  React.useEffect(() => {
     const transactions = selectedRows.map((row) => row.original.transaction)
     setTotalSum(transactions.reduce((sum, transaction) => sum + transaction.amount, 0))
     setHasSplitTransactions(hasSplitTransaction(transactions))
   }, [selectedRows])
 
   // Generate recently used categories and tags
-  React.useMemo(() => {
-    const transactionRows = allRows.map((row) => row.original)
-    // Only generate first time when allRows is populated
-    if (recentCategories.length > 0 || recentTags.length > 0) return
+  const accountId = table.options.meta?.transactionsTable?.account?.id
+  React.useEffect(() => {
+    if (!accountId) return
+    const transactionRows = table.getRowModel().rows.map((row) => row.original)
     setRecentCategories(getRecentCategories(transactionRows))
     setRecentTags(getRecentTags(transactionRows))
-  }, [allRows, recentCategories, recentTags])
+  }, [accountId, table])
 
   // New tags will receive ID after being saved in database so we need to update the recent tags
   // when allTags changes

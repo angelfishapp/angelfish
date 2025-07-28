@@ -15,10 +15,10 @@ export function getRecentCategories(transactionRows: TransactionRow[], limit = 5
   // Step 1: Sort transactions by modified_on descending, fallback to transaction.id
   const sortedTransactions = transactionRows.slice().sort((a, b) => {
     return DateSort(
-      a.transaction.modified_on,
-      a.transaction.id,
       b.transaction.modified_on,
       b.transaction.id,
+      a.transaction.modified_on,
+      a.transaction.id,
     )
   })
 
@@ -75,10 +75,10 @@ export function getRecentTags(transactionRows: TransactionRow[], limit = 5): ITa
   // Step 1: Sort transactions by modified_on descending, fallback to transaction.id
   const sortedTransactions = transactionRows.slice().sort((a, b) => {
     return DateSort(
-      a.transaction.modified_on,
-      a.transaction.id,
       b.transaction.modified_on,
       b.transaction.id,
+      a.transaction.modified_on,
+      a.transaction.id,
     )
   })
 
