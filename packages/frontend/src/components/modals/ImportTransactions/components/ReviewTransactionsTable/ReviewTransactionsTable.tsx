@@ -1,21 +1,20 @@
 import Checkbox from '@mui/material/Checkbox'
 import Chip from '@mui/material/Chip'
+import Edit from '@mui/icons-material/Edit'
 import type { ColumnDef } from '@tanstack/react-table'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 import React, { type JSX } from 'react'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { CategoryField } from '@/components/forms/CategoryField'
 import { Table } from '@/components/Table'
 
-import { Edit as EditIcon } from '@mui/icons-material'
 import IconButton from '@mui/material/IconButton'
 import HeaderRow from './components/TableHeaderGroup'
 import TableRow from './components/TableRow'
 import type { ReconciledTransactionRow } from './ReviewTransactionsTable.data'
 import { flattenRowData, getSelectedRowState } from './ReviewTransactionsTable.data'
 import type { ReviewTransactionsTableProps } from './ReviewTransactionsTable.interface'
-// TO-DO : this the only thing we need to fix it's import
 import type { ITag } from '@angelfish/core'
 
 /**
@@ -263,7 +262,7 @@ export default function ReviewTransactionsTable({
                 backgroundColor: expandedRow === rowId ? 'primary.light' : 'transparent',
               }}
             >
-              <EditIcon fontSize="small" />
+              <Edit fontSize="small" />
             </IconButton>
           )
         },
