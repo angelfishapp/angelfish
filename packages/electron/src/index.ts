@@ -1,4 +1,4 @@
-import { app, Menu } from 'electron'
+import { app } from 'electron'
 import { updateElectronApp } from 'update-electron-app'
 
 // Set user data path as early as possible
@@ -7,12 +7,11 @@ app.setPath('userData', Environment.userDataDir)
 
 import { setupMainCommands } from './commands'
 import { LogManager } from './logging/log-manager'
-import { menu } from './menu'
+import { buildMenu } from './menu'
 import { createWindows } from './windows/create-windows'
 
 const logger = LogManager.getMainLogger('main')
 logger.info(`Setting user data path to ${Environment.userDataDir}`)
-
 /**
  * Setup Autoupdater
  */
@@ -49,7 +48,7 @@ app.on('ready', () => {
   createWindows()
 
   // Set Application Menu
-  Menu.setApplicationMenu(menu)
+  buildMenu()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

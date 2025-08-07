@@ -1,13 +1,16 @@
 import type { MenuItemConstructorOptions } from 'electron'
 
+import { initI18n } from '../i18n/main.i18n'
 import { settings } from '../settings'
 
-export const ViewMenu: MenuItemConstructorOptions = {
-  label: 'View',
+const i18n = initI18n()
+
+export const ViewMenu = (): MenuItemConstructorOptions => ({
+  label: i18n.t('menu.view.label'),
   role: 'viewMenu',
   submenu: [
     {
-      label: 'Enable Background Animations',
+      label: i18n.t('menu.view.enableAnimations'),
       id: 'view-enable-animations',
       enabled: true,
       type: 'checkbox',
@@ -19,10 +22,10 @@ export const ViewMenu: MenuItemConstructorOptions = {
       },
     },
     { type: 'separator' },
-    { role: 'resetZoom' },
-    { role: 'zoomIn' },
-    { role: 'zoomOut' },
+    { role: 'resetZoom', label: i18n.t('menu.view.resetZoom') },
+    { role: 'zoomIn', label: i18n.t('menu.view.zoomIn') },
+    { role: 'zoomOut', label: i18n.t('menu.view.zoomOut') },
     { type: 'separator' },
-    { role: 'togglefullscreen' },
+    { role: 'togglefullscreen', label: i18n.t('menu.view.toggleFullscreen') },
   ],
-}
+})

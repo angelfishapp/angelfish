@@ -76,6 +76,8 @@ __metadata:
     electron-squirrel-startup: "npm:^1.0.1"
     electron-store: "npm:8.2.0"
     fork-ts-checker-webpack-plugin: "npm:^9.0.2"
+    i18next: "npm:^25.3.2"
+    i18next-fs-backend: "npm:^2.6.0"
     node-loader: "npm:^2.1.0"
     react-refresh: "npm:^0.17.0"
     style-loader: "npm:^4.0.0"
@@ -422,6 +424,13 @@ __metadata:
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
   checksum: 10/e6966e03b695feb4c0ac0856a4355231c2580bf9ebd0298f47739f85c0ea658679dd84409daf26378d42c86c1cbe7e33feab709b14e784254b6c441d91606465
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.27.6":
+  version: 7.28.2
+  resolution: "@babel/runtime@npm:7.28.2"
+  checksum: 10/a0965fbdd6aaa40709290923bbe05e1c4314021f0cef608eb1d69f04f717c41829e50a53d79c4a0f461512b4be9b3c0190dc19387b219bcdaacdd793b2fe1b8a
   languageName: node
   linkType: hard
 
@@ -9337,6 +9346,27 @@ __metadata:
   dependencies:
     ms: "npm:^2.0.0"
   checksum: 10/9c7a74a2827f9294c009266c82031030eae811ca87b0da3dceb8d6071b9bde22c9f3daef0469c3c533cc67a97d8a167cd9fc0389350e5f415f61a79b171ded16
+  languageName: node
+  linkType: hard
+
+"i18next-fs-backend@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "i18next-fs-backend@npm:2.6.0"
+  checksum: 10/e23b6337326bea870c9e0a3e004241a27dcc56ac803946b859992bc2030e5f8d41cb10fbf3b74424155055387587f8d308b60118e07f75104198865f329013a9
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^25.3.2":
+  version: 25.3.2
+  resolution: "i18next@npm:25.3.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.27.6"
+  peerDependencies:
+    typescript: ^5
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/fb6b2035cc8f3bcc89f56e164d22cefbefd54e5a569315b20ddcfa6e1b68c48962307181b271fea7e5ee37ddfaa90721a4a7f7814b739f24bf00a3a670b8eb93
   languageName: node
   linkType: hard
 

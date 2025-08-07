@@ -1,0 +1,68 @@
+{
+  "direction": "ltr",
+  "menu": {
+    "developer": {
+      "label": "Development",
+      "reload": "Reload",
+      "forceReload": "Force Reload",
+      "toggleDevTools": "Toggle Developer Tools",
+      "logLevel": {
+        "label": "Log Level",
+        "error": "Error",
+        "warn": "Warning",
+        "info": "Info",
+        "debug": "Debug",
+        "verbose": "Verbose"
+      },
+      "listChannels": "List Main Channels",
+      "listCommands": "List Main Commands"
+    },
+    "edit": {
+      "label": "Edit",
+      "undo": "Undo",
+      "redo": "Redo",
+      "cut": "Cut",
+      "copy": "Copy",
+      "paste": "Paste",
+      "pasteMatchStyle": "Paste and Match Style",
+      "selectAll": "Select All"
+    },
+    "file": {
+      "label": "File",
+      "createBook": "Create new Book...",
+      "openBook": "Open Book...",
+      "openRecent": "Open Recent Book",
+      "clearRecent": "Clear Recent Books",
+      "bookSettings": "Book Settings",
+      "syncBook": "Synchronize Book",
+      "settings": "Settings",
+      "synchronize": "Synchronize",
+      "logout": "Logout",
+      "quit": "Quit"
+    },
+    "help": {
+      "label": "Help",
+      "learnMore": "Learn More",
+      "enableDebug": "Enable Debug Logging"
+    },
+    "view": {
+      "label": "View",
+      "enableAnimations": "Enable Background Animations",
+      "resetZoom": "Reset Zoom",
+      "zoomIn": "Zoom In",
+      "zoomOut": "Zoom Out",
+      "toggleFullscreen": "Toggle Fullscreen"
+    },
+    "window": {
+      "label": "Window",
+      "minimize": "Minimize",
+      "close": "Close"
+    },
+    "language": {
+      "label": "Language",
+      "systemDefault": "System Default",
+      "english": "English",
+      "arabic": "Arabic"
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "direction": "rtl",
+  "menu": {
+    "developer": {
+      "label": "التطوير",
+      "reload": "إعادة تحميل",
+      "forceReload": "إعادة تحميل إجبارية",
+      "toggleDevTools": "تبديل أدوات المطور",
+      "logLevel": {
+        "label": "مستوى السجلات",
+        "error": "خطأ",
+        "warn": "تحذير",
+        "info": "معلومة",
+        "debug": "فحص",
+        "verbose": "تفصيلي"
+      },
+      "listChannels": "سرد القنوات الرئيسية",
+      "listCommands": "سرد الأوامر الرئيسية"
+    },
+    "edit": {
+      "label": "تحرير",
+      "undo": "تراجع",
+      "redo": "إعادة",
+      "cut": "قص",
+      "copy": "نسخ",
+      "paste": "لصق",
+      "pasteMatchStyle": "لصق مع مطابقة النمط",
+      "selectAll": "تحديد الكل"
+    },
+    "file": {
+      "label": "ملف",
+      "createBook": "إنشاء كتاب جديد...",
+      "openBook": "فتح كتاب...",
+      "openRecent": "فتح كتاب حديث",
+      "clearRecent": "مسح الكتب الحديثة",
+      "bookSettings": "إعدادات الكتاب",
+      "syncBook": "مزامنة الكتاب",
+      "settings": "الإعدادات",
+      "synchronize": "المزامنة",
+      "logout": "تسجيل الخروج",
+      "quit": "خروج"
+    },
+    "help": {
+      "label": "مساعدة",
+      "learnMore": "معرفة المزيد",
+      "enableDebug": "تمكين تسجيل التصحيح"
+    },
+    "view": {
+      "label": "عرض",
+      "enableAnimations": "تمكين الرسوم المتحركة الخلفية",
+      "resetZoom": "إعادة ضبط التكبير",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "toggleFullscreen": "تبديل ملء الشاشة"
+    },
+    "window": {
+      "label": "نافذة",
+      "minimize": "تصغير",
+      "close": "إغلاق"
+    },
+    "language": {
+      "label": "اللغة",
+      "systemDefault": "الإعدادات الافتراضية للنظام",
+      "english": "الإنجليزية",
+      "arabic": "العربية"
+    }
+  }
+}

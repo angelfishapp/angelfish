@@ -1,6 +1,6 @@
 import type { MenuItemConstructorOptions } from 'electron'
 
-export const AppMenu: MenuItemConstructorOptions = {
+export const AppMenu = (): MenuItemConstructorOptions => ({
   label: 'Angelfish',
   role: 'appMenu',
   submenu: [
@@ -14,4 +14,4 @@ export const AppMenu: MenuItemConstructorOptions = {
     { type: 'separator' },
     { role: 'quit' },
   ],
-}
+})

@@ -4,20 +4,23 @@ import type { LogLevel } from 'electron-log'
 
 import { AppCommandIds } from '@angelfish/core'
 import { AppCommandsRegistryMain } from '../commands/commands-registry-main'
+import { initI18n } from '../i18n/main.i18n'
 import { settings } from '../settings'
 
-export const HelpMenu: MenuItemConstructorOptions = {
-  label: 'Help',
+const i18n = initI18n()
+
+export const HelpMenu = (): MenuItemConstructorOptions => ({
+  label: i18n.t('menu.help.label'),
   role: 'help',
   submenu: [
     {
-      label: 'Learn More',
+      label: i18n.t('menu.help.learnMore'),
       click: async () => {
         await AppCommandsRegistryMain.executeAppCommand(AppCommandIds.OPEN_ANGELFISH_WEBSITE)
       },
     },
     {
-      label: 'Enable Debug Logging',
+      label: i18n.t('menu.help.enableDebug'),
       id: 'help-enable-debug',
       enabled: true,
       type: 'checkbox',
@@ -40,4 +43,4 @@ export const HelpMenu: MenuItemConstructorOptions = {
       },
     },
   ],
-}
+})
