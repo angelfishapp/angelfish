@@ -15,6 +15,13 @@ class ResizeObserver {
 }
 globalThis.ResizeObserver = ResizeObserver
 
+class IntersectionObserver {
+  observe = vi.fn()
+  unobserve = vi.fn()
+  disconnect = vi.fn()
+}
+;(globalThis as any).IntersectionObserver = IntersectionObserver
+
 globalThis.Path2D = class {
   constructor() {}
   addPath = vi.fn()
