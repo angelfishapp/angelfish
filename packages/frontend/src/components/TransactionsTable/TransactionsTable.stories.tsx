@@ -117,7 +117,7 @@ const meta = {
           }}
         >
           {divScrollElement && (
-            <Box padding="20px">
+            <Box padding="20px" sx={{ width: 'fit-content', minWidth: '100%' }}>
               <TransactionsTable
                 columns={[
                   'title',

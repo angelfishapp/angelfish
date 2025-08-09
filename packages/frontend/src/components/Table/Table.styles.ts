@@ -27,7 +27,7 @@ export const StyledTable = styled(MuiTable)(({ theme }) => ({
   // as MUI does it at th level which affects resizing bars
   '&.MuiTable-stickyHeader thead': {
     position: 'sticky',
-    top: 0,
+    top: 'var(--filterBar-h)',
     zIndex: 2,
     '&::after': {
       position: 'absolute',
@@ -110,3 +110,12 @@ export const StyledTableBody = styled(TableBody)(({ onClick }) => ({
   cursor: onClick ? 'pointer' : undefined,
   userSelect: onClick ? 'none' : undefined,
 }))
+
+/**
+ * Hidden sentinel element to detect filterbar/header are sticky
+ */
+export const StickySentinel = styled('div')({
+  height: '1px',
+  width: '100%',
+  pointerEvents: 'none',
+})

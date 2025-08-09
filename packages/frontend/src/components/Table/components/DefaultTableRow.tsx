@@ -36,6 +36,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<any>>(
       <TableRow
         ref={ref}
         selected={row.getIsSelected()}
+        data-row-id={row.id}
         className={clsx(
           className,
           row.getIsExpanded() ? 'expanded' : undefined,
