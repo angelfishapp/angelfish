@@ -6,7 +6,7 @@ import React from 'react'
 import { TransactionsTable } from '.'
 
 // Mock Data
-import type { IAccount, ITransaction, ITransactionUpdate } from '@angelfish/core'
+import type { IAccount, ITag, ITransaction, ITransactionUpdate } from '@angelfish/core'
 import {
   getAccountsWithRelations,
   getLongTransactions,
@@ -31,10 +31,20 @@ const meta = {
     onSaveTransactions: (items: ITransactionUpdate[]) => action('onSaveTransactions')(items),
     onImportTransactions: () => action('onImportTransactions')(),
   },
-  render: ({ scrollElement, transactions, onSaveTransactions, onDeleteTransaction, ...args }) => {
+  render: ({
+    scrollElement,
+    transactions,
+    onSaveTransactions,
+    onDeleteTransaction,
+    allTags,
+    ...args
+  }) => {
     const RenderComponent = () => {
       // Keep state of transactions so user can edit transactions while testing story
       const [updatedTransactions, setUpdatedTransactions] = React.useState(transactions)
+      // Keep state of tags as we add tags
+      const [updatedTags, setUpdatedTags] = React.useState(allTags)
+
       const saveTransactions = (items: ITransactionUpdate[]) => {
         onSaveTransactions(items)
         const state = structuredClone(updatedTransactions)
@@ -56,6 +66,26 @@ const meta = {
             state.push(transaction as ITransaction)
           }
           setUpdatedTransactions(state)
+
+          // Update Tags if they have changed
+          if (transaction.line_items) {
+            transaction.line_items.forEach((lineItem) => {
+              if (lineItem.tags) {
+                lineItem.tags.forEach((tag) => {
+                  // If tag does not have an ID, generate one and add to updatedTags
+                  if (!tag.id) {
+                    tag.id = 1000 + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER - 1000)
+                    tag.created_on = new Date()
+                    tag.modified_on = new Date()
+                    tag.name = tag.name?.trim()
+                  }
+                  if (!updatedTags.some((t) => t.id === tag.id)) {
+                    setUpdatedTags((prevTags) => [...prevTags, tag as ITag])
+                  }
+                })
+              }
+            })
+          }
         }
       }
       const deleteTransaction = (id: number) => {
@@ -87,7 +117,7 @@ const meta = {
           }}
         >
           {divScrollElement && (
-            <Box padding="20px">
+            <Box padding="20px" sx={{ width: 'fit-content', minWidth: '100%' }}>
               <TransactionsTable
                 columns={[
                   'title',
@@ -106,6 +136,7 @@ const meta = {
                 onSaveTransactions={saveTransactions}
                 onDeleteTransaction={deleteTransaction}
                 scrollElement={divScrollElement}
+                allTags={updatedTags}
                 {...args}
               />
             </Box>

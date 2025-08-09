@@ -154,6 +154,7 @@ export default function ReviewTransactionsTable({
       scrollElement={scrollElement}
       estimateSize={() => 40}
       stickyHeader
+      sx={{ tableLayout: 'auto' }}
       displayFooter={false}
       enableRowSelection={true}
       enableMultiRowSelection={true}

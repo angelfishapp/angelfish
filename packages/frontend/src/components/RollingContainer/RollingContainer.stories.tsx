@@ -1,7 +1,7 @@
 import Paper from '@mui/material/Paper'
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { RollingContainer } from '.'
+import { RollingContainer, RollingContainerScrollBar } from '.'
 
 /**
  * Story Book Meta
@@ -15,6 +15,9 @@ const meta = {
     children: (
       <Paper sx={{ width: 5000, height: 600, margin: 0 }}>
         This is the content. Reduce your viewport to see scrolling effect
+        <RollingContainerScrollBar id="1" />
+        This is the content. Reduce your viewport to see scrolling effect
+        <RollingContainerScrollBar id="2" />
       </Paper>
     ),
   },
@@ -29,5 +32,8 @@ type Story = StoryObj<typeof meta>
  */
 
 export const Default: Story = {
-  args: {},
+  args: {
+    showSyncScrollbar: true,
+    syncScrollbarPosition: 'external',
+  },
 }

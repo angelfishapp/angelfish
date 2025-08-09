@@ -73,6 +73,7 @@ export interface TableProps<T>
     // Feature: Row Expanding
     | 'enableExpanding'
     | 'autoResetExpanded'
+    | 'getRowCanExpand'
     // Feature: Column Grouping
     | 'enableGrouping'
     | 'aggregationFns'
@@ -141,6 +142,11 @@ export interface TableProps<T>
    * @default <TableHeaderGroup />
    */
   HeaderElement?: React.ComponentType<TableHeaderGroupProps<any>>
+  /**
+   * Callback to add onKeyDown handler for the table. This will be called when the user presses a key
+   * while the table is focused.
+   */
+  onKeyDown?: (event: React.KeyboardEvent, table: Table<T>) => void
   /**
    * Callback to add onClick handler for each row. If `enableRowSelection` is true, this will
    * use the default rowSelectionHandler function for the table unless explicitly overridden.
