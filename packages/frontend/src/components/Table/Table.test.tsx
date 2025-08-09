@@ -5,6 +5,7 @@ import * as TableStories from './Table.stories'
 const {
   Default,
   Virtualized,
+  VirtualizedWithFilterBar,
   EmptyTable,
   CustomFooter,
   WithColumnPinning,
@@ -23,6 +24,11 @@ describe('Table component stories', () => {
   it('renders Virtualized table', async () => {
     render(<Virtualized />)
     expect(await screen.findByText('Title')).toBeInTheDocument()
+  })
+
+  it('renders VirtualizedWithFilterBar with filter input', async () => {
+    render(<VirtualizedWithFilterBar />)
+    expect(await screen.findByPlaceholderText('Filter by title')).toBeInTheDocument()
   })
 
   it('renders EmptyTable with no data', () => {

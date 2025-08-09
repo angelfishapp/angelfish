@@ -36,7 +36,7 @@ import React from 'react'
 import DefaultTableRow from './components/DefaultTableRow'
 import TableHeaderGroup from './components/TableHeaderGroup'
 import type { TableProps } from './Table.interface'
-import { StyledTable, StyledTableBody } from './Table.styles'
+import { StickySentinel, StyledTable, StyledTableBody } from './Table.styles'
 import { handleKeyboardSelection, handleRowContextMenu, handleRowSelection } from './Table.utils'
 
 /**
@@ -234,6 +234,45 @@ export default function Table<T>({
   }
 
   /**
+   * Handle sticky header behaviour
+   */
+
+  const [isSticky, setIsSticky] = React.useState<boolean>(false)
+  const sentinelRef = React.useRef<HTMLDivElement>(null)
+  const filterBarRef = React.useRef<HTMLDivElement>(null)
+  const [filterBarHeight, setFilterBarHeight] = React.useState(0)
+  // Detect when toolbar becomes sticky
+  React.useEffect(() => {
+    if (!sentinelRef.current) return
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setIsSticky(!entry.isIntersecting)
+      },
+      {
+        rootMargin: '-1px 0px 0px 0px',
+        threshold: 0,
+      },
+    )
+
+    io.observe(sentinelRef.current)
+    return () => {
+      io.disconnect()
+    }
+  }, [])
+  // Keep --filterBar-h in sync with filterBar's actual height
+  React.useLayoutEffect(() => {
+    if (!stickyHeader) return
+    if (!filterBarRef.current) return
+    const setVar = () => {
+      setFilterBarHeight(filterBarRef.current?.offsetHeight || 0)
+    }
+    setVar()
+    const ro = new ResizeObserver(setVar)
+    ro.observe(filterBarRef.current)
+    return () => ro.disconnect()
+  }, [stickyHeader])
+
+  /**
    * Row Click Handlers
    */
 
@@ -290,9 +329,40 @@ export default function Table<T>({
         setContextMenuPos({ top: 0, left: 0 })
       }}
     >
-      <Box display="flex" flexDirection="column" flexGrow={1}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        flexGrow={1}
+        sx={{
+          width: 'fit-content',
+          minWidth: '100%',
+        }}
+      >
+        {/* Sentinel element to detect when header should be sticky */}
+        <StickySentinel ref={sentinelRef} />
+
         {/* Render Filter Bar */}
-        {FilterBarElement && <FilterBarElement table={table} />}
+        {FilterBarElement && (
+          <Box
+            ref={filterBarRef}
+            sx={
+              stickyHeader
+                ? {
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 2,
+                    paddingTop: isSticky ? 1 : 0,
+                    paddingLeft: 1,
+                    paddingRight: 1,
+                    backgroundColor: (theme) =>
+                      isSticky ? theme.palette.primary.main : 'transparent',
+                  }
+                : { paddingLeft: 1, paddingRight: 1 }
+            }
+          >
+            <FilterBarElement table={table} />
+          </Box>
+        )}
 
         {/* Render Table */}
 
@@ -314,6 +384,7 @@ export default function Table<T>({
             className={`Table-variant-${variant}`}
             size={size}
             sx={sx}
+            style={{ '--filterBar-h': `${filterBarHeight}px` } as React.CSSProperties}
           >
             {/* Table Header */}
             {displayHeader && (

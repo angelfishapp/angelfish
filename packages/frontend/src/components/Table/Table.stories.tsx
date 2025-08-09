@@ -177,6 +177,25 @@ export const Virtualized: Story = {
   },
 }
 
+export const VirtualizedWithFilterBar: Story = {
+  args: {
+    estimateSize: () => 63,
+    stickyHeader: true,
+    overscan: 10,
+    data: getLongTransactions(),
+    enableSorting: true,
+    enableSortingRemoval: false,
+    enableColumnResizing: true,
+    enableRowSelection: true,
+    enableMultiRowSelection: true,
+    FilterBarElement: ({ table }) => (
+      <div style={{ padding: '10px' }}>
+        <input type="text" placeholder="Filter by title" />
+      </div>
+    ),
+  },
+}
+
 export const EmptyTable: Story = {
   args: {
     stickyHeader: false,
