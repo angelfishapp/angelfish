@@ -271,6 +271,12 @@ export default function Table<T>({
     ro.observe(filterBarRef.current)
     return () => ro.disconnect()
   }, [stickyHeader])
+  // Apply scroll padding to scroll container if sticky header is enabled
+  // to prevent keyboard scrolling hiding behind the header
+  React.useEffect(() => {
+    if (!scrollElement || !stickyHeader) return
+    scrollElement.style.scrollPaddingTop = `${filterBarHeight + 50}px`
+  }, [scrollElement, stickyHeader, filterBarHeight])
 
   /**
    * Row Click Handlers
