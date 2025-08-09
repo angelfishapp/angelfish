@@ -37,7 +37,7 @@ import DefaultTableRow from './components/DefaultTableRow'
 import TableHeaderGroup from './components/TableHeaderGroup'
 import type { TableProps } from './Table.interface'
 import { StyledTable, StyledTableBody } from './Table.styles'
-import { handleRowContextMenu, handleRowSelection } from './Table.utils'
+import { handleKeyboardSelection, handleRowContextMenu, handleRowSelection } from './Table.utils'
 
 /**
  * Generic Table Component based on @tanstack/react-table that can render the table with the following supported features:
@@ -80,6 +80,7 @@ export default function Table<T>({
   // Override default value to false for autoResetAll
   // otherwise changing data will keep resetting the table state
   autoResetAll = false,
+  onKeyDown,
   onRowClick,
   onRowContextMenu,
   onRowDoubleClick,
@@ -283,14 +284,31 @@ export default function Table<T>({
 
   // Render
   return (
-    <ClickAwayListener onClickAway={() => table.resetRowSelection()}>
+    <ClickAwayListener
+      onClickAway={() => {
+        table.resetRowSelection()
+        setContextMenuPos({ top: 0, left: 0 })
+      }}
+    >
       <Box display="flex" flexDirection="column" flexGrow={1}>
         {/* Render Filter Bar */}
         {FilterBarElement && <FilterBarElement table={table} />}
 
         {/* Render Table */}
 
-        <div ref={tableContainerRef} className={className}>
+        <div
+          ref={tableContainerRef}
+          className={className}
+          style={{ outline: 'none' }}
+          onKeyDown={(event) => {
+            if (onKeyDown) {
+              onKeyDown(event, table)
+            } else {
+              handleKeyboardSelection(event, table)
+            }
+          }}
+          tabIndex={0}
+        >
           <StyledTable
             stickyHeader={stickyHeader}
             className={`Table-variant-${variant}`}

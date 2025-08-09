@@ -172,6 +172,8 @@ export const Virtualized: Story = {
     enableSorting: true,
     enableSortingRemoval: false,
     enableColumnResizing: true,
+    enableRowSelection: true,
+    enableMultiRowSelection: true,
   },
 }
 
