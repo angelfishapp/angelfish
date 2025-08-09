@@ -54,10 +54,14 @@ export function handleKeyboardShortcuts(
       break
     case 'r':
     case 'R':
-      // Mark Selected Rows as Reviewed
+      // Toggle Selected Rows as Reviewed
       if (isModifierPressed && selectedRows.length > 0) {
-        const rows = selectedRows.map((row) => row.original)
-        table.options.meta?.transactionsTable?.updateRows(rows, { is_reviewed: true })
+        const unReviewedRows = selectedRows
+          .map((row) => row.original)
+          .filter((row) => !row.isReviewed)
+        table.options.meta?.transactionsTable?.updateRows(unReviewedRows, { is_reviewed: true })
+        const reviewedRows = selectedRows.map((row) => row.original).filter((row) => row.isReviewed)
+        table.options.meta?.transactionsTable?.updateRows(reviewedRows, { is_reviewed: false })
       }
       break
     case 'Delete':
