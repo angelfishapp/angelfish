@@ -6,6 +6,7 @@ import { AppCommandsRegistryMain, CommandsRegistryMain } from './commands/comman
 import { LogManager } from './logging/log-manager'
 import { settings } from './settings'
 import { Environment } from './utils/environment'
+import { registerLocalizationIPC } from './utils/ipcHelpers'
 import { getSystemInfo } from './utils/user-agent'
 
 const logger = LogManager.getMainLogger('MainCommands')
@@ -29,6 +30,12 @@ const workerLoaded = new Promise((resolve) => {
  */
 export function setupMainCommands() {
   // Register Event Handlers
+  // handle localization
+  registerLocalizationIPC()
+
+  // AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOCALIZATION_READY, () => {
+  //   logger.info('Localization is ready')
+  // })
 
   // Handle Login Event
   AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOGIN, () => {

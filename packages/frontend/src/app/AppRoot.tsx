@@ -10,6 +10,7 @@ import { AppReactQueryClient } from './ReactQuery'
 import theme from './theme'
 
 import { AppContainer } from '@/containers/AppContainer'
+import { I18nProvider } from '@/utils/i18n/I18nProvider'
 
 /**
  * Root Component
@@ -29,8 +30,10 @@ export default function AppRoot() {
           <ReactQueryDevtools initialIsOpen={false} />
           {/* Main Application Router */}
           <HashRouter>
-            {/* App */}
-            <AppContainer />
+            <I18nProvider defaultLocale="en">
+              {/* App */}
+              <AppContainer />
+            </I18nProvider>
           </HashRouter>
         </QueryClientProvider>
       </ThemeProvider>

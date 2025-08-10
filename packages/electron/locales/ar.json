@@ -64,5 +64,30 @@
       "english": "الإنجليزية",
       "arabic": "العربية"
     }
+  },
+  "frontEnd": {
+    "accounts": {
+      "title": "الحسابات",
+      "createAccount": "انشاء حساب",
+      "editAccount": "تعديل حساب",
+      "deleteAccount": "حذف حساب",
+      "accountName": "اسم الحساب",
+      "balance": "الرصيد",
+      "actions": {
+        "save": "حفظ",
+        "cancel": "إلغاء"
+      },
+      "viewSettings": "إعدادات العرض",
+      "groupBy": "تجميع حسب",
+      "institution": "المؤسسة",
+      "country": "الدولة",
+      "currency": "العملة",
+      "accountOwner": "مالك الحساب",
+      "accountType": "نوع الحساب",
+      "sortBy": "ترتيب حسب",
+      "sortAZ": "أ-ي",
+      "accountBalance": "رصيد الحساب",
+      "showClosedAccounts": "عرض الحسابات المغلقة"
+    }
   }
 }

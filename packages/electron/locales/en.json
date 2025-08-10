@@ -64,5 +64,26 @@
       "english": "English",
       "arabic": "Arabic"
     }
+  },
+  "frontEnd": {
+    "accounts": {
+      "title": "Accounts",
+      "createAccount": "Create Account",
+      "editAccount": "Edit Account",
+      "deleteAccount": "Delete Account",
+      "accountName": "Account Name",
+      "balance": "Balance",
+      "viewSettings": "view settings",
+      "groupBy": "Group By",
+      "institution": "Institution",
+      "country": "Country",
+      "currency": "Currency",
+      "accountOwner": "Account Owner",
+      "accountType": "Account Type",
+      "sortBy": "Sort By",
+      "sortAZ": "A-Z",
+      "accountBalance": "Account Balance",
+      "showClosedAccounts": "Show Closed Accounts"
+    }
   }
 }

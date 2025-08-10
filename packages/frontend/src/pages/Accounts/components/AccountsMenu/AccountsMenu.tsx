@@ -6,6 +6,7 @@ import type { AccountTableMethods, AccountTableProps } from '@/components/Accoun
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { SideMenu } from '@/components/SideMenu'
 import { AccountTableContainer } from '@/containers/AccountTableContainer'
+import { useI18n } from '@/utils/i18n/I18nProvider'
 import type { IAccount } from '@angelfish/core'
 import type { AccountsMenuProps } from './AccountsMenu.interface'
 
@@ -20,6 +21,7 @@ export default function AccountsMenu({
   const [showClosedAccounts, setShowClosedAccounts] = React.useState<boolean>(false)
   const [menuWidth, setMenuWidth] = React.useState<number>(0)
   const accountTableMethodsRef = React.useRef<AccountTableMethods>(null)
+  const { localeData } = useI18n()
 
   // Render
   return (
@@ -35,50 +37,50 @@ export default function AccountsMenu({
         >
           <DropdownMenuButton
             variant="text"
-            label="View Settings"
+            label={localeData?.translations.frontEnd.accounts.viewSettings}
             position={{ vertical: 'bottom', horizontal: 'left' }}
             menuItems={[
-              { label: 'Group By' },
+              { label: localeData?.translations.frontEnd.accounts.groupBy },
               {
-                label: 'Institution',
+                label: localeData?.translations.frontEnd.accounts.institution,
                 icon: groupBy === 'acc_institution' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_institution'),
               },
               {
-                label: 'Country',
+                label: localeData?.translations.frontEnd.accounts.country,
                 icon: groupBy === 'acc_country' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_country'),
               },
               {
-                label: 'Currency',
+                label: localeData?.translations.frontEnd.accounts.currency,
                 icon: groupBy === 'acc_currency' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_currency'),
               },
               {
-                label: 'Account Owner',
+                label: localeData?.translations.frontEnd.accounts.accountOwner,
                 icon: groupBy === 'acc_owners' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_owners'),
               },
               {
-                label: 'Account Type',
+                label: localeData?.translations.frontEnd.accounts.accountType,
                 icon: groupBy === 'acc_type' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_type'),
                 divider: true,
               },
-              { label: 'Sort By' },
+              { label: localeData?.translations.frontEnd.accounts.sortBy },
               {
-                label: 'A-Z',
+                label: localeData?.translations.frontEnd.accounts.sortAZ,
                 icon: sortBy === 'name' ? CheckIcon : undefined,
                 onClick: () => setSortBy('name'),
               },
               {
-                label: 'Account Balance',
+                label: localeData?.translations.frontEnd.accounts.accountBalance,
                 icon: sortBy === 'current_balance' ? CheckIcon : undefined,
                 onClick: () => setSortBy('current_balance'),
                 divider: true,
               },
               {
-                label: 'Show Closed Accounts',
+                label: localeData?.translations.frontEnd.accounts.showClosedAccounts,
                 icon: showClosedAccounts ? CheckIcon : undefined,
                 onClick: () => setShowClosedAccounts(!showClosedAccounts),
               },
