@@ -6,8 +6,10 @@ import { AppCommandIds, CommandsClient } from '@angelfish/core'
  *
  * @returns The current application state.
  */
-export async function getAppState(_request: AppCommandRequest<AppCommandIds.GET_APP_STATE>) {
-  return await CommandsClient.executeAppCommand(AppCommandIds.GET_APP_STATE)
+export async function getAppLocalization(
+  _request: AppCommandRequest<AppCommandIds.GET_LOCALIZATION>,
+) {
+  return await CommandsClient.executeAppCommand(AppCommandIds.GET_LOCALIZATION)
 }
 
 /**
@@ -49,4 +51,12 @@ export async function updateAuthenticatedUser(
  */
 export async function onLogout() {
   await CommandsClient.executeAppCommand(AppCommandIds.AUTH_LOGOUT)
+}
+/**
+ * Fetches the current application state from the database.
+ *
+ * @returns The current application state.
+ */
+export async function getAppState(_request: AppCommandRequest<AppCommandIds.GET_APP_STATE>) {
+  return await CommandsClient.executeAppCommand(AppCommandIds.GET_APP_STATE)
 }

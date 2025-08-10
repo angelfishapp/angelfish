@@ -45,6 +45,10 @@ export enum AppEventIds {
    * Event emitted when sync process finishes
    */
   ON_SYNC_FINISHED = 'on.sync.finished',
+  /**
+   * Event emitted when localization is updated
+   */
+  ON_LOCALIZATION_UPDATED = 'on.localization.updated',
 }
 
 // Define event types for each event
@@ -59,6 +63,7 @@ export interface AppEventDefinitions {
   [AppEventIds.ON_USER_SETTINGS_UPDATED]: IUserSettings
   [AppEventIds.ON_SYNC_STARTED]: void
   [AppEventIds.ON_SYNC_FINISHED]: ISyncSummary
+  [AppEventIds.ON_LOCALIZATION_UPDATED]: void
 }
 
 /**

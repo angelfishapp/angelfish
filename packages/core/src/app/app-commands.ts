@@ -292,6 +292,14 @@ export enum AppCommandIds {
    * Insert rows into a Dataset from an array of objects
    */
   INSERT_DATASET_ROWS = 'insert.dataset.rows',
+  /**
+   * Get the current localization setting
+   */
+  GET_LOCALIZATION = 'get.localization',
+  /**
+   * Set a new localization setting
+   */
+  SET_LOCALIZATION = 'set.localization',
 }
 
 // Define request/response types for each command
@@ -545,6 +553,14 @@ export interface AppCommandDefinitions {
   }
   [AppCommandIds.INSERT_DATASET_ROWS]: {
     request: { datasetName: string; rows: any[] }
+    response: void
+  }
+  [AppCommandIds.GET_LOCALIZATION]: {
+    request: void
+    response: { locale: string; translations: Record<string, string> }
+  }
+  [AppCommandIds.SET_LOCALIZATION]: {
+    request: { locale: string; translations: Record<string, string> }
     response: void
   }
 }

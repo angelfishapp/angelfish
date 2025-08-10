@@ -1,18 +1,18 @@
+import { useGetLocalization } from '@/hooks/app/useGetLocalization'
+import { AppEventIds, CommandsClient } from '@angelfish/core'
 import type React from 'react'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 
-// Extend the Window interface to include localization Api
-declare global {
-  interface Window {
-    localization: {
-      getLocalization: () => Promise<any>
-      setLocalization: (locale: string) => Promise<any>
-      onLocalizationUpdated: (callback: () => void) => void
-      removeLocalizationListeners: () => void
-    }
-  }
-}
+// // Extend the Window interface to include 'commands'
+// declare global {
+//   interface Window {
+//     commands: {
+//       addEventListener: (event: string, callback: () => void) => void
+//       removeEventListener: (event: string, callback: () => void) => void
+//     }
+//   }
+// }
 
 type Translations = {
   direction: 'ltr' | 'rtl'
@@ -128,23 +128,23 @@ export const I18nProvider: React.FC<{
   children?: ReactNode
 }> = ({ children, defaultLocale = 'en' }) => {
   const [locale, setLocaleState] = useState(defaultLocale)
-  const [localeData, setLocaleData] = useState<LocaleData>()
-  // Fetch localeData from Electron main via IPC
-  const fetchTranslations = async (_loc: string) => {
-    const data = await window.localization.getLocalization()
-    setLocaleData(data)
-  }
+  // to-do define the type
+  const [localeData, setLocaleData] = useState<any>()
+  const { data, refetch } = useGetLocalization()
 
   useEffect(() => {
-    fetchTranslations(locale)
+    setLocaleData(data)
 
-    // Listen for updates (e.g. locale changed from main)
-    const onUpdate = () => fetchTranslations(locale)
-    window.localization.onLocalizationUpdated(onUpdate)
-    return () => {
-      window.localization.removeLocalizationListeners()
+    const onUpdate = () => {
+      refetch()
     }
-  }, [locale])
+    CommandsClient.addEventListener(AppEventIds.ON_LOCALIZATION_UPDATED, onUpdate)
+
+    return () => {
+      CommandsClient.removeEventListener(AppEventIds.ON_LOCALIZATION_UPDATED, onUpdate)
+    }
+  }, [locale, data, refetch])
+
   // Update document direction whenever translations change
   useEffect(() => {
     if (localeData?.direction) {
@@ -155,7 +155,7 @@ export const I18nProvider: React.FC<{
   }, [localeData])
   const setLocale = (newLocale: string) => {
     setLocaleState(newLocale)
-    window.localization.setLocalization(newLocale)
+    // window.localization.setLocalization(newLocale)
   }
 
   if (!localeData) {

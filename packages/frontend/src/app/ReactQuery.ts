@@ -38,4 +38,5 @@ export const APP_QUERY_KEYS = {
     query,
   ],
   USERS: ['users'],
+  LOCALIZATION: ['localization'],
 }

@@ -27,16 +27,6 @@ const commandBridge = {
   addEventListener: commandRegistry.addEventListener.bind(commandRegistry),
   removeEventListener: commandRegistry.removeEventListener.bind(commandRegistry),
 }
-const localizationBridge = {
-  getLocalization: () => ipcRenderer.invoke('localization:get'),
-  setLocalization: (locale: string) => ipcRenderer.invoke('localization:set', locale),
-  onLocalizationUpdated: (callback: () => void) => {
-    ipcRenderer.on('localization:updated', callback)
-  },
-  removeLocalizationListeners: () => {
-    ipcRenderer.removeAllListeners('localization:updated')
-  },
-}
 
 // Initialise Environment Variables
 let logLevel: LevelOption = 'debug'
@@ -62,7 +52,6 @@ if (process.contextIsolated) {
   contextBridge.exposeInMainWorld('commands', commandBridge)
   contextBridge.exposeInMainWorld('environment', environmentBridge)
   contextBridge.exposeInMainWorld('log', logBridge)
-  contextBridge.exposeInMainWorld('localization', localizationBridge)
 } else {
   // @ts-ignore - Expose commands to the global window object when not context isolated
   window.commands = commandBridge

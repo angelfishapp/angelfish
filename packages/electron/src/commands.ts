@@ -6,7 +6,7 @@ import { AppCommandsRegistryMain, CommandsRegistryMain } from './commands/comman
 import { LogManager } from './logging/log-manager'
 import { settings } from './settings'
 import { Environment } from './utils/environment'
-import { registerLocalizationIPC } from './utils/ipcHelpers'
+import { handleGetLocalization, handleSetLocalization } from './utils/locale-helpers'
 import { getSystemInfo } from './utils/user-agent'
 
 const logger = LogManager.getMainLogger('MainCommands')
@@ -30,12 +30,6 @@ const workerLoaded = new Promise((resolve) => {
  */
 export function setupMainCommands() {
   // Register Event Handlers
-  // handle localization
-  registerLocalizationIPC()
-
-  // AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOCALIZATION_READY, () => {
-  //   logger.info('Localization is ready')
-  // })
 
   // Handle Login Event
   AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOGIN, () => {
@@ -167,6 +161,7 @@ export function setupMainCommands() {
       }
     }
   })
+  AppCommandsRegistryMain.addAppEventListener(AppEventIds.ON_LOCALIZATION_UPDATED, () => {})
 
   // Setup Event Emitters
 
@@ -394,6 +389,26 @@ export function setupMainCommands() {
         bookFilePath: bookFilePath !== null ? bookFilePath : undefined,
         userSettings,
       }
+    },
+  )
+  // handle localization
+
+  CommandsRegistryMain.registerCommand(
+    AppCommandIds.GET_LOCALIZATION,
+    async (
+      _request: AppCommandRequest<AppCommandIds.GET_LOCALIZATION>,
+    ): Promise<AppCommandResponse<AppCommandIds.GET_LOCALIZATION>> => {
+      return handleGetLocalization()
+    },
+  )
+
+  CommandsRegistryMain.registerCommand(
+    AppCommandIds.SET_LOCALIZATION,
+    async (
+      _request: AppCommandRequest<AppCommandIds.SET_LOCALIZATION>,
+    ): Promise<AppCommandResponse<AppCommandIds.SET_LOCALIZATION>> => {
+      const newLocale = _request.locale as string
+      handleSetLocalization(newLocale)
     },
   )
 }
