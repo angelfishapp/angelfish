@@ -2,6 +2,7 @@ import Button from '@mui/material/Button'
 import clsx from 'clsx'
 import React from 'react'
 
+import { GetErrorMessage } from '@/api'
 import { OOBField } from '@/components/forms/OOBField'
 import { AudioPlayer } from '@/utils/audio.utils'
 import LoginAnimation from '../../animations/login-animation'
@@ -87,11 +88,17 @@ export default function AuthForm({
     loginAnimation?.loading()
     setIsLoading(true)
     try {
+      throw new Error('Authentication failed')
       await onAuthenticate(oob_code)
       loginAnimation?.jump()
     } catch (error) {
       loginAnimation?.stop()
-      setDisplayError(`${error}`)
+      const errorCode =
+        typeof error === 'object' && error !== null && 'code' in error
+          ? (error as { code: string }).code
+          : undefined
+      const message = await GetErrorMessage({ category: 'auth', code: errorCode })
+      setDisplayError(`${message} `)
       setIsLoading(false)
       throw error
     }

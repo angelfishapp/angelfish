@@ -85,5 +85,13 @@
       "accountBalance": "Account Balance",
       "showClosedAccounts": "Show Closed Accounts"
     }
+  },
+  "Errors": {
+    "auth": {
+      "400": "Invalid credentials",
+      "404": "User not found",
+      "423": "Account locked",
+      "1000": "Unknown error"
+    }
   }
 }

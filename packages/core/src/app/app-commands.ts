@@ -24,6 +24,7 @@
  *
  */
 
+import type { ErrorCodes } from 'src/errors/ErrorCodes'
 import type {
   IAccount,
   IAuthenticatedUser,
@@ -300,6 +301,10 @@ export enum AppCommandIds {
    * Set a new localization setting
    */
   SET_LOCALIZATION = 'set.localization',
+  /**
+   * Resolve an error message by its code
+   */
+  RESOLVE_ERROR_MESSAGE = 'resolve.error.message',
 }
 
 // Define request/response types for each command
@@ -562,6 +567,10 @@ export interface AppCommandDefinitions {
   [AppCommandIds.SET_LOCALIZATION]: {
     request: { locale: string; translations: Record<string, string> }
     response: void
+  }
+  [AppCommandIds.RESOLVE_ERROR_MESSAGE]: {
+    request: { category: string; code: ErrorCodes }
+    response: string
   }
 }
 

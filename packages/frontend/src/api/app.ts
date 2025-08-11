@@ -11,6 +11,16 @@ export async function getAppLocalization(
 ) {
   return await CommandsClient.executeAppCommand(AppCommandIds.GET_LOCALIZATION)
 }
+/**
+ * Fetches the current application state from the database.
+ *
+ * @returns The current application state.
+ */
+export async function GetErrorMessage(
+  request: AppCommandRequest<AppCommandIds.RESOLVE_ERROR_MESSAGE>,
+) {
+  return await CommandsClient.executeAppCommand(AppCommandIds.RESOLVE_ERROR_MESSAGE, request)
+}
 
 /**
  * Sends an Out-Of-Band (OOB) login code to the user's email.

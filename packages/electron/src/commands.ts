@@ -411,4 +411,16 @@ export function setupMainCommands() {
       handleSetLocalization(newLocale)
     },
   )
+  CommandsRegistryMain.registerCommand(
+    AppCommandIds.RESOLVE_ERROR_MESSAGE,
+    async (r: AppCommandRequest<AppCommandIds.RESOLVE_ERROR_MESSAGE>) => {
+      const { category, code } = r
+      const localeData = await handleGetLocalization()
+      const errorCode = code ? code.toString() : '1000' // Default to 1000 if no code provided
+      const errorMessage = localeData.translations.Errors[category][errorCode]
+      // TO-DO connect CommandError to return it as a commandError
+      // const ErrorCommand = new CommandError(errorMessage, errorCode)
+      return errorMessage
+    },
+  )
 }
