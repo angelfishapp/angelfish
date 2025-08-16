@@ -398,7 +398,7 @@ export function setupMainCommands() {
     async (
       _request: AppCommandRequest<AppCommandIds.GET_LOCALIZATION>,
     ): Promise<AppCommandResponse<AppCommandIds.GET_LOCALIZATION>> => {
-      return handleGetLocalization()
+      return (await handleGetLocalization()).translations.frontEnd
     },
   )
 

@@ -6,6 +6,7 @@ import { CategoryField } from '@/components/forms/CategoryField'
 import { FileField } from '@/components/forms/FileField'
 import { Step } from '@/components/Stepper'
 import type { IAccount } from '@angelfish/core'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Step Component Properties
@@ -49,6 +50,7 @@ export default function ImportTransactionsFile({
   onOpenFileDialog,
   onNext,
 }: ImportTransactionsFileProps) {
+  const { ImportTransactions: t } = useTranslate('components.modals')
   const {
     control,
     getValues,
@@ -63,8 +65,8 @@ export default function ImportTransactionsFile({
 
   return (
     <Step
-      title="Select File to Import"
-      nextStep="Next"
+      title={t['selectFileToImport']}
+      nextStep={t['next']}
       isReady={isValid}
       onNext={() => onNext(getValues('file'), getValues('csvDelimiter'))}
     >
@@ -78,8 +80,8 @@ export default function ImportTransactionsFile({
               rules={{ required: true }}
               render={({ field: { onChange, ...restField } }) => (
                 <FileField
-                  label="File Path"
-                  helperText="You can import from transactions from OFX, QFX, QIF or CSV files."
+                  label={t['filePath']}
+                  helperText={t['filePathHelper']}
                   multiple={false}
                   fileTypes={['ofx', 'qfx', 'qif', 'csv']}
                   required
@@ -87,6 +89,7 @@ export default function ImportTransactionsFile({
                     onChange(file ? (file as string) : '')
                   }
                   onOpenFileDialog={onOpenFileDialog}
+                  placeholder={t['selectFile']}
                   fullWidth
                   {...restField}
                 />
@@ -104,13 +107,13 @@ export default function ImportTransactionsFile({
                   rules={{ required: true }}
                   render={({ field: { onChange, ...restField } }) => (
                     <CategoryField
-                      label="Account to Import Into"
+                      label={t['accountToImportInto']}
                       required
-                      helperText="Select the bank account to import transactions into."
+                      helperText={t['accountToImportIntoHelper']}
                       filter={(account) => account.class === 'ACCOUNT'}
                       disableGroupBy={true}
                       disableTooltip={true}
-                      placeholder="Search Bank Accounts..."
+                      placeholder={t['searchBankAccounts']}
                       accountsWithRelations={accountsWithRelations}
                       onChange={(account) => {
                         if (account) onChange(account as IAccount)
@@ -128,13 +131,13 @@ export default function ImportTransactionsFile({
                   rules={{ required: true }}
                   render={({ field: { onChange, ref, ...restField } }) => (
                     <AutocompleteField
-                      label="CSV Delimiter"
+                      label={t['csvDelimiter']}
                       autoFocus={false}
                       required={true}
                       freeSolo={false}
                       options={[',', ';']}
                       fullWidth={true}
-                      placeholder="Select CSV Delimiter..."
+                      placeholder={t['csvDelimiterHelper']}
                       formRef={ref}
                       onChange={(_, value) => {
                         if (value !== null) {

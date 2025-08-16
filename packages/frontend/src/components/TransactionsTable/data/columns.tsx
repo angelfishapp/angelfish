@@ -27,6 +27,7 @@ import type { IAccount, ITag, IUser } from '@angelfish/core'
 import { AmountFilter, CategoryFilter, DateFilter, PayeeFilter, TagsFilter } from './filters'
 import { AccountSort, DateColSort, TagsSort } from './sorting'
 import type { FormData, TransactionRow } from './types'
+import { useTranslate } from '@/utils/i18n'
 
 /*
  * Extend react-table ColumnDef to add EditCell function for
@@ -91,8 +92,8 @@ export function buildColumns(
     'is_reviewed',
   ],
 ): ColumnDef<TransactionRow>[] {
+  const { table: t } = useTranslate('components')
   const columns: ColumnDef<TransactionRow>[] = []
-
   // Sort colnames to ensure regular order regardless of array order so we always get the columns
   // in same order
   const columns_order = [
@@ -127,7 +128,7 @@ export function buildColumns(
       case 'date':
         columns.push({
           id: 'date',
-          header: 'Date',
+          header: t['date'],
           accessorKey: 'date',
           footer: 'Date Footer',
           minSize: 80,
@@ -170,7 +171,7 @@ export function buildColumns(
                         disableFuture
                         className="edit-date-field"
                         error={formState.errors?.date ? true : false}
-                        helperText={formState.errors?.date ? 'Date is required' : <></>}
+                        helperText={formState.errors?.date ? <>{t['dateRequired']}</> : <></>}
                         onChange={(date) => {
                           onChange(date)
                         }}
@@ -188,7 +189,7 @@ export function buildColumns(
       case 'notes':
         columns.push({
           id: 'note',
-          header: 'Notes',
+          header: t['notes'],
           accessorKey: 'note',
           size: 235,
           enableColumnFilter: false,
@@ -208,7 +209,7 @@ export function buildColumns(
                       <TextField
                         margin="none"
                         fullWidth
-                        placeholder="Add a note..."
+                        placeholder={t['addNote']}
                         className="edit-note-field"
                         {...field}
                       />
@@ -223,7 +224,7 @@ export function buildColumns(
       case 'title':
         columns.push({
           id: 'title',
-          header: 'Payee',
+          header: t['title'],
           accessorKey: 'title',
           footer: undefined,
           minSize: 200,
@@ -247,12 +248,12 @@ export function buildColumns(
                     render={({ field, formState }) => (
                       <TextField
                         margin="none"
-                        placeholder="E.g. Walmart"
+                        placeholder={t['notePlaceholder']}
                         fullWidth
                         required
                         className="edit-title-field"
                         error={!!formState.errors?.title}
-                        helperText={formState.errors?.title ? 'Payee is required' : <></>}
+                        helperText={formState.errors?.title ? <>{t['titleRequired']}</> : <></>}
                         {...field}
                       />
                     )}
@@ -266,7 +267,7 @@ export function buildColumns(
       case 'category':
         columns.push({
           id: 'category',
-          header: 'Category',
+          header: t['category'],
           accessorKey: 'category',
           minSize: 200,
           maxSize: 500,
@@ -292,7 +293,7 @@ export function buildColumns(
                 onClick={() => row.toggleExpanded()}
               >
                 <span className="category">
-                  <em>Split</em>
+                  <em>{t['split']}</em>
                 </span>
                 {row.getIsExpanded() ? (
                   <ExpandMoreIcon className="expand-arrow" />
@@ -314,6 +315,7 @@ export function buildColumns(
                       <CategoryField
                         margin="none"
                         accountsWithRelations={accounts}
+                        placeholder={t['searchCategories']}
                         onCreate={
                           table.options.meta?.transactionsTable?.onCreateCategory ?? undefined
                         }
@@ -339,7 +341,7 @@ export function buildColumns(
       case 'tags':
         columns.push({
           id: 'tags',
-          header: 'Tags',
+          header: t['tags'],
           accessorKey: 'tags',
           enableColumnFilter: true,
           enableGlobalFilter: true,
@@ -383,7 +385,7 @@ export function buildColumns(
       case 'owners':
         columns.push({
           id: 'owners',
-          header: 'Owner(s)',
+          header: t['owners'],
           accessorKey: 'owners',
           enableColumnFilter: false,
           enableGlobalFilter: false,
@@ -416,7 +418,7 @@ export function buildColumns(
       case 'currency':
         columns.push({
           id: 'currency',
-          header: 'Currency',
+          header: t['currency'],
           accessorKey: 'currency',
           enableColumnFilter: false,
           cell: ({ row }) => row.original.currency?.toUpperCase() ?? null,
@@ -434,7 +436,7 @@ export function buildColumns(
       case 'account':
         columns.push({
           id: 'account',
-          header: 'Account',
+          header: t['account'],
           accessorKey: 'account',
           enableColumnFilter: false,
           sortingFn: AccountSort,
@@ -460,7 +462,7 @@ export function buildColumns(
       case 'amount':
         columns.push({
           id: 'amount',
-          header: 'Amount',
+          header: t['amount'],
           accessorKey: 'amount',
           minSize: 100,
           size: 100,
@@ -506,7 +508,7 @@ export function buildColumns(
                         required
                         margin="none"
                         error={formState.errors?.amount ? true : false}
-                        helperText={formState.errors?.amount ? 'Amount is required' : undefined}
+                        helperText={formState.errors?.amount ? t['amountRequired'] : undefined}
                         onChange={(value) => onChange(value)}
                         {...restField}
                       />
@@ -521,7 +523,7 @@ export function buildColumns(
       case 'balance':
         columns.push({
           id: 'balance',
-          header: 'Balance',
+          header: t['balance'],
           accessorKey: 'balance',
           minSize: 100,
           size: 100,
@@ -565,7 +567,7 @@ export function buildColumns(
       case 'is_reviewed':
         columns.push({
           id: 'is_reviewed',
-          header: 'Reviewed?',
+          header: t['reviewed'],
           accessorKey: 'isReviewed',
           minSize: 70,
           size: 70,

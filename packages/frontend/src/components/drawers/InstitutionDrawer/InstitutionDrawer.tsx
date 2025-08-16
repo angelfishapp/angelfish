@@ -11,6 +11,7 @@ import { SwitchField } from '@/components/forms/SwitchField'
 import { TextField } from '@/components/forms/TextField'
 import type { IInstitutionUpdate } from '@angelfish/core'
 import type { InstitutionDrawerProps } from './InstitutionDrawer.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -46,7 +47,7 @@ export default function InstitutionDrawer({
   } = useForm<FormValues>({
     mode: 'onBlur',
   })
-
+  const { InstitutionDrawer: t } = useTranslate('components.drawers')
   React.useEffect(() => {
     if (open) {
       reset({
@@ -79,19 +80,19 @@ export default function InstitutionDrawer({
   // Render
   return (
     <Drawer
-      title={initialValue ? 'Edit Institituion' : 'Add Institution'}
+      title={initialValue ? t['edit'] : t['add']}
       open={open}
       onClose={onClose}
       menuItems={
         initialValue?.id
           ? [
-              {
-                label: 'Remove Institution',
-                onClick: () => onRemove?.(initialValue.id as number),
-                icon: DeleteIcon,
-                color: 'error',
-              },
-            ]
+            {
+              label: t['remove'],
+              onClick: () => onRemove?.(initialValue.id as number),
+              icon: DeleteIcon,
+              color: 'error',
+            },
+          ]
           : undefined
       }
       disableSaveButton={!isValid || !isDirty}
@@ -106,11 +107,11 @@ export default function InstitutionDrawer({
           rules={{ required: true }}
           render={({ field: { onChange, ...restField } }) => (
             <InstitutionSearchField
-              label="Name"
+              label={t['name']}
               fullWidth
               required
               error={errors?.name ? true : false}
-              helperText={errors?.name ? 'Name is required' : undefined}
+              helperText={errors?.name ? t['errorName'] : undefined}
               onSearch={onSearch}
               onChange={(name, institution) => {
                 onChange(name)
@@ -130,14 +131,14 @@ export default function InstitutionDrawer({
           control={control}
           render={({ field }) => (
             <AvatarField
-              label="Logo"
+              label={t['logo']}
               Icon={AccountBalanceIcon}
               avatars={[]}
               size={100}
               error={errors?.logo ? true : false}
-              helperText={errors?.logo ? 'Logo is invalid' : undefined}
+              helperText={errors?.logo ? t['errorLogo'] : undefined}
               dialogSize={100}
-              dialogTitle="Select Institution Logo"
+              dialogTitle={t['logoDialog']}
               {...field}
             />
           )}
@@ -149,7 +150,7 @@ export default function InstitutionDrawer({
           rules={{ required: true }}
           render={({ field }) => (
             <CountryField
-              label="Country"
+              label={t['country']}
               required
               fullWidth
               value={field.value}
@@ -157,8 +158,8 @@ export default function InstitutionDrawer({
               error={errors?.country ? true : false}
               helperText={
                 errors?.country
-                  ? 'Country is required'
-                  : 'The country where your accounts with the Institution are based in.'
+                  ? t['errorCountry']
+                  : t['countryHelper']
               }
             />
           )}
@@ -181,14 +182,14 @@ export default function InstitutionDrawer({
           }}
           render={({ field }) => (
             <TextField
-              label="Website"
+              label={t['website']}
               placeholder="E.g. https://www.hsbc.com"
               fullWidth
               error={errors?.url ? true : false}
               helperText={
                 errors?.url
-                  ? 'Please enter a valid URL. E.g. https://www.hsbc.com'
-                  : 'The main website for the Institution'
+                  ? t['errorUrl']
+                  : t['websiteHelper']
               }
               {...field}
             />
@@ -200,8 +201,8 @@ export default function InstitutionDrawer({
           control={control}
           render={({ field }) => (
             <SwitchField
-              label="Is Institution Open?"
-              helperText="Is the institution currently open or closed?"
+              label={t['isOpen']}
+              helperText={t['isOpenHelper']}
               {...field}
             />
           )}

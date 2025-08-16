@@ -9,6 +9,7 @@ import { Controller } from 'react-hook-form'
 import { CategoryField } from '@/components/forms/CategoryField'
 import type { IAccount, ParsedFileMappings } from '@angelfish/core'
 import type { ImportMapperForm } from './ImportTransactions-Mapping'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Step Component Properties
@@ -57,6 +58,7 @@ export default function ImportDefaultTransactionsMapping({
   categoriesMapperFields,
   getValues,
 }: ImportDefaultTransactionsMappingProps) {
+  const { ImportTransactions: t } = useTranslate('components.modals')
   // Component State
   const [openTabIndex, setOpenTabIndex] = React.useState(0)
   const accountsScrollDiv = React.useRef<HTMLDivElement>(null)
@@ -79,13 +81,12 @@ export default function ImportDefaultTransactionsMapping({
         {error && (
           <p>
             <span style={{ color: 'red', fontWeight: 'bold' }}>
-              There was an error parsing your file: {error}
+              {t['fileParsingError']}{error}
             </span>
           </p>
         )}
         <p>
-          Map the {fileMappings.fileType.toUpperCase()} properties below to import your Transactions
-          correctly:
+          {t['mapThe']} {fileMappings.fileType.toUpperCase()} {t['mapTheHelper']}
         </p>
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -99,15 +100,15 @@ export default function ImportDefaultTransactionsMapping({
           <Tab
             label={
               accountsMapperFields && accountsMapperFields.length > 1
-                ? `Accounts (${fileMappings.accounts?.length || 0})`
-                : 'Account'
+                ? `${t['accounts']} (${fileMappings.accounts?.length || 0})`
+                : t['account']
             }
             id="tab-0"
             aria-controls="tabpanel-0"
             disableRipple
           />
           <Tab
-            label={`Categories (${fileMappings.categories?.length || 0})`}
+            label={`${t['categories']} (${fileMappings.categories?.length || 0})`}
             id="tab-1"
             aria-controls="tabpanel-1"
             disableRipple
@@ -143,7 +144,7 @@ export default function ImportDefaultTransactionsMapping({
                           label={accountField.name}
                           required
                           error={value === undefined}
-                          helperText="Select the bank account to import transactions into."
+                          helperText={t['accountToImportIntoHelper']}
                           filter={(account) => account.class === 'ACCOUNT'}
                           filterOptions={(options, _) => {
                             const selectedAccounts: number[] = getValues('accountsMapper').reduce(
@@ -161,7 +162,7 @@ export default function ImportDefaultTransactionsMapping({
                           }}
                           disableGroupBy={true}
                           disableTooltip={true}
-                          placeholder="Search Bank Accounts..."
+                          placeholder={t['searchBankAccounts']}
                           margin="none"
                           accountsWithRelations={accountsWithRelations}
                           onChange={(account) => {
@@ -194,13 +195,13 @@ export default function ImportDefaultTransactionsMapping({
                   rules={{ required: true }}
                   render={({ field: { onChange, value, ...restField } }) => (
                     <CategoryField
-                      label="Account to Import Into"
+                      label={t['accountToImportInto']}
                       required
-                      helperText="Select the bank account to import transactions into."
+                      helperText={t['accountToImportIntoHelper']}
                       filter={(account) => account.class === 'ACCOUNT'}
                       disableGroupBy={true}
                       disableTooltip={true}
-                      placeholder="Search Bank Accounts..."
+                      placeholder={t['searchBankAccounts']}
                       accountsWithRelations={accountsWithRelations}
                       onChange={(account) => {
                         if (account) onChange((account as IAccount).id)
@@ -250,7 +251,7 @@ export default function ImportDefaultTransactionsMapping({
                         render={({ field: { onChange, value, ...restField } }) => (
                           <CategoryField
                             error={value === undefined}
-                            placeholder="Search Categories..."
+                            placeholder={t['searchCategories']}
                             margin="none"
                             accountsWithRelations={accountsWithRelations}
                             onChange={(account) => {

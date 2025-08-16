@@ -28,6 +28,7 @@ import { CategoriesTable } from './components/CategoriesTable'
 import { CategoryDeleteModal } from './components/CategoryDeleteModal'
 import { BUBBLE_SIZE, CategoryGroupBubble } from './components/CategoryGroupBubble'
 import { GroupDeleteModal } from './components/GroupDeleteModal'
+import { useTranslate } from '@/utils/i18n'
 
 const BUBBLEWIDTH = BUBBLE_SIZE + 16 + 8
 
@@ -36,18 +37,20 @@ const BUBBLEWIDTH = BUBBLE_SIZE + 16 + 8
  */
 
 export default function CategorySettings() {
+  // Localization
+  const { settings: t } = useTranslate('pages')
   // Component State
   const container = React.useRef<HTMLDivElement | null>(null)
   const [showDrawer, setShowDrawer] = React.useState<boolean>(false)
   const [drawerType, setDrawerType] = React.useState<string>('')
   const [selectedGroup, setSelectedGroup] = React.useState<
     | {
-        group: ICategoryGroup
-        row?: number
-        col?: number
-        index?: number
-        type?: 'income' | 'expenses'
-      }
+      group: ICategoryGroup
+      row?: number
+      col?: number
+      index?: number
+      type?: 'income' | 'expenses'
+    }
     | undefined
   >(undefined)
   const [showTable, setShowTable] = React.useState(false)
@@ -284,10 +287,10 @@ export default function CategorySettings() {
       <Box display="flex" alignItems="center" justifyContent="end" marginBottom={2}>
         <DropdownMenuButton
           variant="outlined"
-          label="Add a Group / Category"
+          label={t['addGroupCategory']}
           menuItems={[
             {
-              label: 'Add a Group',
+              label: t['addGroup'],
               onClick: () => {
                 setSelectedGroup(undefined)
                 setShowDrawer(true)
@@ -295,7 +298,7 @@ export default function CategorySettings() {
               },
             },
             {
-              label: 'Add a Category',
+              label: t['addCategory'],
               onClick: () => {
                 setSelectedGroup(undefined)
                 setSelectedCategory(undefined)
@@ -340,7 +343,7 @@ export default function CategorySettings() {
         {!!categoryGroupsIncome?.length && (
           <Box>
             <Box display="flex" alignItems="center" my={2}>
-              <StyledCategoryGroupName>Income</StyledCategoryGroupName>
+              <StyledCategoryGroupName>{t['income']}</StyledCategoryGroupName>
               <StyledCategoryGroupDivider></StyledCategoryGroupDivider>
             </Box>
 
@@ -394,7 +397,7 @@ export default function CategorySettings() {
                                       flexDirection: 'column',
                                     }}
                                   >
-                                    <div>No category created for this group yet</div>
+                                    <div>{t['noCategoryCreated']}</div>
                                     <Button
                                       sx={{ marginTop: '1rem' }}
                                       onClick={() => {
@@ -407,7 +410,7 @@ export default function CategorySettings() {
                                         setShowDrawer(true)
                                       }}
                                     >
-                                      Add a Category
+                                      {t['addCategory']}
                                     </Button>
                                   </Box>
                                 }
@@ -415,10 +418,9 @@ export default function CategorySettings() {
                                   (data) => ({ ...data, type: 'income' }),
                                 )}
                                 onSelect={onCategorySelect}
-                                pointerPosition={`${
-                                  (100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
+                                pointerPosition={`${(100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
                                   100 / itemsPerRow / 2
-                                }%`}
+                                  }%`}
                               />
                             </Box>
                           </Collapse>
@@ -437,7 +439,7 @@ export default function CategorySettings() {
         {!!categoryGroupsExpense?.length && (
           <Box>
             <Box display="flex" alignItems="center" my={2}>
-              <StyledCategoryGroupName>Expenses</StyledCategoryGroupName>
+              <StyledCategoryGroupName>{t['expenses']}</StyledCategoryGroupName>
               <StyledCategoryGroupDivider></StyledCategoryGroupDivider>
             </Box>
 
@@ -494,7 +496,7 @@ export default function CategorySettings() {
                                       flexDirection: 'column',
                                     }}
                                   >
-                                    <div>No category created for this group yet</div>
+                                    <div>{t['noCategoryCreated']}</div>
                                     <Button
                                       sx={{ marginTop: '1rem' }}
                                       onClick={() => {
@@ -507,7 +509,7 @@ export default function CategorySettings() {
                                         setShowDrawer(true)
                                       }}
                                     >
-                                      Add a Category
+                                      {t['addCategory']}
                                     </Button>
                                   </Box>
                                 }
@@ -515,10 +517,9 @@ export default function CategorySettings() {
                                   (data) => ({ ...data, type: 'expense' }),
                                 )}
                                 onSelect={onCategorySelect}
-                                pointerPosition={`${
-                                  (100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
+                                pointerPosition={`${(100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
                                   100 / itemsPerRow / 2
-                                }%`}
+                                  }%`}
                               />
                             </Box>
                           </Collapse>

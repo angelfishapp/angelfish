@@ -7,6 +7,7 @@ import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
 import type { IUser } from '@angelfish/core'
 import type { UserDrawerProps } from './UserDrawer.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -44,6 +45,7 @@ export default function UserDrawer({
   } = useForm<UserFormValues>({
     mode: 'onBlur',
   })
+  const { UserDrawer: t } = useTranslate('components.drawers')
 
   /**
    * Handle updating or saving the User
@@ -89,7 +91,7 @@ export default function UserDrawer({
 
   return (
     <Drawer
-      title={initialValue?.id ? 'Edit User' : 'Add User'}
+      title={initialValue?.id ? t['edit'] : t['create']}
       {...{ open, onClose }}
       disableSaveButton={!isValid || !isDirty}
       onSave={() => handleSubmit(handleSave)()}
@@ -100,11 +102,11 @@ export default function UserDrawer({
           control={control}
           render={({ field }) => (
             <AvatarField
-              label="Avatar"
+              label={t['avatar']}
               avatars={avatars}
               size={100}
               error={errors?.avatar ? true : false}
-              helperText={errors?.avatar ? 'Avatar is invalid' : undefined}
+              helperText={errors?.avatar ? t['errorAvatar'] : undefined}
               {...field}
             />
           )}
@@ -116,14 +118,14 @@ export default function UserDrawer({
           rules={{ required: true }}
           render={({ field }) => (
             <TextField
-              label="First Name"
+              label={t['name']}
               tabIndex={1}
               fullWidth
               autoFocus
               required
-              placeholder="First Name"
+              placeholder={t['namePlaceholder']}
               error={errors?.first_name ? true : false}
-              helperText={errors?.first_name ? 'A First Name name is required' : undefined}
+              helperText={errors?.first_name ? t['errorName'] : undefined}
               {...field}
             />
           )}
@@ -135,13 +137,13 @@ export default function UserDrawer({
           rules={{ required: true }}
           render={({ field }) => (
             <TextField
-              label="Last Name"
+              label={t['lastName']}
               tabIndex={2}
               fullWidth
               required
-              placeholder="Last Name"
+              placeholder={t['lastNamePlaceholder']}
               error={errors?.last_name ? true : false}
-              helperText={errors?.last_name ? 'A Last Name name is required' : undefined}
+              helperText={errors?.last_name ? t['errorLastName'] : undefined}
               {...field}
             />
           )}
@@ -157,13 +159,13 @@ export default function UserDrawer({
           }}
           render={({ field }) => (
             <TextField
-              label="Email"
+              label={t['email']}
               tabIndex={3}
               fullWidth
               required
-              placeholder="Email"
+              placeholder={t['emailPlaceholder']}
               error={errors?.email ? true : false}
-              helperText={errors?.email ? 'A valid Email is required' : undefined}
+              helperText={errors?.email ? t['errorEmail'] : undefined}
               {...field}
             />
           )}
@@ -175,12 +177,12 @@ export default function UserDrawer({
           rules={{ required: false, validate: (value) => value?.isValid }}
           render={({ field: { onChange, value, ...restField } }) => (
             <PhoneField
-              label="Phone Number"
+              label={t['phoneNumber']}
               tabIndex={4}
               fullWidth
               error={errors?.phone ? true : false}
               helperText={
-                errors?.phone ? 'A valid phone number with country code is required' : undefined
+                errors?.phone ? t['errorPhoneNumber'] : undefined
               }
               onChange={(phone, isValid) => {
                 onChange({

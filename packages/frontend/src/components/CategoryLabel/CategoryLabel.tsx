@@ -5,6 +5,7 @@ import React from 'react'
 import { BankIcon } from '@/components/BankIcon'
 import { Emoji } from '@/components/Emoji'
 import type { CategoryLabelProps } from './CategoryLabel.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * CategoryLabel Component: Renders a formated category from an Account. If
@@ -22,10 +23,11 @@ export default function CategoryLabel({
   displayGroup = true,
   iconSize = 24,
 }: CategoryLabelProps) {
+  const { table: t } = useTranslate('components')
   if (!account) {
     return (
       <Typeography className={className}>
-        <em>Unclassified</em>
+        <em>{t['Unclassified']}</em>
       </Typeography>
     )
   }

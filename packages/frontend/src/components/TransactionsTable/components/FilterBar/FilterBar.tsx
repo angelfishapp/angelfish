@@ -15,11 +15,13 @@ import type { TableFilterBarProps } from '@/components/Table'
 import type { TransactionRow } from '../../data'
 import { StyledActionButton, StyledFilterBar, StyledSettingsButton } from './FilterBar.styles'
 import FilterButton from './FilterButton'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * FilterBar shown at top of TransactionsTable to filter transactions
  */
 export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>) {
+  const { table: t } = useTranslate('components')
   // Component State
   const [filtersVisible, setFiltersVisible] = React.useState<boolean>(false)
 
@@ -75,7 +77,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
             onChange={(search) => {
               table.setGlobalFilter(search)
             }}
-            placeholder="Search Transactions..."
+            placeholder={t['searchTransactions']}
             hasShadow={false}
             value={table.getState().globalFilter || ''}
           />
@@ -88,7 +90,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
               onChange={(search) => {
                 table.setGlobalFilter(search)
               }}
-              placeholder="Search Transactions..."
+              placeholder={t['searchTransactions']}
               value={table.getState().globalFilter || ''}
             />
           </Box>
@@ -98,7 +100,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
               color="primary"
               onClick={() => table.options.meta?.transactionsTable?.insertNewRow()}
               size="large"
-              title="Add Transaction"
+              title={t['addTransaction']}
               sx={{ marginRight: 1 }}
             >
               <AddIcon />
@@ -109,7 +111,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
                 color="primary"
                 onClick={() => table.options.meta?.transactionsTable?.onImportTransactions?.()}
                 size="large"
-                title="Import Transactions"
+                title={t['importTransactions']}
               >
                 <UploadIcon />
               </StyledActionButton>
@@ -121,12 +123,12 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
       <Box marginLeft={1}>
         <StyledSettingsButton
           Icon={SettingsIcon}
-          label="Table Settings"
+          label={t['tableSettings']}
           size="large"
           menuItems={(
             [
               {
-                label: 'Display Columns',
+                label: t['displayColumns'],
               },
             ] as DropdownMenuItem[]
           )
@@ -150,7 +152,7 @@ export default function FilterBar({ table }: TableFilterBarProps<TransactionRow>
             .concat([
               // Add Expand All Splits option
               {
-                label: 'Expand All Splits',
+                label: t['expandAllSplits'],
                 onClick: () => {
                   table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())
                 },

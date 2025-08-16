@@ -37,12 +37,15 @@ import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
 import { ReportsTable } from './components/ReportsTable'
 import { renderPeriodHeader } from './Reports.utils'
+import { useTranslate } from '@/utils/i18n/I18nProvider'
 
 /**
  * Reports Page
  */
 
 export default function Reports() {
+  // Localization
+  const { reports: t } = useTranslate('pages')
   /**
    * Default Date Ranges for Date Range Selector
    */
@@ -50,20 +53,20 @@ export default function Reports() {
   const startOfToday = new Date(today.setHours(0, 0, 0, 0))
 
   const dateRanges = {
-    'This Month': { start: startOfMonth(startOfToday), end: startOfToday },
-    'Last Month': {
+    [t.thisMonth]: { start: startOfMonth(startOfToday), end: startOfToday },
+    [t.lastMonth]: {
       start: startOfMonth(subMonths(startOfToday, 1)),
       end: endOfMonth(subMonths(startOfToday, 1)),
     },
-    'This Quarter': { start: startOfQuarter(startOfToday), end: endOfQuarter(startOfToday) },
-    'Last Quarter': {
+    [t.thisQuarter]: { start: startOfQuarter(startOfToday), end: endOfQuarter(startOfToday) },
+    [t.lastQuarter]: {
       start: startOfQuarter(subQuarters(startOfToday, 1)),
       end: endOfQuarter(subQuarters(startOfToday, 1)),
     },
-    'This Year To Date': { start: startOfYear(startOfToday), end: startOfToday },
-    'This Year': { start: startOfYear(startOfToday), end: endOfYear(startOfToday) },
-    'Last 12 Months': { start: subMonths(startOfToday, 12), end: startOfToday },
-    'Last Year': {
+    [t['thisYearToDate']]: { start: startOfYear(startOfToday), end: startOfToday },
+    [t['thisYear']]: { start: startOfYear(startOfToday), end: endOfYear(startOfToday) },
+    [t['last12Months']]: { start: subMonths(startOfToday, 12), end: startOfToday },
+    [t['lastYear']]: {
       start: startOfYear(subYears(startOfToday, 1)),
       end: endOfYear(subYears(startOfToday, 1)),
     },
@@ -71,8 +74,8 @@ export default function Reports() {
 
   // Component State
   const [reportsQuery, setReportsQuery] = React.useState<ReportsQuery>({
-    start_date: format(dateRanges['Last 12 Months'].start, 'yyyy-MM-dd'),
-    end_date: format(dateRanges['Last 12 Months'].end, 'yyyy-MM-dd'),
+    start_date: format(dateRanges[t['last12Months']].start, 'yyyy-MM-dd'),
+    end_date: format(dateRanges[t['last12Months']].end, 'yyyy-MM-dd'),
     include_unclassified: true,
   })
   const [showPeriodDetailDrawer, setShowPeriodDetailDrawer] = React.useState<boolean>(false)
@@ -182,7 +185,7 @@ export default function Reports() {
             }}
             noWrap
           >
-            Monthly Income and Expenses
+            {t['monthlyIncomeandExpenses']}
           </Typography>
         </Box>
         <Paper
@@ -236,12 +239,12 @@ export default function Reports() {
                           style={{ border: 'none' }}
                           onClick={() => setShowSettingsDrawer(true)}
                         >
-                          Settings
+                          {t['settings']}
                         </Button>
                       </Box>
                       <Box>
                         <DropdownMenuButton
-                          label="Export"
+                          label={t['export']}
                           variant="outlined"
                           style={{ border: 'none' }}
                           menuItems={[
@@ -289,7 +292,7 @@ export default function Reports() {
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}
-        onCreateCategory={() => {}}
+        onCreateCategory={() => { }}
         onDeleteTransaction={onDeleteTransaction}
         onSaveTransactions={onSaveTransactions}
       />

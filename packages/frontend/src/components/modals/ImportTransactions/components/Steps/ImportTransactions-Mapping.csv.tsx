@@ -10,17 +10,18 @@ import { AutocompleteField } from '@/components/forms/AutocompleteField'
 import type { ParsedFileMappings } from '@angelfish/core'
 import { MapperHeading } from '../../ImportTransactions.styled'
 import type { ImportMapperForm } from './ImportTransactions-Mapping'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Array of tuples of TransactionMapper fields that can be selected
  */
 const TransactionMapperFields = [
-  { name: 'date', label: 'Date *', required: true },
-  { name: 'name', label: 'Name * ', required: true },
-  { name: 'amount', label: 'Amount * ', required: true },
-  { name: 'memo', label: 'Memo', required: false },
-  { name: 'pending', label: 'Is Pending?', required: false },
-  { name: 'check_number', label: 'Check Number', required: false },
+  { name: 'date', label: 'date', required: true },
+  { name: 'name', label: 'name', required: true },
+  { name: 'amount', label: 'amount', required: true },
+  { name: 'memo', label: 'memo', required: false },
+  { name: 'pending', label: 'isPending', required: false },
+  { name: 'check_number', label: 'checkNumber', required: false },
 ]
 
 /**
@@ -54,6 +55,7 @@ export default function ImportCSVTransactionsMapping({
   fileMappings,
   getValues,
 }: ImportCSVTransactionsMappingProps) {
+  const { ImportTransactions: t } = useTranslate('components.modals')
   const scrollDiv = React.useRef<HTMLDivElement>(null)
 
   // Make sure fields are scrolled to top when headers are loaded
@@ -69,13 +71,13 @@ export default function ImportCSVTransactionsMapping({
       <Grid container spacing={2}>
         <Grid size={12}>
           {error && <span style={{ color: 'red', fontWeight: 'bold' }}>{error}</span>}
-          Map the CSV column headers to Transaction fields below:
+          {t['mapCSVHeaders']}
         </Grid>
         <Grid size={3}>
-          <MapperHeading>Transaction Fields</MapperHeading>
+          <MapperHeading>{t['transactionFields']}</MapperHeading>
         </Grid>
         <Grid size={9}>
-          <MapperHeading>CSV Column</MapperHeading>
+          <MapperHeading>{t['csvColumn']}</MapperHeading>
         </Grid>
       </Grid>
       <Grid
@@ -93,21 +95,21 @@ export default function ImportCSVTransactionsMapping({
         {TransactionMapperFields.map((mapperField) => (
           <React.Fragment key={mapperField.name}>
             <Grid size={3}>
-              <strong>{mapperField.label}</strong>
+              <strong>{t[mapperField.label]}</strong>
             </Grid>
             <Grid size={8}>
               <Controller
                 name={
                   `csvMapper.fields.${mapperField.name}` as
-                    | 'csvMapper.fields.check_number'
-                    | 'csvMapper.fields.id'
-                    | 'csvMapper.fields.date'
-                    | 'csvMapper.fields.name'
-                    | 'csvMapper.fields.amount'
-                    | 'csvMapper.fields.memo'
-                    | 'csvMapper.fields.pending'
-                    | 'csvMapper.fields.iso_currency_code'
-                    | 'csvMapper.fields.transaction_type'
+                  | 'csvMapper.fields.check_number'
+                  | 'csvMapper.fields.id'
+                  | 'csvMapper.fields.date'
+                  | 'csvMapper.fields.name'
+                  | 'csvMapper.fields.amount'
+                  | 'csvMapper.fields.memo'
+                  | 'csvMapper.fields.pending'
+                  | 'csvMapper.fields.iso_currency_code'
+                  | 'csvMapper.fields.transaction_type'
                 }
                 control={formController}
                 rules={{ required: mapperField.required }}
@@ -118,7 +120,7 @@ export default function ImportCSVTransactionsMapping({
                     freeSolo={false}
                     options={fileMappings.csvHeaders || []}
                     fullWidth={true}
-                    placeholder={mapperField.required ? 'Select Column...' : 'Skip'}
+                    placeholder={mapperField.required ? t['selectColumn'] : t['skip']}
                     value={
                       (fileMappings.csvHeaders || []).find((header) => header.header === value) ??
                       null
@@ -162,10 +164,10 @@ export default function ImportCSVTransactionsMapping({
       </Grid>
       <Grid container spacing={0} sx={{ marginBottom: 3 }}>
         <Grid size={12}>
-          <MapperHeading>Import Settings</MapperHeading>
+          <MapperHeading>{t['importSettings']}</MapperHeading>
         </Grid>
         <Grid size={2}>
-          <strong>Date Format *</strong>
+          <strong>{t['dateFormat']}</strong>
         </Grid>
         <Grid size={4} sx={{ paddingRight: 3 }}>
           <Controller
@@ -185,18 +187,18 @@ export default function ImportCSVTransactionsMapping({
                   'DD MM YY',
                 ]}
                 fullWidth={true}
-                placeholder="Select Date Format..."
+                placeholder={t['selectDateFormat']}
                 formRef={ref}
                 onChange={(_, value) => {
                   if (value !== null) {
                     onChange(
                       value as
-                        | 'YYYY MM DD'
-                        | 'YY MM DD'
-                        | 'MM DD YYYY'
-                        | 'MM DD YY'
-                        | 'DD MM YYYY'
-                        | 'DD MM YY',
+                      | 'YYYY MM DD'
+                      | 'YY MM DD'
+                      | 'MM DD YYYY'
+                      | 'MM DD YY'
+                      | 'DD MM YYYY'
+                      | 'DD MM YY',
                     )
                   }
                 }}
@@ -206,7 +208,7 @@ export default function ImportCSVTransactionsMapping({
           />
         </Grid>
         <Grid size={2}>
-          <strong>CSV Delimiter *</strong>
+          <strong>{t['csvDelimiterRequired']}</strong>
         </Grid>
         <Grid size={4} sx={{ paddingRight: 3 }}>
           <Controller

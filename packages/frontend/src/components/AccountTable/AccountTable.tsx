@@ -21,6 +21,7 @@ import type { AccountTableRow } from './AccountTable.data'
 import { AccountTableColumns, buildTableRows } from './AccountTable.data'
 import type { AccountTableProps } from './AccountTable.interface'
 import AccountTableRowComponent from './components/AccountTableRow'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Account Table. Lists Institutions and their associated Accounts.
@@ -43,6 +44,7 @@ export default function AccountTable({
   onEditInstitution,
   onDeleteInstitution,
 }: AccountTableProps) {
+  const { accountTable: t } = useTranslate('components')
   // Component State
   const [selectedInstitution, setSelectedInstitution] = React.useState<IInstitution | undefined>(
     undefined,
@@ -138,13 +140,13 @@ export default function AccountTable({
         {table.getRowModel().flatRows.length === 0 ? (
           <ListItem>
             <ListItemText
-              primary="No Institutions Found"
+              primary={t['noInstitutionsFound']}
               secondary={
                 <a
                   onClick={() => onCreateInstitution()}
                   style={{ cursor: 'pointer', textDecoration: 'underline' }}
                 >
-                  Add An Institution
+                  {t['addInstitution']}
                 </a>
               }
               sx={{ textAlign: 'center' }}
@@ -186,44 +188,44 @@ export default function AccountTable({
         items={
           contextMenuRowType === 'Institution'
             ? [
-                {
-                  item: selectedInstitution?.name || '',
-                },
-                {
-                  item: `Edit`,
-                  icon: EditIcon,
-                  onClick: () => onEditInstitution(selectedInstitution as IInstitution),
-                },
-                {
-                  item: `Add Account`,
-                  icon: AddCircleIcon,
-                  divider: true,
-                  onClick: () => onCreateAccount(selectedInstitution as IInstitution),
-                },
-                {
-                  item: `Remove`,
-                  icon: DeleteIcon,
-                  color: 'error',
-                  onClick: () => onDeleteInstitution(selectedInstitution as IInstitution),
-                },
-              ]
+              {
+                item: selectedInstitution?.name || '',
+              },
+              {
+                item: t['edit'],
+                icon: EditIcon,
+                onClick: () => onEditInstitution(selectedInstitution as IInstitution),
+              },
+              {
+                item: t['addAccount'],
+                icon: AddCircleIcon,
+                divider: true,
+                onClick: () => onCreateAccount(selectedInstitution as IInstitution),
+              },
+              {
+                item: t['remove'],
+                icon: DeleteIcon,
+                color: 'error',
+                onClick: () => onDeleteInstitution(selectedInstitution as IInstitution),
+              },
+            ]
             : [
-                {
-                  item: selectedAccount?.name || '',
-                },
-                {
-                  item: `Edit`,
-                  icon: EditIcon,
-                  onClick: () => onEditAccount(selectedAccount as IAccount),
-                  divider: true,
-                },
-                {
-                  item: `Delete`,
-                  icon: DeleteIcon,
-                  color: 'error',
-                  onClick: () => onDeleteAccount(selectedAccount as IAccount),
-                },
-              ]
+              {
+                item: selectedAccount?.name || '',
+              },
+              {
+                item: t['edit'],
+                icon: EditIcon,
+                onClick: () => onEditAccount(selectedAccount as IAccount),
+                divider: true,
+              },
+              {
+                item: t['delete'],
+                icon: DeleteIcon,
+                color: 'error',
+                onClick: () => onDeleteAccount(selectedAccount as IAccount),
+              },
+            ]
         }
       />
     </React.Fragment>

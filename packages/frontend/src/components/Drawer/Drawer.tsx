@@ -7,6 +7,7 @@ import { CloseButton } from '@/components/CloseButton'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import type { DrawerProps } from './Drawer.interface'
 import { StyledDrawer } from './Drawer.styles'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Displays Right or Bottom Side Drawer that Slides out on Open.
@@ -24,6 +25,7 @@ export default function Drawer({
   position = 'right',
   title,
 }: DrawerProps) {
+  const { drawers: t } = useTranslate("components")
   return (
     <StyledDrawer
       open={open}
@@ -71,7 +73,7 @@ export default function Drawer({
                   disabled={disableSaveButton}
                   fullWidth
                 >
-                  Save
+                  {t['save']}
                 </Button>
               </Box>
             )}

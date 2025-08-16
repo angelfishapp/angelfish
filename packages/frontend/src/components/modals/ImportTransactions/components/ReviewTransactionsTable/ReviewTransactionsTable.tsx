@@ -14,6 +14,7 @@ import TableRow from './components/TableRow'
 import type { ReconciledTransactionRow } from './ReviewTransactionsTable.data'
 import { flattenRowData, getSelectedRowState } from './ReviewTransactionsTable.data'
 import type { ReviewTransactionsTableProps } from './ReviewTransactionsTable.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Render the status tag for the transaction
@@ -40,6 +41,7 @@ export default function ReviewTransactionsTable({
   onUpdateTransactions,
   scrollElement,
 }: ReviewTransactionsTableProps) {
+  const { table: t } = useTranslate('components')
   // Flatten Row Data and select all rows with import==true
   const [rows, initialSelectedRows] = React.useMemo(() => {
     return [flattenRowData(transactions, accountsWithRelations), getSelectedRowState(transactions)]
@@ -75,7 +77,7 @@ export default function ReviewTransactionsTable({
       },
       {
         id: 'date',
-        header: 'Date',
+        header: t['date'],
         accessorKey: 'date',
         size: 105,
         cell: ({ row }) => {
@@ -88,7 +90,7 @@ export default function ReviewTransactionsTable({
       },
       {
         id: 'title',
-        header: 'Payee',
+        header: t['payee'],
         accessorKey: 'title',
         size: 300,
         cell: ({ row }) => {
@@ -103,7 +105,7 @@ export default function ReviewTransactionsTable({
       },
       {
         id: 'category',
-        header: 'Category',
+        header: t['category'],
         accessorKey: 'category',
         size: 330,
         cell: ({ row }) => {
@@ -112,6 +114,7 @@ export default function ReviewTransactionsTable({
               margin="none"
               accountsWithRelations={accountsWithRelations}
               fullWidth
+              placeholder={t['searchCategories']}
               value={row.original.category || null}
               onChange={(account) => {
                 if (typeof account === 'object') {
@@ -131,7 +134,7 @@ export default function ReviewTransactionsTable({
       },
       {
         id: 'amount',
-        header: 'Amount',
+        header: t['amount'],
         accessorKey: 'amount',
         size: 130,
         cell: ({ row }) => {
@@ -140,7 +143,7 @@ export default function ReviewTransactionsTable({
       },
       {
         id: 'account_id',
-        header: 'Account',
+        header: t['account'],
         accessorKey: 'account_id',
       },
     ]

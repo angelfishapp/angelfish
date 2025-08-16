@@ -5,6 +5,7 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom'
 
 import { SideMenu } from '@/components/SideMenu'
 import { SettingsRoutes } from '../../app/Routes'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Component - Settings Page Container providing left hand menu and router to switch
@@ -12,6 +13,8 @@ import { SettingsRoutes } from '../../app/Routes'
  */
 
 export default function Settings() {
+  // Localization
+  const { settings: t } = useTranslate('pages')
   const location = useLocation()
   const currentPage = location.pathname.split('/')[2] ? location.pathname.split('/')[2] : '/'
 
@@ -54,7 +57,7 @@ export default function Settings() {
                 component={Link}
                 to={path}
               >
-                {label}
+                {t[label]}
               </ListItemButton>
             ))}
           </List>

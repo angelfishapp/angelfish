@@ -7,6 +7,7 @@ import React from 'react'
 import { Avatar } from '@/components/Avatar'
 import { Table } from '@/components/Table'
 import type { UserTableProps } from './UserTable.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Book Members Table. Lists users and allows user to manage and edit them.
@@ -21,6 +22,7 @@ export default function UserTable({
   onEdit,
   onDelete,
 }: UserTableProps) {
+  const { UserTable: t } = useTranslate('components')
   // Render
   return (
     <Table
@@ -30,7 +32,7 @@ export default function UserTable({
       columns={[
         {
           id: 'avatar',
-          header: 'Avatar',
+          header: t['avatar'],  
           accessorKey: 'avatar',
           size: 90,
           cell: ({ row }) => {
@@ -46,22 +48,22 @@ export default function UserTable({
         },
         {
           id: 'first_name',
-          header: 'First Name',
+          header: t['firstName'],
           accessorKey: 'first_name',
         },
         {
           id: 'last_name',
-          header: 'Last Name',
+          header: t['lastName'],
           accessorKey: 'last_name',
         },
         {
           id: 'email',
-          header: 'Email',
+          header: t['email'],
           accessorKey: 'email',
         },
         {
           id: 'role',
-          header: 'Role',
+          header: t['role'],
           accessorKey: 'role',
           size: 90,
           cell: ({ row }) => {
@@ -70,7 +72,7 @@ export default function UserTable({
         },
         {
           id: 'createdOn',
-          header: 'Created On',
+          header: t['createdOn'],
           accessorKey: 'createdOn',
           size: 130,
           cell: ({ row }) => {
@@ -84,7 +86,7 @@ export default function UserTable({
         },
         {
           id: 'actions',
-          header: 'Actions',
+          header: t['actions'],
           size: 120,
           cell: ({ row }) => {
             return (
@@ -120,7 +122,7 @@ export default function UserTable({
               style={{ padding: 5, fontWeight: 700, textAlign: 'center' }}
             >
               <Button variant="contained" onClick={() => onCreate()}>
-                Add Member
+                {t['addMember']}
               </Button>
             </td>
           </tr>

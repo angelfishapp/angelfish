@@ -13,6 +13,7 @@ import type {
 } from '@angelfish/core'
 import ImportCSVTransactionsMapping from './ImportTransactions-Mapping.csv'
 import ImportDefaultTransactionsMapping from './ImportTransactions-Mapping.default'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Import Mapping Form Fields
@@ -64,6 +65,7 @@ export default function ImportTransactionsMapping({
   fileMappings,
   onNext,
 }: ImportTransactionsMappingProps) {
+  const { ImportTransactions: t } = useTranslate('components.modals')
   // Setup Form
   const {
     control,
@@ -149,8 +151,8 @@ export default function ImportTransactionsMapping({
   // Render Step
   return (
     <Step
-      title="Confirm Mappings"
-      nextStep="Next"
+      title={t['confirmMappings']}
+      nextStep={t['next']}
       isReady={isValid}
       onNext={() => {
         onNext({

@@ -3,114 +3,11 @@ import { AppEventIds, CommandsClient } from '@angelfish/core'
 import type React from 'react'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
+import type { ILocaleData } from './types'
 
-// // Extend the Window interface to include 'commands'
-// declare global {
-//   interface Window {
-//     commands: {
-//       addEventListener: (event: string, callback: () => void) => void
-//       removeEventListener: (event: string, callback: () => void) => void
-//     }
-//   }
-// }
-
-type Translations = {
-  direction: 'ltr' | 'rtl'
-  menu: {
-    developer: {
-      label: string
-      reload: string
-      forceReload: string
-      toggleDevTools: string
-      logLevel: {
-        label: string
-        error: string
-        warn: string
-        info: string
-        debug: string
-        verbose: string
-      }
-      listChannels: string
-      listCommands: string
-    }
-    edit: {
-      label: string
-      undo: string
-      redo: string
-      cut: string
-      copy: string
-      paste: string
-      pasteMatchStyle: string
-      selectAll: string
-    }
-    file: {
-      label: string
-      createBook: string
-      openBook: string
-      openRecent: string
-      clearRecent: string
-      bookSettings: string
-      syncBook: string
-      settings: string
-      synchronize: string
-      logout: string
-      quit: string
-    }
-    help: {
-      label: string
-      learnMore: string
-      enableDebug: string
-    }
-    view: {
-      label: string
-      enableAnimations: string
-      resetZoom: string
-      zoomIn: string
-      zoomOut: string
-      toggleFullscreen: string
-    }
-    window: {
-      label: string
-      minimize: string
-      close: string
-    }
-    language: {
-      label: string
-      systemDefault: string
-      english: string
-      arabic: string
-    }
-  }
-  frontEnd: {
-    accounts: {
-      title: string
-      createAccount: string
-      editAccount: string
-      deleteAccount: string
-      accountName: string
-      balance: string
-      viewSettings: string
-      groupBy: string
-      institution: string
-      country: string
-      currency: string
-      accountOwner: string
-      accountType: string
-      sortBy: string
-      sortAZ: string
-      accountBalance: string
-      showClosedAccounts: string
-    }
-  }
-}
-interface LocaleData {
-  locale: string
-  translations: Translations
-  direction: 'ltr' | 'rtl'
-}
 
 interface I18nContextValue {
-  localeData: LocaleData
+  localeData: ILocaleData
   locale: string
   setLocale: (locale: string) => void
 }
@@ -134,7 +31,6 @@ export const I18nProvider: React.FC<{
 
   useEffect(() => {
     setLocaleData(data)
-
     const onUpdate = () => {
       refetch()
     }
@@ -168,3 +64,23 @@ export const I18nProvider: React.FC<{
     </I18nContext.Provider>
   )
 }
+
+// useTranslate.ts
+export const useTranslate = (basePath?: string) => {
+  const { localeData } = useI18n()
+
+  const getValue = (path: string): string => {
+    return path
+      .split('.')
+      .reduce((acc: any, key) => acc?.[key], localeData) ?? path
+  }
+
+  if (basePath) {
+    return basePath
+      .split('.')
+      .reduce((acc: any, key) => acc?.[key], localeData) ?? {}
+  }
+
+  return getValue
+}
+

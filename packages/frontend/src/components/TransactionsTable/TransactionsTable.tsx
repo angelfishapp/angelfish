@@ -13,6 +13,7 @@ import type { TransactionRow } from './data'
 import { buildColumns, buildTransactionRow, buildTransactionRows } from './data'
 import type { TransactionsTableProps } from './TransactionsTable.interface'
 import { StyledTransactionTable } from './TransactionsTable.styles'
+import { useTranslate } from '@/utils/i18n'
 
 /*
  * Extend react-table to add custom metadata for TransactionsTable
@@ -114,6 +115,7 @@ export default function TransactionsTable({
   id,
   variant = 'raised',
 }: TransactionsTableProps) {
+  const { table: t } = useTranslate('components')
   // Component State
   const showFooter = (account && account.acc_start_balance != 0) || false
   // Keep track of rows which are in edit state when double clicked
@@ -203,7 +205,7 @@ export default function TransactionsTable({
               colSpan={headerGroup.headers.length}
               style={{ padding: 5, fontWeight: 700, textAlign: 'center' }}
             >
-              Starting Balance:{' '}
+              {t['startingBalance']}{' '}
               <CurrencyLabel
                 value={account?.acc_start_balance ?? 0}
                 currency={account?.acc_iso_currency}

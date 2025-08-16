@@ -11,6 +11,7 @@ import type {
   AccountTableMethods,
   AccountTableUIContainerProps,
 } from './AccountTableUIContainer.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Container for the Account Table Component. Handles all UI logic for the  Account Table.
@@ -39,6 +40,7 @@ export default React.forwardRef<AccountTableMethods, AccountTableUIContainerProp
     }: AccountTableUIContainerProps,
     ref: React.Ref<AccountTableMethods>,
   ) {
+    const { accountTable: t } = useTranslate('components')
     // Component State
     const [selectedInstitution, setSelectedInstitution] = React.useState<IInstitution | undefined>(
       undefined,
@@ -130,8 +132,8 @@ export default React.forwardRef<AccountTableMethods, AccountTableUIContainerProp
           onSearch={onSearchInstitutions}
         />
         <ConfirmDialog
-          title={`Delete ${selectedInstitution?.name}`}
-          confirmText="Delete Institution & All Its Accounts & Transactions"
+          title={`${t['delete']} ${selectedInstitution?.name}`}
+          confirmText={t['confirmDeleteInstitution']}
           confirmButtonColor="error"
           onConfirm={() => {
             onDeleteInstitution(selectedInstitution as IInstitution)
@@ -140,11 +142,10 @@ export default React.forwardRef<AccountTableMethods, AccountTableUIContainerProp
           }}
           onClose={() => setShowInstitutionDeleteModal(false)}
           open={showInstitutionDeleteModal}
+          cancelText={t['cancel']}
         >
           <DialogContentText>
-            Are you sure you want to delete the Institution <em>{selectedInstitution?.name}</em>{' '}
-            from Angelfish? This will also delete any accounts and all their transactions that
-            belong to this Institution and cannot be undone.
+            {t['DialogContentTextInstitution']} <em>{selectedInstitution?.name}</em> {t['DialogContentTextExtraInstitution']}
           </DialogContentText>
         </ConfirmDialog>
         <BankAccountDrawer
@@ -156,8 +157,8 @@ export default React.forwardRef<AccountTableMethods, AccountTableUIContainerProp
           users={users}
         />
         <ConfirmDialog
-          title={`Delete ${selectedAccount?.name}`}
-          confirmText="Delete Account & All Its Transactions"
+          title={`${t['delete']} ${selectedAccount?.name}`}
+          confirmText={t['confirmDeleteAccount']}
           confirmButtonColor="error"
           onConfirm={() => {
             onDeleteAccount(selectedAccount as IAccount)
@@ -166,11 +167,10 @@ export default React.forwardRef<AccountTableMethods, AccountTableUIContainerProp
           }}
           onClose={() => setShowAccountDeleteModal(false)}
           open={showAccountDeleteModal}
+          cancelText={t['cancel']}
         >
           <DialogContentText>
-            Are you sure you want to delete the Account <em>{selectedAccount?.name}</em> from
-            Angelfish? This will also delete any account transactions that belong to this Account
-            and cannot be undone.
+            {t['DialogContentTextAccount']} <em>{selectedAccount?.name}</em> {t['DialogContentTextExtraAccount']}
           </DialogContentText>
         </ConfirmDialog>
       </React.Fragment>

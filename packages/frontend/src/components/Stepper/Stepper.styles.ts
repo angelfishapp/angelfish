@@ -9,7 +9,7 @@ export const StepperContainer = styled('div')(({ theme }) => ({
   position: 'fixed',
   inset: 0,
   boxSizing: 'border-box',
-  padding: '24px 0 24px 104px',
+  // padding: '24px 0 24px 104px',
   zIndex: theme.zIndex.mobileStepper,
 
   '&.backdrop': {

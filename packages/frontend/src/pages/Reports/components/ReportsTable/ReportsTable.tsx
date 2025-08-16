@@ -5,11 +5,14 @@ import type { ReportsDataRow } from '@angelfish/core'
 import { getNetTableColumns, getTableColumns } from './ReportsTable.columns'
 import type { ReportsTableProps } from './ReportsTable.interface'
 import { StyledNetSummaryTable, StyledReportsTable } from './ReportsTable.styles'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Table for Reports Page
  */
 const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
+  // Localization
+  const { reports: t } = useTranslate('pages')
   // Setup React-Table
   const initialState = {
     columnPinning: {
@@ -19,7 +22,7 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
 
   // Create columns from periods data
   const [incomeColumns, expenseColumns] = React.useMemo(
-    () => [getTableColumns('Income', data, onClick), getTableColumns('Expenses', data, onClick)],
+    () => [getTableColumns(t["income"], data, onClick, t), getTableColumns(t["expenses"], data, onClick, t)],
     [data, onClick],
   )
 
@@ -29,7 +32,7 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
     if (data.periods.length > 0) {
       // Calculate Net Summary Row
       summary = {
-        name: 'NET',
+        name: t['net'],
         type: 'net',
         icon: null,
       } as unknown as ReportsDataRow
@@ -40,10 +43,10 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
           return isNaN(value) ? total : total + value
         }, 0)
 
-        ;(summary as ReportsDataRow)[period] = periodTotal
+          ; (summary as ReportsDataRow)[period] = periodTotal
       })
     }
-    return [getNetTableColumns(data), summary]
+    return [getNetTableColumns(data, t), summary]
   }, [data])
 
   // Render table

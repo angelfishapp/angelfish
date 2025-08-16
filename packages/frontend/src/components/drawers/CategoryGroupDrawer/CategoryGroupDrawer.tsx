@@ -11,6 +11,7 @@ import { TextField } from '@/components/forms/TextField'
 import type { CategoryGroupType, ICategoryGroup } from '@angelfish/core'
 import { getCategoryGroupTypeOptions } from '@angelfish/core'
 import type { CategoryGroupDrawerProps } from './CategoryGroupDrawer.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -36,6 +37,7 @@ export default function CategoryGroupDrawer({
   onDelete,
   open = true,
 }: CategoryGroupDrawerProps) {
+  const { CategoryGroupDrawer: t } = useTranslate('components.drawers')
   // Setup Form
   const {
     control,
@@ -102,17 +104,17 @@ export default function CategoryGroupDrawer({
 
   return (
     <Drawer
-      title={categoryGroup ? 'Edit Category Group' : 'Create Category Group'}
+      title={categoryGroup ? t['edit'] : t['create']}
       menuItems={
         categoryGroup
           ? [
-              {
-                label: 'Delete Category Group',
-                icon: DeleteIcon,
-                onClick: handleDeleteGroup,
-                color: 'error',
-              },
-            ]
+            {
+              label: t['delete'],
+              icon: DeleteIcon,
+              onClick: handleDeleteGroup,
+              color: 'error',
+            },
+          ]
           : undefined
       }
       {...{ open, onClose }}
@@ -126,13 +128,13 @@ export default function CategoryGroupDrawer({
           rules={{ required: true }}
           render={({ field }) => (
             <TextField
-              label="Name"
+              label={t["name"]}
               fullWidth
               autoFocus
               required
-              placeholder="E.g. Household"
+              placeholder={t["namePlaceholder"]}
               error={errors?.name ? true : false}
-              helperText={errors?.name ? 'A Category name is required' : undefined}
+              helperText={errors?.name ? t["errorName"] : undefined}
               {...field}
             />
           )}
@@ -144,13 +146,13 @@ export default function CategoryGroupDrawer({
           rules={{ required: false }}
           render={({ field }) => (
             <TextField
-              label="Description"
+              label={t['description']}
               fullWidth
               multiline
               rows={3}
-              placeholder="E.g. All categories regarding household Expenses."
+              placeholder={t['descriptionPlaceholder']}
               error={errors?.description ? true : false}
-              helperText={errors?.description ? 'Invalid Description' : undefined}
+              helperText={errors?.description ? t['errorDescription'] : undefined}
               {...field}
             />
           )}
@@ -162,14 +164,14 @@ export default function CategoryGroupDrawer({
           rules={{ required: true }}
           render={({ field: { onChange, ...restField } }) => (
             <SelectField
-              label="Type"
+              label={t['type']}
               fullWidth
               required
               onChange={(event) => {
                 onChange(event.target.value as CategoryGroupType)
               }}
               error={errors?.type ? true : false}
-              helperText={errors?.type ? 'A Category Type is required' : undefined}
+              helperText={errors?.type ? t['errorType'] : undefined}
               {...restField}
             >
               {groupTypeOptions.map(({ value }) => (
@@ -187,10 +189,10 @@ export default function CategoryGroupDrawer({
           rules={{ required: false }}
           render={({ field }) => (
             <EmojiField
-              label="Icon"
+              label={t['icon']}
               fullWidth
               error={errors?.icon ? true : false}
-              helperText={errors?.icon ? 'Invalid Icon' : undefined}
+              helperText={errors?.icon ? t['errorIcon'] : undefined}
               {...field}
             />
           )}
@@ -202,10 +204,10 @@ export default function CategoryGroupDrawer({
           rules={{ required: false }}
           render={({ field }) => (
             <ColorField
-              label="Color"
+              label={t['color']}
               fullWidth
               error={errors?.color ? true : false}
-              helperText={errors?.color ? 'Invalid Color' : undefined}
+              helperText={errors?.color ? t['errorColor'] : undefined}
               {...field}
             />
           )}

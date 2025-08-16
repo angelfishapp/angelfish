@@ -21,19 +21,19 @@ import UserSettings from '@/pages/Settings/User/UserSettings'
  */
 export const ListedAppRoutes = [
   {
-    label: 'Dashboard',
+    label: 'dashboard',
     path: '/',
     Icon: DashboardIcon,
     Component: Dashboard,
   },
   {
-    label: 'Accounts',
+    label: 'accounts',
     path: '/accounts',
     Icon: AccountsIcon,
     Component: Accounts,
   },
   {
-    label: 'Reports',
+    label: 'reports',
     path: '/reports',
     Icon: ReportsIcon,
     Component: Reports,
@@ -46,17 +46,17 @@ export const ListedAppRoutes = [
 
 export const SettingsRoutes = [
   {
-    label: 'User Settings',
+    label: 'user-settings',
     path: '',
     Component: UserSettings,
   },
   {
-    label: 'Household Settings',
+    label: 'household-settings',
     path: 'book-settings',
     Component: BookSettings,
   },
   {
-    label: 'Categories',
+    label: 'categories',
     path: 'categories',
     Component: Categories,
   },

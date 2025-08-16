@@ -11,6 +11,7 @@ import {
   SetupUserStep,
 } from './components/steps'
 import type { SetupScreenProps } from './SetupScreen.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Component - Onboarding workflow for new user setting up App for the first
@@ -40,6 +41,7 @@ export default function SetupScreen({
   onSaveInstitution,
   onComplete,
 }: SetupScreenProps) {
+  const { setupScreen: t } = useTranslate('screens')
   // Component State
   const [activeStep, setActiveStep] = React.useState<number>(1)
   const [isOpen, setIsOpen] = React.useState<boolean>(true)
@@ -68,31 +70,31 @@ export default function SetupScreen({
     <Box width="100%" height="100%" justifyContent="center" alignContent="center" display="flex">
       <Stepper
         activeStep={activeStep}
-        labels={['Profile', 'Household', 'Encryption', 'Members', 'Accounts', 'Intro']}
+        labels={[t['profile'], t['household'], t['encryption'], t['members'], t['accounts'], t['intro']]}
         open={isOpen}
         onTransitionEnd={() => onComplete()}
       >
         <SetupUserStep
-          nextStep="Next - Create Your Household"
+          nextStep={t['nextCreate']}
           onNext={updateAuthenticatedUser}
           authenticatedUser={authenticatedUser}
           userAvatars={userAvatars}
         />
         <SetupBookStep
-          nextStep="Next - Setup Encryption Keys"
+          nextStep={t['nextSetup']}
           onNext={createBook}
           bookAvatars={bookAvatars}
-          suggestedName={`The ${authenticatedUser.last_name} Household`}
+          suggestedName={`${t['the']} ${authenticatedUser.last_name} ${t['household']}`}
         />
         <SetupEncryptionStep
-          nextStep="Next - Setup Your Members"
+          nextStep={t['nextMembers']}
           onNext={(seed) => {
             onCreateEncryptionKey(seed)
             setActiveStep(4)
           }}
         />
         <SetupMembersStep
-          nextStep="Next - Setup Your Bank Accounts"
+          nextStep={t['nextAccounts']}
           onNext={() => setActiveStep(5)}
           authenticatedUser={authenticatedUser}
           userAvatars={userAvatars}
@@ -101,7 +103,7 @@ export default function SetupScreen({
           onSaveUser={onSaveUser}
         />
         <SetupBankAccountsStep
-          nextStep="Next - Short Intro"
+          nextStep={t['nextIntro']}
           onNext={() => setActiveStep(6)}
           accountsWithRelations={accountsWithRelations}
           book={book}
@@ -114,8 +116,8 @@ export default function SetupScreen({
           onSearchInstitutions={onSearchInstitutions}
         />
         <Step
-          title="Woohoo! You're Ready To Get Started!"
-          nextStep="Finish"
+          title={t['ready']}
+          nextStep={t['finish']}
           isReady={true}
           onNext={() => setIsOpen(false)}
         >

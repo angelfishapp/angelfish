@@ -15,6 +15,7 @@ import type { IInstitution } from '@angelfish/core'
 import { getAccountTypeLabel, getCurrencyFromCode } from '@angelfish/core'
 import type { AccountTableRowProps } from './AccountTableRow.interface'
 import { StyledListItemButton } from './AccountTableRow.styles'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * AccountTableRow Component
@@ -29,6 +30,7 @@ export default function AccountTableRow({
   onEditInstitution,
   onSelectAccount,
 }: AccountTableRowProps) {
+  const { accountTable: t } = useTranslate('components')
   // Render Grouping Rows
   switch (row.groupingColumnId) {
     case 'acc_institution_id': {
@@ -48,9 +50,8 @@ export default function AccountTableRow({
             <BankIcon logo={row.original.acc_institution?.logo} />
           </ListItemIcon>
           <ListItemText
-            primary={`${row.original.acc_institution?.name} ${
-              !row.original.acc_institution?.is_open ? '(Closed)' : ''
-            }`}
+            primary={`${row.original.acc_institution?.name} ${!row.original.acc_institution?.is_open ? '(Closed)' : ''
+              }`}
             slotProps={{
               primary: {
                 noWrap: true,
@@ -228,22 +229,22 @@ export default function AccountTableRow({
               {(groupBy === 'acc_type' ||
                 groupBy === 'acc_owners' ||
                 groupBy === 'acc_currency') && (
-                <ListItemIcon>
-                  <BankIcon logo={row.original.acc_institution?.logo} />
-                </ListItemIcon>
-              )}
+                  <ListItemIcon>
+                    <BankIcon logo={row.original.acc_institution?.logo} />
+                  </ListItemIcon>
+                )}
               <ListItemText
                 primary={
                   groupBy === 'acc_type' || groupBy === 'acc_owners'
-                    ? `No Accounts Found For ${row.original.acc_institution?.name}`
-                    : 'No Accounts Found'
+                    ? `${t['noAccountsFoundFor']} ${row.original.acc_institution?.name}`
+                    : t['noAccountsFound']
                 }
                 secondary={
                   <a
                     onClick={() => onCreateAccount(row.original.acc_institution)}
                     style={{ cursor: 'pointer', textDecoration: 'underline' }}
                   >
-                    Add An Account
+                    {t['addAccount']}
                   </a>
                 }
               />

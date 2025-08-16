@@ -7,6 +7,7 @@ import { Emoji } from '@/components/Emoji'
 import type { ReportsDataRow } from '@angelfish/core'
 import { renderPeriodHeader } from '../../Reports.utils'
 import type { ReportsTableProps } from './ReportsTable.interface'
+import type { useI18n } from '@/utils/i18n/I18nProvider'
 
 /**
  * Generate array of react-table Columns from the ReportsData with column
@@ -21,6 +22,7 @@ export function getTableColumns(
   title: string,
   data: ReportsTableProps['data'],
   onClick: ReportsTableProps['onClick'],
+  t: ReturnType<typeof useI18n>['localeData']['pages']['reports'],
 ): ColumnDef<ReportsDataRow>[] {
   let columns: ColumnDef<ReportsDataRow>[] = []
 
@@ -63,7 +65,7 @@ export function getTableColumns(
             </span>
           )
         },
-        footer: () => <span className="name">{title} Total</span>,
+        footer: () => <span className="name">{title} {t['total']}</span>,
       },
     ]
 
@@ -138,12 +140,16 @@ export function getTableColumns(
 }
 
 /**
- * Get Columns fro The Net Summary Table Row at Bottom
+ * Get Columns for The Net Summary Table Row at Bottom
  *
  * @param data    The report data with periods to generate columns from
+ * @param t       The translation object for reports
  * @returns       ColumnDef[]
  */
-export function getNetTableColumns(data: ReportsTableProps['data']): ColumnDef<ReportsDataRow>[] {
+export function getNetTableColumns(
+  data: ReportsTableProps['data'],
+  t: ReturnType<typeof useI18n>['localeData']['pages']['reports']
+): ColumnDef<ReportsDataRow>[] {
   let columns: ColumnDef<ReportsDataRow>[] = []
 
   if (data.periods.length > 0) {
@@ -153,7 +159,7 @@ export function getNetTableColumns(data: ReportsTableProps['data']): ColumnDef<R
         accessorKey: 'name',
         minSize: 300,
         header: undefined,
-        cell: () => 'NET',
+        cell: () => t['net']
       },
     ]
     for (const period of data.periods) {

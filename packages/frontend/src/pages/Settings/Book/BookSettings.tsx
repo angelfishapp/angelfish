@@ -6,12 +6,15 @@ import { UserTableContainer } from '@/containers/UserTableContainer'
 import { useGetBook, useSaveBook } from '@/hooks'
 import type { IBook } from '@angelfish/core'
 import BookForm from './components/BookForm'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Component
  */
 
 export default function BookSettings() {
+  // Localization
+  const { settings: t } = useTranslate('pages')
   // Component State
   const { book } = useGetBook()
   const bookSaveMutation = useSaveBook()
@@ -29,7 +32,7 @@ export default function BookSettings() {
       <Box marginBottom={2}>
         <Paper>
           <Typography variant="h5" gutterBottom={true}>
-            Household Members
+            {t['householdMembers']}
           </Typography>
           <UserTableContainer />
         </Paper>

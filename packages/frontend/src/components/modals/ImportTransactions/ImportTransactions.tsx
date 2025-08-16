@@ -6,6 +6,7 @@ import ImportTransactionsConfirm from './components/Steps/ImportTransactions-Con
 import ImportTransactionsFile from './components/Steps/ImportTransactions-File'
 import ImportTransactionsMapping from './components/Steps/ImportTransactions-Mapping'
 import type { ImportTransactionsProps } from './ImportTransactions.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Import Transactions Modal
@@ -20,6 +21,7 @@ export default function ImportTransactions({
   onComplete,
   open = false,
 }: ImportTransactionsProps) {
+  const { ImportTransactions: t } = useTranslate('components.modals')
   const [file, setFile] = React.useState<string>('')
   const [fileMappings, setFileMappings] = React.useState<ParsedFileMappings | undefined>(undefined)
   const [transactions, setTransactions] = React.useState<ReconciledTransaction[] | undefined>(
@@ -31,7 +33,7 @@ export default function ImportTransactions({
   // Render
   return (
     <Stepper
-      labels={['Select File', 'Confirm Mappings', 'Review Transactions']}
+      labels={[t['selectFile'], t['confirmMappings'], t['reviewTransactions']]}
       onClose={() => {
         // Reset to initial state
         setFile('')

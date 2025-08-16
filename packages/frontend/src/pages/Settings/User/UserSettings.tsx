@@ -11,6 +11,7 @@ import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
 import { useGetAuthenticatedUser, useUpdateAuthenticatedUser } from '@/hooks'
 import { USER_AVATARS } from '@angelfish/core'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -32,6 +33,8 @@ type UserSettingsFormValues = {
  */
 
 export default function UserSettings() {
+  // Localization
+  const { settings: t } = useTranslate('pages')
   // Component State
   const { authenticatedUser } = useGetAuthenticatedUser()
   const updateAuthenticatedUserMutation = useUpdateAuthenticatedUser()
@@ -91,7 +94,7 @@ export default function UserSettings() {
     <Box marginBottom={2}>
       <Paper>
         <Typography variant="h5" gutterBottom={true}>
-          Personal Information
+          {t['personalInformation']}
         </Typography>
 
         <Grid container spacing={2}>
@@ -106,7 +109,7 @@ export default function UserSettings() {
                   size={100}
                   required
                   error={errors?.avatar ? true : false}
-                  helperText={errors?.avatar ? 'Avatar is required' : undefined}
+                  helperText={errors?.avatar ? t['avatarRequired'] : undefined}
                   {...field}
                 />
               )}
@@ -128,12 +131,12 @@ export default function UserSettings() {
                     rules={{ required: true }}
                     render={({ field }) => (
                       <TextField
-                        label="First Name"
-                        placeholder="Enter your First Name"
+                        label={t['firstName']}
+                        placeholder={t['firstNamePlaceholder']}
                         fullWidth
                         required
                         error={errors?.firstName ? true : false}
-                        helperText={errors?.firstName ? 'First Name is required' : undefined}
+                        helperText={errors?.firstName ? t['firstNameRequired'] : undefined}
                         {...field}
                       />
                     )}
@@ -146,12 +149,12 @@ export default function UserSettings() {
                     rules={{ required: true }}
                     render={({ field }) => (
                       <TextField
-                        label="Last Name"
-                        placeholder="Enter your Last Name"
+                        label={t['lastName']}
+                        placeholder={t['lastNamePlaceholder']}
                         fullWidth
                         required
                         error={errors?.lastName ? true : false}
-                        helperText={errors?.lastName ? 'Last Name is required' : undefined}
+                        helperText={errors?.lastName ? t['lastNameRequired'] : undefined}
                         {...field}
                       />
                     )}
@@ -170,13 +173,13 @@ export default function UserSettings() {
                     }}
                     render={({ field }) => (
                       <TextField
-                        label="Email"
-                        placeholder="Enter your Email"
+                        label={t['email']}
+                        placeholder={t['emailPlaceholder']}
                         disabled
                         fullWidth
                         required
                         error={errors?.email ? true : false}
-                        helperText="COMING SOON: Email can't be changed right now..."
+                        helperText={t['emailRequired']}
                         {...field}
                       />
                     )}
@@ -189,12 +192,12 @@ export default function UserSettings() {
                     rules={{ required: false, validate: (value) => value.isValid }}
                     render={({ field: { onChange, value, ...restField } }) => (
                       <PhoneField
-                        label="Phone Number"
+                        label={t['phoneNumber']}
                         fullWidth
                         error={errors?.phone ? true : false}
                         helperText={
                           errors?.phone
-                            ? 'A valid phone number with country code is required'
+                            ? t['phoneNumberRequired']
                             : undefined
                         }
                         onChange={(phone, isValid) => {
@@ -220,7 +223,7 @@ export default function UserSettings() {
             onClick={() => handleSubmit(handleUserSave)()}
             disabled={!isValid || !isDirty}
           >
-            Update
+            {t['update']}
           </Button>
         </Box>
       </Paper>

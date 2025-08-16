@@ -11,6 +11,7 @@ import {
   Tooltip,
   TooltipBar,
 } from './FinancialFreedomProgressBar.styled'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Display a progress bar that shows the financial freedom index for the user based on their past 12 months of expenses:
@@ -25,6 +26,7 @@ export default function FinancialFreedomProgressBar({
   currency,
   data,
 }: FinancialFreedomProgressBarProps) {
+  const { dashboard: t } = useTranslate('pages')
   // Component State
   const [animate, setAnimate] = React.useState(false)
 
@@ -105,31 +107,30 @@ export default function FinancialFreedomProgressBar({
   // Render
   return (
     <DashboardChart
-      title="Financial Freedom Index"
+      title={t['financialFreedomIndex']}
       description={
         <Box mx="auto" maxWidth={460}>
           {progress > 99 ? (
-            <>Great job! You are financially free!!</>
+            <>{t['greatJob']}</>
           ) : (
             <>
-              Based on your average Income & Expenses for the past {periods} months, you need an
-              additional{' '}
+              {t['financialFreedom']}{periods} {t['financialFreedomMonths']}{' '}
               <b>
                 <CurrencyLabel
                   value={Math.round(aveTotalExpenses - avePassiveIncome)}
                   currency={currency}
                   displayDecimals={false}
                 />
-                /month
+                /{t['month']}
               </b>{' '}
-              passive income to become financially free.
+              {t['passive']}
             </>
           )}
         </Box>
       }
     >
       {!data ? (
-        <Box textAlign="center">No Data Found</Box>
+        <Box textAlign="center">{t['noDataFound']}</Box>
       ) : (
         <Box mx={4} style={{ position: 'relative', marginTop: '8rem', marginBottom: '8rem' }}>
           <ProgressBarWrapper>
@@ -143,10 +144,10 @@ export default function FinancialFreedomProgressBar({
             $translateX={-52}
           >
             <TooltipBar $position="top" $size={0.2} />
-            <div>PASSIVE INCOME</div>
+            <div>{t['passiveIncome']}</div>
             <div>
               <CurrencyLabel value={avePassiveIncome} currency={currency} displayDecimals={false} />
-              /month ({Math.round(progress) + '%'})
+              /{t['month']} ({Math.round(progress) + '%'})
             </div>
           </Tooltip>
           {aveCriticalExpenses && (
@@ -156,14 +157,14 @@ export default function FinancialFreedomProgressBar({
               $position="top"
             >
               <TooltipBar />
-              <div>CRITICAL EXPENSES</div>
+              <div>{t['criticalExpenses']}</div>
               <div>
                 <CurrencyLabel
                   value={aveCriticalExpenses}
                   currency={currency}
                   displayDecimals={false}
                 />
-                /month
+                /{t['month']}
               </div>
             </Tooltip>
           )}
@@ -177,22 +178,22 @@ export default function FinancialFreedomProgressBar({
               $position="top"
             >
               <TooltipBar />
-              <div>IMPORTANT EXPENSES</div>
+              <div>{t['importantExpenses']}</div>
               <div>
                 <CurrencyLabel
                   value={aveCriticalExpenses + aveImportantExpenses}
                   currency={currency}
                   displayDecimals={false}
                 />
-                /month
+                /{t['month']}
               </div>
             </Tooltip>
           )}
           <Tooltip $background="#145579" $position="top" $left={100}>
-            <div>TOTAL EXPENSES</div>
+            <div>{t['totalExpenses']}</div>
             <div>
               <CurrencyLabel value={aveTotalExpenses} currency={currency} displayDecimals={false} />
-              /month
+              /{t['month']}
             </div>
           </Tooltip>
         </Box>

@@ -15,7 +15,6 @@ export const AppLayoutContainer = styled(Box)(() => ({
 
 // Page: content area beside the sidebar
 export const AppPageContainer = styled(Box)(({ theme }) => ({
-  marginLeft: theme.custom.side.width,
   position: 'absolute',
   top: 0,
   left: 0,

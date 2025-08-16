@@ -21,11 +21,14 @@ import {
 } from '@/hooks'
 import { AccountsMenu } from './components/AccountsMenu'
 import { AccountsView } from './views/AccountsView'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Accounts page for viewing and editing Accounts and their associated Transactions
  */
 export default function Accounts() {
+  // localization
+  const { accounts: t } = useTranslate('pages')
   // Accounts custom hooks to handle Transactions
   const { accounts, isLoading: isAccountLoading } = useListAllAccountsWithRelations()
   const accountSaveMutation = useSaveAccount()
@@ -187,7 +190,7 @@ export default function Accounts() {
                   sx={{ color: (theme) => theme.palette.common.white }}
                   component="span"
                 >
-                  Current Balance:
+                  {t['currentBalance']} :
                 </Typography>
                 &nbsp;
                 <CurrencyLabel

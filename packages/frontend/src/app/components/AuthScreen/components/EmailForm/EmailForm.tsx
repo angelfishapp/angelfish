@@ -4,6 +4,7 @@ import React from 'react'
 
 import { AuthContainer } from '../../AuthScreen.styles'
 import type { EmailFormProps } from './EmailForm.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Displays the forgotten password form
@@ -15,6 +16,7 @@ export default function ResetPasswordForm({
   onNext,
 }: EmailFormProps) {
   // Component State
+  const { authScreen: t } = useTranslate("screens")
   const emailFieldRef = React.useRef<HTMLInputElement>(null)
   const [email, setEmail] = React.useState<string>(defaultEmail || '')
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
@@ -85,19 +87,17 @@ export default function ResetPasswordForm({
             {/* use isEmailSent flag to display form or success message */}
             {isEmailSent ? (
               <section>
-                <h1>Check Your Inbox!</h1>
+                <h1>{t['checkInbox']}</h1>
                 <p>
-                  An email with a 6-digit code has been sent to your inbox. If you can&apos;t find
-                  it within 5 minutes please check your Spam folder, try again or contact support if
-                  you still don&apos;t see the email.
+                  {t['emailSent']}
                 </p>
                 <Button fullWidth onClick={handleShowLogin}>
-                  Next
+                  {t['next']}
                 </Button>
               </section>
             ) : (
               <section>
-                <h1>Enter Your Email</h1>
+                <h1>{t['email']}</h1>
                 <form
                   onSubmit={(event) => {
                     event.preventDefault()
@@ -122,7 +122,7 @@ export default function ResetPasswordForm({
                     type="submit"
                     startIcon={isLoading ? <CircularProgress size={30} /> : undefined}
                   >
-                    Send Code to Email
+                    {t['sendCode']}
                   </Button>
                 </form>
               </section>

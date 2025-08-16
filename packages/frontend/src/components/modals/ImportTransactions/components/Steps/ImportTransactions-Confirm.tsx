@@ -5,6 +5,7 @@ import React from 'react'
 import { Step } from '@/components/Stepper'
 import type { IAccount, ReconciledTransaction } from '@angelfish/core'
 import { ReviewTransactionsTable } from '../ReviewTransactionsTable'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Step Component Properties
@@ -46,6 +47,7 @@ export default function ImportTransactionsConfirm({
   onCancel,
   onNext,
 }: ImportTransactionsConfirmProps) {
+  const { ImportTransactions: t } = useTranslate('components.modals')
   // Keep track of updated transactions
   const [updatedTransactions, setUpdatedTransactions] = React.useState<
     ReconciledTransaction[] | undefined
@@ -63,8 +65,8 @@ export default function ImportTransactionsConfirm({
   // Render
   return (
     <Step
-      title="Review Transactions"
-      nextStep={`Import ${importCount} Transactions`}
+      title={t['reviewTransactions']}
+      nextStep={`${t['import']} ${importCount} ${t['transactions']}`}
       isReady={true}
       onNext={() => onNext(updatedTransactions ?? [])}
       onCancel={onCancel}

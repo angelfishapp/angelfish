@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 
 import { Avatar } from '@/components/Avatar'
 import type { IAuthenticatedUser } from '@angelfish/core'
+import { useI18n } from '@/utils/i18n/I18nProvider'
 
 /**
  * Component Properties
@@ -28,6 +29,7 @@ type AvatarMenuProps = {
  */
 
 export default function AvatarMenu({ authenticatedUser, onLogout }: AvatarMenuProps) {
+  const { localeData } = useI18n()
   // Component State
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
 
@@ -51,20 +53,20 @@ export default function AvatarMenu({ authenticatedUser, onLogout }: AvatarMenuPr
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         role={undefined}
-        sx={{ marginLeft: (theme) => `${theme.custom.side.width - 17}px` }}
+        sx={localeData.direction === "ltr" ? { marginLeft: (theme) => `${theme.custom.side.width - 17}px` } : { marginLeft: (theme) => `${theme.custom.side.width - 147}px` }}
         onClose={() => setAnchorEl(null)}
       >
         <MenuItem component={Link} to="/settings/" onClick={() => setAnchorEl(null)}>
           <ListItemIcon>
             <SettingsIcon />
           </ListItemIcon>
-          <ListItemText primary="Settings" />
+          <ListItemText primary={localeData.routes['settings']} />
         </MenuItem>
         <MenuItem onClick={onLogout}>
           <ListItemIcon>
             <ExitToAppIcon />
           </ListItemIcon>
-          <ListItemText primary="Logout" />
+          <ListItemText primary={localeData.routes['logout']} />
         </MenuItem>
       </Menu>
     </>

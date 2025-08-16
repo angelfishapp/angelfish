@@ -7,6 +7,7 @@ import type { AccountTableMethods } from '@/components/AccountTable'
 import { AccountTableUIContainer } from '@/components/AccountTable'
 import { Step } from '@/components/Stepper'
 import type { IAccount, IBook, IInstitution, IInstitutionUpdate, IUser } from '@angelfish/core'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Component Properties
@@ -77,6 +78,7 @@ export default function SetupBankAccountsStep({
   onSaveAccount,
   onSaveInstitution,
 }: SetupBankAccountsStepProps) {
+  const { setupScreen: t } = useTranslate('screens')
   // Component State
   const [isReady, setIsReady] = React.useState<boolean>(false)
   const accountTableMethodsRef = React.useRef<AccountTableMethods>(null)
@@ -97,7 +99,7 @@ export default function SetupBankAccountsStep({
   // Render
   return (
     <Step
-      title="Setup Your Bank Accounts"
+      title={t['setupYourBankAccounts']}
       nextStep={nextStep}
       isReady={isReady}
       onNext={handleSubmit}
@@ -111,8 +113,7 @@ export default function SetupBankAccountsStep({
       >
         <Grid size={12} sx={{ paddingLeft: '0px !important', paddingBottom: 2 }}>
           <Typography variant="body1">
-            Add some Bank Accounts to your Household so you can start tracking your Income and
-            Expenses in Angelfish across them. Double Click an Account or Institution to edit it
+            {t['setupYourBankAccountsDescription']}
           </Typography>
         </Grid>
         <Grid
@@ -161,7 +162,7 @@ export default function SetupBankAccountsStep({
             fullWidth
             variant="outlined"
           >
-            Add Institution
+            {t['addInstitution']}
           </Button>
         </Grid>
         <Grid size={6}>
@@ -171,7 +172,7 @@ export default function SetupBankAccountsStep({
             fullWidth
             variant="outlined"
           >
-            Add Account
+            {t['addAccount']}
           </Button>
         </Grid>
       </Grid>

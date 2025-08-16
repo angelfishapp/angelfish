@@ -12,6 +12,7 @@ import type { IAccount, ICategoryGroup } from '@angelfish/core'
 import { getCategoryTypeOptions } from '@angelfish/core'
 import type { CategoryGroupType, CategoryType } from '@angelfish/core/src/types'
 import type { CategoryDrawerProps } from './CategoryDrawer.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -41,6 +42,7 @@ export default function CategoryDrawer({
   onSave,
   onDelete,
 }: CategoryDrawerProps) {
+  const { CategoryDrawer: t } = useTranslate('components.drawers')
   // Setup Form
   const {
     control,
@@ -108,17 +110,17 @@ export default function CategoryDrawer({
 
   return (
     <Drawer
-      title={initialValue?.id ? 'Edit Category' : 'Create Category'}
+      title={initialValue?.id ? t['edit'] : t['create']}
       menuItems={
         initialValue?.id
           ? [
-              {
-                label: 'Delete Category',
-                icon: DeleteIcon,
-                onClick: handleDeleteCategory,
-                color: 'error',
-              },
-            ]
+            {
+              label: t['delete'],
+              icon: DeleteIcon,
+              onClick: handleDeleteCategory,
+              color: 'error',
+            },
+          ]
           : undefined
       }
       {...{ open, onClose }}
@@ -132,13 +134,13 @@ export default function CategoryDrawer({
           rules={{ required: true }}
           render={({ field }) => (
             <TextField
-              label="Name"
+              label={t['name']}
               fullWidth
               autoFocus
               required
-              placeholder="E.g. Landscaping"
+              placeholder={t['namePlaceholder']}
               error={errors?.name ? true : false}
-              helperText={errors?.name ? 'A Category name is required' : undefined}
+              helperText={errors?.name ? t['errorName'] : undefined}
               {...field}
             />
           )}
@@ -150,13 +152,13 @@ export default function CategoryDrawer({
           rules={{ required: false }}
           render={({ field }) => (
             <TextField
-              label="Description"
+              label={t['description']}
               fullWidth
               multiline
               rows={3}
-              placeholder="E.g. Purchasing of materials, plants, or professional landscapers for your home garden."
+              placeholder={t['descriptionPlaceholder']}
               error={errors?.description ? true : false}
-              helperText={errors?.description ? 'Invalid Description' : undefined}
+              helperText={errors?.description ? t['descriptionInvalid'] : undefined}
               {...field}
             />
           )}
@@ -168,9 +170,10 @@ export default function CategoryDrawer({
           rules={{ required: true }}
           render={({ field: { value, onChange, ...restField } }) => (
             <CategoryGroupField
-              label="Group"
+              label={t['group']}
               required
               fullWidth
+              placeholder={t['searchCategories']}
               categoryGroups={categoryGroups}
               onChange={(categoryGroup?: ICategoryGroup, prev?: ICategoryGroup) => {
                 onChange(categoryGroup?.id)
@@ -185,7 +188,7 @@ export default function CategoryDrawer({
                   : undefined
               }
               error={errors?.categoryGroupID ? true : false}
-              helperText={errors?.categoryGroupID ? 'A Category Group is required' : undefined}
+              helperText={errors?.categoryGroupID ? t['categoryGroupRequired'] : undefined}
               {...restField}
             />
           )}
@@ -197,14 +200,14 @@ export default function CategoryDrawer({
           rules={{ required: true }}
           render={({ field: { onChange, ...restField } }) => (
             <SelectField
-              label="Type"
+              label={t['type']}
               fullWidth
               required
               onChange={(event) => {
                 onChange(event.target.value as CategoryType)
               }}
               error={errors?.type ? true : false}
-              helperText={errors?.type ? 'A Category Type is required' : undefined}
+              helperText={errors?.type ? t['errorType'] : undefined}
               {...restField}
             >
               {typeOptions.map(({ value }) => (
@@ -222,10 +225,10 @@ export default function CategoryDrawer({
           rules={{ required: false }}
           render={({ field }) => (
             <EmojiField
-              label="Icon"
+              label={t['icon']}
               fullWidth
               error={errors?.icon ? true : false}
-              helperText={errors?.icon ? 'Invalid Icon' : undefined}
+              helperText={errors?.icon ? t['iconInvalid'] : undefined}
               {...field}
             />
           )}

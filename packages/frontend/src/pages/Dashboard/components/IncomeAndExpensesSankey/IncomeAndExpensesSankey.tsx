@@ -12,6 +12,7 @@ import type { ReportsDataRow } from '@angelfish/core'
 import { DashboardChart } from '../DashboardChart'
 import type { IncomeAndExpensesSankeyProps } from './IncomeAndExpensesSankey.interface'
 import { IncomeAndExpensesSankeyTooltip } from './IncomeAndExpensesSankey.style'
+import { useTranslate } from '@/utils/i18n'
 
 ChartJS.register(SankeyController, Flow)
 
@@ -32,6 +33,7 @@ export default function IncomeAndExpensesSankey({
   data,
   periods = 6,
 }: IncomeAndExpensesSankeyProps) {
+  const { dashboard: t } = useTranslate('pages')
   // Component State
   const [month, setMonth] = React.useState<string>('')
 
@@ -173,14 +175,14 @@ export default function IncomeAndExpensesSankey({
 
   return (
     <DashboardChart
-      title="Income & Expenses"
+      title={t['incomeAndExpenses']}
       description={
         <Box mx="auto" maxWidth={460}>
-          Your avarage monthly income is{' '}
+          {t['averageIncome']}{' '}
           <b>
             <CurrencyLabel value={averageIncomePerSix} currency={currency} />
           </b>{' '}
-          more than your avarage expenditure over the past 6 months
+          {t['moreThanAverage']}
         </Box>
       }
     >
@@ -193,7 +195,7 @@ export default function IncomeAndExpensesSankey({
             alignItems="center"
             justifyContent="center"
           >
-            No Income this month
+            {t['noIncome']}
           </Box>
 
           <Box
@@ -234,12 +236,12 @@ export default function IncomeAndExpensesSankey({
             alignItems="center"
             justifyContent="center"
           >
-            No Expenses this month
+            {t['noExpenses']}
           </Box>
         </Box>
       ) : (
         <Box height="500px" display="flex" alignItems="center" justifyContent="center">
-          No data this month
+          {t['noData']}
         </Box>
       )}
       <Slider

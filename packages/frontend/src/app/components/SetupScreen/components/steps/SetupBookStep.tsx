@@ -9,6 +9,7 @@ import { CurrencyField } from '@/components/forms/CurrencyField'
 import { TextField } from '@/components/forms/TextField'
 import { Step } from '@/components/Stepper'
 import { getCountryFromCode, getCurrencyFromCode } from '@angelfish/core'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -55,6 +56,7 @@ export default function SetupBookStep({
   bookAvatars,
   suggestedName,
 }: SetupBookStepProps) {
+  const { setupScreen: t } = useTranslate('screens')
   // Setup Form
   const {
     control,
@@ -88,7 +90,7 @@ export default function SetupBookStep({
   // Render
   return (
     <Step
-      title="Setup Your Household"
+      title={t['setupYourHousehold']}
       nextStep={nextStep}
       isReady={isValid}
       onNext={() => handleSubmit(handleSave)()}
@@ -96,8 +98,7 @@ export default function SetupBookStep({
       <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
         <Grid size={12}>
           <Typography variant="body1">
-            Your Houehold is your private underwater home where you and your household members can
-            track all your finances in one place.
+            {t['HoueholdDescription']}
           </Typography>
         </Grid>
         <Grid size={12}>
@@ -109,14 +110,14 @@ export default function SetupBookStep({
                 rules={{ required: true }}
                 render={({ field }) => (
                   <AvatarField
-                    label="Logo"
+                    label={t["logo"]}
                     avatars={bookAvatars}
                     size={100}
                     dialogSize={100}
-                    dialogTitle="Select a Logo for your Household"
+                    dialogTitle={t['selectLogo']}
                     required
                     error={errors?.logo ? true : false}
-                    helperText={errors?.logo ? 'Logo is required' : ' '}
+                    helperText={errors?.logo ? t['logoRequired'] : ' '}
                     {...field}
                   />
                 )}
@@ -130,12 +131,12 @@ export default function SetupBookStep({
                   rules={{ required: true }}
                   render={({ field }) => (
                     <TextField
-                      label="Name"
-                      placeholder="Enter a Name for your Household"
+                      label={t['name']}
+                      placeholder={t['enterName']}
                       fullWidth
                       required
                       error={errors?.name ? true : false}
-                      helperText={errors?.name ? 'Household Name is required' : ' '}
+                      helperText={errors?.name ? t['nameRequired'] : ' '}
                       {...field}
                     />
                   )}
@@ -150,9 +151,10 @@ export default function SetupBookStep({
                       rules={{ required: true }}
                       render={({ field: { value, onChange, ...rest } }) => (
                         <CountryField
-                          label="Country"
+                          label={t["country"]}
                           fullWidth
                           required
+                          placeholder={t['searchCountries']}
                           value={value ? (getCountryFromCode(value) ?? undefined) : undefined}
                           onChange={(country) => {
                             if (country) {
@@ -166,7 +168,7 @@ export default function SetupBookStep({
                             }
                           }}
                           error={errors?.country ? true : false}
-                          helperText={errors?.country ? 'Country is required' : ' '}
+                          helperText={errors?.country ? t['countryRequired'] : ' '}
                           {...rest}
                         />
                       )}
@@ -181,9 +183,10 @@ export default function SetupBookStep({
                       }}
                       render={({ field: { value, onChange, ...rest } }) => (
                         <CurrencyField
-                          label="Default Currency"
+                          label={t['defaultCurrency']}
                           fullWidth
                           required
+                          placeholder={t['searchCurrencies']}
                           value={value ? (getCurrencyFromCode(value) ?? undefined) : undefined}
                           onChange={(currency) => {
                             if (currency) {
@@ -193,7 +196,7 @@ export default function SetupBookStep({
                             }
                           }}
                           error={errors?.currency ? true : false}
-                          helperText={errors?.currency ? 'Currency is required' : ' '}
+                          helperText={errors?.currency ? t['currencyRequired'] : ' '}
                           {...rest}
                         />
                       )}

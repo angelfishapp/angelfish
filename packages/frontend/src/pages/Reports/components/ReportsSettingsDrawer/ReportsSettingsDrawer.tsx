@@ -5,6 +5,7 @@ import { Drawer } from '@/components/Drawer'
 import { SwitchField } from '@/components/forms/SwitchField'
 import type { ReportsQuery } from '@angelfish/core'
 import type { ReportsSettingsDrawerProps } from './ReportsSettingsDrawer.interface'
+import { useTranslate } from '@/utils/i18n/I18nProvider'
 
 /**
  * Form Properties
@@ -24,6 +25,8 @@ export default function ReportsSettingsDrawer({
   onClose,
   onSave,
 }: ReportsSettingsDrawerProps) {
+  // localization
+  const { ReportsSettingsDrawer: t } = useTranslate('components.drawers')
   // Setup Form
   const {
     control,
@@ -58,7 +61,7 @@ export default function ReportsSettingsDrawer({
   // Render
   return (
     <Drawer
-      title="Report Settings"
+      title={t['reportSettings']}
       onClose={onClose}
       open={open}
       disableSaveButton={!isValid || !isDirty}
@@ -70,10 +73,10 @@ export default function ReportsSettingsDrawer({
         rules={{ required: false }}
         render={({ field }) => (
           <SwitchField
-            label="Include Unclassified Transactions"
+            label={t['includeUnclassifiedTransactions']}
             fullWidth
             error={errors?.include_unclassified ? true : false}
-            helperText="Include or Exclude transactions that have not been classified"
+            helperText={t['includeUnclassifiedTransactionsHelper']}
             {...field}
           />
         )}

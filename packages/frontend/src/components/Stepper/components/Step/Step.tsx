@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography'
 
 import type { StepProps } from './Step.interface'
 import { StepPanelContainer } from './Step.styles'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Displays a Step Panel with form for user to complete
@@ -18,6 +19,7 @@ export default function StepPanel({
   onCancel,
   onNext,
 }: StepProps) {
+  const { ImportTransactions: t } = useTranslate('components.modals')
   // Render
   return (
     <StepPanelContainer>
@@ -28,7 +30,7 @@ export default function StepPanel({
       <Box display="flex" alignContent="center" justifyContent="center" marginTop="20px">
         {onCancel && (
           <Button variant="outlined" onClick={() => onCancel?.()} className="cancelButton">
-            Cancel
+            {t['cancel']}
           </Button>
         )}
         <Button disabled={!isReady} onClick={() => onNext()} className="button">

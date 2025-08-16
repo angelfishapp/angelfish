@@ -12,12 +12,14 @@ import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { DefaultTableRowProps } from '@/components/Table'
 import { getTransactionFormData } from '../../data/'
 import type { FormData, TransactionRow } from '../../data/types'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Edit view of TableRow for TransactionTable
  */
 export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<TransactionRow>>(
   function TableRowEdit({ className, row, table }: DefaultTableRowProps<TransactionRow>, ref) {
+    const { table: t } = useTranslate('components')
     // Generate react-hook-form default values for the form
     const defaultValues: FormData = React.useMemo(() => {
       return getTransactionFormData(row.original)
@@ -271,7 +273,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                         })
                       }
                     >
-                      {isSplit ? 'Add Split...' : 'Split Transaction...'}
+                      {isSplit ? t['addSplit'] : t['splitTransaction']}
                     </Button>
                   </TableCell>
                 )
@@ -288,7 +290,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                       <>
                         <CurrencyLabel value={remaining} currency={row.original.currency} />
                         <br />
-                        Left to Split
+                        {t['leftToSplit']}
                       </>
                     )}
                   </TableCell>
@@ -323,7 +325,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                 sx={{ mr: 2, backgroundColor: (theme) => theme.palette.error.main }}
                 onClick={() => table.options.meta?.transactionsTable?.deleteRows([row.original])}
               >
-                Delete
+                {t['delete']}
               </Button>
             )}
             <Button
@@ -337,10 +339,10 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                 }
               }}
             >
-              Cancel
+              {t['cancel']}
             </Button>
             <Button sx={{ mr: 2 }} onClick={handleSubmit(onSubmit)} disabled={!isValid || !isDirty}>
-              Save
+              {t['save']}
             </Button>
           </TableCell>
         </TableRow>

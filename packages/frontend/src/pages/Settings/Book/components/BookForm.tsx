@@ -13,6 +13,7 @@ import type { IBook } from '@angelfish/core'
 import { BOOK_AVATARS } from '@angelfish/core'
 import { getCountryFromCode } from '@angelfish/core/src/data/countries'
 import { getCurrencyFromCode } from '@angelfish/core/src/data/currencies'
+import { useI18n, useTranslate } from '@/utils/i18n/I18nProvider'
 
 /**
  * Form Properties
@@ -43,6 +44,8 @@ export interface BookFormProps {
  * Book Information Form
  */
 export default function BookForm({ book, onSave }: BookFormProps) {
+  // Localization
+  const { settings: t } = useTranslate('pages')
   // Setup Form
   const {
     control,
@@ -93,7 +96,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
                   size={100}
                   required
                   error={errors?.logo ? true : false}
-                  helperText={errors?.logo ? 'Logo is required' : undefined}
+                  helperText={errors?.logo ? t['logoRequired'] : undefined}
                   {...field}
                 />
               )}
@@ -114,12 +117,12 @@ export default function BookForm({ book, onSave }: BookFormProps) {
                   rules={{ required: true }}
                   render={({ field }) => (
                     <TextField
-                      label="Name"
-                      placeholder="Enter a Name for your Household"
+                      label={t['enterHouseholdName']}
+                      placeholder={t['enterHouseholdName']}
                       fullWidth
                       required
                       error={errors?.name ? true : false}
-                      helperText={errors?.name ? 'Household Name is required' : undefined}
+                      helperText={errors?.name ? t['householdNameRequired'] : undefined}
                       {...field}
                     />
                   )}
@@ -132,7 +135,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
                   rules={{ required: true }}
                   render={({ field: { value, onChange, ...rest } }) => (
                     <CountryField
-                      label="Country"
+                      label={t['country']}
                       fullWidth
                       required
                       value={getCountryFromCode(value) ?? undefined}
@@ -160,7 +163,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
                 }}
                 render={({ field: { value, onChange, ...rest } }) => (
                   <CurrencyField
-                    label="Default Currency"
+                    label={t['defaultCurrency']}
                     fullWidth
                     required
                     value={getCurrencyFromCode(value) ?? undefined}
@@ -183,7 +186,7 @@ export default function BookForm({ book, onSave }: BookFormProps) {
             onClick={() => handleSubmit(handleSave)()}
             disabled={!isValid || !isDirty}
           >
-            Update
+            {t['update']}
           </Button>
         </Box>
       </Paper>

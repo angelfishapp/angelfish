@@ -3,6 +3,7 @@ import React from 'react'
 
 import { EntropyGenerator } from '@/components/EntropyGenerator'
 import { Step } from '@/components/Stepper'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Component Properties
@@ -23,6 +24,7 @@ export interface SetupEncryptionStepProps {
  * Setup step to generate encryption keys for household
  */
 export default function SetupEncryptionStep({ nextStep, onNext }: SetupEncryptionStepProps) {
+  const { setupScreen: t } = useTranslate('screens')
   // Hold the entropy seed value
   const seedRef = React.useRef<string>('')
   // Is seed entropy high enough and ready to go next step?
@@ -44,17 +46,16 @@ export default function SetupEncryptionStep({ nextStep, onNext }: SetupEncryptio
 
   return (
     <Step
-      title="Setup Encryption Keys"
+      title={t['setupEncryptionKeys']}
       nextStep={nextStep}
       isReady={isReady}
       onNext={() => onNext(seedRef.current)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <p>
-          Draw a pattern below to generate a completely unique and secure encryption key for your
-          household.
+          {t['drawPattern']}
           <br />
-          <strong>(NOTE This is for demo purposes only - ENCRYPTION ISN&apos;T ADDED YET!)</strong>
+          <strong>{t['note']}</strong>
         </p>
         <Box
           sx={{

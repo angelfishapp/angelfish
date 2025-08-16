@@ -6,7 +6,7 @@ import type { AccountTableMethods, AccountTableProps } from '@/components/Accoun
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
 import { SideMenu } from '@/components/SideMenu'
 import { AccountTableContainer } from '@/containers/AccountTableContainer'
-import { useI18n } from '@/utils/i18n/I18nProvider'
+import { useTranslate } from '@/utils/i18n'
 import type { IAccount } from '@angelfish/core'
 import type { AccountsMenuProps } from './AccountsMenu.interface'
 
@@ -21,7 +21,7 @@ export default function AccountsMenu({
   const [showClosedAccounts, setShowClosedAccounts] = React.useState<boolean>(false)
   const [menuWidth, setMenuWidth] = React.useState<number>(0)
   const accountTableMethodsRef = React.useRef<AccountTableMethods>(null)
-  const { localeData } = useI18n()
+  const { accounts: t } = useTranslate('pages')
 
   // Render
   return (
@@ -37,50 +37,50 @@ export default function AccountsMenu({
         >
           <DropdownMenuButton
             variant="text"
-            label={localeData?.translations.frontEnd.accounts.viewSettings}
+            label={t['viewSettings']}
             position={{ vertical: 'bottom', horizontal: 'left' }}
             menuItems={[
-              { label: localeData?.translations.frontEnd.accounts.groupBy },
+              { label: t['groupBy'] },
               {
-                label: localeData?.translations.frontEnd.accounts.institution,
+                label: t['institution'],
                 icon: groupBy === 'acc_institution' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_institution'),
               },
               {
-                label: localeData?.translations.frontEnd.accounts.country,
+                label: t['country'],
                 icon: groupBy === 'acc_country' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_country'),
               },
               {
-                label: localeData?.translations.frontEnd.accounts.currency,
+                label: t['currency'],
                 icon: groupBy === 'acc_currency' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_currency'),
               },
               {
-                label: localeData?.translations.frontEnd.accounts.accountOwner,
+                label: t['accountOwner'],
                 icon: groupBy === 'acc_owners' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_owners'),
               },
               {
-                label: localeData?.translations.frontEnd.accounts.accountType,
+                label: t['accountType'],
                 icon: groupBy === 'acc_type' ? CheckIcon : undefined,
                 onClick: () => setGroupBy('acc_type'),
                 divider: true,
               },
-              { label: localeData?.translations.frontEnd.accounts.sortBy },
+              { label: t['sortBy'] },
               {
-                label: localeData?.translations.frontEnd.accounts.sortAZ,
+                label: t['sortAZ'],
                 icon: sortBy === 'name' ? CheckIcon : undefined,
                 onClick: () => setSortBy('name'),
               },
               {
-                label: localeData?.translations.frontEnd.accounts.accountBalance,
+                label: t['accountBalance'],
                 icon: sortBy === 'current_balance' ? CheckIcon : undefined,
                 onClick: () => setSortBy('current_balance'),
                 divider: true,
               },
               {
-                label: localeData?.translations.frontEnd.accounts.showClosedAccounts,
+                label: t['showClosedAccounts'],
                 icon: showClosedAccounts ? CheckIcon : undefined,
                 onClick: () => setShowClosedAccounts(!showClosedAccounts),
               },
@@ -118,24 +118,23 @@ export default function AccountsMenu({
           <DropdownMenuButton
             variant="contained"
             color="primary"
-            label="Add..."
+            label={t['add']}
             fullWidth
             menuWidth={menuWidth}
             position={{ vertical: -90, horizontal: 'left' }}
-            menuItems={[
-              {
-                label: 'Add Institution',
-                onClick: () => {
-                  accountTableMethodsRef.current?.addInstitution()
-                },
+            menuItems={[{
+              label: t['addInstitution'],
+              onClick: () => {
+                accountTableMethodsRef.current?.addInstitution()
               },
-              {
-                label: 'Add Account',
-                disabled: disableAddAccount,
-                onClick: () => {
-                  accountTableMethodsRef.current?.addBankAccount()
-                },
+            },
+            {
+              label: t['addAccount'],
+              disabled: disableAddAccount,
+              onClick: () => {
+                accountTableMethodsRef.current?.addBankAccount()
               },
+            },
             ]}
           />
         </Box>

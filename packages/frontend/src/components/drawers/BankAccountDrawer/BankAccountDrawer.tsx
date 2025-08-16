@@ -12,6 +12,7 @@ import { UserField } from '@/components/forms/UserField'
 import type { AccountType, IAccount, IInstitution, IUser } from '@angelfish/core'
 import { getAccountType, getCountryFromCode, getCurrencyFromCode } from '@angelfish/core'
 import type { BankAccountDrawerProps } from './BankAccountDrawer.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -40,6 +41,8 @@ export default function BankAccountDrawer({
   onClose,
   onSave,
 }: BankAccountDrawerProps) {
+  const { BankAccountDrawer: t } = useTranslate('components.drawers')
+
   // Setup Form
   const {
     control,
@@ -119,7 +122,7 @@ export default function BankAccountDrawer({
       render={({ field: { onChange, value, ...restField } }) => (
         <InstitutionField
           institutions={institutions}
-          label="Institution"
+          label={t['institution']}
           fullWidth
           required
           onChange={(institution) => {
@@ -129,7 +132,7 @@ export default function BankAccountDrawer({
           }}
           value={value ?? null}
           error={errors?.institution ? true : false}
-          helperText={errors?.institution ? 'Institution is required' : undefined}
+          helperText={errors?.institution ? t['errorInstitution'] : undefined}
           {...restField}
         />
       )}
@@ -144,15 +147,15 @@ export default function BankAccountDrawer({
       render={({ field }) => (
         <TextField
           id="name"
-          label="Name"
-          placeholder="E.g. HSBC Current Account"
+          label={t['name']}
+          placeholder={t['namePlaceholder']}
           fullWidth
           required
           error={errors?.name ? true : false}
           helperText={
             errors?.name
-              ? 'Name is required'
-              : "Put the ower's first name or 'Joint' at the beginning to determine the ownership of the account."
+              ? t['errorName']
+              : t['nameHelper']
           }
           {...field}
         />
@@ -167,7 +170,7 @@ export default function BankAccountDrawer({
       rules={{ required: true }}
       render={({ field }) => (
         <AccountTypeField
-          label="Account Type"
+          label={t['accountType']}
           required
           fullWidth
           value={field.value}
@@ -175,8 +178,8 @@ export default function BankAccountDrawer({
           error={errors?.type ? true : false}
           helperText={
             errors?.type
-              ? 'Account Type is required'
-              : 'The type of Account (i.e. Checking Account).'
+              ? t['errorAccountType']
+              : t['accountTypeHelper']
           }
         />
       )}
@@ -190,7 +193,7 @@ export default function BankAccountDrawer({
       rules={{ required: true }}
       render={({ field }) => (
         <UserField
-          label="Account Owners"
+          label={t['accountOwners']}
           required
           fullWidth
           users={users}
@@ -199,8 +202,8 @@ export default function BankAccountDrawer({
           error={errors?.owners ? true : false}
           helperText={
             errors?.owners
-              ? 'At least 1 Account Owner is required'
-              : 'Who does this Account belong to? Can select multiple users if joint account.'
+              ? t['errorOwners']
+              : t['ownersHelper']
           }
         />
       )}
@@ -214,7 +217,7 @@ export default function BankAccountDrawer({
       rules={{ required: true }}
       render={({ field }) => (
         <CurrencyField
-          label="Currency"
+          label={t['currency']}
           required
           fullWidth
           value={field.value}
@@ -222,8 +225,8 @@ export default function BankAccountDrawer({
           error={errors?.currency ? true : false}
           helperText={
             errors?.currency
-              ? 'Currency is required'
-              : 'The currency the account is denominated in.'
+              ? t['errorCurrency']
+              : t['currencyHelper']
           }
         />
       )}
@@ -236,7 +239,7 @@ export default function BankAccountDrawer({
       control={control}
       render={({ field: { onChange, value, ...restField } }) => (
         <AmountField
-          label="Starting Balance"
+          label={t['startBalance']}
           fullWidth
           value={value}
           allowNegative={true}
@@ -244,8 +247,8 @@ export default function BankAccountDrawer({
           error={errors?.start_balance ? true : false}
           helperText={
             errors?.start_balance
-              ? 'Start Balance must be a Valid Amount'
-              : 'Enter a starting balance for the account that matches the balance of the account for the first transaction.'
+              ? t['errorStartBalance']
+              : t['startBalanceHelper']
           }
           onChange={(value) => onChange(value)}
           {...restField}
@@ -260,7 +263,7 @@ export default function BankAccountDrawer({
       control={control}
       render={({ field: { onChange, value, ...restField } }) => (
         <AmountField
-          label="Account Limit"
+          label={t['accountLimit']}
           fullWidth
           value={value}
           allowNegative={true}
@@ -268,8 +271,8 @@ export default function BankAccountDrawer({
           error={errors?.account_limit ? true : false}
           helperText={
             errors?.account_limit
-              ? 'Account Limit must be a Valid Amount'
-              : 'The overdraft or credit limit for the Account if any.'
+              ? t['errorAccountLimit']
+              : t['accountLimitHelper']
           }
           onChange={(value) => onChange(value)}
           {...restField}
@@ -284,8 +287,8 @@ export default function BankAccountDrawer({
       control={control}
       render={({ field }) => (
         <SwitchField
-          label="Is Account Open?"
-          helperText="Is the account currently open or closed?"
+          label={t['isOpen']}
+          helperText={t['isOpenHelper']}
           {...field}
         />
       )}
@@ -295,7 +298,7 @@ export default function BankAccountDrawer({
   // Render the Drawer
   return (
     <Drawer
-      title={initialValue?.id ? 'Edit Bank Account' : 'Add New Bank Account'}
+      title={initialValue?.id ? t['edit'] : t['add']}
       {...{ open, onClose }}
       disableSaveButton={!isValid || !isDirty}
       onSave={() => handleSubmit(handleSave)()}

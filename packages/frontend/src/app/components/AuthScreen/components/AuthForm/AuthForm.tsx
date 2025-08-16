@@ -8,6 +8,7 @@ import { AudioPlayer } from '@/utils/audio.utils'
 import LoginAnimation from '../../animations/login-animation'
 import { AuthContainer } from '../../AuthScreen.styles'
 import type { AuthFormProps } from './AuthForm.interface'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Displays the authentication form at center of login screen to enter and validate
@@ -19,6 +20,8 @@ export default function AuthForm({
   onBack,
   onSplash,
 }: AuthFormProps) {
+  const { authScreen: t } = useTranslate('screens')
+  console.log(t)
   // Component State
   const oobCodeFieldRef = React.useRef<HTMLDivElement>(null)
   const [showAuthForm, setShowAuthForm] = React.useState<boolean>(true)
@@ -88,7 +91,6 @@ export default function AuthForm({
     loginAnimation?.loading()
     setIsLoading(true)
     try {
-      throw new Error('Authentication failed')
       await onAuthenticate(oob_code)
       loginAnimation?.jump()
     } catch (error) {
@@ -113,7 +115,7 @@ export default function AuthForm({
           </div>
           <div className="formMiddle">
             <section>
-              <h1>Enter Your Verification Code</h1>
+              <h1>{t['verificationCode']}</h1>
               {displayError && <div className="error">{displayError}</div>}
               <form>
                 <OOBField
@@ -127,7 +129,7 @@ export default function AuthForm({
           </div>
           <div className="formBottom">
             <div>
-              <p>Didn&apos;t Receive Your Code?</p>
+              <p>{t['didNotReceiveCode']}</p>
               <Button
                 disabled={isLoading}
                 onClick={() => {
@@ -135,7 +137,7 @@ export default function AuthForm({
                   setDisplayError(undefined)
                 }}
               >
-                Go Back
+                {t['goBack']}
               </Button>
             </div>
           </div>

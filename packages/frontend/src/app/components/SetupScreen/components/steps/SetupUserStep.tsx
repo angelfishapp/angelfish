@@ -7,6 +7,7 @@ import { AvatarField } from '@/components/forms/AvatarField'
 import { TextField } from '@/components/forms/TextField'
 import { Step } from '@/components/Stepper'
 import type { IAuthenticatedUser } from '@angelfish/core'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -50,6 +51,7 @@ export default function SetupUserStep({
   authenticatedUser,
   userAvatars,
 }: SetupUserStepProps) {
+  const { setupScreen: t } = useTranslate('screens')
   // Component State
   const [firstTimeUser, setFirstTimeUser] = React.useState<boolean>(true)
 
@@ -89,7 +91,7 @@ export default function SetupUserStep({
   // Render
   return (
     <Step
-      title="Your Personal Details"
+      title={t['personalDetails']}
       nextStep={nextStep}
       isReady={isValid}
       onNext={() => handleSubmit(handleSave)()}
@@ -99,12 +101,11 @@ export default function SetupUserStep({
           <Typography variant="body1">
             {firstTimeUser ? (
               <React.Fragment>
-                Welcome! As this is your first trip below the surface, we&apos;ll need your personal
-                details before you enter:
+                {t['welcome']}
               </React.Fragment>
             ) : (
               <React.Fragment>
-                Welcome back! First, lets confirm your personal details below:
+                {t['confirm']}
               </React.Fragment>
             )}
           </Typography>
@@ -116,11 +117,11 @@ export default function SetupUserStep({
             rules={{ required: false }}
             render={({ field }) => (
               <AvatarField
-                label="User Avatar"
+                label={t['userAvatar']}
                 avatars={userAvatars}
                 size={100}
                 error={errors?.avatar ? true : false}
-                helperText={errors?.avatar ? 'Invalid User Avatar' : undefined}
+                helperText={errors?.avatar ? t['invalidUserAvatar'] : undefined}
                 {...field}
               />
             )}
@@ -133,12 +134,12 @@ export default function SetupUserStep({
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                label="First Name"
-                placeholder="Enter your First Name"
+                label={t['firstName']}
+                placeholder={t['enterFirstName']}
                 fullWidth
                 required
                 error={errors?.firstName ? true : false}
-                helperText={errors?.firstName ? 'First Name is required' : ' '}
+                helperText={errors?.firstName ? t['firstNameRequired'] : ' '}
                 {...field}
               />
             )}
@@ -151,12 +152,12 @@ export default function SetupUserStep({
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                label="Last Name"
-                placeholder="Enter your Last Name"
+                label={t['lastName']}
+                placeholder={t['enterLastName']}
                 fullWidth
                 required
                 error={errors?.lastName ? true : false}
-                helperText={errors?.lastName ? 'Last Name is required' : ' '}
+                helperText={errors?.lastName ? t['lastNameRequired'] : ' '}
                 {...field}
               />
             )}

@@ -21,22 +21,22 @@ export default function AppRoot() {
   // Render
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        {/* CSS Reset: Provides basic style normalizations. */}
-        <CssBaseline />
-        <GlobalStyles styles={AppRootStyles} />
-        {/** react-query provider */}
-        <QueryClientProvider client={AppReactQueryClient}>
-          <ReactQueryDevtools initialIsOpen={false} />
-          {/* Main Application Router */}
-          <HashRouter>
-            <I18nProvider defaultLocale="en">
+      <QueryClientProvider client={AppReactQueryClient}>
+        <I18nProvider defaultLocale="en">
+          <ThemeProvider theme={theme}>
+            {/* CSS Reset: Provides basic style normalizations. */}
+            <CssBaseline />
+            <GlobalStyles styles={AppRootStyles} />
+            {/** react-query provider */}
+            <ReactQueryDevtools initialIsOpen={false} />
+            {/* Main Application Router */}
+            <HashRouter>
               {/* App */}
               <AppContainer />
-            </I18nProvider>
-          </HashRouter>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </StyledEngineProvider>
+            </HashRouter>
+          </ThemeProvider>
+        </I18nProvider>
+      </QueryClientProvider>
+    </StyledEngineProvider >
   )
 }

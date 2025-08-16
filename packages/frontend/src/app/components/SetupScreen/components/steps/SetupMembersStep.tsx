@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography'
 import { Step } from '@/components/Stepper'
 import { UserTableUIContainer } from '@/components/UserTable'
 import type { IAuthenticatedUser, IUser } from '@angelfish/core'
+import { useTranslate } from '@/utils/i18n'
 
 /**
  * Component Properties
@@ -53,15 +54,14 @@ export default function SetupMembersStep({
   onDeleteUser,
   onSaveUser,
 }: SetupMembersStepProps) {
+  const { setupScreen: t } = useTranslate('screens')
   // Render
   return (
-    <Step title="Add Household Members" nextStep={nextStep} isReady={true} onNext={onNext}>
+    <Step title={t['addHouseholdMembers']} nextStep={nextStep} isReady={true} onNext={onNext}>
       <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
         <Grid size={12}>
           <Typography variant="body1">
-            Optionally add other people to your Household such as your partner so you can assign
-            Bank Accounts to them and break down income and expenses by different members of your
-            Household.
+            {t['optionallyAddMembers']}
           </Typography>
         </Grid>
         <Grid size={12}>
