@@ -62,7 +62,8 @@
       "label": "Language",
       "systemDefault": "System Default",
       "english": "English",
-      "arabic": "Arabic"
+      "arabic": "Arabic",
+      "french": "French"
     }
   },
   "frontEnd": {

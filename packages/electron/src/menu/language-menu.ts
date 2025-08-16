@@ -45,5 +45,16 @@ export const LanguageMenu = (): MenuItemConstructorOptions => ({
         CommandsRegistryMain.emitEvent(AppEventIds.ON_LOCALIZATION_UPDATED)
       },
     },
+    {
+      label: i18n.t('menu.language.french'),
+      type: 'radio',
+      checked: getLocale() === 'fr',
+      click: async () => {
+        setLocale('fr')
+        await i18n.changeLanguage('fr')
+        buildMenu()
+        CommandsRegistryMain.emitEvent(AppEventIds.ON_LOCALIZATION_UPDATED)
+      },
+    },
   ],
 })

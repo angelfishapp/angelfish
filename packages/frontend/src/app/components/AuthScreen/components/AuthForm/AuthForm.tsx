@@ -21,7 +21,6 @@ export default function AuthForm({
   onSplash,
 }: AuthFormProps) {
   const { authScreen: t } = useTranslate('screens')
-  console.log(t)
   // Component State
   const oobCodeFieldRef = React.useRef<HTMLDivElement>(null)
   const [showAuthForm, setShowAuthForm] = React.useState<boolean>(true)
