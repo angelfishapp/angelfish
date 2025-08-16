@@ -88,10 +88,14 @@
   },
   "Errors": {
     "auth": {
-      "400": "Invalid credentials",
+      "400": "Unauthorized Request",
       "404": "User not found",
       "423": "Account locked",
       "1000": "Unknown error"
+    },
+    "emailForm": {
+      "400": "Invalid email address",
+      "404": "Email address not found"
     }
   }
 }

@@ -4,6 +4,7 @@ import React from 'react'
 
 import { AuthContainer } from '../../AuthScreen.styles'
 import type { EmailFormProps } from './EmailForm.interface'
+import { GetErrorMessage } from '@/api'
 
 /**
  * Displays the forgotten password form
@@ -51,8 +52,11 @@ export default function ResetPasswordForm({
         setIsEmailSent(true)
         setIsLoading(false)
       })
-      .catch((error) => {
-        setErrorMsg(`${error}`)
+      .catch(async (error) => {
+        if (error) {
+          const message = await GetErrorMessage({ category: 'emailForm', code: 400 })
+          setErrorMsg(`${message}`)
+        }
         setIsLoading(false)
       })
   }
