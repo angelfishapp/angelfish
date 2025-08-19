@@ -2,6 +2,7 @@ import { Controller, useForm } from 'react-hook-form'
 
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { CategoryField } from '@/components/forms/CategoryField'
+import { useTranslate } from '@/utils/i18n'
 import type { CategoryDeleteModalProps } from './CategoryDeleteModal.interface'
 
 /**
@@ -24,6 +25,8 @@ export default function CategoryDeleteModal({
   transactions,
   ...rest
 }: CategoryDeleteModalProps) {
+  const { settings: t } = useTranslate('pages')
+
   // Form Setup
   const {
     control,
@@ -37,25 +40,30 @@ export default function CategoryDeleteModal({
   return (
     <ConfirmDialog
       {...rest}
-      title={`Delete Category: ${account.name}`}
-      cancelText="Cancel"
+      title={`${['Delete Category:']} ${account.name}`}
+      cancelText={t['Cancel']}
+      confirmText={t['confirm']}
       onConfirm={handleSubmit((formValues: DeleteCategoryFormValues) =>
         onConfirm(account.id, formValues.accountId),
       )}
-      confirmText="Delete"
       open
       onClose={() => {
         reset()
         onClose?.()
       }}
     >
-      <p>Are you sure you want to delete this Category?</p>
+      <p>{t['Are you sure you want to delete this Category?']}</p>
 
       {!!transactions?.length && (
         <>
           <p>
-            This Category has {transactions.length} Transactions in it. You can select which
-            Category to re-assign them to or select nothing to leave them unclassified.
+            {t['This Category has ']}
+            {transactions.length}{' '}
+            {
+              t[
+                'Transactions in it. You can select which Category to re-assign them to or select nothing to leave them unclassified.'
+              ]
+            }
           </p>
           <div>
             <Controller
@@ -64,7 +72,7 @@ export default function CategoryDeleteModal({
               rules={{ required: false }}
               render={({ field: { value, onChange, ...field } }) => (
                 <CategoryField
-                  label="Re-Assign Transactions Category"
+                  label={t['Re-Assign Transactions Category']}
                   margin="none"
                   value={value ? options.find((x) => x.id === value) : undefined}
                   accountsWithRelations={options?.filter((group) => group.id !== account.id)}
@@ -78,7 +86,7 @@ export default function CategoryDeleteModal({
                   }}
                   fullWidth
                   error={errors.accountId ? true : false}
-                  helperText={errors.accountId ? 'Invalid Category Selected' : undefined}
+                  helperText={errors.accountId ? t['Invalid Category Selected'] : undefined}
                   {...field}
                 />
               )}

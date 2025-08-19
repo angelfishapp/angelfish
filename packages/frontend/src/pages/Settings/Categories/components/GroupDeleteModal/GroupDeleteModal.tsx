@@ -2,6 +2,7 @@ import { Controller, useForm } from 'react-hook-form'
 
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { CategoryGroupField } from '@/components/forms/CategoryGroupField'
+import { useTranslate } from '@/utils/i18n'
 import type { ICategoryGroup } from '@angelfish/core'
 import type { GroupDeleteModalProps } from './GroupDeleteModal.interfaces'
 
@@ -24,6 +25,8 @@ export default function GroupDeleteModal({
   onClose,
   ...rest
 }: GroupDeleteModalProps) {
+  const { settings: t } = useTranslate('pages')
+
   // Form Setup
   const {
     control,
@@ -39,7 +42,7 @@ export default function GroupDeleteModal({
   return (
     <ConfirmDialog
       {...rest}
-      title="Delete Category Group"
+      title={t['Delete Category Group']}
       cancelText="Cancel"
       onConfirm={handleSubmit((formValues: DeleteGroupFormValues) => {
         onConfirm(formValues.groupId)
@@ -54,13 +57,17 @@ export default function GroupDeleteModal({
       }}
       open
     >
-      <p>Are you sure you want to delete this Category Group?</p>
+      <p>{t['Are you sure you want to delete this Category Group?']}</p>
 
       {!!accounts?.length && (
         <>
           <p>
-            This group has {accounts.length} categories in it. Please select which Category Group
-            you would like to move them too.
+            {t['This group has']} {accounts.length}{' '}
+            {
+              t[
+                'categories in it. Please select which Category Group you would like to move them too.'
+              ]
+            }
           </p>
           <div>
             <Controller
@@ -69,7 +76,7 @@ export default function GroupDeleteModal({
               rules={{ required: true }}
               render={({ field: { value, onChange, ...restField } }) => (
                 <CategoryGroupField
-                  label="New Category Group"
+                  label={t['New Category Group']}
                   required
                   fullWidth
                   value={
@@ -78,7 +85,7 @@ export default function GroupDeleteModal({
                   categoryGroups={options?.filter((group) => group.id !== categoryGroup.id)}
                   onChange={(value?: ICategoryGroup, _prev?: ICategoryGroup) => onChange(value?.id)}
                   error={errors.groupId ? true : false}
-                  helperText={errors.groupId ? 'A Category Group is required' : undefined}
+                  helperText={errors.groupId ? t['A Category Group is required'] : undefined}
                   {...restField}
                 />
               )}

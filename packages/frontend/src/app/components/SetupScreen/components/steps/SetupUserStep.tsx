@@ -6,8 +6,8 @@ import { Controller, useForm } from 'react-hook-form'
 import { AvatarField } from '@/components/forms/AvatarField'
 import { TextField } from '@/components/forms/TextField'
 import { Step } from '@/components/Stepper'
-import type { IAuthenticatedUser } from '@angelfish/core'
 import { useTranslate } from '@/utils/i18n'
+import type { IAuthenticatedUser } from '@angelfish/core'
 
 /**
  * Form Properties
@@ -100,13 +100,9 @@ export default function SetupUserStep({
         <Grid size={12}>
           <Typography variant="body1">
             {firstTimeUser ? (
-              <React.Fragment>
-                {t['welcome']}
-              </React.Fragment>
+              <React.Fragment>{t['welcome']}</React.Fragment>
             ) : (
-              <React.Fragment>
-                {t['confirm']}
-              </React.Fragment>
+              <React.Fragment>{t['confirm']}</React.Fragment>
             )}
           </Typography>
         </Grid>

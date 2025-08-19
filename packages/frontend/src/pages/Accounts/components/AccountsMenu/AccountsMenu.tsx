@@ -122,19 +122,20 @@ export default function AccountsMenu({
             fullWidth
             menuWidth={menuWidth}
             position={{ vertical: -90, horizontal: 'left' }}
-            menuItems={[{
-              label: t['addInstitution'],
-              onClick: () => {
-                accountTableMethodsRef.current?.addInstitution()
+            menuItems={[
+              {
+                label: t['addInstitution'],
+                onClick: () => {
+                  accountTableMethodsRef.current?.addInstitution()
+                },
               },
-            },
-            {
-              label: t['addAccount'],
-              disabled: disableAddAccount,
-              onClick: () => {
-                accountTableMethodsRef.current?.addBankAccount()
+              {
+                label: t['addAccount'],
+                disabled: disableAddAccount,
+                onClick: () => {
+                  accountTableMethodsRef.current?.addBankAccount()
+                },
               },
-            },
             ]}
           />
         </Box>

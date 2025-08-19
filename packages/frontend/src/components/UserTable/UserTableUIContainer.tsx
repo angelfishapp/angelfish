@@ -3,6 +3,7 @@ import React from 'react'
 
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { UserDrawer } from '@/components/drawers/UserDrawer'
+import { useTranslate } from '@/utils/i18n'
 import type { IUser } from '@angelfish/core'
 import UserTable from './UserTable'
 import type { UserTableUIContainerProps } from './UserTableUIContainer.interface'
@@ -20,6 +21,8 @@ export default function UserTableUIContainer({
   onSave,
   onDelete,
 }: UserTableUIContainerProps) {
+  const { UserTable: t } = useTranslate('components')
+
   // Component State
   const [selectedUser, setSelectedUser] = React.useState<IUser | undefined>(undefined)
   const [showUserDrawer, setShowUserDrawer] = React.useState<boolean>(false)
@@ -52,8 +55,8 @@ export default function UserTableUIContainer({
         open={showUserDrawer}
       />
       <ConfirmDialog
-        title="Delete User"
-        confirmText="Delete User"
+        title={t['Delete User']}
+        confirmText={t['Delete User']}
         onConfirm={() => {
           onDelete(selectedUser as IUser)
           setShowUserDeleteModal(false)
@@ -63,11 +66,11 @@ export default function UserTableUIContainer({
         open={showUserDeleteModal}
       >
         <DialogContentText>
-          Are you sure you want to delete the user{' '}
+          {t['Are you sure you want to delete the user']}{' '}
           <em>
             {selectedUser?.first_name} {selectedUser?.last_name}
           </em>{' '}
-          from Angelfish?
+          {t['from Angelfish?']}
         </DialogContentText>
       </ConfirmDialog>
     </React.Fragment>

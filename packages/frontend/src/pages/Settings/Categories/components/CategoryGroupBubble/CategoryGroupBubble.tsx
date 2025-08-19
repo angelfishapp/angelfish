@@ -1,4 +1,5 @@
 import { Emoji } from '@/components/Emoji'
+import { useTranslate } from '@/utils/i18n'
 import type { CategoryGroupBubbleProps } from './CategoryGroupBubble.interface'
 import {
   CategoryGroupButton,
@@ -18,6 +19,7 @@ export default function CategoryGroupBubble({
   onClick,
   onEdit,
 }: CategoryGroupBubbleProps) {
+  const { settings: t } = useTranslate('pages')
   return (
     <CategoryGroupButton
       key={`category-income-${categoryGroup.id}`}
@@ -28,7 +30,9 @@ export default function CategoryGroupBubble({
         {categoryGroup.icon && <Emoji size={64} emoji={categoryGroup.icon} />}
       </CategoryGroupIcon>
       <CategoryGroupTitle>{categoryGroup.name}</CategoryGroupTitle>
-      <CategoryGroupCount>{categoryGroup.total_categories ?? 0} Categories</CategoryGroupCount>
+      <CategoryGroupCount>
+        {categoryGroup.total_categories ?? 0} {t['Categories']}
+      </CategoryGroupCount>
       {isSelected && (
         <EditLabel
           onClick={(event) => {
@@ -36,7 +40,7 @@ export default function CategoryGroupBubble({
             onEdit()
           }}
         >
-          Edit Group
+          {t['Edit Group']}
         </EditLabel>
       )}
     </CategoryGroupButton>

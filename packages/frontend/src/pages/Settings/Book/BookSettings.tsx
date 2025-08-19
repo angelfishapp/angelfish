@@ -4,9 +4,9 @@ import Typography from '@mui/material/Typography'
 
 import { UserTableContainer } from '@/containers/UserTableContainer'
 import { useGetBook, useSaveBook } from '@/hooks'
+import { useTranslate } from '@/utils/i18n'
 import type { IBook } from '@angelfish/core'
 import BookForm from './components/BookForm'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Component

@@ -7,9 +7,9 @@ import type { Control, FieldArrayWithId, UseFormGetValues } from 'react-hook-for
 import { Controller } from 'react-hook-form'
 
 import { CategoryField } from '@/components/forms/CategoryField'
+import { useTranslate } from '@/utils/i18n'
 import type { IAccount, ParsedFileMappings } from '@angelfish/core'
 import type { ImportMapperForm } from './ImportTransactions-Mapping'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Step Component Properties
@@ -81,7 +81,8 @@ export default function ImportDefaultTransactionsMapping({
         {error && (
           <p>
             <span style={{ color: 'red', fontWeight: 'bold' }}>
-              {t['fileParsingError']}{error}
+              {t['fileParsingError']}
+              {error}
             </span>
           </p>
         )}

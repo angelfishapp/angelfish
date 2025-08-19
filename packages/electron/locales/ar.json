@@ -68,6 +68,8 @@
   },
   "frontEnd": {
     "direction": "rtl",
+    "locale": "ar",
+    "appName": "Angelfish",
     "routes": {
       "dashboard": "لوحة التحكم",
       "accounts": "الحسابات",
@@ -228,10 +230,55 @@
         "addCategory": "إضافة فئة",
         "income": "دخل",
         "noCategoryCreated": "لا توجد فئة تم إنشاؤها لهذه المجموعة بعد",
-        "expenses": "نفقات"
+        "expenses": "نفقات",
+        "Delete Category:": "حذف الفئة:",
+        "Cancel": "إلغاء",
+        "Are you sure you want to delete this Category?": "هل أنت متأكد أنك تريد حذف هذه الفئة؟",
+        "This Category has ": "هذه الفئة لديها ",
+        "Transactions in it. You can select which Category to re-assign them to or select nothing to leave them unclassified.": " معاملات بداخلها. يمكنك اختيار الفئة لإعادة تعيينها أو تركها غير مصنفة.",
+        "Re-Assign Transactions Category": "إعادة تعيين فئة المعاملات",
+        "Invalid Category Selected": "تم اختيار فئة غير صالحة",
+        "confirmText": "حذف",
+        "Delete Category Group:": "حذف مجموعة الفئات:",
+        "Are you sure you want to delete this Category Group?": "هل أنت متأكد أنك تريد حذف مجموعة الفئات هذه؟",
+        "This Category Group has ": "هذه المجموعة لديها ",
+        "categories in it. Please select which Category Group you would like to move them too.": "فئات بداخلها. يرجى اختيار مجموعة الفئات التي ترغب في نقلها إليها.",
+        "Re-Assign Categories Category Group": "إعادة تعيين مجموعة فئات الفئات",
+        "A Category Group is required": "مجموعة الفئات مطلوبة",
+        "New Category Group": "مجموعة فئات جديدة",
+        "Name": "الاسم",
+        "Description": "الوصف",
+        "Type": "النوع",
+        "Icon": "الرمز",
+        "Edit Group": "تعديل المجموعة",
+        "Categories": "الفئات"
       }
     },
     "components": {
+      "fields": {
+        "Cash Accounts": "حسابات نقدية",
+        "Credit Cards": "بطاقات ائتمان",
+        "Checking Account": "حساب جاري",
+        "Savings Account": "حساب توفير",
+        "HSA Cash Account": "حساب نقدي HSA",
+        "Certificate of Deposit": "شهادة إيداع",
+        "Money Market Account": "حساب سوق المال",
+        "PayPal Cash Account": "حساب نقدي باي بال",
+        "Prepaid Debit Card": "بطاقة خصم مسبقة الدفع",
+        "Brokerage Cash Management Account": "حساب إدارة النقد في الوساطة",
+        "Credit Card": "بطاقة ائتمان",
+        "Electronic Benefit Transfer (EBT) Account": "حساب تحويل المنافع الإلكترونية (EBT)",
+        "PayPal Credit Card": "بطاقة ائتمان باي بال",
+        "Everyday checking account": "حساب جاري يومي",
+        "Everyday savings account": "حساب توفير يومي",
+        "Health Savings Account (US only) that can only hold cash": "حساب توفير صحي (لأمريكا فقط) يمكنه الاحتفاظ بالنقد فقط",
+        "Certificate of deposit account": "حساب شهادة إيداع",
+        "A prepaid Debit Card Account that you can load money onto to spend": "حساب بطاقة خصم مسبقة الدفع يمكنك تحميل المال عليه للإنفاق",
+        "A cash management account, typically a cash account at a brokerage": "حساب إدارة النقد، عادةً حساب نقدي في شركة وساطة",
+        "An Electronic Benefit Transfer (EBT) account, used by certain public assistance programs to distribute funds (US only)": "حساب تحويل المنافع الإلكترونية (EBT)، يُستخدم من قبل بعض برامج المساعدة العامة لتوزيع الأموال (لأمريكا فقط)",
+        "Bank-issued credit card": "بطاقة ائتمان صادرة عن البنك",
+        "PayPal-issued credit card": "بطاقة ائتمان صادرة عن باي بال"
+      },
       "accountTable": {
         "noInstitutionsFound": "لا توجد مؤسسات",
         "addAnInstitution": "إضافة مؤسسة",
@@ -248,6 +295,25 @@
         "confirmDeleteAccount": "حذف الحساب وجميع معاملاته",
         "DialogContentTextAccount": "هل أنت متأكد أنك تريد حذف الحساب؟",
         "DialogContentTextExtraAccount": "من Angelfish؟ سيؤدي ذلك أيضًا إلى حذف أي معاملات حساب تنتمي إلى هذا الحساب ولا يمكن التراجع عنها."
+      },
+      "contextMenu": {
+        "Edit Transaction Notes": "تعديل ملاحظات المعاملة",
+        "Edit Notes": "تعديل الملاحظات",
+        "Leave blank to clear notes": "اتركه فارغًا لمسح الملاحظات",
+        "Search or create new tags": "ابحث أو أنشئ علامات جديدة",
+        "Cannot Add Owner as Selection Contains Split Transaction": "لا يمكن إضافة مالك لأن التحديد يحتوي على معاملة مقسمة",
+        "Add Tag": "إضافة علامة",
+        "Remove": "إزالة",
+        "Duplicate": "تكرار",
+        "Insert New": "إدراج جديد...",
+        "Mark as Reviewed": "وضع علامة كمراجعة",
+        "Recently Used": "المستخدمة مؤخرًا",
+        "Cannot Change Category as Selection Contains Split Transaction": "لا يمكن تغيير الفئة لأن التحديد يحتوي على معاملة مقسمة",
+        "Change Category": "تغيير الفئة",
+        "Edit Transaction": "تعديل المعاملة",
+        "confirm": "تأكيد",
+        "cancel": "إلغاء",
+        "transaction": "معاملة"
       },
       "table": {
         "date": "تاريخ",
@@ -291,7 +357,10 @@
         "role": "الدور",
         "createdOn": "تاريخ الإنشاء",
         "actions": "الإجراءات",
-        "addMember": "إضافة عضو"
+        "addMember": "إضافة عضو",
+        "from Angelfish?": "من Angelfish؟",
+        "Are you sure you want to delete the user": "هل أنت متأكد أنك تريد حذف المستخدم",
+        "Delete User": "حذف المستخدم"
       },
       "modals": {
         "ImportTransactions": {
@@ -353,7 +422,10 @@
           "errorWebsite": "يرجى إدخال عنوان URL صالح. على سبيل المثال https://www.hsbc.com",
           "websiteHelper": "الموقع الإلكتروني الرئيسي للمؤسسة",
           "isOpen": "هل المؤسسة مفتوحة؟",
-          "isOpenHelper": "هل المؤسسة مفتوحة أم مغلقة حاليًا؟"
+          "isOpenHelper": "هل المؤسسة مفتوحة أم مغلقة حاليًا؟",
+          "namePlaceholder": "أدخل اسم المؤسسة...",
+          "countryPlaceholder": " ابحث عن الدول ....",
+          "websitePlaceholder": "مثال https://www.hsbc.com"
         },
         "BankAccountDrawer": {
           "edit": "تعديل حساب البنك",
@@ -380,7 +452,10 @@
           "currency": "العملة",
           "isOpenHelper": "هل الحساب مفتوح أم مغلق حاليًا؟",
           "errorCurrency": "العملة مطلوبة",
-          "currencyHelper": "العملة التي يتم تحديد الحساب بها."
+          "currencyHelper": "العملة التي يتم تحديد الحساب بها.",
+          "institutionPlaceholder": " ابحث عن مؤسسة...",
+          "typePlaceholder": "اختر  نوع الحساب...",
+          "currencyPlaceholder": "ابحث عن العملات..."
         },
         "ReportsSettingsDrawer": {
           "reportSettings": "إعدادات التقرير",

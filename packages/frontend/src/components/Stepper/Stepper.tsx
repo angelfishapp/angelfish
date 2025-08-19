@@ -1,11 +1,11 @@
 import React from 'react'
 
+import { useI18n } from '@/utils/i18n/I18nProvider'
 import { ClickAwayListener } from '@mui/material'
 import Fade from '@mui/material/Fade'
 import { BubbleList } from './components/BubbleList'
 import type { StepperProps } from './Stepper.interface'
 import { BubbleContainer, StepContainer, StepperContainer } from './Stepper.styles'
-import { useI18n } from '@/utils/i18n/I18nProvider'
 
 /**
  * Stepper component that allows for a list of steps to be shown on screen with numbered bubbles
@@ -42,8 +42,10 @@ export default function Stepper({
       in={open}
       timeout={500}
     >
-      <StepperContainer className={displayBackdrop ? 'backdrop' : undefined}
-        sx={{ padding: direction === "ltr" ? '24px 0 24px 104px' : '24px 104px 24px 0' }}>
+      <StepperContainer
+        className={displayBackdrop ? 'backdrop' : undefined}
+        sx={{ padding: direction === 'ltr' ? '24px 0 24px 104px' : '24px 104px 24px 0' }}
+      >
         {(show || open) && (
           <div>
             <ClickAwayListener

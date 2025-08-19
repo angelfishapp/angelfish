@@ -5,8 +5,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { Avatar } from '@/components/Avatar'
-import type { IAuthenticatedUser } from '@angelfish/core'
 import { useI18n } from '@/utils/i18n/I18nProvider'
+import type { IAuthenticatedUser } from '@angelfish/core'
 
 /**
  * Component Properties
@@ -53,7 +53,11 @@ export default function AvatarMenu({ authenticatedUser, onLogout }: AvatarMenuPr
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         role={undefined}
-        sx={localeData.direction === "ltr" ? { marginLeft: (theme) => `${theme.custom.side.width - 17}px` } : { marginLeft: (theme) => `${theme.custom.side.width - 147}px` }}
+        sx={
+          localeData.direction === 'ltr'
+            ? { marginLeft: (theme) => `${theme.custom.side.width - 17}px` }
+            : { marginLeft: (theme) => `${theme.custom.side.width - 147}px` }
+        }
         onClose={() => setAnchorEl(null)}
       >
         <MenuItem component={Link} to="/settings/" onClick={() => setAnchorEl(null)}>

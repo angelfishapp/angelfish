@@ -4,10 +4,10 @@ import type { ColumnDef } from '@tanstack/react-table'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { Emoji } from '@/components/Emoji'
+import type { useI18n } from '@/utils/i18n/I18nProvider'
 import type { ReportsDataRow } from '@angelfish/core'
 import { renderPeriodHeader } from '../../Reports.utils'
 import type { ReportsTableProps } from './ReportsTable.interface'
-import type { useI18n } from '@/utils/i18n/I18nProvider'
 
 /**
  * Generate array of react-table Columns from the ReportsData with column
@@ -23,6 +23,7 @@ export function getTableColumns(
   data: ReportsTableProps['data'],
   onClick: ReportsTableProps['onClick'],
   t: ReturnType<typeof useI18n>['localeData']['pages']['reports'],
+  locale: ReturnType<typeof useI18n>['locale'],
 ): ColumnDef<ReportsDataRow>[] {
   let columns: ColumnDef<ReportsDataRow>[] = []
 
@@ -65,14 +66,18 @@ export function getTableColumns(
             </span>
           )
         },
-        footer: () => <span className="name">{title} {t['total']}</span>,
+        footer: () => (
+          <span className="name">
+            {title} {t['total']}
+          </span>
+        ),
       },
     ]
 
     data.periods.forEach((period) => {
       columns.push({
         accessorKey: period,
-        header: renderPeriodHeader(period),
+        header: renderPeriodHeader(period, locale),
         cell: ({ cell }) => {
           const value = cell.getValue<number>()
           if (value === 0) return '-'
@@ -148,7 +153,7 @@ export function getTableColumns(
  */
 export function getNetTableColumns(
   data: ReportsTableProps['data'],
-  t: ReturnType<typeof useI18n>['localeData']['pages']['reports']
+  t: ReturnType<typeof useI18n>['localeData']['pages']['reports'],
 ): ColumnDef<ReportsDataRow>[] {
   let columns: ColumnDef<ReportsDataRow>[] = []
 
@@ -159,7 +164,7 @@ export function getNetTableColumns(
         accessorKey: 'name',
         minSize: 300,
         header: undefined,
-        cell: () => t['net']
+        cell: () => t['net'],
       },
     ]
     for (const period of data.periods) {

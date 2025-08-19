@@ -6,8 +6,8 @@ import React from 'react'
 import type { AccountTableMethods } from '@/components/AccountTable'
 import { AccountTableUIContainer } from '@/components/AccountTable'
 import { Step } from '@/components/Stepper'
-import type { IAccount, IBook, IInstitution, IInstitutionUpdate, IUser } from '@angelfish/core'
 import { useTranslate } from '@/utils/i18n'
+import type { IAccount, IBook, IInstitution, IInstitutionUpdate, IUser } from '@angelfish/core'
 
 /**
  * Component Properties
@@ -112,9 +112,7 @@ export default function SetupBankAccountsStep({
         sx={{ width: '100%', marginLeft: 0 }}
       >
         <Grid size={12} sx={{ paddingLeft: '0px !important', paddingBottom: 2 }}>
-          <Typography variant="body1">
-            {t['setupYourBankAccountsDescription']}
-          </Typography>
+          <Typography variant="body1">{t['setupYourBankAccountsDescription']}</Typography>
         </Grid>
         <Grid
           size={12}

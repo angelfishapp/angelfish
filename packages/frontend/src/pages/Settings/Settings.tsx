@@ -4,8 +4,8 @@ import ListItemButton from '@mui/material/ListItemButton'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 
 import { SideMenu } from '@/components/SideMenu'
-import { SettingsRoutes } from '../../app/Routes'
 import { useTranslate } from '@/utils/i18n'
+import { SettingsRoutes } from '../../app/Routes'
 
 /**
  * Main Component - Settings Page Container providing left hand menu and router to switch

@@ -5,10 +5,10 @@ import React from 'react'
 import { GetErrorMessage } from '@/api'
 import { OOBField } from '@/components/forms/OOBField'
 import { AudioPlayer } from '@/utils/audio.utils'
+import { useTranslate } from '@/utils/i18n'
 import LoginAnimation from '../../animations/login-animation'
 import { AuthContainer } from '../../AuthScreen.styles'
 import type { AuthFormProps } from './AuthForm.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Displays the authentication form at center of login screen to enter and validate

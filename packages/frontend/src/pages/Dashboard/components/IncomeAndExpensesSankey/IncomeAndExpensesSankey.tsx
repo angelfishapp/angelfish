@@ -8,11 +8,11 @@ import React, { type JSX } from 'react'
 import { Chart } from 'react-chartjs-2'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
+import { useTranslate } from '@/utils/i18n'
 import type { ReportsDataRow } from '@angelfish/core'
 import { DashboardChart } from '../DashboardChart'
 import type { IncomeAndExpensesSankeyProps } from './IncomeAndExpensesSankey.interface'
 import { IncomeAndExpensesSankeyTooltip } from './IncomeAndExpensesSankey.style'
-import { useTranslate } from '@/utils/i18n'
 
 ChartJS.register(SankeyController, Flow)
 

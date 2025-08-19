@@ -1,17 +1,19 @@
 import type { FC } from 'react'
 import React from 'react'
 
+import { useTranslate } from '@/utils/i18n'
+import { useI18n } from '@/utils/i18n/I18nProvider'
 import type { ReportsDataRow } from '@angelfish/core'
 import { getNetTableColumns, getTableColumns } from './ReportsTable.columns'
 import type { ReportsTableProps } from './ReportsTable.interface'
 import { StyledNetSummaryTable, StyledReportsTable } from './ReportsTable.styles'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Table for Reports Page
  */
 const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
   // Localization
+  const { locale } = useI18n()
   const { reports: t } = useTranslate('pages')
   // Setup React-Table
   const initialState = {
@@ -22,8 +24,11 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
 
   // Create columns from periods data
   const [incomeColumns, expenseColumns] = React.useMemo(
-    () => [getTableColumns(t["income"], data, onClick, t), getTableColumns(t["expenses"], data, onClick, t)],
-    [data, onClick],
+    () => [
+      getTableColumns(t['income'], data, onClick, t, locale),
+      getTableColumns(t['expenses'], data, onClick, t, locale),
+    ],
+    [data, onClick, locale, t],
   )
 
   // Create Net summary row at bottom of tables
@@ -43,11 +48,11 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
           return isNaN(value) ? total : total + value
         }, 0)
 
-          ; (summary as ReportsDataRow)[period] = periodTotal
+        ;(summary as ReportsDataRow)[period] = periodTotal
       })
     }
     return [getNetTableColumns(data, t), summary]
-  }, [data])
+  }, [data, t])
 
   // Render table
   return (

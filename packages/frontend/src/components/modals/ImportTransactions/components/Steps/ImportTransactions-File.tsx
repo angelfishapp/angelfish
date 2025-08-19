@@ -5,8 +5,8 @@ import { AutocompleteField } from '@/components/forms/AutocompleteField'
 import { CategoryField } from '@/components/forms/CategoryField'
 import { FileField } from '@/components/forms/FileField'
 import { Step } from '@/components/Stepper'
-import type { IAccount } from '@angelfish/core'
 import { useTranslate } from '@/utils/i18n'
+import type { IAccount } from '@angelfish/core'
 
 /**
  * Step Component Properties

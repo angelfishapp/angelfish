@@ -4,6 +4,7 @@ import React from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 
 import { Step } from '@/components/Stepper'
+import { useTranslate } from '@/utils/i18n'
 import type {
   CSVTransactionMapper,
   IAccount,
@@ -13,7 +14,6 @@ import type {
 } from '@angelfish/core'
 import ImportCSVTransactionsMapping from './ImportTransactions-Mapping.csv'
 import ImportDefaultTransactionsMapping from './ImportTransactions-Mapping.default'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Import Mapping Form Fields

@@ -13,6 +13,7 @@ import type { ITransaction } from '@angelfish/core'
 export function getChartData(
   transactions: ITransaction[],
   start_balance = 0,
+  locale: 'en' | 'ar' | 'fr' = 'en',
 ): { balance: number[]; labels: string[] } {
   const chartData: Record<string, number> = {}
 
@@ -22,15 +23,29 @@ export function getChartData(
     .sort((a, b) => a.date.getTime() - b.date.getTime())
 
   // Generate month labels between first transaction date and current date
-  const startDate = moment(sortedTransactions[0]?.date)
-  const endDate = moment(new Date())
-  while (startDate.isBefore(endDate)) {
-    chartData[startDate.format('MMM-YY')] = 0
-    startDate.add(1, 'month')
+  const startDate = new Date(sortedTransactions[0]?.date)
+  const endDate = new Date()
+
+  while (startDate <= endDate) {
+    const label = new Intl.DateTimeFormat(locale, {
+      month: 'short',
+      year: '2-digit',
+    }).format(startDate)
+
+    chartData[label] = 0
+
+    // move to next month
+    startDate.setMonth(startDate.getMonth() + 1)
   }
-  // Make sure current month is included if startDate goes past
-  if (!(endDate.format('MMM-YY') in chartData)) {
-    chartData[endDate.format('MMM-YY')] = 0
+
+  // Make sure current month is included
+  const endLabel = new Intl.DateTimeFormat(locale, {
+    month: 'short',
+    year: '2-digit',
+  }).format(endDate)
+
+  if (!(endLabel in chartData)) {
+    chartData[endLabel] = 0
   }
 
   // Calculate Running Balance

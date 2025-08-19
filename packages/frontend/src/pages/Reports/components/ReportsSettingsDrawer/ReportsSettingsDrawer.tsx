@@ -3,9 +3,9 @@ import { Controller, useForm } from 'react-hook-form'
 
 import { Drawer } from '@/components/Drawer'
 import { SwitchField } from '@/components/forms/SwitchField'
+import { useTranslate } from '@/utils/i18n/I18nProvider'
 import type { ReportsQuery } from '@angelfish/core'
 import type { ReportsSettingsDrawerProps } from './ReportsSettingsDrawer.interface'
-import { useTranslate } from '@/utils/i18n/I18nProvider'
 
 /**
  * Form Properties

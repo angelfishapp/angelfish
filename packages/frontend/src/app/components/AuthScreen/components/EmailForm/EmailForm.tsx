@@ -2,9 +2,9 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import React from 'react'
 
+import { useTranslate } from '@/utils/i18n'
 import { AuthContainer } from '../../AuthScreen.styles'
 import type { EmailFormProps } from './EmailForm.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Displays the forgotten password form
@@ -16,7 +16,7 @@ export default function ResetPasswordForm({
   onNext,
 }: EmailFormProps) {
   // Component State
-  const { authScreen: t } = useTranslate("screens")
+  const { authScreen: t } = useTranslate('screens')
   const emailFieldRef = React.useRef<HTMLInputElement>(null)
   const [email, setEmail] = React.useState<string>(defaultEmail || '')
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
@@ -88,9 +88,7 @@ export default function ResetPasswordForm({
             {isEmailSent ? (
               <section>
                 <h1>{t['checkInbox']}</h1>
-                <p>
-                  {t['emailSent']}
-                </p>
+                <p>{t['emailSent']}</p>
                 <Button fullWidth onClick={handleShowLogin}>
                   {t['next']}
                 </Button>

@@ -10,9 +10,9 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { CloseButton } from '@/components/CloseButton'
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { DefaultTableRowProps } from '@/components/Table'
+import { useTranslate } from '@/utils/i18n'
 import { getTransactionFormData } from '../../data/'
 import type { FormData, TransactionRow } from '../../data/types'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Edit view of TableRow for TransactionTable

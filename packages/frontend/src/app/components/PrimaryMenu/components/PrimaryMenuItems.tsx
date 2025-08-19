@@ -47,7 +47,7 @@ export default function PrimaryMenuItems() {
     >
       {ListedAppRoutes.map(({ label, Icon, path }) => (
         <Tab
-          label={t.routes[label]}
+          label={t.routes[label as keyof typeof t.routes]}
           icon={<Icon />}
           key={label}
           value={path}

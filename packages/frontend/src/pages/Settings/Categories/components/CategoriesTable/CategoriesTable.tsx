@@ -7,6 +7,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 
 import { Emoji } from '@/components/Emoji'
 import { Table } from '@/components/Table'
+import { useTranslate } from '@/utils/i18n'
 import type { IAccount } from '@angelfish/core'
 import type { CategoriesTableProps } from './CategoriesTable.interface'
 
@@ -19,6 +20,7 @@ export function CategoriesTable({
   onSelect,
   EmptyView,
 }: CategoriesTableProps) {
+  const { settings: t } = useTranslate('pages')
   const columns: ColumnDef<IAccount>[] = [
     {
       header: '',
@@ -50,15 +52,15 @@ export function CategoriesTable({
           <Box whiteSpace="nowrap">{cell.getValue() as string}</Box>
         </Box>
       ),
-      header: () => <span>Name</span>,
+      header: () => <span>{t['Name']}</span>,
     },
     {
       accessorKey: 'cat_description',
-      header: () => <span>Description</span>,
+      header: () => <span>{t['Description']}</span>,
     },
     {
       accessorKey: 'cat_type',
-      header: () => <span>Type</span>,
+      header: () => <span>{t['Type']}</span>,
     },
   ]
 

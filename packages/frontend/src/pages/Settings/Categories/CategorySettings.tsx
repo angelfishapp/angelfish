@@ -22,13 +22,13 @@ import {
   useSaveCategoryGroup,
   useSelectAllCategories,
 } from '@/hooks'
+import { useTranslate } from '@/utils/i18n'
 import type { AppCommandIds, AppCommandRequest, IAccount, ICategoryGroup } from '@angelfish/core'
 import { StyledCategoryGroupDivider, StyledCategoryGroupName } from './CategorySettings.styles'
 import { CategoriesTable } from './components/CategoriesTable'
 import { CategoryDeleteModal } from './components/CategoryDeleteModal'
 import { BUBBLE_SIZE, CategoryGroupBubble } from './components/CategoryGroupBubble'
 import { GroupDeleteModal } from './components/GroupDeleteModal'
-import { useTranslate } from '@/utils/i18n'
 
 const BUBBLEWIDTH = BUBBLE_SIZE + 16 + 8
 
@@ -45,12 +45,12 @@ export default function CategorySettings() {
   const [drawerType, setDrawerType] = React.useState<string>('')
   const [selectedGroup, setSelectedGroup] = React.useState<
     | {
-      group: ICategoryGroup
-      row?: number
-      col?: number
-      index?: number
-      type?: 'income' | 'expenses'
-    }
+        group: ICategoryGroup
+        row?: number
+        col?: number
+        index?: number
+        type?: 'income' | 'expenses'
+      }
     | undefined
   >(undefined)
   const [showTable, setShowTable] = React.useState(false)
@@ -418,9 +418,10 @@ export default function CategorySettings() {
                                   (data) => ({ ...data, type: 'income' }),
                                 )}
                                 onSelect={onCategorySelect}
-                                pointerPosition={`${(100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
+                                pointerPosition={`${
+                                  (100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
                                   100 / itemsPerRow / 2
-                                  }%`}
+                                }%`}
                               />
                             </Box>
                           </Collapse>
@@ -517,9 +518,10 @@ export default function CategorySettings() {
                                   (data) => ({ ...data, type: 'expense' }),
                                 )}
                                 onSelect={onCategorySelect}
-                                pointerPosition={`${(100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
+                                pointerPosition={`${
+                                  (100 / itemsPerRow) * (selectedGroup?.col ?? 0 + 1) +
                                   100 / itemsPerRow / 2
-                                  }%`}
+                                }%`}
                               />
                             </Box>
                           </Collapse>

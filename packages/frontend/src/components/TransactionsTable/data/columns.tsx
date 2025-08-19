@@ -23,11 +23,11 @@ import { CategoryField } from '@/components/forms/CategoryField'
 import { DateField } from '@/components/forms/DateField'
 import { TagsField } from '@/components/forms/TagsField'
 import { TextField } from '@/components/forms/TextField'
+import { useTranslate } from '@/utils/i18n'
 import type { IAccount, ITag, IUser } from '@angelfish/core'
 import { AmountFilter, CategoryFilter, DateFilter, PayeeFilter, TagsFilter } from './filters'
 import { AccountSort, DateColSort, TagsSort } from './sorting'
 import type { FormData, TransactionRow } from './types'
-import { useTranslate } from '@/utils/i18n'
 
 /*
  * Extend react-table ColumnDef to add EditCell function for
@@ -80,7 +80,7 @@ export type SupportedColumnNames =
  * column definition of Transaction Rows
  * @returns {ColumnDef<TransactionRow>[]}
  */
-export function buildColumns(
+export function BuildColumns(
   colnames: SupportedColumnNames[] = [
     'date',
     'title',

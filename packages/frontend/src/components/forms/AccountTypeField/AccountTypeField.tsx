@@ -5,6 +5,7 @@ import Tooltip from '@mui/material/Tooltip'
 import React from 'react'
 
 import { AutocompleteField } from '@/components/forms/AutocompleteField'
+import { useTranslate } from '@/utils/i18n'
 import type { AccountType } from '@angelfish/core'
 import { getAccountTypeLabel, groupedAccountTypes } from '@angelfish/core'
 import type { AccountTypeFieldProps } from './AccountTypeField.interface'
@@ -25,16 +26,22 @@ export default React.forwardRef<HTMLDivElement, AccountTypeFieldProps>(function 
   }: AccountTypeFieldProps,
   ref,
 ) {
+  const { fields: t } = useTranslate('components')
   // Filter options
   const filteredOptions: AccountType[] = React.useMemo(() => {
     // First filter account types
     let options = groupedAccountTypes.filter((aType) => types.includes(aType.type))
+
     // Filter by country if provided
     if (country) {
       options = options.filter((aType) => aType.country == country || aType.country == undefined)
     }
-    return options
-  }, [types, country])
+    return options.map((option) => ({
+      ...option,
+      name: t[option.name],
+      description: t[option.description],
+    }))
+  }, [types, country, t])
 
   // Render
   return (
@@ -58,14 +65,14 @@ export default React.forwardRef<HTMLDivElement, AccountTypeFieldProps>(function 
       isOptionEqualToValue={(option, value) =>
         option.type === value.type && option.subtype === value.subtype
       }
-      groupBy={(option) => getAccountTypeLabel(option.type)}
+      groupBy={(option) => t[getAccountTypeLabel(option.type)]}
       renderOption={(props, option) => {
         const { key, ...rest } = props
         return (
           <ListItem key={key} dense={true} {...rest}>
             <ListItemText primary={option.name} />
             <Tooltip
-              title={option.description}
+              title={t[option.description]}
               placement="right"
               slotProps={{
                 tooltip: {

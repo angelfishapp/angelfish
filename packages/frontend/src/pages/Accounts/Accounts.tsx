@@ -19,9 +19,9 @@ import {
   useSaveAccount,
   useSaveTransactions,
 } from '@/hooks'
+import { useTranslate } from '@/utils/i18n'
 import { AccountsMenu } from './components/AccountsMenu'
 import { AccountsView } from './views/AccountsView'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Accounts page for viewing and editing Accounts and their associated Transactions

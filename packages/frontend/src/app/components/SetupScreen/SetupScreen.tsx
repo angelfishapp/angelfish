@@ -3,6 +3,7 @@ import React from 'react'
 
 import { Step, Stepper } from '@/components/Stepper'
 import { VideoContainer } from '@/components/VideoContainer'
+import { useTranslate } from '@/utils/i18n'
 import {
   SetupBankAccountsStep,
   SetupBookStep,
@@ -11,7 +12,6 @@ import {
   SetupUserStep,
 } from './components/steps'
 import type { SetupScreenProps } from './SetupScreen.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Main Component - Onboarding workflow for new user setting up App for the first
@@ -70,7 +70,14 @@ export default function SetupScreen({
     <Box width="100%" height="100%" justifyContent="center" alignContent="center" display="flex">
       <Stepper
         activeStep={activeStep}
-        labels={[t['profile'], t['household'], t['encryption'], t['members'], t['accounts'], t['intro']]}
+        labels={[
+          t['profile'],
+          t['household'],
+          t['encryption'],
+          t['members'],
+          t['accounts'],
+          t['intro'],
+        ]}
         open={isOpen}
         onTransitionEnd={() => onComplete()}
       >

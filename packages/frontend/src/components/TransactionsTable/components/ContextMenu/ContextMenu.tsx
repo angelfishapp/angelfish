@@ -17,6 +17,7 @@ import { CategoryField } from '@/components/forms/CategoryField'
 import { TagsField } from '@/components/forms/TagsField'
 import { TextField } from '@/components/forms/TextField'
 import type { TableContextMenuProps } from '@/components/Table'
+import { useTranslate } from '@/utils/i18n'
 import type { IAccount, ITag } from '@angelfish/core'
 import { hasSplitTransaction } from '@angelfish/core'
 import type { TransactionRow } from '../../data'
@@ -37,8 +38,8 @@ export default function TransactionTableContextMenu({
   onClose,
   table,
 }: TableContextMenuProps<TransactionRow>) {
+  const { contextMenu: t } = useTranslate('components')
   const selectedRows = table.getSelectedRowModel().rows
-
   // Component State
   const [showSubMenu, setShowSubMenu] = React.useState<'categories' | 'tags' | null>(null)
   const [hasSplitTransactions, setHasSplitTransactions] = React.useState<boolean>(false)
@@ -149,16 +150,16 @@ export default function TransactionTableContextMenu({
   const menuItems: ContextMenuItem[] = React.useMemo(() => {
     const items: ContextMenuItem[] = [
       {
-        item: `Edit Transaction${selectedRows.length > 1 ? 's' : ''}`,
+        item: `${t['Edit Transaction']}${selectedRows.length > 1 ? 's' : ''}`,
         onHover: () => setShowSubMenu(null),
       },
       {
-        item: 'Change Category',
+        item: t['Change Category'],
         icon: InventoryIcon,
         subMenuClassName: 'categoriesSubMenu',
         subMenuIsOpen: showSubMenu === 'categories',
         disabled: hasSplitTransactions,
-        disabledText: 'Cannot Change Category as Selection Contains Split Transaction',
+        disabledText: t['Cannot Change Category as Selection Contains Split Transaction'],
         divider: !showTags && !showNote && !showIsReviewed,
         onHover: (isDisabled) => {
           if (isDisabled) {
@@ -202,13 +203,13 @@ export default function TransactionTableContextMenu({
             className: 'search-categories',
           },
           {
-            item: 'Recently Used',
+            item: t['Recently Used'],
           },
           ...recentCategoryMenuItems,
         ],
       },
       {
-        item: 'Insert New...',
+        item: t['Insert New'],
         icon: AddIcon,
         onHover: () => {
           setShowSubMenu(null)
@@ -230,7 +231,7 @@ export default function TransactionTableContextMenu({
         },
       },
       {
-        item: 'Duplicate',
+        item: t['Duplicate'],
         icon: ContentCopyIcon,
         divider: true,
         onHover: () => {
@@ -243,7 +244,7 @@ export default function TransactionTableContextMenu({
         },
       },
       {
-        item: 'Remove',
+        item: t['Remove'],
         icon: DeleteIcon,
         className: 'menuItemRemove',
         divider: true,
@@ -262,7 +263,7 @@ export default function TransactionTableContextMenu({
         },
         item: (
           <Typography variant="body2" component="span" className="menuSummary">
-            {`${selectedRows.length} transaction${selectedRows.length == 1 ? '' : 's'} : `}
+            {`${selectedRows.length} ${t['transaction']} ${selectedRows.length == 1 ? '' : 's'} : `}
             <CurrencyLabel
               value={totalSum}
               currency={table.options.meta?.transactionsTable?.account?.acc_iso_currency}
@@ -275,12 +276,12 @@ export default function TransactionTableContextMenu({
 
     if (showTags) {
       items.splice(2, 0, {
-        item: 'Add Tag',
+        item: t['Add Tag'],
         icon: TagIcon,
         subMenuClassName: 'tagsSubMenu',
         subMenuIsOpen: showSubMenu === 'tags',
         disabled: hasSplitTransactions,
-        disabledText: 'Cannot Add Tag as Selection Contains Split Transaction',
+        disabledText: t['Cannot Add Tag as Selection Contains Split Transaction'],
         divider: showIsReviewed ? false : showNote ? false : true,
         onHover: (isDisabled) => {
           if (isDisabled) {
@@ -296,7 +297,7 @@ export default function TransactionTableContextMenu({
                 <TagsField
                   fullWidth
                   margin="none"
-                  placeholder="Search or create new tags"
+                  placeholder={t['Search or create new tags']}
                   tags={table.options.meta?.transactionsTable?.allTags ?? []}
                   onChange={(tags) => {
                     // Update the transactions with the selected tags
@@ -316,7 +317,7 @@ export default function TransactionTableContextMenu({
             className: 'tags',
           },
           {
-            item: 'Recently Used',
+            item: t['Recently Used'],
           },
           ...recentTagMenuItems,
         ],
@@ -325,7 +326,7 @@ export default function TransactionTableContextMenu({
 
     if (showNote) {
       items.splice(showTags ? 3 : 2, 0, {
-        item: 'Edit Notes...',
+        item: t['Edit Notes'],
         icon: EditNoteIcon,
         disabled: hasSplitTransactions,
         divider: showIsReviewed ? false : true,
@@ -344,7 +345,7 @@ export default function TransactionTableContextMenu({
 
     if (showIsReviewed) {
       items.splice(showTags ? (showNote ? 4 : 3) : showNote ? 3 : 2, 0, {
-        item: 'Mark as Reviewed',
+        item: t['Mark as Reviewed'],
         icon: CheckCircleIcon,
         divider: true,
         onHover: () => {
@@ -372,6 +373,7 @@ export default function TransactionTableContextMenu({
     recentCategoryMenuItems,
     recentTags,
     recentTagMenuItems,
+    t,
   ])
 
   // Render
@@ -390,9 +392,11 @@ export default function TransactionTableContextMenu({
         items={menuItems}
       />
       <ConfirmDialog
-        title="Edit Transaction Notes"
+        title={t['Edit Transaction Notes']}
         open={showEditNotes}
         onClose={() => setShowEditNotes(false)}
+        confirmText={t['confirm']}
+        cancelText={t['cancel']}
         onConfirm={() => {
           const rows = selectedRows.map((row) => row.original)
           table.options.meta?.transactionsTable?.updateRows(rows, {
@@ -405,7 +409,7 @@ export default function TransactionTableContextMenu({
         <DialogContentText sx={{ width: 500, marginTop: 1 }} component="div">
           <TextField
             fullWidth
-            helperText="Leave blank to clear notes"
+            helperText={t['Leave blank to clear notes']}
             margin="none"
             onChange={(e) => setUpdatedNotes(e.target.value)}
             value={updatedNotes}

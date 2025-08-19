@@ -1,12 +1,12 @@
 import React from 'react'
 
 import { Stepper } from '@/components/Stepper'
+import { useTranslate } from '@/utils/i18n'
 import type { ParsedFileMappings, ReconciledTransaction } from '@angelfish/core'
 import ImportTransactionsConfirm from './components/Steps/ImportTransactions-Confirm'
 import ImportTransactionsFile from './components/Steps/ImportTransactions-File'
 import ImportTransactionsMapping from './components/Steps/ImportTransactions-Mapping'
 import type { ImportTransactionsProps } from './ImportTransactions.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Import Transactions Modal

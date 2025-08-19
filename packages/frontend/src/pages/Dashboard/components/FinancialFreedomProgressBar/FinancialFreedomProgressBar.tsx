@@ -2,6 +2,7 @@ import Box from '@mui/material/Box'
 import React from 'react'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
+import { useTranslate } from '@/utils/i18n'
 import { DashboardChart } from '../DashboardChart'
 import type { FinancialFreedomProgressBarProps } from './FinancialFreedomProgressBar.interface'
 import {
@@ -11,7 +12,6 @@ import {
   Tooltip,
   TooltipBar,
 } from './FinancialFreedomProgressBar.styled'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Display a progress bar that shows the financial freedom index for the user based on their past 12 months of expenses:
@@ -114,7 +114,8 @@ export default function FinancialFreedomProgressBar({
             <>{t['greatJob']}</>
           ) : (
             <>
-              {t['financialFreedom']}{periods} {t['financialFreedomMonths']}{' '}
+              {t['financialFreedom']}
+              {periods} {t['financialFreedomMonths']}{' '}
               <b>
                 <CurrencyLabel
                   value={Math.round(aveTotalExpenses - avePassiveIncome)}

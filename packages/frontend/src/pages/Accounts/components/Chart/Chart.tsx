@@ -14,6 +14,7 @@ import React from 'react'
 import { Line } from 'react-chartjs-2'
 
 import theme from '@/app/theme'
+import { useI18n } from '@/utils/i18n/I18nProvider'
 import type { ChartProps } from './Chart.interface'
 import { getChartData } from './Chart.utils'
 
@@ -73,11 +74,11 @@ const options: ChartOptions<'line'> = {
  */
 
 export default function Chart({ account, transactions }: ChartProps) {
+  const { locale } = useI18n()
   const chartRef = React.useRef<ChartJS<'line', number[], string>>(null)
   const [chartData, setChartData] = React.useState<ChartData<'line'>>({
     datasets: [],
   })
-
   /**
    * Create chart data from transactions
    */
@@ -88,8 +89,7 @@ export default function Chart({ account, transactions }: ChartProps) {
       return
     }
 
-    const { labels, balance } = getChartData(transactions, account.acc_start_balance)
-
+    const { labels, balance } = getChartData(transactions, account.acc_start_balance, locale)
     // Create Gradient Background
     const ctx = chart.ctx
     const gradient = ctx.createLinearGradient(0, 0, 0, 480)
@@ -118,7 +118,7 @@ export default function Chart({ account, transactions }: ChartProps) {
         },
       ],
     })
-  }, [transactions, account.acc_start_balance])
+  }, [transactions, account.acc_start_balance, locale])
 
   // Render
   return (

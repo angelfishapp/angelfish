@@ -7,10 +7,10 @@ import type { Control, UseFormGetValues } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
 import { AutocompleteField } from '@/components/forms/AutocompleteField'
+import { useTranslate } from '@/utils/i18n'
 import type { ParsedFileMappings } from '@angelfish/core'
 import { MapperHeading } from '../../ImportTransactions.styled'
 import type { ImportMapperForm } from './ImportTransactions-Mapping'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Array of tuples of TransactionMapper fields that can be selected
@@ -101,15 +101,15 @@ export default function ImportCSVTransactionsMapping({
               <Controller
                 name={
                   `csvMapper.fields.${mapperField.name}` as
-                  | 'csvMapper.fields.check_number'
-                  | 'csvMapper.fields.id'
-                  | 'csvMapper.fields.date'
-                  | 'csvMapper.fields.name'
-                  | 'csvMapper.fields.amount'
-                  | 'csvMapper.fields.memo'
-                  | 'csvMapper.fields.pending'
-                  | 'csvMapper.fields.iso_currency_code'
-                  | 'csvMapper.fields.transaction_type'
+                    | 'csvMapper.fields.check_number'
+                    | 'csvMapper.fields.id'
+                    | 'csvMapper.fields.date'
+                    | 'csvMapper.fields.name'
+                    | 'csvMapper.fields.amount'
+                    | 'csvMapper.fields.memo'
+                    | 'csvMapper.fields.pending'
+                    | 'csvMapper.fields.iso_currency_code'
+                    | 'csvMapper.fields.transaction_type'
                 }
                 control={formController}
                 rules={{ required: mapperField.required }}
@@ -193,12 +193,12 @@ export default function ImportCSVTransactionsMapping({
                   if (value !== null) {
                     onChange(
                       value as
-                      | 'YYYY MM DD'
-                      | 'YY MM DD'
-                      | 'MM DD YYYY'
-                      | 'MM DD YY'
-                      | 'DD MM YYYY'
-                      | 'DD MM YY',
+                        | 'YYYY MM DD'
+                        | 'YY MM DD'
+                        | 'MM DD YYYY'
+                        | 'MM DD YY'
+                        | 'DD MM YYYY'
+                        | 'DD MM YY',
                     )
                   }
                 }}

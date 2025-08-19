@@ -10,8 +10,8 @@ import { AvatarField } from '@/components/forms/AvatarField'
 import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
 import { useGetAuthenticatedUser, useUpdateAuthenticatedUser } from '@/hooks'
-import { USER_AVATARS } from '@angelfish/core'
 import { useTranslate } from '@/utils/i18n'
+import { USER_AVATARS } from '@angelfish/core'
 
 /**
  * Form Properties
@@ -195,11 +195,7 @@ export default function UserSettings() {
                         label={t['phoneNumber']}
                         fullWidth
                         error={errors?.phone ? true : false}
-                        helperText={
-                          errors?.phone
-                            ? t['phoneNumberRequired']
-                            : undefined
-                        }
+                        helperText={errors?.phone ? t['phoneNumberRequired'] : undefined}
                         onChange={(phone, isValid) => {
                           onChange({
                             number: phone,

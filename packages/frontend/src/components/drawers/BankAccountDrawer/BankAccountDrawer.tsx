@@ -9,10 +9,10 @@ import { InstitutionField } from '@/components/forms/InstitutionField'
 import { SwitchField } from '@/components/forms/SwitchField'
 import { TextField } from '@/components/forms/TextField'
 import { UserField } from '@/components/forms/UserField'
+import { useTranslate } from '@/utils/i18n'
 import type { AccountType, IAccount, IInstitution, IUser } from '@angelfish/core'
 import { getAccountType, getCountryFromCode, getCurrencyFromCode } from '@angelfish/core'
 import type { BankAccountDrawerProps } from './BankAccountDrawer.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -125,6 +125,7 @@ export default function BankAccountDrawer({
           label={t['institution']}
           fullWidth
           required
+          placeholder={t['institutionPlaceholder']}
           onChange={(institution) => {
             onChange(institution)
             const country = getCountryFromCode(institution.country)
@@ -152,11 +153,7 @@ export default function BankAccountDrawer({
           fullWidth
           required
           error={errors?.name ? true : false}
-          helperText={
-            errors?.name
-              ? t['errorName']
-              : t['nameHelper']
-          }
+          helperText={errors?.name ? t['errorName'] : t['nameHelper']}
           {...field}
         />
       )}
@@ -173,14 +170,11 @@ export default function BankAccountDrawer({
           label={t['accountType']}
           required
           fullWidth
+          placeholder={t['typePlaceholder']}
           value={field.value}
           onChange={(accountType) => field.onChange(accountType || undefined)}
           error={errors?.type ? true : false}
-          helperText={
-            errors?.type
-              ? t['errorAccountType']
-              : t['accountTypeHelper']
-          }
+          helperText={errors?.type ? t['errorAccountType'] : t['accountTypeHelper']}
         />
       )}
     />
@@ -200,11 +194,7 @@ export default function BankAccountDrawer({
           value={field.value}
           onChange={(users) => field.onChange(users || [])}
           error={errors?.owners ? true : false}
-          helperText={
-            errors?.owners
-              ? t['errorOwners']
-              : t['ownersHelper']
-          }
+          helperText={errors?.owners ? t['errorOwners'] : t['ownersHelper']}
         />
       )}
     />
@@ -220,14 +210,11 @@ export default function BankAccountDrawer({
           label={t['currency']}
           required
           fullWidth
+          placeholder={t['currencyPlaceholder']}
           value={field.value}
           onChange={(currency) => field.onChange(currency?.code || '')}
           error={errors?.currency ? true : false}
-          helperText={
-            errors?.currency
-              ? t['errorCurrency']
-              : t['currencyHelper']
-          }
+          helperText={errors?.currency ? t['errorCurrency'] : t['currencyHelper']}
         />
       )}
     />
@@ -245,11 +232,7 @@ export default function BankAccountDrawer({
           allowNegative={true}
           currency={currency ? getCurrencyFromCode(currency)?.symbol : undefined}
           error={errors?.start_balance ? true : false}
-          helperText={
-            errors?.start_balance
-              ? t['errorStartBalance']
-              : t['startBalanceHelper']
-          }
+          helperText={errors?.start_balance ? t['errorStartBalance'] : t['startBalanceHelper']}
           onChange={(value) => onChange(value)}
           {...restField}
         />
@@ -269,11 +252,7 @@ export default function BankAccountDrawer({
           allowNegative={true}
           currency={currency ? getCurrencyFromCode(currency)?.symbol : undefined}
           error={errors?.account_limit ? true : false}
-          helperText={
-            errors?.account_limit
-              ? t['errorAccountLimit']
-              : t['accountLimitHelper']
-          }
+          helperText={errors?.account_limit ? t['errorAccountLimit'] : t['accountLimitHelper']}
           onChange={(value) => onChange(value)}
           {...restField}
         />
@@ -286,11 +265,7 @@ export default function BankAccountDrawer({
       name="is_open"
       control={control}
       render={({ field }) => (
-        <SwitchField
-          label={t['isOpen']}
-          helperText={t['isOpenHelper']}
-          {...field}
-        />
+        <SwitchField label={t['isOpen']} helperText={t['isOpenHelper']} {...field} />
       )}
     />
   )

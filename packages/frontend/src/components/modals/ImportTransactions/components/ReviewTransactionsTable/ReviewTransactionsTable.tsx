@@ -7,6 +7,7 @@ import React from 'react'
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { CategoryField } from '@/components/forms/CategoryField'
 import { Table } from '@/components/Table'
+import { useTranslate } from '@/utils/i18n'
 import { updateTransaction } from '@angelfish/core'
 import type { ReconciledTransaction } from '@angelfish/core/src/types'
 import HeaderRow from './components/TableHeaderGroup'
@@ -14,7 +15,6 @@ import TableRow from './components/TableRow'
 import type { ReconciledTransactionRow } from './ReviewTransactionsTable.data'
 import { flattenRowData, getSelectedRowState } from './ReviewTransactionsTable.data'
 import type { ReviewTransactionsTableProps } from './ReviewTransactionsTable.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Render the status tag for the transaction
@@ -147,7 +147,7 @@ export default function ReviewTransactionsTable({
         accessorKey: 'account_id',
       },
     ]
-  }, [accountsWithRelations, onUpdateTransactions, rows])
+  }, [accountsWithRelations, onUpdateTransactions, rows, t])
 
   // Render
   return (

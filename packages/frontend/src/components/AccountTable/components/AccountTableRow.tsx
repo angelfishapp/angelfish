@@ -11,11 +11,11 @@ import ListItemText from '@mui/material/ListItemText'
 import { Avatar } from '@/components/Avatar'
 import { BankIcon } from '@/components/BankIcon'
 import { CurrencyLabel } from '@/components/CurrencyLabel'
+import { useTranslate } from '@/utils/i18n'
 import type { IInstitution } from '@angelfish/core'
 import { getAccountTypeLabel, getCurrencyFromCode } from '@angelfish/core'
 import type { AccountTableRowProps } from './AccountTableRow.interface'
 import { StyledListItemButton } from './AccountTableRow.styles'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * AccountTableRow Component
@@ -30,7 +30,7 @@ export default function AccountTableRow({
   onEditInstitution,
   onSelectAccount,
 }: AccountTableRowProps) {
-  const { accountTable: t } = useTranslate('components')
+  const { accountTable: t, fields: fieldsT } = useTranslate('components')
   // Render Grouping Rows
   switch (row.groupingColumnId) {
     case 'acc_institution_id': {
@@ -50,8 +50,9 @@ export default function AccountTableRow({
             <BankIcon logo={row.original.acc_institution?.logo} />
           </ListItemIcon>
           <ListItemText
-            primary={`${row.original.acc_institution?.name} ${!row.original.acc_institution?.is_open ? '(Closed)' : ''
-              }`}
+            primary={`${row.original.acc_institution?.name} ${
+              !row.original.acc_institution?.is_open ? '(Closed)' : ''
+            }`}
             slotProps={{
               primary: {
                 noWrap: true,
@@ -229,10 +230,10 @@ export default function AccountTableRow({
               {(groupBy === 'acc_type' ||
                 groupBy === 'acc_owners' ||
                 groupBy === 'acc_currency') && (
-                  <ListItemIcon>
-                    <BankIcon logo={row.original.acc_institution?.logo} />
-                  </ListItemIcon>
-                )}
+                <ListItemIcon>
+                  <BankIcon logo={row.original.acc_institution?.logo} />
+                </ListItemIcon>
+              )}
               <ListItemText
                 primary={
                   groupBy === 'acc_type' || groupBy === 'acc_owners'
@@ -270,7 +271,7 @@ export default function AccountTableRow({
           )}
           <ListItemText
             primary={row.original.acc_is_open ? row.original.name : `${row.original.name} (Closed)`}
-            secondary={row.original.acc_type.name}
+            secondary={fieldsT[row.original.acc_type.name]}
             slotProps={{
               primary: {
                 noWrap: true,

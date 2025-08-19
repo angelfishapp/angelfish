@@ -12,10 +12,10 @@ import React from 'react'
 import type { DropdownMenuItem } from '@/components/DropdownMenuButton'
 import { Search } from '@/components/Search'
 import type { TableFilterBarProps } from '@/components/Table'
+import { useTranslate } from '@/utils/i18n'
 import type { TransactionRow } from '../../data'
 import { StyledActionButton, StyledFilterBar, StyledSettingsButton } from './FilterBar.styles'
 import FilterButton from './FilterButton'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * FilterBar shown at top of TransactionsTable to filter transactions

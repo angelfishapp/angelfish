@@ -13,6 +13,7 @@ import {
 } from 'chart.js'
 import { Chart } from 'react-chartjs-2'
 
+import { useI18n } from '@/utils/i18n/I18nProvider'
 import { useMemo } from 'react'
 import type { ReportsChartProps } from './ReportsChart.interface'
 import { getChartData } from './ReportsChart.utils'
@@ -77,7 +78,8 @@ export default function ReportsChart({ data, chartWidth }: ReportsChartProps) {
   /**
    * Create chart data from ReportData
    */
-  const chartData: ChartData = useMemo(() => getChartData(data), [data])
+  const { locale } = useI18n()
+  const chartData: ChartData = useMemo(() => getChartData(data, locale), [data, locale])
   // Render
   return (
     <Box py={3} height={300} width={`${(chartData.labels?.length ?? 1) * chartWidth}px`}>

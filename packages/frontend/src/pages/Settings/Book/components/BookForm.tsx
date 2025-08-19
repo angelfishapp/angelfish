@@ -9,11 +9,11 @@ import { AvatarField } from '@/components/forms/AvatarField'
 import { CountryField } from '@/components/forms/CountryField'
 import { CurrencyField } from '@/components/forms/CurrencyField'
 import { TextField } from '@/components/forms/TextField'
+import { useTranslate } from '@/utils/i18n/I18nProvider'
 import type { IBook } from '@angelfish/core'
 import { BOOK_AVATARS } from '@angelfish/core'
 import { getCountryFromCode } from '@angelfish/core/src/data/countries'
 import { getCurrencyFromCode } from '@angelfish/core/src/data/currencies'
-import { useI18n, useTranslate } from '@/utils/i18n/I18nProvider'
 
 /**
  * Form Properties

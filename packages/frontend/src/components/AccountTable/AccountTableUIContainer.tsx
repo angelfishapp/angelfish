@@ -4,6 +4,7 @@ import React from 'react'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { BankAccountDrawer } from '@/components/drawers/BankAccountDrawer'
 import { InstitutionDrawer } from '@/components/drawers/InstitutionDrawer'
+import { useTranslate } from '@/utils/i18n'
 import type { IAccount, IInstitution } from '@angelfish/core'
 import { getCountryFromCode } from '@angelfish/core'
 import AccountTable from './AccountTable'
@@ -11,7 +12,6 @@ import type {
   AccountTableMethods,
   AccountTableUIContainerProps,
 } from './AccountTableUIContainer.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Container for the Account Table Component. Handles all UI logic for the  Account Table.
@@ -145,7 +145,8 @@ export default React.forwardRef<AccountTableMethods, AccountTableUIContainerProp
           cancelText={t['cancel']}
         >
           <DialogContentText>
-            {t['DialogContentTextInstitution']} <em>{selectedInstitution?.name}</em> {t['DialogContentTextExtraInstitution']}
+            {t['DialogContentTextInstitution']} <em>{selectedInstitution?.name}</em>{' '}
+            {t['DialogContentTextExtraInstitution']}
           </DialogContentText>
         </ConfirmDialog>
         <BankAccountDrawer
@@ -170,7 +171,8 @@ export default React.forwardRef<AccountTableMethods, AccountTableUIContainerProp
           cancelText={t['cancel']}
         >
           <DialogContentText>
-            {t['DialogContentTextAccount']} <em>{selectedAccount?.name}</em> {t['DialogContentTextExtraAccount']}
+            {t['DialogContentTextAccount']} <em>{selectedAccount?.name}</em>{' '}
+            {t['DialogContentTextExtraAccount']}
           </DialogContentText>
         </ConfirmDialog>
       </React.Fragment>

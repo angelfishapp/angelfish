@@ -8,11 +8,11 @@ import { CategoryGroupField } from '@/components/forms/CategoryGroupField'
 import { EmojiField } from '@/components/forms/EmojiField'
 import { SelectField } from '@/components/forms/SelectField'
 import { TextField } from '@/components/forms/TextField'
+import { useTranslate } from '@/utils/i18n'
 import type { IAccount, ICategoryGroup } from '@angelfish/core'
 import { getCategoryTypeOptions } from '@angelfish/core'
 import type { CategoryGroupType, CategoryType } from '@angelfish/core/src/types'
 import type { CategoryDrawerProps } from './CategoryDrawer.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -114,13 +114,13 @@ export default function CategoryDrawer({
       menuItems={
         initialValue?.id
           ? [
-            {
-              label: t['delete'],
-              icon: DeleteIcon,
-              onClick: handleDeleteCategory,
-              color: 'error',
-            },
-          ]
+              {
+                label: t['delete'],
+                icon: DeleteIcon,
+                onClick: handleDeleteCategory,
+                color: 'error',
+              },
+            ]
           : undefined
       }
       {...{ open, onClose }}

@@ -4,16 +4,16 @@ import React from 'react'
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import type { TableProps } from '@/components/Table'
 import { handleRowContextMenu, handleRowSelection } from '@/components/Table'
+import { useTranslate } from '@/utils/i18n'
 import type { ITransaction, UpdateTransactionProperties } from '@angelfish/core'
 import { createNewTransaction, duplicateTransaction, updateTransactions } from '@angelfish/core'
 import { ContextMenu } from './components/ContextMenu'
 import { FilterBar } from './components/FilterBar'
 import TableRow from './components/TableRow/TableRow'
 import type { TransactionRow } from './data'
-import { buildColumns, buildTransactionRow, buildTransactionRows } from './data'
+import { BuildColumns, buildTransactionRow, buildTransactionRows } from './data'
 import type { TransactionsTableProps } from './TransactionsTable.interface'
 import { StyledTransactionTable } from './TransactionsTable.styles'
-import { useTranslate } from '@/utils/i18n'
 
 /*
  * Extend react-table to add custom metadata for TransactionsTable
@@ -125,7 +125,7 @@ export default function TransactionsTable({
   const [newRow, setNewRow] = React.useState<TransactionRow | undefined>(undefined)
 
   // Setup columns and normalise table data
-  const displayColumns = React.useMemo(() => buildColumns(columns), [columns])
+  const displayColumns = React.useMemo(() => BuildColumns(columns), [columns])
   const transactionRows = React.useMemo(
     () => buildTransactionRows(transactions, accountsWithRelations),
     [transactions, accountsWithRelations],

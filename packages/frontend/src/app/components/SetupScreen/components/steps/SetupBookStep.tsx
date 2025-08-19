@@ -8,8 +8,8 @@ import { CountryField } from '@/components/forms/CountryField'
 import { CurrencyField } from '@/components/forms/CurrencyField'
 import { TextField } from '@/components/forms/TextField'
 import { Step } from '@/components/Stepper'
-import { getCountryFromCode, getCurrencyFromCode } from '@angelfish/core'
 import { useTranslate } from '@/utils/i18n'
+import { getCountryFromCode, getCurrencyFromCode } from '@angelfish/core'
 
 /**
  * Form Properties
@@ -97,9 +97,7 @@ export default function SetupBookStep({
     >
       <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
         <Grid size={12}>
-          <Typography variant="body1">
-            {t['HoueholdDescription']}
-          </Typography>
+          <Typography variant="body1">{t['HoueholdDescription']}</Typography>
         </Grid>
         <Grid size={12}>
           <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
@@ -110,7 +108,7 @@ export default function SetupBookStep({
                 rules={{ required: true }}
                 render={({ field }) => (
                   <AvatarField
-                    label={t["logo"]}
+                    label={t['logo']}
                     avatars={bookAvatars}
                     size={100}
                     dialogSize={100}
@@ -151,7 +149,7 @@ export default function SetupBookStep({
                       rules={{ required: true }}
                       render={({ field: { value, onChange, ...rest } }) => (
                         <CountryField
-                          label={t["country"]}
+                          label={t['country']}
                           fullWidth
                           required
                           placeholder={t['searchCountries']}

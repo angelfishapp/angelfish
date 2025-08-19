@@ -30,6 +30,7 @@ import {
   useRunReport,
   useSaveTransactions,
 } from '@/hooks'
+import { useI18n, useTranslate } from '@/utils/i18n/I18nProvider'
 import type { AppCommandRequest, ITransactionUpdate, ReportsQuery } from '@angelfish/core'
 import { type AppCommandIds } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
@@ -37,7 +38,6 @@ import { ReportsChart } from './components/ReportsChart'
 import { ReportsSettingsDrawer } from './components/ReportsSettingsDrawer'
 import { ReportsTable } from './components/ReportsTable'
 import { renderPeriodHeader } from './Reports.utils'
-import { useTranslate } from '@/utils/i18n/I18nProvider'
 
 /**
  * Reports Page
@@ -45,6 +45,7 @@ import { useTranslate } from '@/utils/i18n/I18nProvider'
 
 export default function Reports() {
   // Localization
+  const { locale } = useI18n()
   const { reports: t } = useTranslate('pages')
   /**
    * Default Date Ranges for Date Range Selector
@@ -123,7 +124,7 @@ export default function Reports() {
    */
   const handleClick = React.useCallback(
     (period: string, name: string, id: number, isCategoryGroup = false) => {
-      setPeriodDetailDrawerTitle(`${renderPeriodHeader(period)}: ${name}`)
+      setPeriodDetailDrawerTitle(`${renderPeriodHeader(period, locale)}: ${name}`)
       setTransactionQuery({
         start_date:
           period != 'total'
@@ -143,6 +144,7 @@ export default function Reports() {
       setShowPeriodDetailDrawer,
       reportsQuery.start_date,
       reportsQuery.end_date,
+      locale,
     ],
   )
   // calculating the width for first col in the table and make it the same for range Date section so it would
@@ -292,7 +294,7 @@ export default function Reports() {
         onClose={() => {
           setShowPeriodDetailDrawer(false)
         }}
-        onCreateCategory={() => { }}
+        onCreateCategory={() => {}}
         onDeleteTransaction={onDeleteTransaction}
         onSaveTransactions={onSaveTransactions}
       />

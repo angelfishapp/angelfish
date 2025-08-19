@@ -2,9 +2,9 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
+import { useTranslate } from '@/utils/i18n'
 import type { StepProps } from './Step.interface'
 import { StepPanelContainer } from './Step.styles'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Displays a Step Panel with form for user to complete

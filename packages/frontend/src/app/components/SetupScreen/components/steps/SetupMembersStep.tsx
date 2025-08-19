@@ -3,8 +3,8 @@ import Typography from '@mui/material/Typography'
 
 import { Step } from '@/components/Stepper'
 import { UserTableUIContainer } from '@/components/UserTable'
-import type { IAuthenticatedUser, IUser } from '@angelfish/core'
 import { useTranslate } from '@/utils/i18n'
+import type { IAuthenticatedUser, IUser } from '@angelfish/core'
 
 /**
  * Component Properties
@@ -60,9 +60,7 @@ export default function SetupMembersStep({
     <Step title={t['addHouseholdMembers']} nextStep={nextStep} isReady={true} onNext={onNext}>
       <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
         <Grid size={12}>
-          <Typography variant="body1">
-            {t['optionallyAddMembers']}
-          </Typography>
+          <Typography variant="body1">{t['optionallyAddMembers']}</Typography>
         </Grid>
         <Grid size={12}>
           <UserTableUIContainer

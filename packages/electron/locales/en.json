@@ -68,6 +68,7 @@
   },
   "frontEnd": {
     "direction": "ltr",
+    "locale": "en",
     "routes": {
       "dashboard": "Dashboard",
       "accounts": "Accounts",
@@ -228,10 +229,55 @@
         "addCategory": "Add a Category",
         "income": "Income",
         "noCategoryCreated": "No category created for this group yet",
-        "expenses": "Expenses"
+        "expenses": "Expenses",
+        "Delete Category:": "Delete Category:",
+        "Cancel": "Cancel",
+        "Are you sure you want to delete this Category?": "Are you sure you want to delete this Category?",
+        "This Category has ": "This Category has ",
+        "Transactions in it. You can select which Category to re-assign them to or select nothing to leave them unclassified.": " Transactions in it. You can select which Category to re-assign them to or select nothing to leave them unclassified.",
+        "Re-Assign Transactions Category": "Re-Assign Transactions Category",
+        "Invalid Category Selected": "Invalid Category Selected",
+        "confirmText": "delete",
+        "Delete Category Group:": "Delete Category Group:",
+        "Are you sure you want to delete this Category Group?": "Are you sure you want to delete this Category Group?",
+        "This Category Group has ": "This Category Group has ",
+        "categories in it. Please select which Category Group you would like to move them too.": "categories in it. Please select which Category Group you would like to move them too.",
+        "Re-Assign Categories Category Group": "Re-Assign Categories Category Group",
+        "A Category Group is required": "A Category Group is required",
+        "New Category Group": "New Category Group",
+        "Name": "Name",
+        "Description": "Description",
+        "Type": "Type",
+        "Icon": "Icon",
+        "Edit Group": "Edit Group",
+        "Categories": "Category"
       }
     },
     "components": {
+      "fields": {
+        "Cash Accounts": "Cash Accounts",
+        "Credit Cards": "Credit Cards",
+        "Checking Account": "Checking Account",
+        "Savings Account": "Savings Account",
+        "HSA Cash Account": "HSA Cash Account",
+        "Certificate of Deposit": "Certificate of Deposit",
+        "Money Market Account": "Money Market Account",
+        "PayPal Cash Account": "PayPal Cash Account",
+        "Prepaid Debit Card": "Prepaid Debit Card",
+        "Brokerage Cash Management Account": "Brokerage Cash Management Account",
+        "Credit Card": "Credit Card",
+        "Electronic Benefit Transfer (EBT) Account": "Electronic Benefit Transfer (EBT) Account",
+        "PayPal Credit Card": "PayPal Credit Card",
+        "Everyday checking account": "Everyday checking account",
+        "Everyday savings account": "Everyday savings account",
+        "Health Savings Account (US only) that can only hold cash": "Health Savings Account (US only) that can only hold cash",
+        "Certificate of deposit account": "Certificate of deposit account",
+        "A prepaid Debit Card Account that you can load money onto to spend": "A prepaid Debit Card Account that you can load money onto to spend",
+        "A cash management account, typically a cash account at a brokerage": "A cash management account, typically a cash account at a brokerage",
+        "An Electronic Benefit Transfer (EBT) account, used by certain public assistance programs to distribute funds (US only)": "An Electronic Benefit Transfer (EBT) account, used by certain public assistance programs to distribute funds (US only)",
+        "Bank-issued credit card": "Bank-issued credit card",
+        "PayPal-issued credit card": "PayPal-issued credit card"
+      },
       "accountTable": {
         "noInstitutionsFound": "No Institutions Found",
         "addAnInstitution": "Add An Institution",
@@ -293,6 +339,28 @@
         "actions": "Actions",
         "addMember": "Add Member"
       },
+      "contextMenu": {
+        "Edit Transaction Notes": "Edit Transaction Notes",
+        "Edit Notes": "Edit Notes",
+        "Leave blank to clear notes": "Leave blank to clear notes",
+        "Search or create new tags": "Search or create new tags",
+        "Cannot Add Owner as Selection Contains Split Transaction": "Cannot Add Owner as Selection Contains Split Transaction",
+        "Add Tag": "Add Tag",
+        "Remove": "Remove",
+        "Duplicate": "Duplicate",
+        "Mark as Reviewed": "Mark as Reviewed",
+        "Insert New": "Insert New...",
+        "Recently Used": "Recently Used",
+        "Cannot Change Category as Selection Contains Split Transaction": "Cannot Change Category as Selection Contains Split Transaction",
+        "Change Category": "Change Category",
+        "Edit Transaction": "Edit Transaction",
+        "confirm": "ok",
+        "cancel": "cancel",
+        "transaction": "transaction",
+        "Delete User": "Delete User",
+        "Are you sure you want to delete the user": "Are you sure you want to delete the user?",
+        "from Angelfish?": "from Angelfish?"
+      },
       "modals": {
         "ImportTransactions": {
           "selectFile": "Select File",
@@ -353,7 +421,10 @@
           "errorWebsite": "Please enter a valid URL. E.g. https://www.hsbc.com",
           "websiteHelper": "The main website for the Institution",
           "isOpen": "Is Institution Open?",
-          "isOpenHelper": "Is the institution currently open or closed?"
+          "isOpenHelper": "Is the institution currently open or closed?",
+          "namePlaceholder": "Type in Institution Name...",
+          "countryPlaceholder": " search Countries ....",
+          "websitePlaceholder": "E.g. https://www.hsbc.com"
         },
         "BankAccountDrawer": {
           "edit": "Edit Bank Account",
@@ -380,7 +451,10 @@
           "currency": "Currency",
           "isOpenHelper": "Is the account currently open or closed?",
           "errorCurrency": "Currency is required",
-          "currencyHelper": "The currency the account is denominated in."
+          "currencyHelper": "The currency the account is denominated in.",
+          "institutionPlaceholder": "Search Institutions...",
+          "typePlaceholder": "Search Account Types...",
+          "currencyPlaceholder": "Search Currencies..."
         },
         "ReportsSettingsDrawer": {
           "reportSettings": "Report Settings",

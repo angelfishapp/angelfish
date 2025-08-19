@@ -37,6 +37,6 @@ export default function AppRoot() {
           </ThemeProvider>
         </I18nProvider>
       </QueryClientProvider>
-    </StyledEngineProvider >
+    </StyledEngineProvider>
   )
 }

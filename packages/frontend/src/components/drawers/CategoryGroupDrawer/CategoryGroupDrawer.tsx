@@ -8,10 +8,10 @@ import { ColorField } from '@/components/forms/ColorField'
 import { EmojiField } from '@/components/forms/EmojiField'
 import { SelectField } from '@/components/forms/SelectField'
 import { TextField } from '@/components/forms/TextField'
+import { useTranslate } from '@/utils/i18n'
 import type { CategoryGroupType, ICategoryGroup } from '@angelfish/core'
 import { getCategoryGroupTypeOptions } from '@angelfish/core'
 import type { CategoryGroupDrawerProps } from './CategoryGroupDrawer.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -108,13 +108,13 @@ export default function CategoryGroupDrawer({
       menuItems={
         categoryGroup
           ? [
-            {
-              label: t['delete'],
-              icon: DeleteIcon,
-              onClick: handleDeleteGroup,
-              color: 'error',
-            },
-          ]
+              {
+                label: t['delete'],
+                icon: DeleteIcon,
+                onClick: handleDeleteGroup,
+                color: 'error',
+              },
+            ]
           : undefined
       }
       {...{ open, onClose }}
@@ -128,13 +128,13 @@ export default function CategoryGroupDrawer({
           rules={{ required: true }}
           render={({ field }) => (
             <TextField
-              label={t["name"]}
+              label={t['name']}
               fullWidth
               autoFocus
               required
-              placeholder={t["namePlaceholder"]}
+              placeholder={t['namePlaceholder']}
               error={errors?.name ? true : false}
-              helperText={errors?.name ? t["errorName"] : undefined}
+              helperText={errors?.name ? t['errorName'] : undefined}
               {...field}
             />
           )}

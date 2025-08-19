@@ -5,9 +5,9 @@ import { Drawer } from '@/components/Drawer'
 import { AvatarField } from '@/components/forms/AvatarField'
 import { PhoneField } from '@/components/forms/PhoneField'
 import { TextField } from '@/components/forms/TextField'
+import { useTranslate } from '@/utils/i18n'
 import type { IUser } from '@angelfish/core'
 import type { UserDrawerProps } from './UserDrawer.interface'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Form Properties
@@ -181,9 +181,7 @@ export default function UserDrawer({
               tabIndex={4}
               fullWidth
               error={errors?.phone ? true : false}
-              helperText={
-                errors?.phone ? t['errorPhoneNumber'] : undefined
-              }
+              helperText={errors?.phone ? t['errorPhoneNumber'] : undefined}
               onChange={(phone, isValid) => {
                 onChange({
                   number: phone,

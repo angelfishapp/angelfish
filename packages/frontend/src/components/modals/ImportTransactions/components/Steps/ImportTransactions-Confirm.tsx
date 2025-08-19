@@ -3,9 +3,9 @@ import CircularProgress from '@mui/material/CircularProgress'
 import React from 'react'
 
 import { Step } from '@/components/Stepper'
+import { useTranslate } from '@/utils/i18n'
 import type { IAccount, ReconciledTransaction } from '@angelfish/core'
 import { ReviewTransactionsTable } from '../ReviewTransactionsTable'
-import { useTranslate } from '@/utils/i18n'
 
 /**
  * Step Component Properties

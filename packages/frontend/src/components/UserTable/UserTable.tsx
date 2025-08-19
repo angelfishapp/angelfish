@@ -6,8 +6,8 @@ import React from 'react'
 
 import { Avatar } from '@/components/Avatar'
 import { Table } from '@/components/Table'
-import type { UserTableProps } from './UserTable.interface'
 import { useTranslate } from '@/utils/i18n'
+import type { UserTableProps } from './UserTable.interface'
 
 /**
  * Book Members Table. Lists users and allows user to manage and edit them.
@@ -32,7 +32,7 @@ export default function UserTable({
       columns={[
         {
           id: 'avatar',
-          header: t['avatar'],  
+          header: t['avatar'],
           accessorKey: 'avatar',
           size: 90,
           cell: ({ row }) => {
