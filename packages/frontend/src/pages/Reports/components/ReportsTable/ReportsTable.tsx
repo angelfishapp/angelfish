@@ -2,7 +2,6 @@ import type { FC } from 'react'
 import React from 'react'
 
 import { useTranslate } from '@/utils/i18n'
-import { useI18n } from '@/utils/i18n/I18nProvider'
 import type { ReportsDataRow } from '@angelfish/core'
 import { getNetTableColumns, getTableColumns } from './ReportsTable.columns'
 import type { ReportsTableProps } from './ReportsTable.interface'
@@ -13,7 +12,7 @@ import { StyledNetSummaryTable, StyledReportsTable } from './ReportsTable.styles
  */
 const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
   // Localization
-  const { locale } = useI18n()
+  const { locale } = useTranslate()
   const { reports: t } = useTranslate('pages')
   // Setup React-Table
   const initialState = {

@@ -14,7 +14,7 @@ import React from 'react'
 import { Line } from 'react-chartjs-2'
 
 import theme from '@/app/theme'
-import { useI18n } from '@/utils/i18n/I18nProvider'
+import { useTranslate } from '@/utils/i18n'
 import type { ChartProps } from './Chart.interface'
 import { getChartData } from './Chart.utils'
 
@@ -74,7 +74,7 @@ const options: ChartOptions<'line'> = {
  */
 
 export default function Chart({ account, transactions }: ChartProps) {
-  const { locale } = useI18n()
+  const { locale } = useTranslate()
   const chartRef = React.useRef<ChartJS<'line', number[], string>>(null)
   const [chartData, setChartData] = React.useState<ChartData<'line'>>({
     datasets: [],

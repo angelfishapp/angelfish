@@ -8,7 +8,7 @@ import React, { type JSX } from 'react'
 import { Chart } from 'react-chartjs-2'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
-import { useI18n, useTranslate } from '@/utils/i18n'
+import { useTranslate } from '@/utils/i18n'
 import type { ReportsDataRow } from '@angelfish/core'
 import { DashboardChart } from '../DashboardChart'
 import type { IncomeAndExpensesSankeyProps } from './IncomeAndExpensesSankey.interface'
@@ -33,7 +33,7 @@ export default function IncomeAndExpensesSankey({
   data,
   periods = 6,
 }: IncomeAndExpensesSankeyProps) {
-  const { locale } = useI18n()
+  const { locale } = useTranslate()
   const { dashboard: t } = useTranslate('pages')
   // Component State
   const [month, setMonth] = React.useState<string>('')

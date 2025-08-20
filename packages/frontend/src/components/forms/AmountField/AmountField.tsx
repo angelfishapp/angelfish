@@ -13,6 +13,7 @@ export default React.forwardRef<HTMLInputElement, AmountFieldProps>(function Amo
   { allowNegative = false, currency = '$', onChange, value, ...rest }: AmountFieldProps,
   ref,
 ) {
+  // If no value is provided, default to 0
   // Render
   return (
     <NumericFormat

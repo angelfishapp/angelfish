@@ -3,13 +3,13 @@ import React, { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 import { ListedAppRoutes } from '@/app/Routes'
-import { useI18n } from '@/utils/i18n/I18nProvider'
+import { useTranslate } from '@/utils/i18n/I18nProvider'
 /**
  * Main Component - Shows Primary Menu Items in Primary Menu on left hand side of app
  */
 
 export default function PrimaryMenuItems() {
-  const { localeData: t } = useI18n()
+  const { routes: t } = useTranslate()
   const currentPage = useLocation().pathname
   const [currentTab, setCurrentTab] = React.useState<string>(currentPage)
 
@@ -46,7 +46,7 @@ export default function PrimaryMenuItems() {
     >
       {ListedAppRoutes.map(({ label, Icon, path }) => (
         <Tab
-          label={t.routes[label as keyof typeof t.routes]}
+          label={t[label as keyof typeof t]}
           icon={<Icon />}
           key={label}
           value={path}

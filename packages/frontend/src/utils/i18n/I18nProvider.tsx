@@ -3,6 +3,7 @@ import { AppEventIds, CommandsClient } from '@angelfish/core'
 import type React from 'react'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
+import { storybookData } from './mockLocalize'
 import type { ILocaleData } from './types'
 interface I18nContextValue {
   localeData: ILocaleData
@@ -70,44 +71,69 @@ export const I18nProvider: React.FC<{
 }
 
 // useTranslate.ts
+// Extend Window interface for Storybook globals
+declare global {
+  interface Window {
+    __STORYBOOK_CLIENT_API__?: any
+    __STORYBOOK_ADDONS_CHANNEL__?: any
+  }
+}
+
+export const isStorybook = () => {
+  if (typeof window === 'undefined') return false
+
+  // Check for Storybook's global client API
+  if (window.__STORYBOOK_CLIENT_API__) {
+    return true
+  }
+
+  // Check for other Storybook globals
+  if (window.__STORYBOOK_ADDONS_CHANNEL__) {
+    return true
+  }
+
+  return false
+}
 export const useTranslate = (basePath?: string) => {
-  const { localeData } = useI18n()
+  if (isStorybook()) {
+    const localeData = storybookData
 
-  /**
-   * Get value from localeData by path.
-   * Falls back to returning the key itself if no translation found.
-   */
-  const getValue = (path: string): string => {
-    const segments = path.split('.')
-    let acc: any = localeData
+    if (basePath) {
+      const segments = basePath.split('.')
+      let acc: any = localeData
 
-    for (const key of segments) {
-      if (acc && key in acc) {
-        acc = acc[key]
-      } else {
-        // return last key if not found
-        return key
+      for (const key of segments) {
+        if (acc && key in acc) {
+          acc = acc[key]
+        } else {
+          return {} // if basePath invalid, return empty object
+        }
       }
+      return acc
     }
 
-    // if still falsy, fallback to last key
-    return acc ?? segments[segments.length - 1]
+    // Return the entire localeData object when no basePath is provided
+    return localeData
   }
+  // eslint-disable-next-line
+  else {
+    // eslint-disable-next-line
+    const { localeData } = useI18n()
 
-  if (basePath) {
-    const segments = basePath.split('.')
-    let acc: any = localeData
+    if (basePath) {
+      const segments = basePath.split('.')
+      let acc: any = localeData
 
-    for (const key of segments) {
-      if (acc && key in acc) {
-        acc = acc[key]
-      } else {
-        return {} // if basePath invalid, return empty object
+      for (const key of segments) {
+        if (acc && key in acc) {
+          acc = acc[key]
+        } else {
+          return {} // if basePath invalid, return empty object
+        }
       }
+      return acc
     }
-
-    return acc
+    // Return the entire localeData object when no basePath is provided
+    return localeData
   }
-
-  return getValue
 }

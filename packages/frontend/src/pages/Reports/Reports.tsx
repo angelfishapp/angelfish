@@ -30,7 +30,7 @@ import {
   useRunReport,
   useSaveTransactions,
 } from '@/hooks'
-import { useI18n, useTranslate } from '@/utils/i18n/I18nProvider'
+import { useTranslate } from '@/utils/i18n/I18nProvider'
 import type { AppCommandRequest, ITransactionUpdate, ReportsQuery } from '@angelfish/core'
 import { type AppCommandIds } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
@@ -45,7 +45,7 @@ import { renderPeriodHeader } from './Reports.utils'
 
 export default function Reports() {
   // Localization
-  const { locale, dir } = useI18n()
+  const { locale, direction } = useTranslate()
   const { reports: t } = useTranslate('pages')
   /**
    * Default Date Ranges for Date Range Selector
@@ -237,9 +237,9 @@ export default function Reports() {
                     <Box
                       position="sticky"
                       display="flex"
-                      sx={dir === 'ltr' ? { right: 0, pr: 2 } : { left: 0, pl: 2 }}
+                      sx={direction === 'ltr' ? { right: 0, pr: 2 } : { left: 0, pl: 2 }}
                     >
-                      <Box sx={dir === 'ltr' ? { marginRight: 2 } : { marginLeft: 2 }}>
+                      <Box sx={direction === 'ltr' ? { marginRight: 2 } : { marginLeft: 2 }}>
                         <Button
                           variant="outlined"
                           style={{ border: 'none' }}

@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 
 import theme from '@/app/theme'
-import { useI18n } from '@/utils/i18n/I18nProvider'
+import { useTranslate } from '@/utils/i18n'
 import { AppRoutes } from '../../Routes'
 import { PrimaryMenu } from '../PrimaryMenu'
 import type { AppLayoutProps } from './AppLayout.interface'
@@ -15,7 +15,7 @@ export default React.forwardRef(function AppLayout(
   { authenticatedUser, onLogout }: AppLayoutProps,
   ref: React.Ref<HTMLDivElement>,
 ) {
-  const { localeData } = useI18n()
+  const { direction } = useTranslate()
 
   // Render
   return (
@@ -28,7 +28,7 @@ export default React.forwardRef(function AppLayout(
         ref={ref}
         id="app-viewport"
         sx={
-          localeData.direction === 'ltr'
+          direction === 'ltr'
             ? { ml: `${theme.custom.side.width}px` }
             : { mr: `${theme.custom.side.width}px` }
         }

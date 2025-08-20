@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import type { FC } from 'react'
 import React from 'react'
 
-import { useI18n } from '@/utils/i18n'
+import { useTranslate } from '@/utils/i18n'
 import type { RollingContainerProps, ScrollBarInfo } from './RollingContainer.interface'
 import { Root } from './RollingContainer.styles'
 import { isScrolledToEnd, isScrolledToStart } from './RollingContainer.utils'
@@ -20,7 +20,7 @@ export const RollingContainer: FC<RollingContainerProps> = ({
   showSyncScrollbar = true,
   syncScrollbarPosition = 'original',
 }) => {
-  const { dir } = useI18n()
+  const { direction } = useTranslate()
   /** Ref to the main scrollable container */
   const scrollArea = React.useRef<HTMLDivElement | null>(null)
 
@@ -286,7 +286,7 @@ export const RollingContainer: FC<RollingContainerProps> = ({
   return (
     <RollingContainerProvider value={contextValue}>
       <Root
-        dir={dir}
+        dir={direction}
         className={clsx(
           className,
           scrolling.atStart ? 'atStart' : undefined,

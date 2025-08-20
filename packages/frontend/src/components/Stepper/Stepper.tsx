@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useI18n } from '@/utils/i18n/I18nProvider'
+import { useTranslate } from '@/utils/i18n/I18nProvider'
 import { ClickAwayListener } from '@mui/material'
 import Fade from '@mui/material/Fade'
 import { BubbleList } from './components/BubbleList'
@@ -23,7 +23,7 @@ export default function Stepper({
   onClose,
   onTransitionEnd,
 }: StepperProps) {
-  const { direction } = useI18n().localeData
+  const { direction } = useTranslate()
   const [show, setShow] = React.useState(open)
 
   React.useEffect(() => {
