@@ -45,7 +45,7 @@ import { renderPeriodHeader } from './Reports.utils'
 
 export default function Reports() {
   // Localization
-  const { locale } = useI18n()
+  const { locale, dir } = useI18n()
   const { reports: t } = useTranslate('pages')
   /**
    * Default Date Ranges for Date Range Selector
@@ -234,8 +234,12 @@ export default function Reports() {
                 </Box>
                 <Box flex={1}>
                   <Box py={3} display="flex" justifyContent="flex-end" alignItems="center">
-                    <Box paddingRight={3} position="sticky" display="flex" right={0}>
-                      <Box marginRight={2}>
+                    <Box
+                      position="sticky"
+                      display="flex"
+                      sx={dir === 'ltr' ? { right: 0, pr: 2 } : { left: 0, pl: 2 }}
+                    >
+                      <Box sx={dir === 'ltr' ? { marginRight: 2 } : { marginLeft: 2 }}>
                         <Button
                           variant="outlined"
                           style={{ border: 'none' }}

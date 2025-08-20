@@ -1,12 +1,16 @@
 import styled from '@emotion/styled'
 
+interface RootProps {
+  dir?: 'ltr' | 'rtl'
+}
+
 /**
- * Root of Container
+ * Root of Container (LTR/RTL friendly via prop)
  */
-export const Root = styled('div')({
+export const Root = styled('div')<RootProps>(({ dir = 'ltr' }) => ({
   position: 'relative',
-  borderBottomLeftRadius: 20,
-  borderBottomRightRadius: 20,
+  'border-bottom-left-radius': 20,
+  'border-bottom-right-radius': 20,
 
   '& > div': {
     width: '100%',
@@ -17,32 +21,18 @@ export const Root = styled('div')({
       height: '7px',
       backgroundColor: 'transparent',
     },
-
-    '&::-webkit-scrollbar-track': {
-      backgroundColor: 'transparent',
-    },
-
-    '&::-webkit-scrollbar-track:hover': {
-      backgroundColor: 'transparent',
-    },
-
-    '&::-webkit-scrollbar-track:active': {
-      backgroundColor: 'transparent',
-    },
-
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: 'rgba(0, 0, 0, 0.3)',
       borderRadius: '4px',
     },
-
     '&::-webkit-scrollbar-thumb:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.4)',
     },
-
     '&::-webkit-scrollbar-thumb:active': {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
   },
+
   '& .isPinned': {
     position: 'sticky',
 
@@ -56,34 +46,33 @@ export const Root = styled('div')({
     },
 
     '&.left': {
-      left: 0,
+      insetInlineStart: 0,
       zIndex: 10,
       '&::after': {
+        insetInlineEnd: 0,
         boxShadow: 'none',
-        right: 0,
       },
     },
   },
 
-  '&::before,&::after': {
+  '&::before, &::after': {
     content: "''",
     display: 'inline-block',
     position: 'absolute',
     top: 0,
     bottom: 0,
     zIndex: 1,
-
     width: '15px',
     boxShadow: 'none',
     transition: 'box-shadow .25s ease-in-out, width .25s ease-in-out',
   },
 
   '&::before': {
-    left: 0,
+    insetInlineStart: 0,
   },
 
   '&::after': {
-    right: 0,
+    insetInlineEnd: 0,
   },
 
   '&:not(.atStart)': {
@@ -99,7 +88,10 @@ export const Root = styled('div')({
 
   '&:not(.atEnd)': {
     '&::after': {
-      boxShadow: 'inset rgb(0 0 0 / 50%) -7px 0 7px 0px',
+      boxShadow:
+        dir === 'ltr'
+          ? 'inset rgb(0 0 0 / 50%) -7px 0 7px 0px'
+          : 'inset rgb(0 0 0 / 50%) 7px 0 7px 0px',
     },
   },
-})
+}))

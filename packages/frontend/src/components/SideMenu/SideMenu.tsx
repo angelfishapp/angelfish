@@ -4,6 +4,7 @@ import IconButton from '@mui/material/IconButton'
 import Paper from '@mui/material/Paper'
 import React from 'react'
 
+import { useI18n } from '@/utils/i18n'
 import type { SideMenuProps } from './SideMenu.interface'
 import { COLLAPSED_WIDTH, MAX_WIDTH, MIN_WIDTH, SideBarWrapper } from './SideMenu.styles'
 
@@ -21,6 +22,7 @@ export default function SideMenu({
   resizeable = true,
   onResize,
 }: SideMenuProps) {
+  const { dir } = useI18n()
   /**
    * Handle Collapsing
    */
@@ -79,10 +81,14 @@ export default function SideMenu({
   // Render
   return (
     <SideBarWrapper
+      dir={dir}
       ref={menuRef}
       style={{
         width,
-        marginLeft: isCollapsed ? (width - COLLAPSED_WIDTH) * -1 : undefined,
+        marginLeft:
+          dir === 'ltr' ? (isCollapsed ? (width - COLLAPSED_WIDTH) * -1 : undefined) : undefined,
+        marginRight:
+          dir === 'rtl' ? (isCollapsed ? (width - COLLAPSED_WIDTH) * -1 : undefined) : undefined,
         position: sticky ? 'sticky' : undefined,
         top: sticky ? 16 : undefined,
       }}

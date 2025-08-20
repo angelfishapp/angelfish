@@ -8,6 +8,7 @@ interface I18nContextValue {
   localeData: ILocaleData
   locale: 'en' | 'ar' | 'fr'
   setLocale: (locale: 'en' | 'ar' | 'fr') => void
+  dir: 'ltr' | 'rtl'
 }
 
 const I18nContext = createContext<I18nContextValue | undefined>(undefined)
@@ -62,7 +63,7 @@ export const I18nProvider: React.FC<{
     return null
   }
   return (
-    <I18nContext.Provider value={{ localeData, locale, setLocale }}>
+    <I18nContext.Provider value={{ localeData, locale, setLocale, dir: localeData.direction }}>
       {children}
     </I18nContext.Provider>
   )

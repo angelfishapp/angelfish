@@ -38,7 +38,6 @@ export default function PrimaryMenuItems() {
       sx={{
         width: '100%',
         '& .MuiTabs-indicator': {
-          left: 0,
           right: 'auto',
           backgroundColor: 'common.white',
           width: 4,

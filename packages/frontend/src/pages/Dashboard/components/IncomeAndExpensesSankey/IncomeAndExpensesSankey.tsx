@@ -2,13 +2,13 @@ import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import { type ChartOptions, Chart as ChartJS } from 'chart.js'
 import { Flow, SankeyController } from 'chartjs-chart-sankey'
-import { compareAsc, format, isAfter, isValid, parse, subMonths } from 'date-fns'
+import { compareAsc, isAfter, isValid, parse, subMonths } from 'date-fns'
 import { groupBy } from 'lodash-es'
 import React, { type JSX } from 'react'
 import { Chart } from 'react-chartjs-2'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
-import { useTranslate } from '@/utils/i18n'
+import { useI18n, useTranslate } from '@/utils/i18n'
 import type { ReportsDataRow } from '@angelfish/core'
 import { DashboardChart } from '../DashboardChart'
 import type { IncomeAndExpensesSankeyProps } from './IncomeAndExpensesSankey.interface'
@@ -33,6 +33,7 @@ export default function IncomeAndExpensesSankey({
   data,
   periods = 6,
 }: IncomeAndExpensesSankeyProps) {
+  const { locale } = useI18n()
   const { dashboard: t } = useTranslate('pages')
   // Component State
   const [month, setMonth] = React.useState<string>('')
@@ -61,7 +62,6 @@ export default function IncomeAndExpensesSankey({
           color,
           id,
         }))
-
         return [...acc, ...data]
       }, [])
       .filter((i) => isAfter(parse(i.month, 'MM-yyyy', new Date()), subMonths(latestDate, periods)))
@@ -78,7 +78,6 @@ export default function IncomeAndExpensesSankey({
       }),
       {},
     ) as Record<string, { Income?: DataFlow[]; Expense?: DataFlow[] }>
-
     return {
       dataset: groupBy(group, 'month'),
       filtered,
@@ -169,9 +168,18 @@ export default function IncomeAndExpensesSankey({
   const marks = React.useMemo(() => {
     return Object.keys(dataset).map((date, index) => {
       const [month, year] = date.split('-')
-      return { raw: date, value: index, label: format(new Date(`${month} 1 ${year}`), 'MMM yy') }
+      const parsedDate = new Date(Number(year), Number(month) - 1, 1)
+
+      return {
+        raw: date,
+        value: index,
+        label: new Intl.DateTimeFormat(locale, {
+          month: 'short',
+          year: '2-digit',
+        }).format(parsedDate),
+      }
     })
-  }, [dataset])
+  }, [dataset, locale])
 
   return (
     <DashboardChart

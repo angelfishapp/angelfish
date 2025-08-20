@@ -148,7 +148,7 @@ export default function FinancialFreedomProgressBar({
             <div>{t['passiveIncome']}</div>
             <div>
               <CurrencyLabel value={avePassiveIncome} currency={currency} displayDecimals={false} />
-              /{t['month']} ({Math.round(progress) + '%'})
+              /{t['month']} ({Math.round(progress) || 0 + '%'})
             </div>
           </Tooltip>
           {aveCriticalExpenses && (
