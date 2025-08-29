@@ -168,7 +168,10 @@ export const allCurrencies: Array<Currency> = [
   { name: 'West African CFA Franc', code: 'XOF', symbol: 'CFA', flag: 'XX' },
   { name: 'Yemeni Rial', code: 'YER', symbol: '﷼', flag: 'YE' },
   { name: 'Zambian Kwacha', code: 'ZMW', symbol: 'ZK', flag: 'ZM' },
-]
+] as const
+
+// Currency Code Type
+export type CurrencyCode = (typeof allCurrencies)[number]['code']
 
 // separate currencies into groups
 export const groupedCurrencies: Array<{

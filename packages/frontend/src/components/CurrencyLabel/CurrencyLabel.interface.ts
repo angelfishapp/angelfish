@@ -1,5 +1,7 @@
 import type React from 'react'
 
+import type { CurrencyCode } from '@angelfish/core'
+
 /**
  * CurrencyLabel Component Properties
  */
@@ -13,7 +15,7 @@ export interface CurrencyLabelProps {
    * Currency to show at beginning (Default: USD)
    * 3-digit alphabetic currency codes from the ISO 4217 Currency Codes
    */
-  currency?: string
+  currency?: CurrencyCode
   /**
    * Display decimal part of the currency
    * @default true

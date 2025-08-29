@@ -40,7 +40,7 @@ export const DefaultValue: Story = {
   args: {
     label: 'Amount',
     value: 1222.22,
-    currency: '£',
+    currency: 'GBP',
     allowNegative: true,
   },
 }
