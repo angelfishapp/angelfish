@@ -16,7 +16,7 @@ import {
   subQuarters,
   subYears,
 } from 'date-fns'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { exportReport, showSaveDialog } from '@/api'
 import { DropdownMenuButton } from '@/components/DropdownMenuButton'
@@ -30,7 +30,11 @@ import {
   useRunReport,
   useSaveTransactions,
 } from '@/hooks'
-import type { AppCommandRequest, ITransactionUpdate, ReportsQuery } from '@angelfish/core'
+import type {
+  AppCommandRequest,
+  CategorySpendReportQuery,
+  ITransactionUpdate,
+} from '@angelfish/core'
 import { type AppCommandIds } from '@angelfish/core'
 import { PeriodDetailDrawer } from './components/PeriodDetailDrawer'
 import { ReportsChart } from './components/ReportsChart'
@@ -70,7 +74,7 @@ export default function Reports() {
   }
 
   // Component State
-  const [reportsQuery, setReportsQuery] = React.useState<ReportsQuery>({
+  const [reportsQuery, setReportsQuery] = React.useState<CategorySpendReportQuery>({
     start_date: format(dateRanges['Last 12 Months'].start, 'yyyy-MM-dd'),
     end_date: format(dateRanges['Last 12 Months'].end, 'yyyy-MM-dd'),
     include_unclassified: true,
@@ -130,7 +134,11 @@ export default function Reports() {
           period != 'total'
             ? format(endOfMonth(parse(period, 'MM-yyyy', new Date())), 'yyyy-MM-dd')
             : reportsQuery.end_date,
-        ...(isCategoryGroup ? { cat_group_id: id } : { cat_id: id }),
+        tag_ids: reportsQuery.tag_ids,
+        account_ids: reportsQuery.account_ids,
+        ...(isCategoryGroup
+          ? { category_group_ids: { include: [id] } }
+          : { category_ids: { include: [id] } }),
       })
       setShowPeriodDetailDrawer(true)
     },
@@ -140,34 +148,39 @@ export default function Reports() {
       setShowPeriodDetailDrawer,
       reportsQuery.start_date,
       reportsQuery.end_date,
+      reportsQuery.tag_ids,
+      reportsQuery.account_ids,
     ],
   )
+
   // calculating the width for first col in the table and make it the same for range Date section so it would
   // be aligned with the table header in chart case of resizing the window
-
-  const [dateRangeSectionWidth, setDateRangeSectionWidth] = useState('332px')
-
-  const cols = Array.from(
-    document.getElementsByClassName(' MuiTableCell-head'),
-  ) as Array<HTMLElement>
-
-  const chartWidth = cols.filter(
-    (item) =>
-      item.className.includes('col-id-') &&
-      !item.className.includes('col-id-name') &&
-      !item.className.includes('col-id-total'),
-  )[0]?.offsetWidth
-
-  const headingCol = document.getElementsByClassName('isPinned')[1] as HTMLElement
-
-  useEffect(() => {
+  const [dateRangeSectionWidth, setDateRangeSectionWidth] = React.useState('332px')
+  const [chartPeriodWidth, setChartPeriodWidth] = React.useState(150)
+  React.useEffect(() => {
     const handleResize = () => {
+      const headingCol = document.getElementsByClassName('isPinned')[1] as HTMLElement
+      if (!headingCol) return
       setDateRangeSectionWidth(headingCol?.offsetWidth.toString() + 'px')
+      const cols = Array.from(
+        document.getElementsByClassName(' MuiTableCell-head'),
+      ) as Array<HTMLElement>
+
+      const chartWidth = cols.filter(
+        (item) =>
+          item.className.includes('col-id-') &&
+          !item.className.includes('col-id-name') &&
+          !item.className.includes('col-id-total'),
+      )[0]?.offsetWidth
+      if (chartWidth) {
+        setChartPeriodWidth(chartWidth)
+      }
     }
     window.addEventListener('resize', handleResize)
     handleResize()
     return () => window.removeEventListener('resize', handleResize)
-  }, [headingCol?.offsetWidth, reportsQuery, reportData])
+  }, [reportsQuery, reportData])
+
   // Render
   return (
     <Box padding={2}>
@@ -192,7 +205,7 @@ export default function Reports() {
           }}
         >
           <RollingContainer showSyncScrollbar={true} syncScrollbarPosition="external">
-            <>
+            <React.Fragment>
               <Box
                 display="flex"
                 width="100%"
@@ -214,11 +227,11 @@ export default function Reports() {
                       end: parse(reportsQuery.end_date, 'yyyy-MM-dd', new Date()),
                     }}
                     onChange={(range) => {
-                      setReportsQuery({
+                      setReportsQuery((prev) => ({
+                        ...prev,
                         start_date: format(range.start, 'yyyy-MM-dd'),
                         end_date: format(range.end, 'yyyy-MM-dd'),
-                        include_unclassified: reportsQuery.include_unclassified,
-                      })
+                      }))
                     }}
                     dateRanges={dateRanges}
                     maxDate={new Date()}
@@ -270,12 +283,12 @@ export default function Reports() {
                       </Box>
                     </Box>
                   </Box>
-                  <ReportsChart data={reportData} chartWidth={chartWidth} />
+                  <ReportsChart data={reportData} chartPeriodWidth={chartPeriodWidth} />
                   <RollingContainerScrollBar id="chart" />
                 </Box>
               </Box>
               <ReportsTable data={reportData} onClick={handleClick} />
-            </>
+            </React.Fragment>
           </RollingContainer>
         </Paper>
       </Box>
@@ -294,6 +307,7 @@ export default function Reports() {
         onSaveTransactions={onSaveTransactions}
       />
       <ReportsSettingsDrawer
+        accountsWithRelations={accounts}
         initialQuery={reportsQuery}
         open={showSettingsDrawer}
         onClose={() => setShowSettingsDrawer(false)}
@@ -301,6 +315,7 @@ export default function Reports() {
           setReportsQuery(query)
           setShowSettingsDrawer(false)
         }}
+        tags={tags}
       />
     </Box>
   )

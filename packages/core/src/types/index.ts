@@ -14,12 +14,14 @@ export type {
 export type { IInstitution, IInstitutionUpdate } from './institution-interface'
 export type { ILineItem, ILineItemUpdate } from './line-item-interface'
 export type {
-  ReportsData,
-  ReportsDataCategoryRow,
-  ReportsDataRow,
-  ReportsQuery,
+  CategorySpendReportData,
+  CategorySpendReportDataCategoryRow,
+  CategorySpendReportDataRow,
+  CategorySpendReportQuery,
+  ReportsFilterList,
 } from './reports-interface'
 export type { ITag, ITagUpdate } from './tag-interface'
+export { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from './transaction-interface'
 export type { ITransaction, ITransactionUpdate } from './transaction-interface'
 export type { IUser, IUserUpdate } from './user-interface'
 export type { IUserSettings } from './user-settings-inerface'

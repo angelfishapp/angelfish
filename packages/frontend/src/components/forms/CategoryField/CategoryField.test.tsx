@@ -2,7 +2,7 @@ import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as stories from './CategoryField.stories'
 
-const { Default, WithValue, Filtered, ShowAsTextField } = composeStories(stories)
+const { Default, WithValue, Filtered, ShowAsTextField, MultiSelect } = composeStories(stories)
 
 describe('renders Search Story', () => {
   test('render of default Story', async () => {
@@ -85,6 +85,15 @@ describe('renders Search Story', () => {
     expect(closeIcon).toBeInTheDocument()
     fireEvent.click(closeIcon)
 
+    expect(textBox).toBeInTheDocument()
+  })
+  test('renders of MultiSelect Story', async () => {
+    render(<MultiSelect />)
+
+    const [title] = screen.getAllByText(/MultiSelect/i)
+    expect(title).toBeInTheDocument()
+
+    const textBox = screen.getByPlaceholderText(/Search Categories.../i)
     expect(textBox).toBeInTheDocument()
   })
 })

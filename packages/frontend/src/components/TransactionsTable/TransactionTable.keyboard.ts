@@ -79,5 +79,14 @@ export function handleKeyboardShortcuts(
         table.options.meta?.transactionsTable?.toggleEditMode(row.id, true)
       }
       break
+    case 'Escape':
+      // Exit Edit Mode
+      if (selectedRows.length === 1) {
+        const row = selectedRows[0]
+        table.options.meta?.transactionsTable?.toggleEditMode(row.id, false)
+      } else {
+        // Clear selection apart from current row
+        table.toggleAllRowsSelected(false)
+      }
   }
 }

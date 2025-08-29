@@ -299,6 +299,7 @@ export class CommandsRegistry<T extends MessagePort | MessagePortMain>
             throw new Error(`Command "${msg.command}" not found`)
           }
         } catch (error) {
+          this._log('error', `Error executing command "${msg.command}":`, error)
           channel.postMessage({
             type: 'error',
             id: msg.id,

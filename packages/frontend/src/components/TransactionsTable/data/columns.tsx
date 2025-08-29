@@ -40,6 +40,7 @@ declare module '@tanstack/table-core' {
         name: FieldPath<FormData>,
         formControl: Control<FormData, any>,
         table: Table<TransactionRow>,
+        row?: TransactionRow,
       ) => ReactNode | null
     }
   }
@@ -492,7 +493,7 @@ export function buildColumns(
           ),
           meta: {
             transactionsTable: {
-              editCell: (name, formControl) => {
+              editCell: (name, formControl, _table, row) => {
                 return (
                   <Controller
                     name={name}
@@ -500,6 +501,7 @@ export function buildColumns(
                     rules={{ required: true }}
                     render={({ field: { onChange, value, ...restField }, formState }) => (
                       <AmountField
+                        currency={row?.currency}
                         fullWidth
                         value={value as any}
                         allowNegative={true}

@@ -74,7 +74,7 @@ export default function CategorySettings() {
 
   // Get transactions in background when selected category is changed
   const transactionQuery: AppCommandRequest<AppCommandIds.LIST_TRANSACTIONS> | undefined =
-    selectedCategory ? { cat_id: selectedCategory.id } : undefined
+    selectedCategory ? { category_ids: { include: [selectedCategory.id] } } : undefined
 
   const { transactions } = useListTransactions(transactionQuery ?? {})
   const CategoryGroupSaveMutation = useSaveCategoryGroup()

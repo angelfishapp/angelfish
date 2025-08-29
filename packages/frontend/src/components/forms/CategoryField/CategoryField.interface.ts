@@ -4,10 +4,9 @@ import type { IAccount } from '@angelfish/core'
 import type { FormFieldProps } from '../FormField'
 
 /**
- * CategoryField Component Properties
+ * CategoryField Component Common Properties
  */
-
-export interface CategoryFieldProps extends FormFieldProps {
+interface CategoryFieldBaseProps extends FormFieldProps {
   /**
    * Accounts that can be rendered with their related
    * CategoryGroup & Institution fields populated
@@ -33,9 +32,21 @@ export interface CategoryFieldProps extends FormFieldProps {
    */
   filterOptions?: (options: IAccount[], state: FilterOptionsState<IAccount>) => IAccount[]
   /**
-   * Callback for when value is changed
+   * Optional placeholder for the TextField
+   * @default 'Search Categories...'
    */
-  onChange: (account: IAccount | string | null) => void
+  placeholder?: string
+}
+
+/**
+ * AutoComplete variant of CategoryField Props
+ */
+type AutoCompleteCategoryFieldProps = {
+  /**
+   * Optionally set the variant of the Field
+   * @default 'autocomplete'
+   */
+  variant?: 'autocomplete'
   /**
    * Callback for when user creates a new category. Will
    * pass any existing value in search field if present to
@@ -44,10 +55,14 @@ export interface CategoryFieldProps extends FormFieldProps {
    */
   onCreate?: (name?: string) => void
   /**
-   * Optional placeholder for the TextField
-   * @default 'Search Categories...'
+   * Callback for when value is changed
    */
-  placeholder?: string
+  onChange: (account: IAccount | string | null) => void
+  /**
+   * Optionally set AutomComplete list to be Open
+   * @default false
+   */
+  open?: boolean
   /**
    * Disable showing rendered value instead of TextField if false
    * @default true
@@ -57,9 +72,37 @@ export interface CategoryFieldProps extends FormFieldProps {
    * Optionally set the current value for Field
    */
   value?: IAccount | null
-  /**
-   * Optionally set AutomComplete list to be Open
-   * @default false
-   */
-  open?: boolean
 }
+
+/**
+ * MultiSelect variant of CategoryField Props
+ */
+type MultiSelectCategoryFieldProps = {
+  /**
+   * Optionally set the groupBy function to group options
+   * Will group by CategoryGroup name if not provided
+   */
+  groupBy?: (option: IAccount) => string
+  /**
+   * Callback for when value is changed
+   */
+  onChange: (account: IAccount[]) => void
+  /**
+   * Maximum height of the dropdown list.
+   * @default 400
+   */
+  maxHeight?: number
+  /**
+   * Optionally set the variant of the Field
+   * @default 'autocomplete'
+   */
+  variant: 'multiselect'
+  /**
+   * Optionally set the current value for Field
+   */
+  value?: IAccount[]
+}
+
+// Export the type for CategoryFieldProps
+export type CategoryFieldProps = (AutoCompleteCategoryFieldProps | MultiSelectCategoryFieldProps) &
+  CategoryFieldBaseProps

@@ -8,7 +8,7 @@ import React, { type JSX } from 'react'
 import { Chart } from 'react-chartjs-2'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
-import type { ReportsDataRow } from '@angelfish/core'
+import type { CategorySpendReportDataRow } from '@angelfish/core'
 import { DashboardChart } from '../DashboardChart'
 import type { IncomeAndExpensesSankeyProps } from './IncomeAndExpensesSankey.interface'
 import { IncomeAndExpensesSankeyTooltip } from './IncomeAndExpensesSankey.style'
@@ -18,7 +18,7 @@ ChartJS.register(SankeyController, Flow)
 /**
  * Represents a row of data to display on the Sankey as a Flow
  */
-export type DataFlow = ReportsDataRow & {
+export type DataFlow = CategorySpendReportDataRow & {
   from: string
   to: string
   flow: number
@@ -40,9 +40,12 @@ export default function IncomeAndExpensesSankey({
     // Step 1: Parse all months into Dates
     const allDates = data.periods.map((i) => parse(i, 'MM-yyyy', new Date())).filter(isValid)
     // Step 2: Find the latest date in the data
-    const latestDate = allDates.reduce((latest, current) =>
-      compareAsc(latest, current) === 1 ? latest : current,
-    )
+    const latestDate =
+      allDates.length > 0
+        ? allDates.reduce((latest, current) =>
+            compareAsc(latest, current) === 1 ? latest : current,
+          )
+        : new Date()
     // Step 3: Map data into DataFlows and filter out months older than the latest date minus the periods
     const group: DataFlow[] = data.rows
       .reduce<DataFlow[]>((acc, { icon, id, name, type, color, categories, total, ...months }) => {
@@ -127,7 +130,7 @@ export default function IncomeAndExpensesSankey({
 
               // Set Text
               if (tooltip.body) {
-                const data = tooltip.dataPoints.at(0)?.raw as ReportsDataRow
+                const data = tooltip.dataPoints.at(0)?.raw as CategorySpendReportDataRow
 
                 if (data)
                   tooltipEl.innerHTML = `
@@ -165,10 +168,20 @@ export default function IncomeAndExpensesSankey({
   )
 
   const marks = React.useMemo(() => {
-    return Object.keys(dataset).map((date, index) => {
-      const [month, year] = date.split('-')
-      return { raw: date, value: index, label: format(new Date(`${month} 1 ${year}`), 'MMM yy') }
-    })
+    return Object.keys(dataset)
+      .sort((a, b) => {
+        const [monthA, yearA] = a.split('-').map(Number)
+        const [monthB, yearB] = b.split('-').map(Number)
+
+        const dateA = new Date(yearA + 2000, monthA - 1) // Assumes YY, not YYYY
+        const dateB = new Date(yearB + 2000, monthB - 1)
+
+        return dateA.getTime() - dateB.getTime()
+      })
+      .map((date, index) => {
+        const [month, year] = date.split('-')
+        return { raw: date, value: index, label: format(new Date(`${month} 1 ${year}`), 'MMM yy') }
+      })
   }, [dataset])
 
   return (

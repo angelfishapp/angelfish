@@ -1,5 +1,6 @@
 import theme from '@/app/theme'
-import type { ReportsDataRow } from '@angelfish/core'
+import type { CategorySpendReportDataRow } from '@angelfish/core'
+import { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '@angelfish/core'
 
 // Default color palette
 export const palette = [
@@ -28,7 +29,7 @@ export const palette = [
  * @returns     A map of HEX colors for the rows
  */
 
-export function getDataSetColors(rows: ReportsDataRow[]) {
+export function getDataSetColors(rows: CategorySpendReportDataRow[]) {
   const colors: Record<string, string> = {}
   let palletteIndex = 0
 
@@ -40,8 +41,8 @@ export function getDataSetColors(rows: ReportsDataRow[]) {
   sortedRows.forEach((row) => {
     if (row.color) {
       colors[row.name] = row.color
-    } else if (row.id === null) {
-      // Unclassified expenses will always be grey
+    } else if (row.id === UNCLASSIFIED_EXPENSES_ID || row.id === UNCLASSIFIED_INCOME_ID) {
+      // Unclassified income/expenses will always be grey
       colors[row.name] = '#C4C4C4'
     } else {
       // If no color, use the next color in the pallette

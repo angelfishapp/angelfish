@@ -3,7 +3,15 @@
  * used in the `app-commands.ts` file to define the command payloads for the commands that are registered
  */
 
-import type { IAuthenticatedUser, IBook, IUserSettings } from '../types'
+import type {
+  CategoryGroupType,
+  CategoryType,
+  IAuthenticatedUser,
+  IBook,
+  IUser,
+  IUserSettings,
+  ReportsFilterList,
+} from '../types'
 
 /**
  * File type filters for file dialogs
@@ -156,4 +164,57 @@ export interface ISyncSummary {
    * Error message if the sync did not finish successfully
    */
   errorMessage?: string
+}
+
+/**
+ * Interface to query Transactions
+ */
+export interface ITransactionQuery {
+  /**
+   * Filter Transactions by a list of bank account IDs.
+   */
+  account_ids?: ReportsFilterList<number>
+  /**
+   * Filter Transactions to only show transactions from Accounts belonging
+   * to a specific user.
+   */
+  account_owner?: IUser['id']
+  /**
+   * Filter Transactions by a list of category IDs.
+   */
+  category_ids?: ReportsFilterList<number>
+  /**
+   * Filter Transactions by a list of category types.
+   */
+  category_types?: ReportsFilterList<CategoryType>
+  /**
+   * Filter Transactions by a list of category group IDs.
+   */
+  category_group_ids?: ReportsFilterList<number>
+  /**
+   * Filter Transactions by a list of category group types.
+   */
+  category_group_types?: ReportsFilterList<CategoryGroupType>
+  /**
+   * Only return Transactions for a particular ISO currency code
+   */
+  currency_code?: string
+  /**
+   * Only return Transactions from a particular start date
+   */
+  start_date?: string
+  /**
+   * Only return Transactions until a particular end date. If not
+   * provided along with start_date, will return transactions up to
+   * the current date
+   */
+  end_date?: string
+  /**
+   * Filter Transactions by a list of tag IDs.
+   */
+  tag_ids?: ReportsFilterList<number>
+  /**
+   * Only return Transactions that require sync
+   */
+  requires_sync?: boolean
 }

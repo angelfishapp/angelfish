@@ -20,8 +20,8 @@ beforeAll(async () => {
   mockRegisterTypedAppCommand(AppCommandIds.GET_ACCOUNT, async ({ id }) => {
     return accounts.find((account) => account.id === id) as IAccount
   })
-  mockRegisterTypedAppCommand(AppCommandIds.LIST_TRANSACTIONS, async ({ account_id }) => {
-    if (account_id === 125) {
+  mockRegisterTypedAppCommand(AppCommandIds.LIST_TRANSACTIONS, async ({ account_ids }) => {
+    if (account_ids && account_ids.include && account_ids.include.includes(125)) {
       return getLongTransactions()
     }
     return []

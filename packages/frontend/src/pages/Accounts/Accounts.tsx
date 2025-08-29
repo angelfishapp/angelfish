@@ -40,7 +40,7 @@ export default function Accounts() {
 
   // Transactions custom hooks to handle Transactions
   const { transactions, isLoading, error } = useListTransactions({
-    account_id: selectedAccount?.id,
+    account_ids: { include: selectedAccount ? [selectedAccount.id] : [] },
   })
   const transactionSaveMutation = useSaveTransactions()
   const transactionDeleteMutation = useDeleteTransaction()

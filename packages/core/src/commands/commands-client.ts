@@ -39,7 +39,11 @@ export const CommandsClient = {
    * @returns           A promise that resolves with the return value of the command handler.
    */
   executeCommand: async <R, P = any>(commandId: string, request?: P): Promise<R> => {
-    return await window.commands.executeCommand(commandId, request)
+    const start = performance.now()
+    const result = await window.commands.executeCommand(commandId, request)
+    const end = performance.now()
+    performance.measure(`executeCommand: ${commandId}`, { start, end })
+    return result
   },
 
   /**
@@ -56,10 +60,14 @@ export const CommandsClient = {
     command: T,
     ...args: AppCommandRequest<T> extends void ? [] : [AppCommandRequest<T>]
   ): AppCommandResponse<T> => {
-    return window.commands.executeCommand(
+    const start = performance.now()
+    const result = (await window.commands.executeCommand(
       command,
       ...(args as [AppCommandRequest<T>]),
-    ) as AppCommandResponse<T>
+    )) as AppCommandResponse<T>
+    const end = performance.now()
+    performance.measure(`executeAppCommand: ${command}`, { start, end })
+    return result
   },
 
   /**

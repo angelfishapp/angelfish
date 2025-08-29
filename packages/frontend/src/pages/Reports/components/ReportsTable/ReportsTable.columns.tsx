@@ -4,7 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { Emoji } from '@/components/Emoji'
-import type { ReportsDataRow } from '@angelfish/core'
+import type { CategorySpendReportDataRow } from '@angelfish/core'
 import { renderPeriodHeader } from '../../Reports.utils'
 import type { ReportsTableProps } from './ReportsTable.interface'
 
@@ -21,8 +21,8 @@ export function getTableColumns(
   title: string,
   data: ReportsTableProps['data'],
   onClick: ReportsTableProps['onClick'],
-): ColumnDef<ReportsDataRow>[] {
-  let columns: ColumnDef<ReportsDataRow>[] = []
+): ColumnDef<CategorySpendReportDataRow>[] {
+  let columns: ColumnDef<CategorySpendReportDataRow>[] = []
 
   if (data.periods.length > 0) {
     // Create columns for each period
@@ -86,7 +86,7 @@ export function getTableColumns(
                   const group = data.rows.find((row) =>
                     row.categories?.find((cat) => cat.id === cell.row.original.id),
                   )
-                  if (group) name = `Unclassified Income > ${cell.row.original.name}`
+                  if (group) name = `${group.name} > ${cell.row.original.name}`
                   else name = cell.row.original.name
                 } else {
                   name = cell.row.original.name
@@ -128,7 +128,10 @@ export function getTableColumns(
         footer: ({ table, column }) => {
           const total = table
             .getRowModel()
-            .rows.reduce((total, row) => total + (row.original[column.id] as number), 0)
+            .rows.reduce(
+              (total, row) => total + (row.depth === 0 ? (row.original[column.id] as number) : 0),
+              0,
+            )
           return <CurrencyLabel className="total-currency" value={total} />
         },
       })
@@ -143,8 +146,10 @@ export function getTableColumns(
  * @param data    The report data with periods to generate columns from
  * @returns       ColumnDef[]
  */
-export function getNetTableColumns(data: ReportsTableProps['data']): ColumnDef<ReportsDataRow>[] {
-  let columns: ColumnDef<ReportsDataRow>[] = []
+export function getNetTableColumns(
+  data: ReportsTableProps['data'],
+): ColumnDef<CategorySpendReportDataRow>[] {
+  let columns: ColumnDef<CategorySpendReportDataRow>[] = []
 
   if (data.periods.length > 0) {
     // Create columns for each period

@@ -1,4 +1,4 @@
-import type { ReportsData } from '@angelfish/core'
+import type { CategorySpendReportData } from '@angelfish/core'
 
 /**
  * Interface for IncomeAndExpensesSankey Component Props
@@ -12,5 +12,5 @@ export interface FinancialFreedomProgressBarProps {
   /**
    * Data from Reports API
    */
-  data: ReportsData
+  data: CategorySpendReportData
 }

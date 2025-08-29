@@ -1,7 +1,9 @@
 import Paper from '@mui/material/Paper'
 import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
+import React from 'react'
 
+import type { IAccount } from '@angelfish/core'
 import { getAccountsWithRelations } from '@angelfish/tests/fixtures'
 
 import { CategoryField } from '.'
@@ -11,7 +13,7 @@ const meta = {
   component: CategoryField,
   args: {
     accountsWithRelations: getAccountsWithRelations(),
-    onChange: (account) => action('onChange')(account),
+    onChange: (account: any) => action('onChange')(account),
     fullWidth: true,
   },
   render: ({ ...args }) => {
@@ -58,5 +60,35 @@ export const Filtered: Story = {
     disableGroupBy: true,
     disableTooltip: true,
     placeholder: 'Search Bank Accounts...',
+  },
+}
+
+export const MultiSelect: Story = {
+  render: ({ variant, onChange, ...args }) => {
+    const RenderComponent = () => {
+      const [selected, setSelected] = React.useState<IAccount[]>([])
+
+      return (
+        <Paper>
+          <CategoryField
+            {...args}
+            value={selected}
+            variant="multiselect"
+            onChange={(newValue) => {
+              setSelected(Array.isArray(newValue) ? newValue : [])
+              onChange?.(newValue)
+            }}
+          />
+        </Paper>
+      )
+    }
+
+    return <RenderComponent />
+  },
+  args: {
+    label: 'MultiSelect',
+    helperText: 'Select multiple accounts',
+    disableGroupBy: false,
+    disableTooltip: false,
   },
 }

@@ -7,6 +7,7 @@ import type { FormFieldProps } from '../FormField'
  * Interface for the owner state of the MultiSelectField component.
  */
 export interface MultiSelectFieldOwnerState<Value> {
+  isOptionEqualToValue: (option: Value, value: Value) => boolean
   onChange?: (
     event: React.SyntheticEvent,
     value: Value[],

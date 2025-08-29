@@ -1,7 +1,7 @@
 import type { Cell, SheetData } from 'write-excel-file'
 import writeXlsxFile from 'write-excel-file/node'
 
-import type { ReportsData } from '@angelfish/core'
+import type { CategorySpendReportData } from '@angelfish/core'
 import { renderPeriodHeader, ThemePallet } from './export-utils'
 
 /**
@@ -51,7 +51,7 @@ export class ExportXLSX {
    * @param reportData  The reports data to export
    * @param filePath    The file path to save the XLSX file to
    */
-  public static async Export(reportData: ReportsData, filePath: string): Promise<void> {
+  public static async Export(reportData: CategorySpendReportData, filePath: string): Promise<void> {
     // Create the sheet data
     const data: SheetData = []
 
@@ -124,7 +124,7 @@ export class ExportXLSX {
    * @returns               The table section as Row<Cell>[]
    */
   private static renderTableSection(
-    reportData: ReportsData,
+    reportData: CategorySpendReportData,
     isIncome: boolean,
     currentRow: number,
   ): SheetData {

@@ -1,9 +1,9 @@
-import type { ReportsData } from '@angelfish/core'
+import type { CategorySpendReportData } from '@angelfish/core'
 
 /**
  * Sample Reports Data
  */
-export const reportsData: ReportsData = {
+export const reportsData: CategorySpendReportData = {
   periods: [
     '09-2021',
     '10-2021',

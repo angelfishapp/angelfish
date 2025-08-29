@@ -73,14 +73,22 @@ const options: ChartOptions = {
  * Displays chart at top of results table with expenses shown as stacked bar chart
  * and total income shown as line chart.
  */
-export default function ReportsChart({ data, chartWidth }: ReportsChartProps) {
+export default function ReportsChart({ data, chartPeriodWidth }: ReportsChartProps) {
   /**
    * Create chart data from ReportData
    */
   const chartData: ChartData = useMemo(() => getChartData(data), [data])
   // Render
   return (
-    <Box py={3} height={300} width={`${(chartData.labels?.length ?? 1) * chartWidth}px`}>
+    <Box
+      py={3}
+      height={300}
+      width={`${(chartData.labels?.length ?? 1) * chartPeriodWidth}px`}
+      // Need to add this to ensure RollingContainer adjusts internal scrollbars correctly
+      // Chart.js internally resizes the <canvas> element’s width attribute to match the logical pixel width of the chart
+      // — often far wider than the CSS-rendered width
+      sx={{ maxWidth: '100%', overflowX: 'hidden' }}
+    >
       <Chart type="bar" data={chartData} options={options} />
     </Box>
   )

@@ -212,6 +212,7 @@ export default React.forwardRef<HTMLTableRowElement, DefaultTableRowProps<Transa
                           `lineItems.${index}.amount`,
                           control,
                           table,
+                          row.original,
                         )}
                       </TableCell>
                     )

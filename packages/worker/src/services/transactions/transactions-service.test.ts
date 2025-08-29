@@ -186,7 +186,9 @@ describe('TransactionService', () => {
     }
 
     await TransactionService.saveTransactions(transactions)
-    const list = await TransactionService.listTransactions({ account_id: newAccount?.id })
+    const list = await TransactionService.listTransactions({
+      account_ids: { include: [newAccount?.id as number] },
+    })
     expect(list.length).toEqual(11)
     const lineItems = await getAllLineItems()
     expect(lineItems.length).toEqual(12)
@@ -194,11 +196,15 @@ describe('TransactionService', () => {
 
   test('test list-transactions', async () => {
     // Test Getting all Transactions for Account in DB
-    const response = await TransactionService.listTransactions({ account_id: newAccount?.id })
+    const response = await TransactionService.listTransactions({
+      account_ids: { include: [newAccount?.id as number] },
+    })
     expect(response.length).toEqual(11)
 
     // Test Getting all Transactions for Category in DB
-    const categoryResponse = await TransactionService.listTransactions({ cat_id: 3 })
+    const categoryResponse = await TransactionService.listTransactions({
+      category_ids: { include: [3] },
+    })
     expect(categoryResponse.length).toEqual(1)
     // Make sure all line items are returned for transaction
     expect(categoryResponse[0].line_items.length).toEqual(2)
@@ -224,7 +230,9 @@ describe('TransactionService', () => {
     await TransactionService.deleteTransaction({ id: 1 })
 
     // Check counts of each table has decreased
-    const list = await TransactionService.listTransactions({ account_id: newAccount?.id })
+    const list = await TransactionService.listTransactions({
+      account_ids: { include: [newAccount?.id as number] },
+    })
     expect(list.length).toEqual(10)
     const lineItems = await getAllLineItems()
     expect(lineItems.length).toEqual(10)
@@ -287,7 +295,9 @@ describe('TransactionService', () => {
       .getRepository(AccountEntity)
       .findOne({ where: { id: newAccount?.id } })
     expect(account).toBeNull()
-    const list = await TransactionService.listTransactions({ account_id: newAccount?.id })
+    const list = await TransactionService.listTransactions({
+      account_ids: { include: [newAccount?.id as number] },
+    })
     expect(list.length).toEqual(0)
     const lineItems = await getAllLineItems()
     expect(lineItems.length).toEqual(0)

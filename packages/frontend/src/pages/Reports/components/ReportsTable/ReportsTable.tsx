@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import React from 'react'
 
-import type { ReportsDataRow } from '@angelfish/core'
+import type { CategorySpendReportDataRow } from '@angelfish/core'
 import { getNetTableColumns, getTableColumns } from './ReportsTable.columns'
 import type { ReportsTableProps } from './ReportsTable.interface'
 import { StyledNetSummaryTable, StyledReportsTable } from './ReportsTable.styles'
@@ -25,14 +25,14 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
 
   // Create Net summary row at bottom of tables
   const [netSummaryColumns, netSummaryRow] = React.useMemo(() => {
-    let summary: ReportsDataRow | undefined = undefined
+    let summary: CategorySpendReportDataRow | undefined = undefined
     if (data.periods.length > 0) {
       // Calculate Net Summary Row
       summary = {
         name: 'NET',
         type: 'net',
         icon: null,
-      } as unknown as ReportsDataRow
+      } as unknown as CategorySpendReportDataRow
 
       data.periods.forEach((period) => {
         const periodTotal = data.rows.reduce((total, row) => {
@@ -40,7 +40,7 @@ const ReportsTable: FC<ReportsTableProps> = ({ data, onClick }) => {
           return isNaN(value) ? total : total + value
         }, 0)
 
-        ;(summary as ReportsDataRow)[period] = periodTotal
+        ;(summary as CategorySpendReportDataRow)[period] = periodTotal
       })
     }
     return [getNetTableColumns(data), summary]

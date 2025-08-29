@@ -1,4 +1,5 @@
 import type { FormFieldProps } from '@/components/forms/FormField'
+import type { CurrencyCode } from '@angelfish/core'
 
 /**
  * AmountField Component Properties
@@ -13,9 +14,10 @@ export interface AmountFieldProps
   allowNegative?: boolean
   /**
    * Optionally display currency for Amount
-   * @default '$'
+   * 3-digit alphabetic currency codes from the ISO 4217 Currency Codes
+   * @default 'USD'
    */
-  currency?: string
+  currency?: CurrencyCode
   /**
    * Optionally set the default value for Field
    */

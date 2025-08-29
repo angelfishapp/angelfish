@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { getDataSetColors } from '@/utils/palette.utils'
-import type { ReportsData } from '@angelfish/core'
+import type { CategorySpendReportData } from '@angelfish/core'
 import type { ChartDataset, ChartType } from 'chart.js'
 import { renderPeriodHeader } from '../../Reports.utils'
 
 /**
- * converts ReportsData into charts data which can be used to create charts
- * @param {ReportsData} data
+ * converts CategorySpendReportData into charts data which can be used to create charts
+ * @param {CategorySpendReportData} data
  * @returns {{ labels: {}; datasets: {}; }}
  */
-export const getChartData = (data: ReportsData) => {
+export const getChartData = (data: CategorySpendReportData) => {
   // Remove Total label
   const labels: string[] = []
   for (const period of data.periods) {
@@ -53,7 +53,7 @@ export const getChartData = (data: ReportsData) => {
     const rowData: number[] = []
     for (const period of data.periods) {
       if (period !== 'total') {
-        rowData.push(row[period] ? row[period] * -1 : 0)
+        rowData.push(row[period] ? Math.abs(row[period]) : 0)
       }
     }
     datasets.push({

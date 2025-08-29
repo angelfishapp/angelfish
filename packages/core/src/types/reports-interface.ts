@@ -1,4 +1,4 @@
-import type { CategoryType } from './account-interface'
+import type { CategoryType, IAccount } from './account-interface'
 import type { CategoryGroupType } from './category-group-interface'
 import type { IUser } from './user-interface'
 
@@ -6,7 +6,7 @@ import type { IUser } from './user-interface'
  * ReportsDataRow interface for Table Rows
  */
 
-export interface ReportsDataRow {
+export interface CategorySpendReportDataRow {
   /**
    * Category Group ID, Null if unclassified
    */
@@ -31,7 +31,7 @@ export interface ReportsDataRow {
   /**
    * Array of category rows
    */
-  categories?: ReportsDataCategoryRow[]
+  categories?: CategorySpendReportDataCategoryRow[]
   /**
    * total amount of that CategroyGroup i.e sum of all periods
    */
@@ -48,7 +48,7 @@ export interface ReportsDataRow {
  * category breakdown
  */
 
-export interface ReportsDataCategoryRow {
+export interface CategorySpendReportDataCategoryRow {
   /**
    * Category ID, Null if unclassified
    */
@@ -81,7 +81,7 @@ export interface ReportsDataCategoryRow {
  * ReportsService for rendering reports
  */
 
-export interface ReportsData {
+export interface CategorySpendReportData {
   /**
    * An array of periods in dataset so columns
    * can be easily rendered
@@ -91,14 +91,29 @@ export interface ReportsData {
    * An array of rows with category group and
    * category properties and totals to render
    */
-  rows: ReportsDataRow[]
+  rows: CategorySpendReportDataRow[]
+}
+
+/**
+ * ReportsFilterList interface for filtering reports
+ * by include/exclude lists of items
+ */
+export interface ReportsFilterList<T> {
+  /**
+   * Match any items in this list to include in report
+   */
+  include?: T[]
+  /**
+   * Exclude any items in this list to exclude from report
+   */
+  exclude?: T[]
 }
 
 /**
  * ReportsQuery interface for ReportsService to fetch
  * data for a report
  */
-export interface ReportsQuery {
+export interface CategorySpendReportQuery {
   /**
    * The start date of the report in YYYY-MM-DD Format
    */
@@ -113,8 +128,38 @@ export interface ReportsQuery {
    */
   include_unclassified?: boolean
   /**
+   * Optionally filter report to only show transactions from specific
+   * Categories. If not provided, all user Categories will be included
+   */
+  category_ids?: ReportsFilterList<number>
+  /**
+   * Optionally filter report to only show transactions from specific
+   * Category Types. If not provided, all user Category Types will be included
+   */
+  category_types?: ReportsFilterList<CategoryType>
+  /**
+   * Optionally filter report to only show transactions from specific
+   * Category Groups. If not provided, all user Category Groups will be included
+   */
+  category_group_ids?: ReportsFilterList<number>
+  /**
+   * Optionally filter report to only show transactions from specific
+   * Category Group Types. If not provided, all user Category Group Types will be included
+   */
+  category_group_types?: ReportsFilterList<CategoryGroupType>
+  /**
+   * Optionally filter report to only show transactions from specific
+   * Tags. If not provided, all user Tags will be included
+   */
+  tag_ids?: ReportsFilterList<number>
+  /**
+   * Optionally filter report to only show transaction from specific Bank Accounts.
+   * If not provided, all user Accounts will be included
+   */
+  account_ids?: ReportsFilterList<IAccount['id']>
+  /**
    * Optionally filter report to only show transactions from Accounts belonging
    * to a specific user. If not provided, all user Accounts will be included
    */
-  filterByUser?: IUser['id']
+  account_owner?: IUser['id']
 }

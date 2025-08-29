@@ -41,7 +41,7 @@ interface CategoryGroup {
   icon: string
   description: string
   type: CategoryGroupType
-  color: string
+  color?: string
   categories: Record<string, Category>
 }
 
@@ -54,7 +54,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'bank',
     description: 'Any charges and fees from your Bank',
     type: 'Expense',
-    color: '#8b572a',
+    color: undefined,
     categories: {
       Interest: {
         description: 'Any interest due or paid on overdrawn accounts, credit cards, or loans',
@@ -72,7 +72,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'house',
     description: 'Any expenses related to living in your own home(s)',
     type: 'Expense',
-    color: '#f5a623',
+    color: undefined,
     categories: {
       'Broadband/Cable/Telephone': {
         description: 'Broadband internet, cable or landline utility bills',
@@ -179,7 +179,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'shield',
     description: 'Any insurance premiums for insurance not related to your home or healthcare',
     type: 'Expense',
-    color: '#bd10e0',
+    color: undefined,
     categories: {
       Life: {
         description:
@@ -211,7 +211,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'car',
     description: 'All expenses required for owning and maintaing a car (or multiple)',
     type: 'Expense',
-    color: '#f5a623',
+    color: undefined,
     categories: {
       Accessories: {
         description: 'Any accessories or improvements you buy for your car(s)',
@@ -269,7 +269,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'child',
     description: 'Any expense related to raising your dependents',
     type: 'Expense',
-    color: '#f5a623',
+    color: undefined,
     categories: {
       'Nursery/Pre-Schools': {
         description: 'Fees for any nursery/day-care or pre-schools for your dependents',
@@ -327,7 +327,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'hamburger',
     description: 'Any food related expenses',
     type: 'Expense',
-    color: '#f8e71c',
+    color: undefined,
     categories: {
       Groceries: {
         description: 'Food & general household items from your supermarket',
@@ -350,7 +350,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'speedboat',
     description: 'All expenses related to taking time off and relaxing',
     type: 'Expense',
-    color: '#7ed321',
+    color: undefined,
     categories: {
       'Books & Magazines': {
         description: 'Any books or magazine purchases or subscriptions',
@@ -434,7 +434,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'hospital',
     description: 'Any healthcare related expenses, including vision and dental',
     type: 'Expense',
-    color: '#bd10e0',
+    color: undefined,
     categories: {
       Pharmacy: {
         description: 'Any prescription medication or other pharmacy items',
@@ -482,7 +482,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'beach_with_umbrella',
     description: 'Any expenses related to taking a vacation/holiday and travelling',
     type: 'Expense',
-    color: '#7ed321',
+    color: undefined,
     categories: {
       Accommodation: {
         description:
@@ -519,7 +519,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'car',
     description: 'Any day to day transportation expenses not related to travelling on vactation',
     type: 'Expense',
-    color: '#0000ff',
+    color: undefined,
     categories: {
       'Car Rental': {
         description: 'Any local car rental or Zipcar you use for day to day transportation',
@@ -558,7 +558,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'truck',
     description: 'Any expenses related to moving home and relocating to a new area',
     type: 'Expense',
-    color: '#0000ff',
+    color: undefined,
     categories: {
       Fees: {
         description:
@@ -584,7 +584,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'briefcase',
     description: 'Any expenses related to your job',
     type: 'Expense',
-    color: '#8b572a',
+    color: undefined,
     categories: {
       Reimbursed: {
         description:
@@ -605,7 +605,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     description:
       'Any expenses related to your own personal development and education (not dependents)',
     type: 'Expense',
-    color: '#f5a623',
+    color: undefined,
     categories: {
       'Books & Materials': {
         description:
@@ -637,7 +637,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'person_in_lotus_position',
     description: 'Any expenses you have to stay healthy and well',
     type: 'Expense',
-    color: '#7ed321',
+    color: undefined,
     categories: {
       'Gym/Health Club': {
         description: 'Any expenses related to joining and being a member of a Gym or Health Club',
@@ -683,7 +683,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'receipt',
     description: 'Any expenses directly related to owning your investments',
     type: 'Expense',
-    color: '#417505',
+    color: undefined,
     categories: {
       'Rental Property Mortgage Principal': {
         description: 'Repayment of mortgage loan principal on any rental property you own',
@@ -738,7 +738,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'person_with_blond_hair',
     description: 'Any personal expenses related to taking care of your appearance and fashion',
     type: 'Expense',
-    color: '#7ed321',
+    color: undefined,
     categories: {
       'Clothing & Fashion': {
         description: 'Any clothing, shoes, or fashion accessories you purchase to look good!',
@@ -772,7 +772,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     description:
       "A catchall expense group for any expenses that don't necessarily fit into other areas of your life",
     type: 'Expense',
-    color: '#f8e71c',
+    color: undefined,
     categories: {
       'Cash Withdrawl': {
         description: 'Taking out cash for general spending',
@@ -806,7 +806,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'moneybag',
     description: 'Any income you earn from your investments',
     type: 'Income',
-    color: '#417505',
+    color: '#92ED28',
     categories: {
       'Capital Gains': {
         description:
@@ -842,7 +842,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     icon: 'dollar',
     description: 'Any other income that you may receive outside investments and earned income',
     type: 'Income',
-    color: '#f5a623',
+    color: '#42A7FF',
     categories: {
       'Credit Card Rewards': {
         description: 'Any cashback rewards from your credit cards',
@@ -889,7 +889,7 @@ export const DefaultCategories: Record<string, CategoryGroup> = {
     description:
       'Any earned income you get from your job or self-employment, where you are trading your time for money',
     type: 'Income',
-    color: '#d0021b',
+    color: '#F7C72A',
     categories: {
       Bonus: {
         description: 'Any bonuses you receive from your job',

@@ -1,6 +1,7 @@
 import ClearIcon from '@mui/icons-material/Close'
 import SearchIcon from '@mui/icons-material/Search'
 import Box from '@mui/material/Box'
+import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import List from '@mui/material/List'
@@ -42,6 +43,9 @@ export default function MultiSelectField<Value>({
   placeholder,
   renderOption,
   value,
+  error,
+  helperText,
+  FormHelperTextProps,
   ...formFieldProps
 }: MultiSelectFieldProps<Value>) {
   // useAutoComplete hook
@@ -76,6 +80,7 @@ export default function MultiSelectField<Value>({
 
   // Generate owner state for the component
   const ownerState: MultiSelectFieldOwnerState<Value> = {
+    isOptionEqualToValue,
     onChange,
     renderOption: renderOption || getOptionLabel,
     selectedValues,
@@ -94,6 +99,7 @@ export default function MultiSelectField<Value>({
         placeholder={placeholder}
         fullWidth
         margin="none"
+        error={error}
         inputProps={getInputProps()}
         slotProps={{
           input: {
@@ -121,6 +127,7 @@ export default function MultiSelectField<Value>({
         sx={{
           flexGrow: 1,
           border: '1px solid rgba(0, 0, 0, 0.12)',
+          borderTop: 'none',
           overflow: 'auto',
           '&::-webkit-scrollbar': { width: '8px' },
           '&::-webkit-scrollbar-thumb': {
@@ -193,17 +200,24 @@ export default function MultiSelectField<Value>({
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'center',
-          borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          borderTop: 'none',
+          borderRadius: '0 0 8px 8px',
           p: 1,
           bgcolor: 'rgba(0, 0, 0, 0.02)',
         }}
       >
+        {selectedValues.length} Selected
+        {/* Toggle All Button */}
         <Box
           component="button"
           onClick={(event) => {
             // Check if all options are selected
-            const allSelected = options.every((option) => selectedValues.includes(option))
+            const allSelected = options.every((option) =>
+              selectedValues.some((selected) => isOptionEqualToValue(option, selected)),
+            )
             if (allSelected) {
               // Deselect all options
               onChange?.(event, [], 'removeAll', [...options])
@@ -235,6 +249,11 @@ export default function MultiSelectField<Value>({
           Toggle All
         </Box>
       </Box>
+      {helperText && (
+        <FormHelperText id={`${id}-helper-text`} {...FormHelperTextProps}>
+          {helperText}
+        </FormHelperText>
+      )}
     </Box>
   )
 }
