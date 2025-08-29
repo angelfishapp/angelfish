@@ -95,6 +95,7 @@ export async function runCategorySpendReport({
   // Create a view with all the required joins and categorization logic for easier querying
   // This view will also filter out any line items that are transfers between accounts (CLASS = 'ACCOUNT') and return
   // multiple rows for line items with multiple tags or owners so needs to be deduplicated later
+  // Any 0 value line items will be excluded from the report
   const reportsQuery = DatabaseManager.getConnection()
     .createQueryBuilder()
     .from((qb) => {
@@ -194,6 +195,7 @@ export async function runCategorySpendReport({
         .leftJoin('users', 'users', 'users.id = account_owners.user_id')
         .where("(accounts.class IS NULL OR accounts.class != 'ACCOUNT')")
         .andWhere('date BETWEEN :start_date AND :end_date', { start_date, end_date })
+        .andWhere('line_items.local_amount != 0')
         .groupBy('lid')
 
       // Filter by tag IDs if provided
