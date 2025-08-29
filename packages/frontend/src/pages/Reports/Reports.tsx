@@ -227,11 +227,11 @@ export default function Reports() {
                       end: parse(reportsQuery.end_date, 'yyyy-MM-dd', new Date()),
                     }}
                     onChange={(range) => {
-                      setReportsQuery({
+                      setReportsQuery((prev) => ({
+                        ...prev,
                         start_date: format(range.start, 'yyyy-MM-dd'),
                         end_date: format(range.end, 'yyyy-MM-dd'),
-                        include_unclassified: reportsQuery.include_unclassified,
-                      })
+                      }))
                     }}
                     dateRanges={dateRanges}
                     maxDate={new Date()}

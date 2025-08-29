@@ -473,8 +473,11 @@ export async function runCategorySpendReport({
  * @returns             An array of period strings in the format "MM-YYYY".
  */
 function generatePeriodRange(startDate: string, endDate: string): string[] {
-  const start = new Date(startDate)
-  const end = new Date(endDate)
+  const [startY, startM, startD] = startDate.split('-').map(Number)
+  const [endY, endM, endD] = endDate.split('-').map(Number)
+  const start = new Date(startY, startM - 1, startD)
+  const end = new Date(endY, endM - 1, endD)
+
   const ranges: string[] = []
   let current = new Date(start.getFullYear(), start.getMonth(), 1)
 
