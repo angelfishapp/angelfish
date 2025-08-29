@@ -80,7 +80,15 @@ export default function ReportsChart({ data, chartPeriodWidth }: ReportsChartPro
   const chartData: ChartData = useMemo(() => getChartData(data), [data])
   // Render
   return (
-    <Box py={3} height={300} width={`${(chartData.labels?.length ?? 1) * chartPeriodWidth}px`}>
+    <Box
+      py={3}
+      height={300}
+      width={`${(chartData.labels?.length ?? 1) * chartPeriodWidth}px`}
+      // Need to add this to ensure RollingContainer adjusts internal scrollbars correctly
+      // Chart.js internally resizes the <canvas> element’s width attribute to match the logical pixel width of the chart
+      // — often far wider than the CSS-rendered width
+      sx={{ maxWidth: '100%', overflowX: 'hidden' }}
+    >
       <Chart type="bar" data={chartData} options={options} />
     </Box>
   )
