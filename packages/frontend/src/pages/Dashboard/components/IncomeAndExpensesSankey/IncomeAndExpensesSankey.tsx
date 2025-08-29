@@ -168,10 +168,20 @@ export default function IncomeAndExpensesSankey({
   )
 
   const marks = React.useMemo(() => {
-    return Object.keys(dataset).map((date, index) => {
-      const [month, year] = date.split('-')
-      return { raw: date, value: index, label: format(new Date(`${month} 1 ${year}`), 'MMM yy') }
-    })
+    return Object.keys(dataset)
+      .sort((a, b) => {
+        const [monthA, yearA] = a.split('-').map(Number)
+        const [monthB, yearB] = b.split('-').map(Number)
+
+        const dateA = new Date(yearA + 2000, monthA - 1) // Assumes YY, not YYYY
+        const dateB = new Date(yearB + 2000, monthB - 1)
+
+        return dateA.getTime() - dateB.getTime()
+      })
+      .map((date, index) => {
+        const [month, year] = date.split('-')
+        return { raw: date, value: index, label: format(new Date(`${month} 1 ${year}`), 'MMM yy') }
+      })
   }, [dataset])
 
   return (
