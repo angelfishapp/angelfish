@@ -3,6 +3,7 @@ import React from 'react'
 import { NumericFormat } from 'react-number-format'
 
 import { TextField } from '@/components/forms/TextField'
+import { getCurrencyFromCode } from '@angelfish/core'
 import type { AmountFieldProps } from './AmountField.interface'
 
 /**
@@ -10,9 +11,11 @@ import type { AmountFieldProps } from './AmountField.interface'
  */
 
 export default React.forwardRef<HTMLInputElement, AmountFieldProps>(function AmountField(
-  { allowNegative = false, currency = '$', onChange, value, ...rest }: AmountFieldProps,
+  { allowNegative = false, currency = 'USD', onChange, value, ...rest }: AmountFieldProps,
   ref,
 ) {
+  const currencySymbol = getCurrencyFromCode(currency)?.symbol || '$'
+
   // Render
   return (
     <NumericFormat
@@ -35,7 +38,7 @@ export default React.forwardRef<HTMLInputElement, AmountFieldProps>(function Amo
                 },
               }}
             >
-              {currency}
+              {currencySymbol}
             </InputAdornment>
           ) : undefined,
         },
