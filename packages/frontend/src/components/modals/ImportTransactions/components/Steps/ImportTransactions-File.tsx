@@ -79,9 +79,9 @@ export default function ImportTransactionsFile({
               render={({ field: { onChange, ...restField } }) => (
                 <FileField
                   label="File Path"
-                  helperText="You can import from transactions from OFX, QFX, QIF or CSV files."
+                  helperText="You can import from transactions from OFX, QFX, QIF, CSV, PDF, PNG, HEIC, JPEG files."
                   multiple={false}
-                  fileTypes={['ofx', 'qfx', 'qif', 'csv']}
+                  fileTypes={['ofx', 'qfx', 'qif', 'csv', 'pdf', 'png', 'heic', 'jpg', 'jpeg']}
                   required
                   onChange={(file: string | string[] | null) =>
                     onChange(file ? (file as string) : '')

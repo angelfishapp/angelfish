@@ -221,6 +221,32 @@ class CloudServiceClass {
   }
 
   /**
+   * Extract transactions from a file using AI.
+   *
+   * @param file      Binary file data as ArrayBuffer (max 10MB)
+   * @param fileName  The name of the file including extension
+   * @param fileType  The MIME type of the file (e.g. application/pdf, image/png, image/jpeg)
+   * @returns         Promise<IInstitutionUpdate[]>
+   */
+  @Command(AppCommandIds.AI_EXTRACT_TRANSACTIONS)
+  @HandleCloudError
+  public async aiExtractTransactions({
+    file,
+    fileName,
+    fileType,
+  }: AppCommandRequest<AppCommandIds.AI_EXTRACT_TRANSACTIONS>): AppCommandResponse<AppCommandIds.AI_EXTRACT_TRANSACTIONS> {
+    const fileData = new File([new Uint8Array(file)], fileName, { type: fileType })
+    const response = await this._getAuthenticatedClient().aiAPI.extractTransactions(fileData)
+    logger.info(`AI Extracted ${response.data.transactions.length} Transactions from ${fileName}`)
+    return response.data.transactions.map((tx) => ({
+      date: new Date(tx.date),
+      name: tx.name,
+      amount: tx.amount,
+      memo: tx.memo,
+    }))
+  }
+
+  /**
    * Get all the available currencies from the API
    *
    * @returns   Promise<Currency[]>

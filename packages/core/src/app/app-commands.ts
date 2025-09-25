@@ -293,6 +293,11 @@ export enum AppCommandIds {
    * Insert rows into a Dataset from an array of objects
    */
   INSERT_DATASET_ROWS = 'insert.dataset.rows',
+  /**
+   * Use AI to read a PDF/Image bank statement to extract a list of Transactions. Must send the file data
+   * as an ArrayBuffer with a limit of 10MB.
+   */
+  AI_EXTRACT_TRANSACTIONS = 'ai.extract.transactions',
 }
 
 // Define request/response types for each command
@@ -539,6 +544,14 @@ export interface AppCommandDefinitions {
   [AppCommandIds.INSERT_DATASET_ROWS]: {
     request: { datasetName: string; rows: any[] }
     response: void
+  }
+  [AppCommandIds.AI_EXTRACT_TRANSACTIONS]: {
+    request: {
+      file: ArrayBuffer
+      fileName: string
+      fileType: string
+    }
+    response: { date: Date; name: string; amount: number; memo?: string }[]
   }
 }
 

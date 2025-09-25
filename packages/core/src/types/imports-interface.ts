@@ -3,7 +3,7 @@ import type { ITransactionUpdate } from './transaction-interface'
 /**
  * Supported file type extensions for importing transactions
  */
-export type ImportFileType = 'ofx' | 'qfx' | 'qif' | 'csv'
+export type ImportFileType = 'ofx' | 'qfx' | 'qif' | 'csv' | 'pdf' | 'jpg' | 'png' | 'heic'
 
 /**
  * CSVHeader represents a column header in a CSV file with sample values from the column
