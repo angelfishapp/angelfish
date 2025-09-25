@@ -92,8 +92,10 @@ class ImportServiceClass {
         break
       case 'pdf':
       case 'jpg':
+      case 'jpeg':
       case 'png':
       case 'heic':
+      case 'heif':
         try {
           const fileBuffer = fs.readFileSync(filePath)
           const arrayFileBuffer = fileBuffer.buffer.slice(
@@ -105,7 +107,7 @@ class ImportServiceClass {
             {
               file: arrayFileBuffer,
               fileName: filePath.split('/').slice(-1)[0],
-              fileType: 'application/pdf',
+              fileType: this._getFileMimeType(filePath),
             },
           )
           transactionData = extractedTransactions.map((t) => ({
@@ -260,8 +262,10 @@ class ImportServiceClass {
         }
       case 'pdf':
       case 'jpg':
+      case 'jpeg':
       case 'png':
       case 'heic':
+      case 'heif':
         return { fileType: ext }
       default:
         logger.warn(`File Extension '${ext}' Not Supported.`)
@@ -300,6 +304,38 @@ class ImportServiceClass {
    */
   private _getFileExtension(filePath: string): string {
     return filePath.split('.').slice(-1)[0].toLowerCase()
+  }
+
+  /**
+   * Get the MIME type for a given file extension
+   *
+   * @param filePath  The full file path
+   * @returns         The MIME type
+   */
+  private _getFileMimeType(filePath: string): string {
+    const ext = this._getFileExtension(filePath)
+    switch (ext) {
+      case 'ofx':
+      case 'qfx':
+        return 'application/x-ofx'
+      case 'qif':
+        return 'application/x-qif'
+      case 'csv':
+        return 'text/csv'
+      case 'pdf':
+        return 'application/pdf'
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg'
+      case 'png':
+        return 'image/png'
+      case 'heic':
+        return 'image/heic'
+      case 'heif':
+        return 'image/heif'
+      default:
+        return 'application/octet-stream'
+    }
   }
 
   /**

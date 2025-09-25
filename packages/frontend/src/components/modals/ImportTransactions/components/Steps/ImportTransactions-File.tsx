@@ -70,7 +70,18 @@ export default function ImportTransactionsFile({
     >
       <Grid container spacing={1}>
         <Grid size={12}>
-          {error && <span style={{ color: 'red', fontWeight: 'bold' }}>{error}</span>}
+          {error ? (
+            <span style={{ color: 'red', fontWeight: 'bold' }}>{error}</span>
+          ) : (
+            <p>
+              <strong>Note:</strong>{' '}
+              <i>
+                If you upload a PDF or image file, it will be processed on our Cloud service with
+                AI. We do not keep any copy of your data but Google might. All other file types are
+                processed locally. <strong>AI is experimental and may not be 100% accurate.</strong>
+              </i>
+            </p>
+          )}
           <Grid size={12}>
             <Controller
               name="file"
@@ -81,7 +92,18 @@ export default function ImportTransactionsFile({
                   label="File Path"
                   helperText="You can import from transactions from OFX, QFX, QIF, CSV, PDF, PNG, HEIC, JPEG files."
                   multiple={false}
-                  fileTypes={['ofx', 'qfx', 'qif', 'csv', 'pdf', 'png', 'heic', 'jpg', 'jpeg']}
+                  fileTypes={[
+                    'ofx',
+                    'qfx',
+                    'qif',
+                    'csv',
+                    'pdf',
+                    'png',
+                    'heic',
+                    'heif',
+                    'jpg',
+                    'jpeg',
+                  ]}
                   required
                   onChange={(file: string | string[] | null) =>
                     onChange(file ? (file as string) : '')
