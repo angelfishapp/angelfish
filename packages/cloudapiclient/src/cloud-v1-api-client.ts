@@ -1,5 +1,5 @@
 import { UserApi } from './auth'
-import { Configuration, CurrenciesApi, InstitutionsApi } from './v1'
+import { AIApi, Configuration, CurrenciesApi, InstitutionsApi } from './v1'
 
 /**
  * Provides authenticated API Client for V1 APIs
@@ -11,6 +11,7 @@ export class CloudV1APIs {
   public currencyAPI: CurrenciesApi
   public institutionAPI: InstitutionsApi
   public userAPI: UserApi
+  public aiAPI: AIApi
 
   /**
    * Create new API Client
@@ -31,6 +32,7 @@ export class CloudV1APIs {
 
     this.currencyAPI = new CurrenciesApi(apiConfig)
     this.institutionAPI = new InstitutionsApi(apiConfig)
+    this.aiAPI = new AIApi(apiConfig)
 
     // Configure User API at authBasePath
     const authConfig = new Configuration()

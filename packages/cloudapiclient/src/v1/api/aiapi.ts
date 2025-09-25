@@ -22,24 +22,22 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base';
 // @ts-ignore
-import type { Institution } from '../models';
+import type { ExtractTransactions200Response } from '../models';
 /**
- * InstitutionsApi - axios parameter creator
+ * AIApi - axios parameter creator
  * @export
  */
-export const InstitutionsApiAxiosParamCreator = function (configuration?: Configuration) {
+export const AIApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Search for Popular Financial Institutions
-         * @param {string} search Search query to filter Institutions by name
+         * @summary Extract Transactions from images (JPG, PNG, HEIC) and PDFs using AI
+         * @param {File} [file] File to upload (JPG, PNG, HEIC, PDF). Must be under 10MB
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchInstitutions: async (search: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'search' is not null or undefined
-            assertParamExists('searchInstitutions', 'search', search)
-            const localVarPath = `/v1/institutions`;
+        extractTransactions: async (file?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/ai/extract-transactions`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -47,23 +45,27 @@ export const InstitutionsApiAxiosParamCreator = function (configuration?: Config
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (search !== undefined) {
-                localVarQueryParameter['search'] = search;
+
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
             }
-
-
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -74,65 +76,65 @@ export const InstitutionsApiAxiosParamCreator = function (configuration?: Config
 };
 
 /**
- * InstitutionsApi - functional programming interface
+ * AIApi - functional programming interface
  * @export
  */
-export const InstitutionsApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = InstitutionsApiAxiosParamCreator(configuration)
+export const AIApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AIApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @summary Search for Popular Financial Institutions
-         * @param {string} search Search query to filter Institutions by name
+         * @summary Extract Transactions from images (JPG, PNG, HEIC) and PDFs using AI
+         * @param {File} [file] File to upload (JPG, PNG, HEIC, PDF). Must be under 10MB
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchInstitutions(search: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Institution>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchInstitutions(search, options);
+        async extractTransactions(file?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExtractTransactions200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.extractTransactions(file, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['InstitutionsApi.searchInstitutions']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['AIApi.extractTransactions']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * InstitutionsApi - factory interface
+ * AIApi - factory interface
  * @export
  */
-export const InstitutionsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = InstitutionsApiFp(configuration)
+export const AIApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AIApiFp(configuration)
     return {
         /**
          * 
-         * @summary Search for Popular Financial Institutions
-         * @param {string} search Search query to filter Institutions by name
+         * @summary Extract Transactions from images (JPG, PNG, HEIC) and PDFs using AI
+         * @param {File} [file] File to upload (JPG, PNG, HEIC, PDF). Must be under 10MB
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchInstitutions(search: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<Institution>> {
-            return localVarFp.searchInstitutions(search, options).then((request) => request(axios, basePath));
+        extractTransactions(file?: File, options?: RawAxiosRequestConfig): AxiosPromise<ExtractTransactions200Response> {
+            return localVarFp.extractTransactions(file, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * InstitutionsApi - object-oriented interface
+ * AIApi - object-oriented interface
  * @export
- * @class InstitutionsApi
+ * @class AIApi
  * @extends {BaseAPI}
  */
-export class InstitutionsApi extends BaseAPI {
+export class AIApi extends BaseAPI {
     /**
      * 
-     * @summary Search for Popular Financial Institutions
-     * @param {string} search Search query to filter Institutions by name
+     * @summary Extract Transactions from images (JPG, PNG, HEIC) and PDFs using AI
+     * @param {File} [file] File to upload (JPG, PNG, HEIC, PDF). Must be under 10MB
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof InstitutionsApi
+     * @memberof AIApi
      */
-    public searchInstitutions(search: string, options?: RawAxiosRequestConfig) {
-        return InstitutionsApiFp(this.configuration).searchInstitutions(search, options).then((request) => request(this.axios, this.basePath));
+    public extractTransactions(file?: File, options?: RawAxiosRequestConfig) {
+        return AIApiFp(this.configuration).extractTransactions(file, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
