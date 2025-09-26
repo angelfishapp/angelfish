@@ -37,4 +37,9 @@ export interface FileFieldProps extends FormFieldProps {
    * Set the selected file(s) path(s) or null to clear the selection
    */
   value: string[] | string | null
+  /*
+   * Visual variant of the FileField component
+   * @default 'default'
+   */
+  variant?: 'default' | 'dropzone'
 }

@@ -89,3 +89,21 @@ export const WithFileTypes: Story = {
     fileTypes: ['image/png', 'image/jpeg'],
   },
 }
+export const DropZone: Story = {
+  args: {
+    label: 'Image File Field',
+    placeholder: 'Select Images',
+    variant: 'dropzone',
+    multiple: false,
+    fileTypes: ['.pdf', '.png', '.jpg', '.jpeg', '.heic'],
+  },
+}
+export const DropZoneWithMultiple: Story = {
+  args: {
+    label: 'Image File Field',
+    placeholder: 'Select Images',
+    variant: 'dropzone',
+    multiple: true,
+    fileTypes: ['.pdf', '.png', '.jpg', '.jpeg', '.heic'],
+  },
+}

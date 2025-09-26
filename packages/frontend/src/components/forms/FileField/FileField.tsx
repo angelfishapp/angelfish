@@ -4,10 +4,16 @@ import React from 'react'
 
 import { TextField } from '../TextField'
 import type { FileFieldProps } from './FileField.interface'
+import ImageFileField from './components/ImageFileField'
 
 /**
  * File Field Component to allow user to select a file or multiple files from the local file system.
  */
+
+interface ExtendedFileFieldProps extends FileFieldProps {
+  onImageProcess?: (data: any, files: File[]) => void
+}
+
 export default React.forwardRef<HTMLInputElement, FileFieldProps>(function FileField(
   {
     onChange,
@@ -16,10 +22,27 @@ export default React.forwardRef<HTMLInputElement, FileFieldProps>(function FileF
     fileTypes,
     multiple = false,
     value,
+    variant = 'default',
+    onImageProcess,
     ...formField
-  }: FileFieldProps,
+  }: ExtendedFileFieldProps,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
+  // Image variant uses the separate component
+  if (variant === 'dropzone') {
+    return (
+      <ImageFileField
+        onChange={onChange}
+        onOpenFileDialog={onOpenFileDialog}
+        fileTypes={fileTypes}
+        multiple={multiple}
+        value={value}
+        onImageProcess={onImageProcess}
+      />
+    )
+  }
+
+  // Default variant (original functionality)
   return (
     <div
       onClick={async () => {
