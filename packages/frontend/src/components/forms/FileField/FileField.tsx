@@ -47,7 +47,13 @@ export default React.forwardRef<HTMLInputElement, FileFieldProps>(function FileF
     <div
       onClick={async () => {
         const files = await onOpenFileDialog?.(multiple, fileTypes)
-        onChange?.(files)
+        if (Array.isArray(files)) {
+          onChange?.(files.map((f) => (typeof f === 'string' ? f : f.name)))
+        } else if (files) {
+          onChange?.(typeof files === 'string' ? files : files.name)
+        } else {
+          onChange?.(null)
+        }
       }}
     >
       <TextField

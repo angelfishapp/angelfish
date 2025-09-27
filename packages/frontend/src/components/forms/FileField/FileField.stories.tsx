@@ -10,11 +10,11 @@ const meta = {
   component: FileField,
   args: {
     onChange: (value) => action('onChange')(value),
-    onOpenFileDialog: async (multiple: boolean, fileTypes?: string[]) => {
+    onOpenFileDialog: async (multiple?: boolean, fileTypes?: string[]) => {
       const files = await new Promise<FileList | null>((resolve) => {
         const input = document.createElement('input')
         input.type = 'file'
-        input.multiple = multiple
+        input.multiple = !!multiple
         if (fileTypes) {
           input.accept = fileTypes.join(',')
         }
@@ -24,13 +24,12 @@ const meta = {
         input.click()
       })
 
-      // Convert FileList to string[] or string
       if (files) {
         const fileArray = Array.from(files)
         if (multiple) {
-          return fileArray.map((file) => file.name)
+          return fileArray
         }
-        return fileArray[0].name
+        return fileArray[0]
       }
 
       return null
