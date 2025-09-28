@@ -2,17 +2,15 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import DescriptionIcon from '@mui/icons-material/Description'
 import FileUploadOutlined from '@mui/icons-material/FileUploadOutlined'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-  List,
-  ListItem,
-  Stack,
-  Typography,
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import React, { useEffect, useState } from 'react'
 import type { FileItem, ImageFileFieldProps } from './ImageFileField.interface'
 import {

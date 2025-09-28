@@ -33,3 +33,10 @@ export const Default: Story = {
     size: 100,
   },
 }
+export const LinearProgress: Story = {
+  args: {
+    color: 'primary',
+    progress: 0,
+    variant: 'linear',
+  },
+}
