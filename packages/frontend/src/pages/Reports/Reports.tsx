@@ -135,6 +135,8 @@ export default function Reports() {
             ? format(endOfMonth(parse(period, 'MM-yyyy', new Date())), 'yyyy-MM-dd')
             : reportsQuery.end_date,
         tag_ids: reportsQuery.tag_ids,
+        category_group_types: reportsQuery.category_group_types,
+        category_types: reportsQuery.category_types,
         account_ids: reportsQuery.account_ids,
         ...(isCategoryGroup
           ? { category_group_ids: { include: [id] } }
@@ -150,6 +152,8 @@ export default function Reports() {
       reportsQuery.end_date,
       reportsQuery.tag_ids,
       reportsQuery.account_ids,
+      reportsQuery.category_group_types,
+      reportsQuery.category_types,
     ],
   )
 

@@ -30,5 +30,5 @@ export interface StepProps {
   /**
    * Callback to move to next step in setup workflow
    */
-  onNext: () => void
+  onNext: () => Promise<void>
 }

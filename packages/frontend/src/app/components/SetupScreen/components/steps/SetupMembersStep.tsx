@@ -17,7 +17,7 @@ export interface SetupMembersStepProps {
   /**
    * Callback to send invites and move to next step
    */
-  onNext: () => void
+  onNext: () => Promise<void>
   /**
    * Current Authenticated User
    */

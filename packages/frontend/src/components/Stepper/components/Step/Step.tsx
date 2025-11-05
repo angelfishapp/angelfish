@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import React from 'react'
 
 import type { StepProps } from './Step.interface'
 import { StepPanelContainer } from './Step.styles'
@@ -18,6 +19,9 @@ export default function StepPanel({
   onCancel,
   onNext,
 }: StepProps) {
+  // Component State
+  const [isWaiting, setIsWaiting] = React.useState<boolean>(false)
+
   // Render
   return (
     <StepPanelContainer>
@@ -31,7 +35,16 @@ export default function StepPanel({
             Cancel
           </Button>
         )}
-        <Button disabled={!isReady} onClick={() => onNext()} className="button">
+        <Button
+          disabled={!isReady}
+          loading={isWaiting}
+          onClick={async () => {
+            setIsWaiting(true)
+            await onNext()
+            setIsWaiting(false)
+          }}
+          className="button"
+        >
           {nextStep}
         </Button>
       </Box>

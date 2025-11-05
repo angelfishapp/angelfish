@@ -32,7 +32,7 @@ export interface SetupBookStepProps {
   /**
    * Callback to create or load Book and move to next step
    */
-  onNext: (name: string, country: string, currency: string, logo?: string) => void
+  onNext: (name: string, country: string, currency: string, logo?: string) => Promise<void>
   /**
    * List of out of the box Base64 encoded Book Avatars for User to Select
    * during Setup
@@ -91,12 +91,12 @@ export default function SetupBookStep({
       title="Setup Your Household"
       nextStep={nextStep}
       isReady={isValid}
-      onNext={() => handleSubmit(handleSave)()}
+      onNext={async () => handleSubmit(handleSave)()}
     >
       <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
         <Grid size={12}>
           <Typography variant="body1">
-            Your Houehold is your private underwater home where you and your household members can
+            Your Household is your private underwater home where you and your household members can
             track all your finances in one place.
           </Typography>
         </Grid>

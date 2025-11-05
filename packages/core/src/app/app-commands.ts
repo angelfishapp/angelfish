@@ -293,6 +293,11 @@ export enum AppCommandIds {
    * Insert rows into a Dataset from an array of objects
    */
   INSERT_DATASET_ROWS = 'insert.dataset.rows',
+  /**
+   * Use AI to read a PDF/Image bank statement to extract a list of Transactions. Must send the file data
+   * as an ArrayBuffer with a limit of 10MB.
+   */
+  AI_EXTRACT_TRANSACTIONS = 'ai.extract.transactions',
 }
 
 // Define request/response types for each command
@@ -521,7 +526,7 @@ export interface AppCommandDefinitions {
     response: ReconciledTransaction[]
   }
   [AppCommandIds.IMPORT_MAPPINGS]: {
-    request: { filePath: string; delimiter?: string }
+    request: { filePath: string; delimiter?: string; startDate?: Date }
     response: ParsedFileMappings
   }
   [AppCommandIds.IMPORT_TRANSACTIONS]: {
@@ -539,6 +544,18 @@ export interface AppCommandDefinitions {
   [AppCommandIds.INSERT_DATASET_ROWS]: {
     request: { datasetName: string; rows: any[] }
     response: void
+  }
+  [AppCommandIds.AI_EXTRACT_TRANSACTIONS]: {
+    request: {
+      file: ArrayBuffer
+      fileName: string
+      fileType: string
+      /**
+       * Optional start date to help the AI model contextualize the transaction dates
+       */
+      startDate?: Date
+    }
+    response: { date: Date; name: string; amount: number; memo?: string }[]
   }
 }
 

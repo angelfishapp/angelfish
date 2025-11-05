@@ -19,6 +19,16 @@ export function handleKeyboardShortcuts(
   table: Table<TransactionRow>,
   onDelete: () => void,
 ) {
+  // Ignore if event is from input element inside table
+  if (
+    event.target instanceof HTMLInputElement ||
+    event.target instanceof HTMLTextAreaElement ||
+    event.target instanceof HTMLSelectElement ||
+    event.target instanceof HTMLButtonElement
+  ) {
+    return
+  }
+
   // Prevent default for navigation and action keys
   const key = event.key
   const isModifierPressed = event.ctrlKey || event.metaKey
@@ -28,6 +38,7 @@ export function handleKeyboardShortcuts(
     key === 'Enter' ||
     key === 'Delete' ||
     key === 'Backspace' ||
+    key === 'Escape' ||
     (isModifierPressed && (key === 'c' || key === 'r'))
   ) {
     event.preventDefault()

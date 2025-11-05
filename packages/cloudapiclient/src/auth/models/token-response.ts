@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 /**
  * Angelfish API
  * Authentication APIs to provide secure access to Angelfish services

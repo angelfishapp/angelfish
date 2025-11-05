@@ -20,14 +20,18 @@ export default function ImportTransactionsContainer({
   const { accounts } = useListAllAccountsWithRelations()
 
   // Callback to open the file dialog
-  const onOpenFileDialog = React.useCallback(async (multiple: boolean) => {
+  const onOpenFileDialog = React.useCallback(async (multiple: boolean, fileTypes?: string[]) => {
+    let extensions: string[] = []
+    if (fileTypes && fileTypes.length > 0) {
+      extensions = fileTypes.map((type) => type.toUpperCase())
+    }
     return await showOpenDialog({
       title: 'Select File Location...',
       properties: multiple ? ['openFile', 'multiSelections'] : ['openFile'],
       filters: [
         {
           name: 'Financial Transactions File',
-          extensions: ['CSV', 'QFX', 'OFX', 'QIF', 'JSON'],
+          extensions,
         },
       ],
     })

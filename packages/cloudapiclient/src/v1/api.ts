@@ -12,5 +12,6 @@
  * Do not edit the class manually.
  */
 
+export * from './api/aiapi'
 export * from './api/currencies-api'
 export * from './api/institutions-api'

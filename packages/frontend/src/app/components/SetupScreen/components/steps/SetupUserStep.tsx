@@ -38,7 +38,7 @@ export interface SetupUserStepProps {
   /**
    * Callback to update user and move to next step
    */
-  onNext: (firstName: string, lastName: string, avatar?: string) => void
+  onNext: (firstName: string, lastName: string, avatar?: string) => Promise<void>
 }
 
 /**
@@ -92,7 +92,7 @@ export default function SetupUserStep({
       title="Your Personal Details"
       nextStep={nextStep}
       isReady={isValid}
-      onNext={() => handleSubmit(handleSave)()}
+      onNext={async () => handleSubmit(handleSave)()}
     >
       <Grid container spacing={3} alignItems="center" justifyContent="flex-start">
         <Grid size={12}>

@@ -3,7 +3,17 @@ import type { ITransactionUpdate } from './transaction-interface'
 /**
  * Supported file type extensions for importing transactions
  */
-export type ImportFileType = 'ofx' | 'qfx' | 'qif' | 'csv'
+export type ImportFileType =
+  | 'ofx'
+  | 'qfx'
+  | 'qif'
+  | 'csv'
+  | 'pdf'
+  | 'jpg'
+  | 'jpeg'
+  | 'png'
+  | 'heic'
+  | 'heif'
 
 /**
  * CSVHeader represents a column header in a CSV file with sample values from the column
@@ -61,6 +71,10 @@ export interface ParsedFileMappings {
    * can be mapped to the correct category when importing.
    */
   categories?: string[]
+  /**
+   * Optional start date for AI extraction to help contextualize transaction dates
+   */
+  startDate?: Date
 }
 
 /**
@@ -133,6 +147,10 @@ export interface ImportTransactionsMapper {
    * @example { 'Food: Groceries': 1, 'Car:Petrol': 2 }
    */
   categoriesMapper?: Record<string, number>
+  /**
+   * Optional start date for AI extraction to help contextualize transaction dates
+   */
+  startDate?: Date
 }
 
 /**

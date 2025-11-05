@@ -31,7 +31,7 @@ export interface ImportTransactionsConfirmProps {
    * Callback when the next button is clicked. Returns reviewed list
    * of Transactions to import.
    */
-  onNext: (transactions: ReconciledTransaction[]) => void
+  onNext: (transactions: ReconciledTransaction[]) => Promise<void>
 }
 
 /**
@@ -66,7 +66,7 @@ export default function ImportTransactionsConfirm({
       title="Review Transactions"
       nextStep={`Import ${importCount} Transactions`}
       isReady={true}
-      onNext={() => onNext(updatedTransactions ?? [])}
+      onNext={async () => await onNext(updatedTransactions ?? [])}
       onCancel={onCancel}
     >
       {error && (

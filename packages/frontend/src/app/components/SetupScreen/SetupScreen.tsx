@@ -47,7 +47,7 @@ export default function SetupScreen({
   /**
    * Update User and move to next step if successful
    */
-  const updateAuthenticatedUser = (firstName: string, lastName: string, avatar?: string) => {
+  const updateAuthenticatedUser = async (firstName: string, lastName: string, avatar?: string) => {
     onUpdateAuthenticatedUser(firstName, lastName, avatar)
     setActiveStep(2)
   }
@@ -86,14 +86,14 @@ export default function SetupScreen({
         />
         <SetupEncryptionStep
           nextStep="Next - Setup Your Members"
-          onNext={(seed) => {
+          onNext={async (seed) => {
             onCreateEncryptionKey(seed)
             setActiveStep(4)
           }}
         />
         <SetupMembersStep
           nextStep="Next - Setup Your Bank Accounts"
-          onNext={() => setActiveStep(5)}
+          onNext={async () => setActiveStep(5)}
           authenticatedUser={authenticatedUser}
           userAvatars={userAvatars}
           users={users}
@@ -102,7 +102,7 @@ export default function SetupScreen({
         />
         <SetupBankAccountsStep
           nextStep="Next - Short Intro"
-          onNext={() => setActiveStep(6)}
+          onNext={async () => setActiveStep(6)}
           accountsWithRelations={accountsWithRelations}
           book={book}
           institutions={institutions}
@@ -117,7 +117,7 @@ export default function SetupScreen({
           title="Woohoo! You're Ready To Get Started!"
           nextStep="Finish"
           isReady={true}
-          onNext={() => setIsOpen(false)}
+          onNext={async () => setIsOpen(false)}
         >
           <VideoContainer
             src="https://player.vimeo.com/video/827536470"

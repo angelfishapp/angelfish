@@ -20,7 +20,7 @@ export interface SetupBankAccountsStepProps {
   /**
    * Callback to send invites and move to next step
    */
-  onNext: () => void
+  onNext: () => Promise<void>
   /**
    * The bank Accounts in database with relations loaded
    */
@@ -90,8 +90,8 @@ export default function SetupBankAccountsStep({
    * Handle form submission to update user and trigger onNext
    * if successful
    */
-  const handleSubmit = () => {
-    onNext()
+  const handleSubmit = async () => {
+    await onNext()
   }
 
   // Render

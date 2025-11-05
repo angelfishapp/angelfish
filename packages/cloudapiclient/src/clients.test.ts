@@ -75,4 +75,9 @@ describe('Test CloudV1APIs', () => {
     const currenciesResponse = await client.currencyAPI.getCurrencies()
     expect(currenciesResponse.status).toBe(200)
   })
+
+  it('get institutions', async () => {
+    const institutionsResponse = await client.institutionAPI.searchInstitutions('wells fargo')
+    expect(institutionsResponse.status).toBe(200)
+  })
 })

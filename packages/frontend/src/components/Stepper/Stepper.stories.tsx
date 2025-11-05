@@ -19,16 +19,16 @@ function TestWorkflow({ open = true }: { open: boolean }) {
       onTransitionEnd={() => action('onTransitionEnd')()}
       open={open}
     >
-      <Step title="Step 1" nextStep="Step 2" isReady={true} onNext={() => setActiveStep(2)}>
+      <Step title="Step 1" nextStep="Step 2" isReady={true} onNext={async () => setActiveStep(2)}>
         Step 1
       </Step>
-      <Step title="Step 2" nextStep="Step 3" isReady={true} onNext={() => setActiveStep(3)}>
+      <Step title="Step 2" nextStep="Step 3" isReady={true} onNext={async () => setActiveStep(3)}>
         Step 2
       </Step>
-      <Step title="Step 3" nextStep="Step 4" isReady={true} onNext={() => setActiveStep(4)}>
+      <Step title="Step 3" nextStep="Step 4" isReady={true} onNext={async () => setActiveStep(4)}>
         Step 3
       </Step>
-      <Step title="Step 4" nextStep="Finish" isReady={true} onNext={() => setActiveStep(1)}>
+      <Step title="Step 4" nextStep="Finish" isReady={true} onNext={async () => setActiveStep(1)}>
         Step 1
       </Step>
     </Stepper>

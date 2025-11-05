@@ -31,12 +31,10 @@ const logger = getWorkerLogger('ImportService')
  * Imports transactions and other data from local files such as qfx, ofx, qif etc.
  */
 class ImportServiceClass {
-  // Keep track of supported file extensions that can be imported here
-  public static readonly SUPPORTED_FILE_EXTENSIONS = ['ofx', 'qfx', 'qif', 'csv']
-
   /**
-   * Read an OFX, QFX, QIF or CSV File. Will get transactions from the file and then reconcile them with
-   * existing transactions in the database.
+   * Read an OFX, QFX, QIF, CSV, PDF or Image File. Will get transactions from the file and then reconcile them with
+   * existing transactions in the database. IF PDF or Image file, will attempt to extract transactions using AI via
+   * Cloud API.
    *
    * @param filePath          The file path to the local file
    * @param mapper            Mapper to map transaction fields from the import file to the ITransaction interface
@@ -90,6 +88,39 @@ class ImportServiceClass {
         } catch (error) {
           logger.error(`Error parsing ${filePath}:`, error)
           throw new Error(`Error parsing ${filePath}: ${error}`)
+        }
+        break
+      case 'pdf':
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'heic':
+      case 'heif':
+        try {
+          const fileBuffer = fs.readFileSync(filePath)
+          const arrayFileBuffer = fileBuffer.buffer.slice(
+            fileBuffer.byteOffset,
+            fileBuffer.byteOffset + fileBuffer.byteLength,
+          ) as ArrayBuffer
+          const extractedTransactions = await CommandsClient.executeAppCommand(
+            AppCommandIds.AI_EXTRACT_TRANSACTIONS,
+            {
+              file: arrayFileBuffer,
+              fileName: filePath.split('/').slice(-1)[0],
+              fileType: this._getFileMimeType(filePath),
+              startDate: mapper.startDate,
+            },
+          )
+          transactionData = extractedTransactions.map((t) => ({
+            date: t.date,
+            name: t.name,
+            amount: t.amount,
+            memo: t.memo,
+            pending: false,
+          }))
+        } catch (error) {
+          logger.error(`Error extracting transactions from ${filePath}:`, error)
+          throw new Error(`Error extracting transactions from ${filePath}: ${error}`)
         }
         break
       default:
@@ -189,6 +220,7 @@ class ImportServiceClass {
   public async readFileMappings({
     filePath,
     delimiter = ',',
+    startDate,
   }: AppCommandRequest<AppCommandIds.IMPORT_MAPPINGS>): AppCommandResponse<AppCommandIds.IMPORT_MAPPINGS> {
     // Determine File Type
     const ext = this._getFileExtension(filePath)
@@ -230,6 +262,13 @@ class ImportServiceClass {
           logger.error(`Error parsing CSV Headers for ${filePath}:`, error)
           throw new Error(`Error parsing parsing CSV Headers for ${filePath}`)
         }
+      case 'pdf':
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'heic':
+      case 'heif':
+        return { fileType: ext, startDate }
       default:
         logger.warn(`File Extension '${ext}' Not Supported.`)
         throw new Error(`File Extension '${ext}' Not Supported.`)
@@ -267,6 +306,38 @@ class ImportServiceClass {
    */
   private _getFileExtension(filePath: string): string {
     return filePath.split('.').slice(-1)[0].toLowerCase()
+  }
+
+  /**
+   * Get the MIME type for a given file extension
+   *
+   * @param filePath  The full file path
+   * @returns         The MIME type
+   */
+  private _getFileMimeType(filePath: string): string {
+    const ext = this._getFileExtension(filePath)
+    switch (ext) {
+      case 'ofx':
+      case 'qfx':
+        return 'application/x-ofx'
+      case 'qif':
+        return 'application/x-qif'
+      case 'csv':
+        return 'text/csv'
+      case 'pdf':
+        return 'application/pdf'
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg'
+      case 'png':
+        return 'image/png'
+      case 'heic':
+        return 'image/heic'
+      case 'heif':
+        return 'image/heif'
+      default:
+        return 'application/octet-stream'
+    }
   }
 
   /**
