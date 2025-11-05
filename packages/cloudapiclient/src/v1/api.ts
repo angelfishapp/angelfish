@@ -1,5 +1,5 @@
 /* tslint:disable */
- 
+
 /**
  * Angelfish Data API
  * APIs to provide data for Angelfish
