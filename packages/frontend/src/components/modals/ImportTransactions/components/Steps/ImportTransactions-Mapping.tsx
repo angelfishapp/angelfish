@@ -50,7 +50,7 @@ export interface ImportTransactionsMappingProps {
    * Callback when the next button is clicked. Returns file path
    * of selected file.
    */
-  onNext: (mapper: ImportTransactionsMapper) => void
+  onNext: (mapper: ImportTransactionsMapper) => Promise<void>
 }
 
 /**
@@ -152,8 +152,8 @@ export default function ImportTransactionsMapping({
       title="Confirm Mappings"
       nextStep="Next"
       isReady={isValid}
-      onNext={() => {
-        onNext({
+      onNext={async () => {
+        await onNext({
           fileType: fileMappings?.fileType ?? 'csv',
           defaultAccountId: defaultAccount.id,
           accountsMapper: getValues('accountsMapper').reduce(

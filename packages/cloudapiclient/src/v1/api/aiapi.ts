@@ -33,10 +33,11 @@ export const AIApiAxiosParamCreator = function (configuration?: Configuration) {
          * 
          * @summary Extract Transactions from images (JPG, PNG, HEIC) and PDFs using AI
          * @param {File} [file] File to upload (JPG, PNG, HEIC, PDF). Must be under 10MB
+         * @param {string} [startDate] Start date of statement (YYYY-MM-DD) to help AI infer full YYYY-MM-DD dates if not available on statement itself
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        extractTransactions: async (file?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        extractTransactions: async (file?: File, startDate?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/ai/extract-transactions`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -57,6 +58,10 @@ export const AIApiAxiosParamCreator = function (configuration?: Configuration) {
 
             if (file !== undefined) { 
                 localVarFormParams.append('file', file as any);
+            }
+    
+            if (startDate !== undefined) { 
+                localVarFormParams.append('start_date', startDate as any);
             }
     
     
@@ -86,11 +91,12 @@ export const AIApiFp = function(configuration?: Configuration) {
          * 
          * @summary Extract Transactions from images (JPG, PNG, HEIC) and PDFs using AI
          * @param {File} [file] File to upload (JPG, PNG, HEIC, PDF). Must be under 10MB
+         * @param {string} [startDate] Start date of statement (YYYY-MM-DD) to help AI infer full YYYY-MM-DD dates if not available on statement itself
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async extractTransactions(file?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExtractTransactions200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.extractTransactions(file, options);
+        async extractTransactions(file?: File, startDate?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExtractTransactions200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.extractTransactions(file, startDate, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AIApi.extractTransactions']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -109,11 +115,12 @@ export const AIApiFactory = function (configuration?: Configuration, basePath?: 
          * 
          * @summary Extract Transactions from images (JPG, PNG, HEIC) and PDFs using AI
          * @param {File} [file] File to upload (JPG, PNG, HEIC, PDF). Must be under 10MB
+         * @param {string} [startDate] Start date of statement (YYYY-MM-DD) to help AI infer full YYYY-MM-DD dates if not available on statement itself
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        extractTransactions(file?: File, options?: RawAxiosRequestConfig): AxiosPromise<ExtractTransactions200Response> {
-            return localVarFp.extractTransactions(file, options).then((request) => request(axios, basePath));
+        extractTransactions(file?: File, startDate?: string, options?: RawAxiosRequestConfig): AxiosPromise<ExtractTransactions200Response> {
+            return localVarFp.extractTransactions(file, startDate, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -129,12 +136,13 @@ export class AIApi extends BaseAPI {
      * 
      * @summary Extract Transactions from images (JPG, PNG, HEIC) and PDFs using AI
      * @param {File} [file] File to upload (JPG, PNG, HEIC, PDF). Must be under 10MB
+     * @param {string} [startDate] Start date of statement (YYYY-MM-DD) to help AI infer full YYYY-MM-DD dates if not available on statement itself
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AIApi
      */
-    public extractTransactions(file?: File, options?: RawAxiosRequestConfig) {
-        return AIApiFp(this.configuration).extractTransactions(file, options).then((request) => request(this.axios, this.basePath));
+    public extractTransactions(file?: File, startDate?: string, options?: RawAxiosRequestConfig) {
+        return AIApiFp(this.configuration).extractTransactions(file, startDate, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

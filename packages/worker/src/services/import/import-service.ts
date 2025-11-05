@@ -108,6 +108,7 @@ class ImportServiceClass {
               file: arrayFileBuffer,
               fileName: filePath.split('/').slice(-1)[0],
               fileType: this._getFileMimeType(filePath),
+              startDate: mapper.startDate,
             },
           )
           transactionData = extractedTransactions.map((t) => ({
@@ -219,6 +220,7 @@ class ImportServiceClass {
   public async readFileMappings({
     filePath,
     delimiter = ',',
+    startDate,
   }: AppCommandRequest<AppCommandIds.IMPORT_MAPPINGS>): AppCommandResponse<AppCommandIds.IMPORT_MAPPINGS> {
     // Determine File Type
     const ext = this._getFileExtension(filePath)
@@ -266,7 +268,7 @@ class ImportServiceClass {
       case 'png':
       case 'heic':
       case 'heif':
-        return { fileType: ext }
+        return { fileType: ext, startDate }
       default:
         logger.warn(`File Extension '${ext}' Not Supported.`)
         throw new Error(`File Extension '${ext}' Not Supported.`)

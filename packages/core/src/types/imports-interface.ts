@@ -71,6 +71,10 @@ export interface ParsedFileMappings {
    * can be mapped to the correct category when importing.
    */
   categories?: string[]
+  /**
+   * Optional start date for AI extraction to help contextualize transaction dates
+   */
+  startDate?: Date
 }
 
 /**
@@ -143,6 +147,10 @@ export interface ImportTransactionsMapper {
    * @example { 'Food: Groceries': 1, 'Car:Petrol': 2 }
    */
   categoriesMapper?: Record<string, number>
+  /**
+   * Optional start date for AI extraction to help contextualize transaction dates
+   */
+  startDate?: Date
 }
 
 /**

@@ -41,9 +41,14 @@ export interface ImportTransactionsProps {
    *
    * @param file      The absolute path of the selected file on the local filesystem
    * @param delimiter The delimiter used in the CSV file (@default ',')
+   * @param startDate Optional start date for AI extraction to help contextualize transaction dates
    * @returns         ParsedFileMappings
    */
-  onGetFileMappings: (file: string, delimiter?: string) => Promise<ParsedFileMappings>
+  onGetFileMappings: (
+    file: string,
+    delimiter?: string,
+    startDate?: Date,
+  ) => Promise<ParsedFileMappings>
   /**
    * Async callback to get the Transaction data from the selected file
    *

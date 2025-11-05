@@ -226,6 +226,7 @@ class CloudServiceClass {
    * @param file      Binary file data as ArrayBuffer (max 10MB)
    * @param fileName  The name of the file including extension
    * @param fileType  The MIME type of the file (e.g. application/pdf, image/png, image/jpeg)
+   * @param startDate Optional start date to help the AI model contextualize the transaction dates in YYYY-MM-DD format
    * @returns         Promise<IInstitutionUpdate[]>
    */
   @Command(AppCommandIds.AI_EXTRACT_TRANSACTIONS)
@@ -234,9 +235,13 @@ class CloudServiceClass {
     file,
     fileName,
     fileType,
+    startDate,
   }: AppCommandRequest<AppCommandIds.AI_EXTRACT_TRANSACTIONS>): AppCommandResponse<AppCommandIds.AI_EXTRACT_TRANSACTIONS> {
     const fileData = new File([new Uint8Array(file)], fileName, { type: fileType })
-    const response = await this._getAuthenticatedClient().aiAPI.extractTransactions(fileData)
+    const response = await this._getAuthenticatedClient().aiAPI.extractTransactions(
+      fileData,
+      startDate ? startDate.toISOString().split('T')[0] : undefined,
+    )
     logger.info(`AI Extracted ${response.data.transactions.length} Transactions from ${fileName}`)
     return response.data.transactions.map((tx) => ({
       date: new Date(tx.date),

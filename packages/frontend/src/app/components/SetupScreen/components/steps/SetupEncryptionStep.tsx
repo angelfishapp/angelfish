@@ -16,7 +16,7 @@ export interface SetupEncryptionStepProps {
   /**
    * Callback to create encryption keys and move to next step
    */
-  onNext: (seed: string) => void
+  onNext: (seed: string) => Promise<void>
 }
 
 /**
@@ -47,7 +47,7 @@ export default function SetupEncryptionStep({ nextStep, onNext }: SetupEncryptio
       title="Setup Encryption Keys"
       nextStep={nextStep}
       isReady={isReady}
-      onNext={() => onNext(seedRef.current)}
+      onNext={async () => await onNext(seedRef.current)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <p>

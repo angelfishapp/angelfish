@@ -54,17 +54,16 @@ export default function ImportTransactions({
         defaultAccount={defaultAccount}
         error={error}
         onOpenFileDialog={onOpenFileDialog}
-        onNext={(value, delimiter) => {
+        onNext={async (value, delimiter, startDate) => {
           setFile(value)
           setError(undefined)
-          onGetFileMappings?.(value[0], delimiter)
-            .then((parsedFileMappings) => {
-              setFileMappings(parsedFileMappings)
-              setActiveStep(2)
-            })
-            .catch((e) => {
-              setError((e as Error).message || `${e}`)
-            })
+          try {
+            const parsedFileMappings = await onGetFileMappings?.(value[0], delimiter, startDate)
+            setFileMappings(parsedFileMappings)
+            setActiveStep(2)
+          } catch (e) {
+            setError((e as Error).message || `${e}`)
+          }
         }}
       />
       <ImportTransactionsMapping
@@ -72,16 +71,15 @@ export default function ImportTransactions({
         defaultAccount={defaultAccount}
         error={error}
         fileMappings={fileMappings}
-        onNext={(mapper) => {
+        onNext={async (mapper) => {
           setError(undefined)
-          onReconcileTransactions?.(file[0], mapper)
-            .then((reconciledTransactions) => {
-              setTransactions(reconciledTransactions)
-              setActiveStep(3)
-            })
-            .catch((e) => {
-              setError((e as Error).message || `${e}`)
-            })
+          try {
+            const reconciledTransactions = await onReconcileTransactions?.(file[0], mapper)
+            setTransactions(reconciledTransactions)
+            setActiveStep(3)
+          } catch (e) {
+            setError((e as Error).message || `${e}`)
+          }
         }}
       />
       <ImportTransactionsConfirm

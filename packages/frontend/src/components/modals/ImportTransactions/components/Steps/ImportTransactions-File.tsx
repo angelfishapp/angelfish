@@ -3,6 +3,7 @@ import { Controller, useForm } from 'react-hook-form'
 
 import { AutocompleteField } from '@/components/forms/AutocompleteField'
 import { CategoryField } from '@/components/forms/CategoryField'
+import { DateField } from '@/components/forms/DateField'
 import { FileField } from '@/components/forms/FileField'
 import { Step } from '@/components/Stepper'
 import type { IAccount } from '@angelfish/core'
@@ -36,7 +37,7 @@ export interface ImportTransactionsFileProps {
    * Callback when the next button is clicked. Returns file path
    * of selected file.
    */
-  onNext: (file: string, delimiter: string) => void
+  onNext: (file: string, delimiter: string, startDate?: Date) => Promise<void>
 }
 
 /**
@@ -54,19 +55,26 @@ export default function ImportTransactionsFile({
     getValues,
     watch,
     formState: { isValid },
-  } = useForm<{ file: string; account: IAccount; csvDelimiter: string }>({
-    defaultValues: { file: '', account: defaultAccount, csvDelimiter: ',' },
+  } = useForm<{ file: string; account: IAccount; csvDelimiter: string; startDate?: Date }>({
+    defaultValues: { file: '', account: defaultAccount, csvDelimiter: ',', startDate: undefined },
   })
   const filePathArray = watch('file')
   const filePath = filePathArray[0]
   const isCVSFile = filePath ? filePath?.toLowerCase().endsWith('.csv') : false
+  const isAIFile = filePath
+    ? ['.pdf', '.png', '.heic', '.heif', '.jpg', '.jpeg'].some((ext) =>
+        filePath.toLowerCase().endsWith(ext),
+      )
+    : false
 
   return (
     <Step
       title="Select File to Import"
       nextStep="Next"
       isReady={isValid}
-      onNext={() => onNext(getValues('file'), getValues('csvDelimiter'))}
+      onNext={async () =>
+        await onNext(getValues('file'), getValues('csvDelimiter'), getValues('startDate'))
+      }
     >
       <Grid container spacing={1}>
         <Grid size={12}>
@@ -163,6 +171,34 @@ export default function ImportTransactionsFile({
                           onChange(value as ',' | ';')
                         }
                       }}
+                      {...restField}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
+        {isAIFile && (
+          <Grid size={12}>
+            <Grid container spacing={1}>
+              <Grid size={6}>
+                <Controller
+                  name="startDate"
+                  control={control}
+                  rules={{ required: false }}
+                  render={({ field: { onChange, ...restField } }) => (
+                    <DateField
+                      label="Start Date"
+                      autoFocus={false}
+                      required={false}
+                      fullWidth={true}
+                      onChange={(date) => {
+                        if (date !== null) {
+                          onChange(date)
+                        }
+                      }}
+                      helperText="Select the start date of the statement to help the AI use the correct Transaction dates."
                       {...restField}
                     />
                   )}

@@ -526,7 +526,7 @@ export interface AppCommandDefinitions {
     response: ReconciledTransaction[]
   }
   [AppCommandIds.IMPORT_MAPPINGS]: {
-    request: { filePath: string; delimiter?: string }
+    request: { filePath: string; delimiter?: string; startDate?: Date }
     response: ParsedFileMappings
   }
   [AppCommandIds.IMPORT_TRANSACTIONS]: {
@@ -550,6 +550,10 @@ export interface AppCommandDefinitions {
       file: ArrayBuffer
       fileName: string
       fileType: string
+      /**
+       * Optional start date to help the AI model contextualize the transaction dates
+       */
+      startDate?: Date
     }
     response: { date: Date; name: string; amount: number; memo?: string }[]
   }
