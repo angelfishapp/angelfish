@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { runReport } from '@/api'
 import { APP_QUERY_KEYS } from '@/app/ReactQuery'
-import type { AppCommandIds, AppCommandRequest } from '@angelfish/core'
+import type { AppCommandIds, AppCommandRequest, ReportsQueryResponse } from '@angelfish/core'
 
 /**
  * React-Query Hook that lists Institutions
@@ -20,5 +20,5 @@ export const useRunReport = (query: AppCommandRequest<AppCommandIds.RUN_REPORT>)
     queryFn: async () => runReport(query),
   })
 
-  return { reportData: data ?? { periods: [], rows: [] }, isLoading, isFetching, error }
+  return { reportData: data as ReportsQueryResponse, isLoading, isFetching, error }
 }

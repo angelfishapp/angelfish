@@ -1,4 +1,4 @@
-import type { CategorySpendReportData } from '@angelfish/core'
+import type { CategorySpendReportResults } from '@angelfish/core'
 import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import * as stories from './IncomeAndExpensesSankey.stories'
@@ -25,7 +25,7 @@ describe('IncomeAndExpensesSankey', () => {
           {
             ...Default.args.data,
             rows: Default?.args?.data?.rows?.filter((row) => row.type !== 'Income'),
-          } as CategorySpendReportData
+          } as CategorySpendReportResults
         }
       />,
     )
@@ -42,7 +42,7 @@ describe('IncomeAndExpensesSankey', () => {
           {
             ...Default.args.data,
             rows: Default?.args?.data?.rows?.filter((row) => row.type !== 'Expense'),
-          } as CategorySpendReportData
+          } as CategorySpendReportResults
         }
       />,
     )

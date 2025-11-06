@@ -1,7 +1,7 @@
 import type { Cell, SheetData } from 'write-excel-file'
 import writeXlsxFile from 'write-excel-file/node'
 
-import type { CategorySpendReportData } from '@angelfish/core'
+import type { CategorySpendReportResults, ReportsQueryResponse } from '@angelfish/core'
 import { renderPeriodHeader, ThemePallet } from './export-utils'
 
 /**
@@ -51,16 +51,21 @@ export class ExportXLSX {
    * @param reportData  The reports data to export
    * @param filePath    The file path to save the XLSX file to
    */
-  public static async Export(reportData: CategorySpendReportData, filePath: string): Promise<void> {
+  public static async Export(reportData: ReportsQueryResponse, filePath: string): Promise<void> {
+    if (reportData.report_type !== 'category_spend') {
+      throw new Error(
+        `ExportXLSX only supports category_spend report type, got ${reportData.report_type}`,
+      )
+    }
     // Create the sheet data
     const data: SheetData = []
 
     // Create Income section
-    data.push(...this.renderTableSection(reportData, true, 0))
+    data.push(...this.renderTableSection(reportData.results, true, 0))
     const incomeSectionEndRow = data.length
 
     // Create Expenses section
-    data.push(...this.renderTableSection(reportData, false, data.length))
+    data.push(...this.renderTableSection(reportData.results, false, data.length))
     const expensesSectionEndRow = data.length
 
     // Create Net Row
@@ -72,9 +77,11 @@ export class ExportXLSX {
         ...this.formattedNetCell,
       },
     ]
-    for (const period of reportData.periods) {
+    for (const period of reportData.results.periods) {
       // Get current column letter from period
-      const currentColumn = ExportXLSX.getExcelColumnLetter(reportData.periods.indexOf(period) + 2)
+      const currentColumn = ExportXLSX.getExcelColumnLetter(
+        reportData.results.periods.indexOf(period) + 2,
+      )
       if (period === 'total') {
         netRow.push({
           type: 'Formula',
@@ -102,12 +109,12 @@ export class ExportXLSX {
         type: 'Formula',
         align: 'left',
       },
-      ...Array(reportData.periods.length).fill({}),
+      ...Array(reportData.results.periods.length).fill({}),
     ])
 
     // Write the file
     await writeXlsxFile(data, {
-      columns: [{ width: 40 }, ...reportData.periods.map(() => ({ width: 13 }))],
+      columns: [{ width: 40 }, ...reportData.results.periods.map(() => ({ width: 13 }))],
       filePath,
       stickyColumnsCount: 1,
       fontFamily: 'Arial',
@@ -124,7 +131,7 @@ export class ExportXLSX {
    * @returns               The table section as Row<Cell>[]
    */
   private static renderTableSection(
-    reportData: CategorySpendReportData,
+    reportData: CategorySpendReportResults,
     isIncome: boolean,
     currentRow: number,
   ): SheetData {

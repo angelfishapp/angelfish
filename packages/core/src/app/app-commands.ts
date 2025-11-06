@@ -25,8 +25,6 @@
  */
 
 import type {
-  CategorySpendReportData,
-  CategorySpendReportQuery,
   IAccount,
   IAuthenticatedUser,
   IAuthenticatedUserUpdate,
@@ -44,6 +42,8 @@ import type {
   IUserUpdate,
   ParsedFileMappings,
   ReconciledTransaction,
+  ReportsQueryRequest,
+  ReportsQueryResponse,
 } from '../types'
 import type {
   IAppState,
@@ -510,14 +510,14 @@ export interface AppCommandDefinitions {
     response: void
   }
   [AppCommandIds.RUN_REPORT]: {
-    request: CategorySpendReportQuery
-    response: CategorySpendReportData
+    request: ReportsQueryRequest
+    response: ReportsQueryResponse
   }
   [AppCommandIds.EXPORT_REPORT]: {
     request: {
       filePath: string
       fileType: 'XLSX'
-      query: CategorySpendReportQuery
+      query: ReportsQueryRequest
     }
     response: void
   }

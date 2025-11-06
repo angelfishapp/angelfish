@@ -1,4 +1,4 @@
-import type { CategorySpendReportData } from '@angelfish/core'
+import type { CategorySpendReportResults } from '@angelfish/core'
 
 /**
  * ReportsTable Component Properties
@@ -9,7 +9,7 @@ export interface ReportsTableProps {
    * Report results data from the ReportsService
    * IPC API
    */
-  data: CategorySpendReportData
+  data: CategorySpendReportResults
   /**
    * Callback function to handle clicking on cell value on table so user
    * can see transactions for that period and category or group.

@@ -33,6 +33,7 @@ import {
 import type {
   AppCommandRequest,
   CategorySpendReportQuery,
+  CategorySpendReportResults,
   ITransactionUpdate,
 } from '@angelfish/core'
 import { type AppCommandIds } from '@angelfish/core'
@@ -92,7 +93,14 @@ export default function Reports() {
   const transactionDeleteMutation = useDeleteTransaction()
   const { accounts } = useListAllAccountsWithRelations()
   const { tags } = useListTags()
-  const { reportData } = useRunReport(reportsQuery)
+  const { reportData } = useRunReport({
+    report_type: 'category_spend',
+    query: reportsQuery,
+  })
+  const reportResults = (reportData?.results as CategorySpendReportResults) || {
+    periods: [],
+    rows: [],
+  }
 
   /**
    * Callback to save Transactions to the Database
@@ -213,7 +221,7 @@ export default function Reports() {
               <Box
                 display="flex"
                 width="100%"
-                minWidth={`${reportData.periods.length * 150 + 300}px`}
+                minWidth={`${reportResults.periods.length * 150 + 300}px`}
               >
                 <Box
                   width={dateRangeSectionWidth}
@@ -276,7 +284,7 @@ export default function Reports() {
                                   exportReport({
                                     filePath,
                                     fileType: 'XLSX',
-                                    query: reportsQuery,
+                                    query: { report_type: 'category_spend', query: reportsQuery },
                                   })
                                 }
                               },
@@ -287,11 +295,11 @@ export default function Reports() {
                       </Box>
                     </Box>
                   </Box>
-                  <ReportsChart data={reportData} chartPeriodWidth={chartPeriodWidth} />
+                  <ReportsChart data={reportResults} chartPeriodWidth={chartPeriodWidth} />
                   <RollingContainerScrollBar id="chart" />
                 </Box>
               </Box>
-              <ReportsTable data={reportData} onClick={handleClick} />
+              <ReportsTable data={reportResults} onClick={handleClick} />
             </React.Fragment>
           </RollingContainer>
         </Paper>

@@ -14,11 +14,15 @@ export type {
 export type { IInstitution, IInstitutionUpdate } from './institution-interface'
 export type { ILineItem, ILineItemUpdate } from './line-item-interface'
 export type {
-  CategorySpendReportData,
-  CategorySpendReportDataCategoryRow,
-  CategorySpendReportDataRow,
   CategorySpendReportQuery,
+  CategorySpendReportResultCategoryRow,
+  CategorySpendReportResultRow,
+  CategorySpendReportResults,
+  NetWorthReportQuery,
+  NetWorthReportResults,
   ReportsFilterList,
+  ReportsQueryRequest,
+  ReportsQueryResponse,
 } from './reports-interface'
 export type { ITag, ITagUpdate } from './tag-interface'
 export { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from './transaction-interface'

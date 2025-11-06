@@ -8,7 +8,7 @@ import React, { type JSX } from 'react'
 import { Chart } from 'react-chartjs-2'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
-import type { CategorySpendReportDataRow } from '@angelfish/core'
+import type { CategorySpendReportResultRow } from '@angelfish/core'
 import { DashboardChart } from '../DashboardChart'
 import type { IncomeAndExpensesSankeyProps } from './IncomeAndExpensesSankey.interface'
 import { IncomeAndExpensesSankeyTooltip } from './IncomeAndExpensesSankey.style'
@@ -18,7 +18,7 @@ ChartJS.register(SankeyController, Flow)
 /**
  * Represents a row of data to display on the Sankey as a Flow
  */
-export type DataFlow = CategorySpendReportDataRow & {
+export type DataFlow = CategorySpendReportResultRow & {
   from: string
   to: string
   flow: number
@@ -130,7 +130,7 @@ export default function IncomeAndExpensesSankey({
 
               // Set Text
               if (tooltip.body) {
-                const data = tooltip.dataPoints.at(0)?.raw as CategorySpendReportDataRow
+                const data = tooltip.dataPoints.at(0)?.raw as CategorySpendReportResultRow
 
                 if (data)
                   tooltipEl.innerHTML = `

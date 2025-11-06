@@ -3,10 +3,9 @@ import type { CategoryGroupType } from './category-group-interface'
 import type { IUser } from './user-interface'
 
 /**
- * ReportsDataRow interface for Table Rows
+ * ReportsResultRow interface for Table Rows
  */
-
-export interface CategorySpendReportDataRow {
+export interface CategorySpendReportResultRow {
   /**
    * Category Group ID, Null if unclassified
    */
@@ -31,7 +30,7 @@ export interface CategorySpendReportDataRow {
   /**
    * Array of category rows
    */
-  categories?: CategorySpendReportDataCategoryRow[]
+  categories?: CategorySpendReportResultCategoryRow[]
   /**
    * total amount of that CategroyGroup i.e sum of all periods
    */
@@ -44,11 +43,10 @@ export interface CategorySpendReportDataRow {
 }
 
 /**
- * ReportsDataCategoryRow interface for Table Rows so CategroyGroup rows can be expanded to show
+ * ReportsResultCategoryRow interface for Table Rows so CategoryGroup rows can be expanded to show
  * category breakdown
  */
-
-export interface CategorySpendReportDataCategoryRow {
+export interface CategorySpendReportResultCategoryRow {
   /**
    * Category ID, Null if unclassified
    */
@@ -77,11 +75,10 @@ export interface CategorySpendReportDataCategoryRow {
 }
 
 /**
- * Main ReportsData interface Returned from
+ * Main ReportsResults interface Returned from
  * ReportsService for rendering reports
  */
-
-export interface CategorySpendReportData {
+export interface CategorySpendReportResults {
   /**
    * An array of periods in dataset so columns
    * can be easily rendered
@@ -91,7 +88,7 @@ export interface CategorySpendReportData {
    * An array of rows with category group and
    * category properties and totals to render
    */
-  rows: CategorySpendReportDataRow[]
+  rows: CategorySpendReportResultRow[]
 }
 
 /**
@@ -163,3 +160,71 @@ export interface CategorySpendReportQuery {
    */
   account_owner?: IUser['id']
 }
+
+/**
+ * Query for Net Worth Report
+ */
+export interface NetWorthReportQuery {
+  /**
+   * The start date of the report in YYYY-MM-DD Format
+   */
+  start_date: string
+  /**
+   * The end date of the report in YYYY-MM-DD Format
+   */
+  end_date: string
+}
+
+/**
+ * Results for Net Worth Report
+ */
+export interface NetWorthReportResults {
+  /**
+   * An array of periods in dataset so columns
+   * can be easily rendered
+   */
+  periods: string[]
+  /**
+   * Totals Stored Against Period Key
+   * Will be number type
+   */
+  [key: string]: number | any
+}
+
+/**
+ * Request interface for Category Spend Report
+ */
+interface CategorySpendReportQueryRequest {
+  report_type: 'category_spend'
+  query: CategorySpendReportQuery
+}
+
+/**
+ * Response interface for Category Spend Report
+ */
+interface CategorySpendReportQueryResponse {
+  report_type: 'category_spend'
+  results: CategorySpendReportResults
+}
+
+/**
+ * Request interface for Net Worth Report
+ */
+interface NetWorthReportQueryRequest {
+  report_type: 'net_worth'
+  query: NetWorthReportQuery
+}
+
+/**
+ * Response interface for Net Worth Report
+ */
+interface NetWorthReportQueryResponse {
+  report_type: 'net_worth'
+  results: NetWorthReportResults
+}
+
+/**
+ * Exports for ReportsService Command
+ */
+export type ReportsQueryRequest = CategorySpendReportQueryRequest | NetWorthReportQueryRequest
+export type ReportsQueryResponse = CategorySpendReportQueryResponse | NetWorthReportQueryResponse

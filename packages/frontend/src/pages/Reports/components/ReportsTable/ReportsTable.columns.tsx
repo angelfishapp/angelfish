@@ -4,7 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 
 import { CurrencyLabel } from '@/components/CurrencyLabel'
 import { Emoji } from '@/components/Emoji'
-import type { CategorySpendReportDataRow } from '@angelfish/core'
+import type { CategorySpendReportResultRow } from '@angelfish/core'
 import { renderPeriodHeader } from '../../Reports.utils'
 import type { ReportsTableProps } from './ReportsTable.interface'
 
@@ -21,8 +21,8 @@ export function getTableColumns(
   title: string,
   data: ReportsTableProps['data'],
   onClick: ReportsTableProps['onClick'],
-): ColumnDef<CategorySpendReportDataRow>[] {
-  let columns: ColumnDef<CategorySpendReportDataRow>[] = []
+): ColumnDef<CategorySpendReportResultRow>[] {
+  let columns: ColumnDef<CategorySpendReportResultRow>[] = []
 
   if (data.periods.length > 0) {
     // Create columns for each period
@@ -148,8 +148,8 @@ export function getTableColumns(
  */
 export function getNetTableColumns(
   data: ReportsTableProps['data'],
-): ColumnDef<CategorySpendReportDataRow>[] {
-  let columns: ColumnDef<CategorySpendReportDataRow>[] = []
+): ColumnDef<CategorySpendReportResultRow>[] {
+  let columns: ColumnDef<CategorySpendReportResultRow>[] = []
 
   if (data.periods.length > 0) {
     // Create columns for each period

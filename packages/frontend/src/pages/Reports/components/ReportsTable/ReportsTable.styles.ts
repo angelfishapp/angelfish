@@ -1,9 +1,9 @@
 import { styled } from '@mui/material/styles'
 
 import { Table } from '@/components/Table'
-import type { CategorySpendReportDataRow } from '@angelfish/core'
+import type { CategorySpendReportResultRow } from '@angelfish/core'
 
-const UnStyledTable = Table<CategorySpendReportDataRow>
+const UnStyledTable = Table<CategorySpendReportResultRow>
 
 /**
  * ReportsTable Component Styles

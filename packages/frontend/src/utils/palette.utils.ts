@@ -1,5 +1,5 @@
 import theme from '@/app/theme'
-import type { CategorySpendReportDataRow } from '@angelfish/core'
+import type { CategorySpendReportResultRow } from '@angelfish/core'
 import { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '@angelfish/core'
 
 // Default color palette
@@ -29,7 +29,7 @@ export const palette = [
  * @returns     A map of HEX colors for the rows
  */
 
-export function getDataSetColors(rows: CategorySpendReportDataRow[]) {
+export function getDataSetColors(rows: CategorySpendReportResultRow[]) {
   const colors: Record<string, string> = {}
   let palletteIndex = 0
 

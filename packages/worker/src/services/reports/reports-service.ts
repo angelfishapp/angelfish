@@ -88,9 +88,17 @@ class ReportsServiceClass {
      * 5. Finally join the lineItems to the report table, sum the amounts and group by month so we get the output we want
      */
 
-    const results = await runCategorySpendReport(request)
-    // Return results
-    return results
+    switch (request.report_type) {
+      case 'category_spend': {
+        const results = await runCategorySpendReport(request.query)
+        return {
+          report_type: 'category_spend',
+          results,
+        }
+      }
+      default:
+        throw new Error(`Unsupported Report Type ${request.report_type}`)
+    }
   }
 
   /**

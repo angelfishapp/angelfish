@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { getDataSetColors } from '@/utils/palette.utils'
-import type { CategorySpendReportData } from '@angelfish/core'
+import type { CategorySpendReportResults } from '@angelfish/core'
 import type { ChartDataset, ChartType } from 'chart.js'
 import { renderPeriodHeader } from '../../Reports.utils'
 
 /**
- * converts CategorySpendReportData into charts data which can be used to create charts
- * @param {CategorySpendReportData} data
+ * converts CategorySpendReportResults into charts data which can be used to create charts
+ * @param {CategorySpendReportResults} data
  * @returns {{ labels: {}; datasets: {}; }}
  */
-export const getChartData = (data: CategorySpendReportData) => {
+export const getChartData = (data: CategorySpendReportResults) => {
   // Remove Total label
   const labels: string[] = []
   for (const period of data.periods) {

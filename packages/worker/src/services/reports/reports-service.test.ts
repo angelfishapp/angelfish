@@ -1,4 +1,4 @@
-import type { IAccount, ITransaction } from '@angelfish/core'
+import type { CategorySpendReportResults, IAccount, ITransaction } from '@angelfish/core'
 import { UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '@angelfish/core'
 import { getLongTransactions, institutions, TestLogger, users } from '@angelfish/tests'
 import { ReportsService } from '.'
@@ -174,7 +174,7 @@ const sumTransactionAmounts = (transactions: FlatTransaction[]): number => {
  * Tests
  */
 
-describe('ReportsService', () => {
+describe('ReportsService: Category Spend Report', () => {
   test('should return correct period amounts for last 12 months', async () => {
     const startDate = getDateMonthsAgo(11)
     const start = formatDate(startDate)
@@ -182,14 +182,18 @@ describe('ReportsService', () => {
     const end = formatDate(endDate)
     TestLogger.info(`Running Report between ${start} and ${end}`)
     const report = await ReportsService.runReport({
-      start_date: start,
-      end_date: end,
-      include_unclassified: false,
+      report_type: 'category_spend',
+      query: {
+        start_date: start,
+        end_date: end,
+        include_unclassified: false,
+      },
     })
+    const results = report.results as CategorySpendReportResults
     // There should be 12 periods (months) + total
-    expect(report.periods.length).toBeGreaterThanOrEqual(13)
+    expect(results.periods.length).toBeGreaterThanOrEqual(13)
     // Check that each period has the expected amount
-    const sortedPeriods = sortPeriods(report.periods)
+    const sortedPeriods = sortPeriods(results.periods)
     TestLogger.info(`Sorted periods: ${sortedPeriods.join(', ')}`)
 
     let testFailed = false
@@ -197,7 +201,7 @@ describe('ReportsService', () => {
 
     for (const period of sortedPeriods) {
       // Check each top-level category group row
-      for (const groupRow of report.rows) {
+      for (const groupRow of report.results.rows) {
         // 1. Check group period value matches getTransactionsForPeriod for cat_group_id
         const periodGroupTransactions = getTransactionsForPeriod(period, startDate, endDate, {
           cat_group_id: groupRow.id ?? undefined,

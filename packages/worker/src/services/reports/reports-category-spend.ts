@@ -1,10 +1,9 @@
 import type {
-  AppCommandIds,
-  AppCommandRequest,
   CategoryGroupType,
-  CategorySpendReportData,
-  CategorySpendReportDataCategoryRow,
-  CategorySpendReportDataRow,
+  CategorySpendReportQuery,
+  CategorySpendReportResultCategoryRow,
+  CategorySpendReportResultRow,
+  CategorySpendReportResults,
   CategoryType,
 } from '@angelfish/core'
 import { roundNumber, UNCLASSIFIED_EXPENSES_ID, UNCLASSIFIED_INCOME_ID } from '@angelfish/core'
@@ -79,7 +78,7 @@ export async function runCategorySpendReport({
   tag_ids,
   account_ids,
   account_owner,
-}: AppCommandRequest<AppCommandIds.RUN_REPORT>): Promise<CategorySpendReportData> {
+}: CategorySpendReportQuery): Promise<CategorySpendReportResults> {
   logger.debug('Running Category Spend Report with query', {
     start_date,
     end_date,
@@ -357,7 +356,7 @@ export async function runCategorySpendReport({
 
   // Transform flat results into nested structure with dynamic period keys
   // Reorganise results into structure described above so its easy to render table
-  const results = rawResults.reduce<CategorySpendReportData>(
+  const results = rawResults.reduce<CategorySpendReportResults>(
     (all, row) => {
       // Create table category group rows with categories as sub-rows
       const rowIndex = all['rows'].findIndex((x) => {
@@ -367,7 +366,7 @@ export async function runCategorySpendReport({
       })
       if (rowIndex === -1) {
         // Doesn't exist, create new row and subrow
-        const newCategory: CategorySpendReportDataCategoryRow = {
+        const newCategory: CategorySpendReportResultCategoryRow = {
           id: row.cat_id,
           name: row.cat_name,
           icon: row.cat_icon,
@@ -375,7 +374,7 @@ export async function runCategorySpendReport({
           total: row.total,
         }
         newCategory[row.period] = row.total
-        const newRow: CategorySpendReportDataRow = {
+        const newRow: CategorySpendReportResultRow = {
           id: row.cat_group_id,
           name: row.cat_group_name,
           icon: row.cat_group_icon,
@@ -397,7 +396,7 @@ export async function runCategorySpendReport({
         const subRowIndex = existingRow.categories?.findIndex((x) => x.id === row.cat_id)
         if (subRowIndex === -1) {
           // Doesn't exist, create new subrow
-          const newCategory: CategorySpendReportDataCategoryRow = {
+          const newCategory: CategorySpendReportResultCategoryRow = {
             id: row.cat_id,
             name: row.cat_name,
             icon: row.cat_icon,
