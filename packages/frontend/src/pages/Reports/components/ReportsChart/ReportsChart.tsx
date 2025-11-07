@@ -11,9 +11,9 @@ import {
   PointElement,
   Tooltip,
 } from 'chart.js'
+import { useMemo } from 'react'
 import { Chart } from 'react-chartjs-2'
 
-import { useMemo } from 'react'
 import type { ReportsChartProps } from './ReportsChart.interface'
 import { getChartData } from './ReportsChart.utils'
 

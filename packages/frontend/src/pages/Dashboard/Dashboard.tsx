@@ -3,10 +3,11 @@ import { endOfMonth, format, startOfMonth, subMonths } from 'date-fns'
 
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { useGetBook, useRunReport } from '@/hooks'
-import type { CategorySpendReportResults } from '@angelfish/core'
+import type { CategorySpendReportResults, NetWorthReportResults } from '@angelfish/core'
 import { getDataSetColors } from '../../utils/palette.utils'
 import { FinancialFreedomProgressBar } from './components/FinancialFreedomProgressBar'
 import { IncomeAndExpensesSankey } from './components/IncomeAndExpensesSankey'
+import { NetWorthChart } from './components/NetWorthChart'
 
 /**
  * Dashboard Page of Application
@@ -16,39 +17,56 @@ export default function Dashboard() {
   const { book } = useGetBook()
   const today = new Date()
   const startOfToday = new Date(today.setHours(0, 0, 0, 0))
-  const { reportData, isFetching } = useRunReport({
+
+  // Category Spend Report Data
+  const { reportData: catSpendReportData, isFetching: catSpendReportIsFetching } = useRunReport({
     report_type: 'category_spend',
     query: {
       start_date: format(startOfMonth(subMonths(startOfToday, 12)), 'yyyy-MM-dd'),
       end_date: format(endOfMonth(subMonths(startOfToday, 1)), 'yyyy-MM-dd'),
     },
   })
-  const reportResults = (reportData?.results as CategorySpendReportResults) || {
+  const catSpendReportResults = (catSpendReportData?.results as CategorySpendReportResults) || {
     periods: [],
     rows: [],
   }
-
-  if (reportResults.rows.length > 0) {
+  if (catSpendReportResults.rows.length > 0) {
     // Update row colors to ensure consistent colors across charts
-    const colors = getDataSetColors(reportResults.rows)
-    for (const row of reportResults.rows) {
+    const colors = getDataSetColors(catSpendReportResults.rows)
+    for (const row of catSpendReportResults.rows) {
       if (!row.color) row.color = colors[row.name]
     }
   }
 
-  if (isFetching) return <LoadingSpinner />
+  // Net Worth Report Data
+  const { reportData: netWorthReportData, isFetching: netWorthReportIsFetching } = useRunReport({
+    report_type: 'net_worth',
+    query: {
+      start_date: format(subMonths(startOfToday, 12), 'yyyy-MM-dd'),
+      end_date: format(endOfMonth(subMonths(startOfToday, 1)), 'yyyy-MM-dd'),
+    },
+  })
+  const netWorthReportResults = (netWorthReportData?.results as NetWorthReportResults) || {
+    periods: [],
+    rows: [],
+  }
+
+  if (catSpendReportIsFetching || netWorthReportIsFetching) return <LoadingSpinner />
 
   return (
     <Box py={2} px={8}>
-      {!!reportData && (
+      {!!catSpendReportData && (
         <FinancialFreedomProgressBar
-          data={reportResults}
+          data={catSpendReportResults}
           currency={book?.default_currency as string}
         />
       )}
-      {!!reportData && (
+      {!!netWorthReportData && (
+        <NetWorthChart data={netWorthReportResults} currency={book?.default_currency as string} />
+      )}
+      {!!catSpendReportData && (
         <IncomeAndExpensesSankey
-          data={reportResults}
+          data={catSpendReportResults}
           currency={book?.default_currency as string}
           periods={12}
         />

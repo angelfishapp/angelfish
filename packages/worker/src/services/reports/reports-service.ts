@@ -8,6 +8,7 @@ import { AppCommandIds, Command } from '@angelfish/core'
 import { getWorkerLogger } from '../../logger'
 import { ExportXLSX } from './export-xlsx'
 import { runCategorySpendReport } from './reports-category-spend'
+import { runNetWorthReport } from './reports-net-worth'
 
 const logger = getWorkerLogger('ReportsService')
 
@@ -96,8 +97,18 @@ class ReportsServiceClass {
           results,
         }
       }
+      case 'net_worth': {
+        const results = await runNetWorthReport(request.query)
+        return {
+          report_type: 'net_worth',
+          results,
+        }
+      }
       default:
-        throw new Error(`Unsupported Report Type ${request.report_type}`)
+        // @ts-expect-error Fallback in case user passes invalid type
+        logger.error(`Unsupported report type ${request.report_type}`)
+        // @ts-expect-error Fallback in case user passes invalid type
+        throw new Error(`Unsupported report type ${request.report_type}`)
     }
   }
 

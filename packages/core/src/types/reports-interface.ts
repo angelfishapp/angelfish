@@ -1,3 +1,4 @@
+import type { IAccountTypes } from 'src/data/account-types'
 import type { CategoryType, IAccount } from './account-interface'
 import type { CategoryGroupType } from './category-group-interface'
 import type { IUser } from './user-interface'
@@ -176,6 +177,17 @@ export interface NetWorthReportQuery {
 }
 
 /**
+ * Row for Net Worth Report. Object with acc_type and
+ * period keys with number values
+ */
+export type NetWorthReportRow = {
+  /**
+   * Account Type
+   */
+  acc_type: IAccountTypes
+} & Partial<Record<string, number>>
+
+/**
  * Results for Net Worth Report
  */
 export interface NetWorthReportResults {
@@ -188,7 +200,7 @@ export interface NetWorthReportResults {
    * Totals Stored Against Period Key
    * Will be number type
    */
-  [key: string]: number | any
+  rows: NetWorthReportRow[]
 }
 
 /**

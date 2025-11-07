@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { getDataSetColors } from '@/utils/palette.utils'
 import type { CategorySpendReportResults } from '@angelfish/core'
 import type { ChartDataset, ChartType } from 'chart.js'
@@ -40,7 +38,7 @@ export const getChartData = (data: CategorySpendReportResults) => {
       fill: false,
       borderColor: '#48ABE4',
       backgroundColor: '#48ABE4',
-      // @ts-ignore
+      // @ts-ignore: chartjs v4 issue
       axis: 'y',
     },
   ]
@@ -62,7 +60,7 @@ export const getChartData = (data: CategorySpendReportResults) => {
       type: 'bar' as ChartType,
       backgroundColor: colors[row.name],
       borderColor: colors[row.name],
-      // @ts-ignore
+      // @ts-ignore: chartjs v4 issue
       axis: 'yStacked',
     })
   }

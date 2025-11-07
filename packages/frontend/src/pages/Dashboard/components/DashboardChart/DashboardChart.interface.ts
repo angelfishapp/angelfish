@@ -11,7 +11,7 @@ export interface DashboardChartProps {
   /**
    * Description for children Chart
    */
-  description: string | ReactNode | ReactNode[]
+  description?: string | ReactNode | ReactNode[]
   /**
    * Chart component
    */

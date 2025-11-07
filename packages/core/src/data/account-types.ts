@@ -3,6 +3,7 @@
  */
 
 export const AccountTypes = ['depository', 'credit', 'loan', 'investment', 'other'] as const
+export type IAccountTypes = (typeof AccountTypes)[number]
 
 export interface AccountType {
   // Display name for Account Type
@@ -10,7 +11,7 @@ export interface AccountType {
   // Description to provide more details
   description: string
   // Main type of account: https://plaid.com/docs/api/accounts/#account-type-schema
-  type: (typeof AccountTypes)[number]
+  type: IAccountTypes
   // Subtype of account: https://plaid.com/docs/api/accounts/#account-type-schema
   subtype: string
   // Optionally specify an ISO 3166-1 alpha-2 country code the account type

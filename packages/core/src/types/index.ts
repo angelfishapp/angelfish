@@ -20,6 +20,7 @@ export type {
   CategorySpendReportResults,
   NetWorthReportQuery,
   NetWorthReportResults,
+  NetWorthReportRow,
   ReportsFilterList,
   ReportsQueryRequest,
   ReportsQueryResponse,
